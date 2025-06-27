@@ -8,14 +8,18 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 
 ## Phase 1: SPA Foundation - MVP
 
-### **Sprint 1-2: Project Setup & Authentication**
+### **Sprint 1-2: Project Setup, Design System & Authentication**
 
 #### **Sprint Goals**
-- [ ] Initialize Vite + React + TypeScript project
+- [X] Initialize Vite + React + TypeScript project
+- [ ] Define design system (colors, typography, spacing)
+- [ ] Implement light/dark mode theme
+- [ ] Add core shadcn/ui components
 - [ ] Implement authentication system
 - [ ] Create basic routing structure
 
 #### **Key Components**
+- `<ThemeToggle />` - Switch between light/dark mode
 - `<LoginForm />` - Email/password and Google login
 - `<RegisterForm />` - User registration with email verification
 - `<ProtectedRoute />` - Role-based route protection
@@ -187,9 +191,4 @@ See API documentation for complete data models including `Product`, `StockAdjust
 ### **External Services**
 - Firebase Cloud Messaging (push notifications)
 - Google OAuth (authentication)
-- Email service (user invitations)
 - Backend API (inventory data)
-
-### **Development Tools**
-- Node.js 18+
-- Chrome DevTools (PWA debugging)

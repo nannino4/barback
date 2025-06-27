@@ -14,7 +14,7 @@ This document defines the technology choices, architectural patterns, and high-l
 
 ### Build Tool & Framework
 - **Vite**: Build tool using native ES modules for development, Rollup for production
-- **React 18**: UI library with functional components and hooks
+- **React**: UI library with functional components and hooks
 - **TypeScript**: Full type safety across the application
 - **Target**: Modern browsers with ES2020+ support
 
@@ -40,7 +40,7 @@ This document defines the technology choices, architectural patterns, and high-l
 - **Custom API Client**: Centralized request handling with auth token injection
 
 ### Routing & Navigation
-- **React Router v6**: Client-side routing
+- **React Router**: Client-side routing
 - **Protected Routes**: Role-based route protection
 
 ### Notifications & UX

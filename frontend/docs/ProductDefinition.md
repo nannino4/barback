@@ -3,11 +3,12 @@
 ## MVP Stage
 
 ### Target Users
-- **User Profile**: Cocktail bar owners, managers, bartenders in Rome/Italy using manual inventory systems
+- **User Profile**: Cocktail bar owners, managers, bartenders in Rome/Italy using manual inventory systems and primarily accessing the app via mobile devices during work
+- **Primary Device Usage**: Mobile phones and tablets used on-the-go in bar environments
 - **Value Proposition**: 
   - **Owners**: Reduce waste, gain consumption insights, optimize ordering, identify sitting stock
   - **Managers**: Real-time stock visibility, improve staff communication, automated low stock reminders, faster inventory accounting
-  - **Staff**: Faster inventory accounting
+  - **Staff**: Faster inventory accounting with touch-optimized mobile interface
 
 ### Features
 

@@ -4,9 +4,10 @@ This document defines the technology choices, architectural patterns, and high-l
 
 ## Project Overview
 
-**Barback** is an inventory management system for cocktail bars, targeting owners, managers, and staff in Rome/Italy. The application helps reduce waste, gain consumption insights, optimize ordering, and streamline inventory management.
+**Barback** is a mobile-first inventory management system for cocktail bars, targeting owners, managers, and staff in Rome/Italy. The application helps reduce waste, gain consumption insights, optimize ordering, and streamline inventory management.
 
 **Frontend Type**: Single Page Application (SPA)  
+**Design Philosophy**: Mobile-first responsive design  
 **Target Users**: Bar owners, managers, bartenders  
 **Key Features**: Auth, role-based access, inventory CRUD, real-time updates, notifications, analytics
 
@@ -84,6 +85,13 @@ src/
 ```
 
 ## Key Architectural Patterns
+
+### Mobile-First Design Philosophy
+1. **Touch-First Interactions**: All UI elements optimized for touch input with appropriate touch targets (44px minimum)
+2. **Progressive Enhancement**: Core functionality accessible on mobile, enhanced on larger screens
+3. **Responsive Layouts**: CSS Grid and Flexbox with mobile breakpoints as the base
+4. **Performance-First**: Optimized bundle sizes and lazy loading for mobile networks
+5. **Offline Considerations**: Local storage strategies and graceful network failure handling
 
 ### Data Flow Architecture
 1. **Server Data**: Components → TanStack Query hooks → API client → Backend

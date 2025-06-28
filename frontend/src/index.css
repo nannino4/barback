@@ -1,1 +1,141 @@
 @import "tailwindcss";
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Design System Variables - "The Speakeasy" Theme */
+:root {
+  /* Colors - HSL format for better manipulation */
+  
+  /* Background & Surface Colors */
+  --background-primary: 240 2% 4%;     /* #0a0a0b - Deep charcoal */
+  --background-secondary: 240 2% 10%;  /* #1a1a1c - Elevated surfaces */
+  --background-tertiary: 240 2% 16%;   /* #2a2a2d - Subtle distinctions */
+  
+  /* Text Colors */
+  --text-primary: 60 3% 97%;           /* #f8f8f2 - Primary content */
+  --text-secondary: 60 2% 66%;         /* #a8a8a3 - Secondary info */
+  --text-tertiary: 60 2% 42%;          /* #6b6b66 - Subtle text */
+  
+  /* Gold Accent Colors */
+  --gold-primary: 48 75% 53%;          /* #d4af37 - Primary gold */
+  --gold-secondary: 48 75% 42%;        /* #b8941f - Hover states */
+  --gold-tertiary: 48 75% 35%;         /* #9c7e1a - Pressed states */
+  
+  /* Semantic Colors */
+  --success: 160 84% 39%;              /* #10b981 - Success primary */
+  --success-light: 159 75% 55%;        /* #34d399 - Success light */
+  --success-dark: 160 84% 30%;         /* #059669 - Success dark */
+  
+  --error: 0 84% 60%;                  /* #ef4444 - Error primary */
+  --error-light: 0 77% 70%;            /* #f87171 - Error light */
+  --error-dark: 0 73% 51%;             /* #dc2626 - Error dark */
+  
+  --warning: 38 92% 50%;               /* #f59e0b - Warning primary */
+  --warning-light: 43 89% 58%;         /* #fbbf24 - Warning light */
+  --warning-dark: 32 95% 44%;          /* #d97706 - Warning dark */
+  
+  --info: 217 91% 60%;                 /* #3b82f6 - Info primary */
+  --info-light: 213 93% 68%;           /* #60a5fa - Info light */
+  --info-dark: 221 83% 53%;            /* #2563eb - Info dark */
+  
+  /* Border Colors */
+  --border-primary: 240 2% 23%;        /* #3a3a3d - Container borders */
+  --border-secondary: 240 2% 16%;      /* #2a2a2d - Subtle dividers */
+  --border-focus: 48 75% 53%;          /* #d4af37 - Focus borders */
+  
+  /* shadcn/ui Semantic Variables */
+  --background: var(--background-primary);
+  --foreground: var(--text-primary);
+  --card: var(--background-secondary);
+  --card-foreground: var(--text-primary);
+  --popover: var(--background-secondary);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--gold-primary);
+  --primary-foreground: var(--background-primary);
+  --secondary: var(--background-tertiary);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--background-tertiary);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--background-tertiary);
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--error);
+  --destructive-foreground: var(--text-primary);
+  --border: var(--border-primary);
+  --input: var(--border-primary);
+  --ring: var(--gold-primary);
+  --radius: 0.25rem; /* 4px base border radius */
+  
+  /* Typography Variables */
+  --font-heading: 'Playfair Display', 'Times New Roman', serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  /* Shadow Variables */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px -1px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  
+  /* Glow Effects */
+  --glow-gold: 0 0 0 3px rgba(212, 175, 55, 0.2);
+  --glow-success: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  --glow-error: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+/* Light Mode (Optional Alternative) */
+.light {
+  --background-primary: 0 0% 98%;      /* Light background */
+  --background-secondary: 0 0% 96%;    /* Light elevated surfaces */
+  --background-tertiary: 0 0% 94%;     /* Light subtle distinctions */
+  
+  --text-primary: 240 2% 11%;          /* Dark text */
+  --text-secondary: 240 2% 45%;        /* Secondary dark text */
+  --text-tertiary: 240 2% 65%;         /* Subtle dark text */
+  
+  --border-primary: 240 2% 85%;        /* Light borders */
+  --border-secondary: 240 2% 90%;      /* Subtle light dividers */
+  
+  /* Update shadcn/ui variables for light mode */
+  --background: var(--background-primary);
+  --foreground: var(--text-primary);
+  --card: var(--background-secondary);
+  --card-foreground: var(--text-primary);
+  --popover: var(--background-secondary);
+  --popover-foreground: var(--text-primary);
+  --primary-foreground: var(--background-primary);
+  --secondary: var(--background-tertiary);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--background-tertiary);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--background-tertiary);
+  --accent-foreground: var(--text-primary);
+  --destructive-foreground: var(--background-primary);
+  --border: var(--border-primary);
+  --input: var(--border-primary);
+}
+
+/* Base Styles */
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -12,9 +12,9 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 
 #### **Sprint Goals**
 - [X] Initialize Vite + React + TypeScript project
-- [ ] Define design system (colors, typography, spacing)
-- [ ] Implement light/dark mode theme
-- [ ] Add core shadcn/ui components
+- [X] Define design system (colors, typography, spacing)
+- [X] Implement light/dark mode theme
+- [X] Add core shadcn/ui components
 - [ ] Implement authentication system
 - [ ] Create basic routing structure
 

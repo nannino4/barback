@@ -99,10 +99,7 @@ src/
 3. **Forms**: React Hook Form → Zod validation → TanStack Query mutations
 
 ### Authentication Flow
-1. Login/Register → JWT token → Zustand auth store + localStorage
-2. API requests automatically include `Authorization: Bearer <token>`
-3. Role-based component rendering and route protection
-4. Automatic logout on 401 responses
+See detailed authentication documentation in [`docs/auth/`](./auth/) for comprehensive flows, UI specifications, and technical implementation.
 
 ### Component Architecture Patterns
 - **Compound Components**: For complex UI (Dialog, DropdownMenu)
@@ -125,15 +122,15 @@ src/
 ### Implementation Strategy
 Role-based access is implemented through custom hooks that check user permissions and conditionally render components or enable/disable functionality. See [CodingGuidelines.md](./CodingGuidelines.md) for implementation examples.
 
-## shadcn/ui Implementation Strategy
+## shadcn Implementation Strategy
 
 ### Installation and Setup
-shadcn/ui components are copied directly into the codebase rather than installed as npm dependencies. This provides full customization control.
+shadcn components are copied directly into the codebase rather than installed as npm dependencies. This provides full customization control.
 
 **Key Commands:**
 ```bash
-npx shadcn-ui@latest init
-npx shadcn-ui@latest add button dialog card data-table form input select
+npx shadcn@latest init
+npx shadcn@latest add button dialog card data-table form input select
 ```
 
 ### Usage Philosophy
@@ -142,7 +139,7 @@ Components are copied to `src/components/ui/` and become part of your codebase. 
 ## Implementation Guidelines
 
 ### Component Development
-1. **Start with shadcn/ui components** when possible for consistency
+1. **Start with shadcn components** when possible for consistency
 2. **Create feature-specific components** in appropriate feature folders
 3. **Use TypeScript interfaces** for all props and data structures
 4. **Implement error boundaries** for robust error handling

@@ -8,7 +8,7 @@ This document outlines the complete user experience flows, interaction patterns,
 
 ```
 Barback App Architecture
-├── 🔐 Authentication Layer
+├── 🔐 Authentication Layer (see docs/auth/)
 │   ├── Login/Register
 │   ├── Email Verification
 │   └── Password Recovery

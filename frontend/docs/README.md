@@ -12,9 +12,17 @@ This directory contains all documentation for the Barback frontend application. 
 - **[TestingGuide.md](./TestingGuide.md)**: Testing strategies and patterns
 - **[DevelopmentRoadmap.md](./DevelopmentRoadmap.md)**: Implementation roadmap and milestones
 
+### Feature Documentation
+
+- **[auth/](./auth/)**: Complete authentication system documentation including flows, UI specs, and technical implementation
+
 ### API Documentation
 
 - **[api/](./api/)**: Complete API documentation including endpoints, data models, and schemas
+
+### UI/UX Documentation
+
+- **[ui-ux/](./ui-ux/)**: User interface and user experience specifications
 
 ## Documentation Philosophy
 

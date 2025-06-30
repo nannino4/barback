@@ -18,7 +18,7 @@ Get current user's profile information.
   "firstName": "John",
   "lastName": "Doe",
   "phoneNumber": "+393331234567",
-  "emailVerified": true,
+  "isEmailVerified": true,
   "role": "USER",
   "createdAt": "2024-01-01T00:00:00.000Z",
   "updatedAt": "2024-01-01T00:00:00.000Z"
@@ -31,7 +31,7 @@ Get current user's profile information.
 - `firstName`: User's first name
 - `lastName`: User's last name
 - `phoneNumber`: Optional phone number
-- `emailVerified`: Whether email has been verified
+- `isEmailVerified`: Whether email has been verified
 - `role`: User role (USER, ADMIN)
 - `createdAt`: Account creation timestamp
 - `updatedAt`: Last update timestamp
@@ -60,7 +60,7 @@ Update current user's profile information.
   "firstName": "John",
   "lastName": "Smith",
   "phoneNumber": "+393331234567",
-  "emailVerified": true,
+  "isEmailVerified": true,
   "role": "USER",
   "createdAt": "2024-01-01T00:00:00.000Z",
   "updatedAt": "2024-01-01T12:30:00.000Z"
@@ -146,7 +146,7 @@ Delete current user's account.
   "firstName": "string",    // First name (max 50 chars)
   "lastName": "string",     // Last name (max 50 chars)
   "phoneNumber": "string",  // Optional Italian mobile number
-  "emailVerified": "boolean", // Email verification status
+  "isEmailVerified": "boolean", // Email verification status
   "role": "USER|ADMIN",     // User role
   "createdAt": "string",    // ISO timestamp
   "updatedAt": "string"     // ISO timestamp

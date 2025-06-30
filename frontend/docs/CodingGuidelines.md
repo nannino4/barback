@@ -36,6 +36,51 @@ if (condition) { /* code */ }
 - **Explicit Types**: Define types when inference isn't clear
 - **Null/Undefined Handling**: Explicit handling required
 
+## Import Patterns
+
+### Consistent Import Strategy
+**Always use `@` alias for internal imports** for consistency and maintainability:
+
+```typescript
+// ✅ Correct - Always use @ alias
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { useAuthStore } from '@/stores/authStore';
+import { authApi } from '@/lib/auth-api';
+import { registerSchema } from '@/lib/auth-validations';
+import type { RegisterData, LoginData } from '@/types/auth';
+import type { ApiError } from '@/types/api';
+
+// ❌ Incorrect - Don't use relative paths
+import { useAuthStore } from '../stores/authStore';
+import { authApi } from './auth-api';
+import type { RegisterData } from '../types/auth';
+```
+
+### Import Organization
+Organize imports in this order:
+1. **External libraries** (React, third-party packages)
+2. **Internal modules** (using `@/` alias)
+3. **Type imports** (grouped at the end with `type` keyword)
+
+```typescript
+// External libraries first
+import React from 'react';
+import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+
+// Internal modules with @ alias
+import { useAuthStore } from '@/stores/authStore';
+import { authApi } from '@/lib/auth-api';
+import { Button } from '@/components/ui/button';
+
+// Type imports last
+import type { RegisterData, LoginData } from '@/types/auth';
+import type { ApiError } from '@/types/api';
+```
+
 ## Error Handling Patterns
 
 ### Error Boundary Implementation

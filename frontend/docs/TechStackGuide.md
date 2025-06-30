@@ -67,12 +67,12 @@ src/
 │   └── useOrganization.ts
 ├── stores/              # Zustand stores
 │   ├── authStore.ts     # User authentication state
-│   └── appStore.ts      # App-wide UI state
+│   └── themeStore.ts    # Theme preferences (renamed from appStore)
 ├── lib/
-│   ├── api.ts           # API client and endpoints
-│   ├── auth.ts          # Auth utilities
-│   ├── utils.ts         # General utilities (cn, formatters)
-│   └── validations.ts   # Zod schemas
+│   ├── api.ts           # Base API client
+│   ├── auth-api.ts      # Authentication API endpoints
+│   ├── auth-validations.ts # Authentication Zod schemas
+│   └── utils.ts         # General utilities (cn, formatters)
 ├── pages/               # Route components
 │   ├── auth/            # Login, Register, ForgotPassword
 │   ├── dashboard/       # Main dashboard

@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
-import { useAppStore } from '@/stores/appStore'
+import { useThemeStore } from '@/stores/themeStore'
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) 
 {
-    const { theme } = useAppStore()
+    const { theme } = useThemeStore()
 
     useEffect(() => 
     {

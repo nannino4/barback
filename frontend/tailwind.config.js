@@ -23,6 +23,11 @@ export default {
       spacing: {
         'touch': '2.75rem', // 44px minimum touch target
       },
+      
+      // Touch target heights
+      height: {
+        'touch': '2.75rem', // 44px minimum touch target
+      },
     },
   },
 }

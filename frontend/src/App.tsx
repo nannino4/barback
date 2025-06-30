@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { MainLayout } from '@/components/layout/MainLayout'
 import { HomePage } from '@/pages/HomePage'
+import { RegisterPage } from '@/pages/auth/RegisterPage'
 
 // Create a client
 const queryClient = new QueryClient({
@@ -15,28 +16,38 @@ const queryClient = new QueryClient({
     },
 })
 
-function App() 
+function AppContent()
+{
+    return (
+        <>
+            <Routes>
+                <Route path="/" element={<MainLayout />}>
+                    <Route index element={<HomePage />} />
+                </Route>
+                {/* Auth routes outside MainLayout */}
+                <Route path="/register" element={<RegisterPage />} />
+                {/* Dashboard routes will be added here */}
+            </Routes>
+            
+            <Toaster
+                position="bottom-right"
+                toastOptions={{
+                    className: 'bg-card border border-border text-card-foreground font-body',
+                    duration: 4000,
+                }}
+            />
+        </>
+    );
+}
+
+function App()
 {
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider>
                 <BrowserRouter>
-                    <Routes>
-                        <Route path="/" element={<MainLayout />}>
-                            <Route index element={<HomePage />} />
-                            {/* Auth routes will be added here */}
-                            {/* Dashboard routes will be added here */}
-                        </Route>
-                    </Routes>
+                    <AppContent />
                 </BrowserRouter>
-                
-                <Toaster
-                    position="bottom-right"
-                    toastOptions={{
-                        className: 'bg-background-secondary border border-border text-text-primary',
-                        duration: 4000,
-                    }}
-                />
             </ThemeProvider>
         </QueryClientProvider>
     )

@@ -6,7 +6,7 @@ type ThemeState = {
   setTheme: (theme: 'light' | 'dark' | 'system') => void
 }
 
-export const useAppStore = create<ThemeState>()(
+export const useThemeStore = create<ThemeState>()(
     persist(
         (set) => ({
             theme: 'system',

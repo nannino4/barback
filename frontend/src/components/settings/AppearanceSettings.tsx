@@ -1,10 +1,10 @@
 import { Moon, Sun, Monitor } from 'lucide-react'
-import { useAppStore } from '@/stores/appStore'
+import { useThemeStore } from '@/stores/themeStore'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 export function AppearanceSettings() 
 {
-    const { theme, setTheme } = useAppStore()
+    const { theme, setTheme } = useThemeStore()
 
     const themeOptions = [
         {

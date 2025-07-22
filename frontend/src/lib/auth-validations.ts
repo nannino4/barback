@@ -16,12 +16,15 @@ export const registerSchema = z
             .string()
             .min(1, 'First name is required')
             .max(50, 'First name must be less than 50 characters')
-            .regex(/^[a-zA-Z\s]*$/, 'First name can only contain letters and spaces'),
+            // Supports international characters including Italian accented letters
+            // Pattern: English letters + Latin accented chars + spaces, hyphens, apostrophes
+            .regex(/^[a-zA-ZÀ-ÿ\u0100-\u017F\s'-]*$/, 'First name can only contain letters, spaces, hyphens, and apostrophes'),
         lastName: z
             .string()
             .min(1, 'Last name is required')
             .max(50, 'Last name must be less than 50 characters')
-            .regex(/^[a-zA-Z\s]*$/, 'Last name can only contain letters and spaces'),
+            // Supports international characters including Italian accented letters
+            .regex(/^[a-zA-ZÀ-ÿ\u0100-\u017F\s'-]*$/, 'Last name can only contain letters, spaces, hyphens, and apostrophes'),
         email: z
             .string()
             .min(1, 'Email is required')
@@ -46,4 +49,4 @@ export const loginSchema = z.object({
 
 // Infer types from schemas
 export type RegisterFormData = z.infer<typeof registerSchema>;
-export type LoginFormData = z.infer<typeof loginSchema>;
+export type LoginData = z.infer<typeof loginSchema>;

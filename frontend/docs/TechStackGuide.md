@@ -86,41 +86,16 @@ src/
 
 ## Key Architectural Patterns
 
-### Mobile-First Design Philosophy
-1. **Touch-First Interactions**: All UI elements optimized for touch input with appropriate touch targets (44px minimum)
-2. **Progressive Enhancement**: Core functionality accessible on mobile, enhanced on larger screens
-3. **Responsive Layouts**: CSS Grid and Flexbox with mobile breakpoints as the base
-4. **Performance-First**: Optimized bundle sizes and lazy loading for mobile networks
-5. **Offline Considerations**: Local storage strategies and graceful network failure handling
-
 ### Data Flow Architecture
 1. **Server Data**: Components → TanStack Query hooks → API client → Backend
 2. **Client Data**: Components → Zustand stores → Other components
 3. **Forms**: React Hook Form → Zod validation → TanStack Query mutations
-
-### Authentication Flow
-See detailed authentication documentation in [`docs/auth/`](./auth/) for comprehensive flows, UI specifications, and technical implementation.
 
 ### Component Architecture Patterns
 - **Compound Components**: For complex UI (Dialog, DropdownMenu)
 - **Custom Hooks**: For business logic reuse and API operations
 - **Render Props**: For flexible component composition
 - **Error Boundaries**: For graceful error handling
-
-### State Management Strategy
-- **Zustand (Client State)**: User data, UI state, app preferences, selected organization
-- **TanStack Query (Server State)**: All API data, caching, background updates, optimistic updates
-- **React Hook Form**: Local form state with Zod validation
-
-## Role-Based Access Control
-
-### User Roles
-- **Owner**: Full access (all operations, subscription management)
-- **Manager**: Management access (inventory, user invites, analytics)
-- **Staff**: Basic access (inventory read/write only)
-
-### Implementation Strategy
-Role-based access is implemented through custom hooks that check user permissions and conditionally render components or enable/disable functionality. See [CodingGuidelines.md](./CodingGuidelines.md) for implementation examples.
 
 ## shadcn Implementation Strategy
 
@@ -156,47 +131,3 @@ Components are copied to `src/components/ui/` and become part of your codebase. 
 2. **Leverage shadcn/ui components** for consistent design system
 3. **Create custom variants** by modifying shadcn/ui components
 4. **Use CSS custom properties** for theming and dynamic styles
-
-### Type Safety Strategy
-1. **Define API response types** in `types/api.ts`
-2. **Use Zod schemas** for runtime validation and type inference
-3. **Infer types from Zod schemas** when possible to maintain single source of truth
-4. **Avoid `any` types** - use proper typing with unknown or specific types
-
-## Environment Configuration
-
-### Required Environment Variables
-```bash
-# .env.local
-VITE_API_BASE_URL=http://localhost:8000/api
-VITE_GOOGLE_CLIENT_ID=your_google_client_id
-VITE_APP_NAME=Barback
-```
-
-## Performance Optimization Strategy
-
-### Bundle Optimization
-- **Code splitting** with React.lazy() for route-based chunks
-- **Tree shaking** enabled by default with Vite
-- **Image optimization** with proper formats and lazy loading
-- **Chunk splitting** for vendor libraries to improve caching
-
-### Runtime Performance
-- **React.memo** for expensive component re-renders
-- **useMemo/useCallback** for expensive calculations and stable references
-- **TanStack Query caching** for efficient API data management
-- **Virtualization** for large lists using react-window when needed
-
-## Security Guidelines
-
-### Authentication Security
-- **JWT tokens** stored securely with appropriate expiration
-- **Automatic token refresh** before expiration to maintain sessions
-- **Secure cookie options** for sensitive data storage
-- **CSRF protection** for state-changing operations
-
-### Data Validation and Protection
-- **Client-side validation** with Zod for user experience
-- **Input sanitization** for XSS prevention
-- **Role-based access control** enforced on all operations
-- **API request validation** to ensure data integrity

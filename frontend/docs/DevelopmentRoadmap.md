@@ -15,14 +15,14 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 - [X] Define design system (colors, typography, spacing)
 - [X] Implement light/dark mode theme
 - [X] Add core shadcn/ui components
-- [ ] Implement authentication system
-- [ ] Create basic routing structure
+- [X] Implement authentication system
+- [X] Create basic routing structure
 
 #### **Key Components**
-- `<ThemeToggle />` - Switch between light/dark mode
-- `<LoginForm />` - Email/password and Google login
-- `<RegisterForm />` - User registration with email verification
-- `<ProtectedRoute />` - Role-based route protection
+- `<ThemeToggle />` - Switch between light/dark mode ✅
+- `<LoginForm />` - Email/password and Google login ✅
+- `<RegisterForm />` - User registration with email verification ✅
+- `<ProtectedRoute />` - Role-based route protection ✅
 
 ### **Sprint 3-4: Organization & User Management**
 

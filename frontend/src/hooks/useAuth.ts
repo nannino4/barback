@@ -14,7 +14,7 @@ export const useAuth = () =>
         isAuthenticated,
         isLoading,
         error,
-        login,
+        login: loginToStore,
         logout,
         setLoading,
         setError,
@@ -41,9 +41,9 @@ export const useAuth = () =>
         onSuccess: (response) =>
         {
             // Use user data directly from registration response
-            login(response.user, response.access_token, response.refresh_token);
+            loginToStore(response.user, response.access_token, response.refresh_token);
             toast.success('Registration successful! Please check your email to verify your account.');
-            void navigate('/verify-email');
+            void navigate('/');
         },
         onError: (error: Error) =>
         {
@@ -75,9 +75,9 @@ export const useAuth = () =>
         onSuccess: (response) =>
         {
             // Use user data directly from login response
-            login(response.user, response.access_token, response.refresh_token);
+            loginToStore(response.user, response.access_token, response.refresh_token);
             toast.success('Login successful!');
-            void navigate('/dashboard');
+            void navigate('/');
         },
         onError: (error: Error) =>
         {
@@ -113,7 +113,7 @@ export const useAuth = () =>
     {
         logout();
         toast.success('Logged out successfully');
-        void navigate('/login');
+        void navigate('/auth/login');
     };
 
     return {

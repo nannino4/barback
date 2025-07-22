@@ -4,6 +4,33 @@
 
 Google OAuth integration provides a streamlined authentication option for Barback users, allowing them to register and login using their Google accounts. This reduces friction for new users while maintaining security standards.
 
+The backend now provides comprehensive Google OAuth endpoints that handle both direct redirect flows and programmatic OAuth flows for maximum flexibility.
+
+## Backend API Endpoints
+
+### GET /api/auth/oauth/google
+Generate Google OAuth authorization URL with state parameter for security.
+
+**Response** (200 OK):
+```json
+{
+  "authUrl": "https://accounts.google.com/o/oauth2/v2/auth?client_id=...",
+  "state": "random_state_string_for_security"
+}
+```
+
+### POST /api/auth/oauth/google/callback
+Handle OAuth callback with authorization code (for programmatic flows).
+
+**Request Body**:
+```json
+{
+  "code": "authorization_code_from_google",
+  "state": "state_parameter_for_validation"
+}
+```
+
+
 ## User Experience Flows
 
 ### Google OAuth Registration Flow
@@ -324,372 +351,227 @@ const OAuthErrorDisplay: React.FC<{ error: GoogleOAuthError }> = ({ error }) => 
 
 ### Frontend OAuth Integration
 
-#### OAuth Configuration
-```typescript
-// Google OAuth configuration
-export const GOOGLE_OAUTH_CONFIG = {
-  clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
-  redirectUri: `${window.location.origin}/auth/oauth/google/callback`,
-  scope: 'openid email profile',
-  responseType: 'code',
-  accessType: 'offline',
-  prompt: 'consent' // Ensures refresh token
-};
+The frontend OAuth implementation has been simplified to use the backend's OAuth endpoints directly. The backend handles all OAuth complexity including state generation, token exchange, and security validation.
 
-// OAuth URL generation
-export const generateGoogleOAuthURL = (state?: string): string => {
-  const params = new URLSearchParams({
-    client_id: GOOGLE_OAUTH_CONFIG.clientId,
-    redirect_uri: GOOGLE_OAUTH_CONFIG.redirectUri,
-    scope: GOOGLE_OAUTH_CONFIG.scope,
-    response_type: GOOGLE_OAUTH_CONFIG.responseType,
-    access_type: GOOGLE_OAUTH_CONFIG.accessType,
-    prompt: GOOGLE_OAUTH_CONFIG.prompt,
-    ...(state && { state })
-  });
-  
-  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
+#### OAuth Button Implementation
+```typescript
+// Google OAuth Button Component
+import { authApi } from '@/lib/auth-api';
+
+export const GoogleLoginButton: React.FC = () => {
+  const { isLoggingIn } = useAuth();
+
+  const handleGoogleLogin = () => {
+    // Direct redirect to backend OAuth endpoint
+    // Backend handles OAuth flow and redirects back with tokens
+    window.location.href = authApi.googleOAuth.getRedirectUrl();
+  };
+
+  return (
+    <Button
+      type="button"
+      variant="outline"
+      onClick={handleGoogleLogin}
+      disabled={isLoggingIn}
+    >
+      {isLoggingIn ? (
+        <>
+          <InlineSpinner className="mr-2" />
+          Connecting...
+        </>
+      ) : (
+        <>
+          <GoogleIcon className="mr-2" />
+          Continue with Google
+        </>
+      )}
+    </Button>
+  );
 };
 ```
 
-#### OAuth Flow Implementation
+#### OAuth API Integration
 ```typescript
-// Google OAuth hook
-export const useGoogleOAuth = () => {
-  const navigate = useNavigate();
-  const { setTokens, setUser } = useAuthStore();
-  
-  const initiateOAuth = useCallback((mode: 'login' | 'register') => {
-    // Generate state parameter for security
-    const state = generateRandomState();
-    sessionStorage.setItem('oauth_state', state);
-    sessionStorage.setItem('oauth_mode', mode);
-    
-    // Build OAuth URL
-    const oauthUrl = generateGoogleOAuthURL(state);
-    
-    // Redirect to Google
-    window.location.href = oauthUrl;
-  }, []);
-  
-  const handleOAuthCallback = useCallback(async (code: string, state: string) => {
-    try {
-      // Verify state parameter
-      const storedState = sessionStorage.getItem('oauth_state');
-      if (state !== storedState) {
-        throw new Error('Invalid OAuth state parameter');
-      }
-      
-      // Exchange code for tokens
-      const response = await authAPI.googleOAuth({
-        code,
-        redirectUri: GOOGLE_OAUTH_CONFIG.redirectUri
-      });
-      
-      // Store authentication data
-      setTokens(response.access_token, response.refresh_token);
-      setUser(response.user);
-      
-      // Clean up session storage
-      sessionStorage.removeItem('oauth_state');
-      sessionStorage.removeItem('oauth_mode');
-      
-      // Redirect based on user state
-      if (response.user.emailVerified) {
-        if (response.user.organizations?.length > 0) {
-          navigate('/dashboard');
-        } else {
-          navigate('/onboarding/organization');
-        }
-      } else {
-        navigate('/auth/verify-email');
-      }
-      
-      toast.success('Successfully signed in with Google!');
-      
-    } catch (error) {
-      console.error('OAuth callback error:', error);
-      navigate('/auth/login', { 
-        state: { error: 'OAuth authentication failed' }
-      });
-    }
-  }, [setTokens, setUser, navigate]);
-  
-  return {
-    initiateOAuth,
-    handleOAuthCallback
-  };
-};
+// Auth API with Google OAuth endpoints
+export const authApi = {
+  // ... other auth methods ...
 
-// OAuth callback page component
-export const GoogleOAuthCallback: React.FC = () => {
-  const { handleOAuthCallback } = useGoogleOAuth();
+  googleOAuth: {
+    // Get the redirect URL for Google OAuth
+    getRedirectUrl: (): string => {
+      const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000';
+      return `${apiBaseUrl}/api/auth/oauth/google/redirect`;
+    },
+
+    // Handle OAuth callback from Google (for programmatic flows)
+    callback: (data: { code: string; state?: string }): Promise<AuthResponse> => {
+      return apiClient.request<AuthResponse>('/auth/oauth/google/callback', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+  },
+};
+```
+
+#### OAuth Callback Handling
+
+**For POST Callback (Programmatic)**:
+```typescript
+// OAuth callback page for programmatic flows
+export const GoogleOAuthCallbackPage: React.FC = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  
+  const { login } = useAuthStore();
+
   useEffect(() => {
-    const code = searchParams.get('code');
-    const state = searchParams.get('state');
-    const error = searchParams.get('error');
-    
-    if (error) {
-      // Handle OAuth errors
-      console.error('OAuth error:', error);
-      navigate('/auth/login', {
-        state: { error: `OAuth error: ${error}` }
-      });
-      return;
-    }
-    
-    if (code && state) {
-      handleOAuthCallback(code, state);
-    } else {
-      navigate('/auth/login', {
-        state: { error: 'Invalid OAuth response' }
-      });
-    }
-  }, [searchParams, handleOAuthCallback]);
-  
+    const handleOAuthCallback = async () => {
+      try {
+        const code = searchParams.get('code');
+        const state = searchParams.get('state');
+        const error = searchParams.get('error');
+
+        if (error) {
+          console.error('OAuth error:', error);
+          void navigate('/auth/login');
+          return;
+        }
+
+        if (!code) {
+          console.error('Invalid OAuth response');
+          void navigate('/auth/login');
+          return;
+        }
+
+        // Exchange code for tokens
+        const response = await authApi.googleOAuth.callback({ 
+          code, 
+          ...(state && { state }),
+        });
+
+        // Store authentication data
+        login(response.user, response.access_token, response.refresh_token);
+
+        // Redirect based on user state
+        if (!response.user.isEmailVerified) {
+          void navigate('/auth/verify-email');
+        } else {
+          void navigate('/dashboard');
+        }
+      } catch (error) {
+        console.error('OAuth callback error:', error);
+        void navigate('/auth/login');
+      }
+    };
+
+    void handleOAuthCallback();
+  }, [searchParams, navigate, login]);
+
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        <Spinner className="w-8 h-8 mx-auto mb-4" />
-        <p className="text-lg text-gray-600">Completing sign in...</p>
+      <div className="text-center space-y-4">
+        <Spinner className="mx-auto" />
+        <h2>Completing sign in...</h2>
       </div>
     </div>
   );
 };
 ```
 
-### Backend OAuth Integration
-
-#### OAuth Endpoint Implementation
+**For GET Callback (Browser Redirect)**:
 ```typescript
-// Backend OAuth handler (for reference)
-export const googleOAuthHandler = async (req: Request, res: Response) => {
-  try {
-    const { code, redirectUri } = req.body;
-    
-    // Exchange authorization code for tokens
-    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        client_id: process.env.GOOGLE_CLIENT_ID,
-        client_secret: process.env.GOOGLE_CLIENT_SECRET,
-        code,
-        grant_type: 'authorization_code',
-        redirect_uri: redirectUri
-      })
-    });
-    
-    const tokens = await tokenResponse.json();
-    
-    // Fetch user profile from Google
-    const profileResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-      headers: { 'Authorization': `Bearer ${tokens.access_token}` }
-    });
-    
-    const googleProfile = await profileResponse.json();
-    
-    // Find or create user
-    let user = await User.findOne({ email: googleProfile.email });
-    
-    if (!user) {
-      // Create new user from Google profile
-      user = await User.create({
-        email: googleProfile.email,
-        firstName: googleProfile.given_name,
-        lastName: googleProfile.family_name,
-        emailVerified: true, // Trust Google-verified emails
-        authProvider: 'google',
-        googleId: googleProfile.id
-      });
-    } else if (!user.googleId) {
-      // Link existing account to Google
-      user.googleId = googleProfile.id;
-      user.authProvider = 'google';
-      await user.save();
-    }
-    
-    // Generate JWT tokens
-    const accessToken = generateAccessToken(user);
-    const refreshToken = generateRefreshToken(user);
-    
-    res.json({
-      access_token: accessToken,
-      refresh_token: refreshToken,
-      user: {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        emailVerified: user.emailVerified,
-        organizations: await user.getOrganizations()
+// OAuth success page for GET redirects
+export const GoogleAuthSuccessPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const handleAuthSuccess = () => {
+      const accessToken = searchParams.get('access_token');
+      const refreshToken = searchParams.get('refresh_token');
+
+      if (!accessToken || !refreshToken) {
+        void navigate('/auth/login');
+        return;
       }
-    });
-    
-  } catch (error) {
-    console.error('Google OAuth error:', error);
-    res.status(400).json({
-      error: 'OAuth authentication failed',
-      message: error.message
-    });
-  }
-};
-```
 
-### Security Considerations
+      // Store tokens and redirect
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      void navigate('/dashboard');
+    };
 
-#### OAuth Security Implementation
-```typescript
-// State parameter generation for CSRF protection
-export const generateRandomState = (): string => {
-  const array = new Uint8Array(16);
-  crypto.getRandomValues(array);
-  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    handleAuthSuccess();
+  }, [searchParams, navigate]);
+
+  return <div>Redirecting...</div>;
 };
 
-// OAuth security validations
-export const validateOAuthCallback = (
-  receivedState: string,
-  storedState: string | null
-): boolean => {
-  if (!storedState || !receivedState) {
-    return false;
-  }
-  
-  // Constant-time comparison to prevent timing attacks
-  if (receivedState.length !== storedState.length) {
-    return false;
-  }
-  
-  let result = 0;
-  for (let i = 0; i < receivedState.length; i++) {
-    result |= receivedState.charCodeAt(i) ^ storedState.charCodeAt(i);
-  }
-  
-  return result === 0;
-};
+// OAuth error page for GET redirects
+export const GoogleAuthErrorPage: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const error = searchParams.get('error');
 
-// Secure token storage
-export const secureTokenStorage = {
-  store: (tokens: AuthTokens) => {
-    // Encrypt sensitive data before localStorage storage
-    const encryptedTokens = encrypt(JSON.stringify(tokens));
-    localStorage.setItem('auth_tokens', encryptedTokens);
-  },
-  
-  retrieve: (): AuthTokens | null => {
-    const encryptedTokens = localStorage.getItem('auth_tokens');
-    if (!encryptedTokens) return null;
-    
-    try {
-      const decryptedTokens = decrypt(encryptedTokens);
-      return JSON.parse(decryptedTokens);
-    } catch {
-      // Remove corrupted tokens
-      localStorage.removeItem('auth_tokens');
-      return null;
-    }
-  },
-  
-  clear: () => {
-    localStorage.removeItem('auth_tokens');
-  }
-};
-```
-
-### Error Handling & Fallbacks
-
-#### Comprehensive OAuth Error Handling
-```typescript
-// OAuth error types and handling
-export enum OAuthErrorType {
-  ACCESS_DENIED = 'access_denied',
-  POPUP_BLOCKED = 'popup_blocked',
-  NETWORK_ERROR = 'network_error',
-  INVALID_REQUEST = 'invalid_request',
-  SERVER_ERROR = 'server_error',
-  UNKNOWN_ERROR = 'unknown_error'
-}
-
-export class OAuthError extends Error {
-  constructor(
-    public type: OAuthErrorType,
-    public message: string,
-    public retryable: boolean = false
-  ) {
-    super(message);
-    this.name = 'OAuthError';
-  }
-}
-
-// Error detection and handling
-export const handleOAuthError = (error: string | Error): OAuthError => {
-  if (typeof error === 'string') {
-    switch (error) {
+  const getErrorMessage = (errorCode: string | null) => {
+    switch (errorCode) {
       case 'access_denied':
-        return new OAuthError(
-          OAuthErrorType.ACCESS_DENIED,
-          'Google sign-in was cancelled',
-          true
-        );
-      case 'popup_blocked':
-        return new OAuthError(
-          OAuthErrorType.POPUP_BLOCKED,
-          'Pop-up was blocked by your browser',
-          true
-        );
+        return 'Google sign-in was cancelled';
+      case 'invalid_request':
+        return 'Invalid authentication request';
       default:
-        return new OAuthError(
-          OAuthErrorType.UNKNOWN_ERROR,
-          'An unexpected error occurred',
-          true
-        );
+        return 'Authentication failed';
     }
-  }
-  
-  if (error.message.includes('network')) {
-    return new OAuthError(
-      OAuthErrorType.NETWORK_ERROR,
-      'Network connection error',
-      true
-    );
-  }
-  
-  return new OAuthError(
-    OAuthErrorType.SERVER_ERROR,
-    'Authentication service error',
-    true
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center space-y-4">
+        <AlertCircle className="h-8 w-8 text-red-600 mx-auto" />
+        <h2>{getErrorMessage(error)}</h2>
+        <Button onClick={() => void navigate('/auth/login')}>
+          Try Again
+        </Button>
+      </div>
+    </div>
   );
 };
-
-// Retry mechanism for OAuth operations
-export const useOAuthRetry = () => {
-  const [retryCount, setRetryCount] = useState(0);
-  const maxRetries = 3;
-  
-  const retry = useCallback(async (operation: () => Promise<void>) => {
-    if (retryCount >= maxRetries) {
-      throw new Error('Maximum retry attempts exceeded');
-    }
-    
-    try {
-      await operation();
-      setRetryCount(0); // Reset on success
-    } catch (error) {
-      setRetryCount(prev => prev + 1);
-      
-      // Exponential backoff
-      const delay = Math.pow(2, retryCount) * 1000;
-      await new Promise(resolve => setTimeout(resolve, delay));
-      
-      throw error;
-    }
-  }, [retryCount, maxRetries]);
-  
-  return { retry, canRetry: retryCount < maxRetries };
-};
 ```
 
-This documentation provides comprehensive coverage of Google OAuth authentication integration, including user flows, UI specifications, and detailed technical implementation for secure OAuth handling in the Barback application.
+#### Route Configuration
+```typescript
+// App.tsx routing
+<Routes>
+  {/* Regular auth routes */}
+  <Route path="/auth/login" element={<LoginPage />} />
+  <Route path="/auth/register" element={<RegisterPage />} />
+  
+  {/* OAuth callback routes */}
+  <Route path="/auth/oauth/google/callback" element={<GoogleOAuthCallbackPage />} />
+  
+  {/* OAuth redirect routes (for GET callbacks) */}
+  <Route path="/auth/success" element={<GoogleAuthSuccessPage />} />
+  <Route path="/auth/error" element={<GoogleAuthErrorPage />} />
+</Routes>
+```
+
+### OAuth Flow Summary
+
+The updated OAuth implementation leverages the backend's comprehensive OAuth endpoints:
+
+1. **Simple Redirect Flow**: Users click the Google login button → redirected to `/api/auth/oauth/google/redirect` → Google OAuth → backend handles callback → frontend receives success/error redirect
+
+2. **Programmatic Flow**: Frontend can also use the `/api/auth/oauth/google/callback` POST endpoint for more control over the OAuth flow
+
+3. **Error Handling**: Both flows include comprehensive error handling with user-friendly error pages
+
+4. **Security**: Backend handles all OAuth security including state validation, token exchange, and user account linking
+
+### Benefits of New Implementation
+
+- **Simplified Frontend**: No need to manage OAuth URLs, state parameters, or token exchange
+- **Enhanced Security**: Backend handles all security-sensitive operations
+- **Flexible Integration**: Supports both direct redirect and programmatic flows
+- **Better Error Handling**: Comprehensive error pages for all OAuth failure scenarios
+- **Account Linking**: Automatic linking of Google accounts to existing email/password accounts
+
+This implementation provides a robust, secure, and user-friendly Google OAuth integration that seamlessly integrates with the existing Barback authentication system.

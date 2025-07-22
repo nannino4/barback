@@ -3,8 +3,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { MainLayout } from '@/components/layout/MainLayout'
+import { ProtectedRoute } from '@/components/features/auth/ProtectedRoute'
 import { HomePage } from '@/pages/HomePage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
+import { LoginPage } from '@/pages/auth/LoginPage'
 
 // Create a client
 const queryClient = new QueryClient({
@@ -21,12 +23,18 @@ function AppContent()
     return (
         <>
             <Routes>
-                <Route path="/" element={<MainLayout />}>
+                {/* Protected Home Route */}
+                <Route path="/" element={
+                    <ProtectedRoute>
+                        <MainLayout />
+                    </ProtectedRoute>
+                }>
                     <Route index element={<HomePage />} />
                 </Route>
+                
                 {/* Auth routes outside MainLayout */}
-                <Route path="/register" element={<RegisterPage />} />
-                {/* Dashboard routes will be added here */}
+                <Route path="/auth/register" element={<RegisterPage />} />
+                <Route path="/auth/login" element={<LoginPage />} />
             </Routes>
             
             <Toaster

@@ -233,3 +233,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
     );
 };
 ```
+
+## Loading State Patterns
+- **Always** use `InlineSpinner` for buttons and compact spaces
+- **Always** use `Spinner` with descriptive text for larger loading areas
+- **Consistent sizing**: `sm` for inline, `md` for sections, `lg` for full-page
+- **Meaningful text**: Describe what's being loaded or processed
+
+## Navigation Patterns
+- **Internal Routes**: Always use `useNavigate()` hook from React Router
+- **External URLs**: Use `window.location.href` for full page redirects
+- **OAuth Flows**: Use `window.location.href` to redirect to OAuth providers
+- **Replace vs Push**: Use `{ replace: true }` when you don't want the user to go back

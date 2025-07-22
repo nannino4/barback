@@ -149,21 +149,6 @@ Mobile Layout (< 768px):
 └─────────────────────────────────┘
 ```
 
-#### Implementation Notes
-The registration form is implemented using:
-- **shadcn/ui Card component** for the container structure
-- **React Hook Form** with Zod validation for form handling
-- **Grid layout** for name fields (first/last name side-by-side)
-- **Password visibility toggles** for both password fields
-- **Real-time validation** with error messages
-- **Responsive design** optimized for mobile-first usage
-
-Key features implemented:
-- Auto-complete attributes for better UX
-- Touch-friendly button heights (44px minimum)
-- Accessible form labels and error messaging
-- Loading states during form submission
-
 ### Login Page UI
 
 #### Layout Structure
@@ -196,20 +181,3 @@ Mobile Layout (< 768px):
 │                                 │ ← 5vh bottom spacing
 └─────────────────────────────────┘
 ```
-
-#### Implementation Notes
-The login form is implemented using:
-- **shadcn/ui Card component** for the container structure
-- **React Hook Form** with Zod validation for form handling
-- **Password visibility toggle** for better UX
-- **Google OAuth integration** (button component)
-- **Responsive design** optimized for mobile-first usage
-
-Key features implemented:
-- Auto-complete and auto-focus attributes
-- Touch-friendly interactions
-- Accessible form labels and error messaging
-- Loading states during authentication
-- Footer navigation links (forgot password, sign up)
-
-This documentation provides a comprehensive guide to email/password authentication user experience flows and UI specifications for the Barback application.

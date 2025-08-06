@@ -30,6 +30,7 @@ export const useAuth = () =>
                 lastName: formData.lastName,
                 email: formData.email,
                 password: formData.password,
+                ...(formData.phoneNumber && { phoneNumber: formData.phoneNumber }),
             };
             return authApi.register(apiData);
         },

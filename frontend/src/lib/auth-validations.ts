@@ -30,6 +30,15 @@ export const registerSchema = z
             .min(1, 'Email is required')
             .email('Please enter a valid email address')
             .max(255, 'Email must be less than 255 characters'),
+        phoneNumber: z
+            .string()
+            .optional()
+            .refine((phone) =>
+            {
+                if (!phone || phone.trim() === '') return true; // Optional field
+                // Italian mobile format: +39 3XX XXXXXXX
+                return /^\+393\d{8,9}$/.test(phone.replace(/\s/g, ''));
+            }, 'Phone number must be in Italian format (+393XXXXXXXXX)'),
         password: passwordSchema,
         confirmPassword: z.string().min(1, 'Please confirm your password'),
     })

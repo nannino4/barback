@@ -36,6 +36,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
             firstName: '',
             lastName: '',
             email: '',
+            phoneNumber: '',
             password: '',
             confirmPassword: '',
         },
@@ -122,6 +123,29 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                                             type="email"
                                             placeholder="john@example.com"
                                             autoComplete="email"
+                                            className="h-touch bg-background border-input focus:border-ring focus:ring-2 focus:ring-ring/20"
+                                            {...field}
+                                        />
+                                    </FormControl>
+                                    <FormMessage className="text-destructive text-xs" />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="phoneNumber"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel className="font-body text-sm font-medium text-foreground">
+                                        Phone Number
+                                        <span className="text-muted-foreground ml-1">(Optional)</span>
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            type="tel"
+                                            placeholder="+393XXXXXXXXX"
+                                            autoComplete="tel"
                                             className="h-touch bg-background border-input focus:border-ring focus:ring-2 focus:ring-ring/20"
                                             {...field}
                                         />
@@ -227,7 +251,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                                 Already have an account?{' '}
                             </span>
                             <Link
-                                to="/login"
+                                to="/auth/login"
                                 className="font-body text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                             >
                                 Sign in

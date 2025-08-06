@@ -1,6 +1,9 @@
 import React from 'react';
+import { useMutation } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { InlineSpinner } from '@/components/ui/spinner';
+import { authApi } from '@/lib/auth-api';
 import { cn } from '@/lib/utils';
 
 interface GoogleLoginButtonProps
@@ -14,18 +17,35 @@ export const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
     disabled = false,
 }) =>
 {
-    const [isLoading, setIsLoading] = React.useState(false);
+    const googleAuthMutation = useMutation({
+        mutationFn: () => authApi.getGoogleAuthUrl(),
+        onSuccess: (data) =>
+        {
+            // Store state for validation when user returns
+            if (data.state)
+            {
+                sessionStorage.setItem('google_oauth_state', data.state);
+            }
+            // Redirect to Google OAuth
+            window.location.href = data.authUrl;
+        },
+        onError: (error: Error) =>
+        {
+            try
+            {
+                const errorData = JSON.parse(error.message) as { message?: string };
+                toast.error(errorData.message || 'Failed to connect to Google');
+            }
+            catch
+            {
+                toast.error('Failed to connect to Google. Please try again.');
+            }
+        },
+    });
 
     const handleGoogleLogin = () =>
     {
-        setIsLoading(true);
-        // TODO: Implement Google OAuth flow
-        // This will redirect to Google OAuth URL
-        // Example: window.location.href = `${API_BASE_URL}/auth/google`
-        console.log('Google login clicked - implement OAuth flow');
-        
-        // Reset loading state after a moment (remove this when implementing real OAuth)
-        setTimeout(() => setIsLoading(false), 1000);
+        googleAuthMutation.mutate();
     };
 
     return (
@@ -39,9 +59,9 @@ export const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
                 className,
             )}
             onClick={handleGoogleLogin}
-            disabled={disabled || isLoading}
+            disabled={disabled || googleAuthMutation.isPending}
         >
-            {isLoading ? (
+            {googleAuthMutation.isPending ? (
                 <>
                     <InlineSpinner className="mr-2" />
                     Connecting to Google...

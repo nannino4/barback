@@ -35,11 +35,34 @@ export const authApi = {
         });
     },
 
+    verifyEmailByUrl: (token: string): Promise<void> =>
+    {
+        return apiClient.request<void>(`/auth/verify-email/${token}`, {
+            method: 'GET',
+        });
+    },
+
     resendVerificationEmail: (email: string): Promise<void> =>
     {
         return apiClient.request<void>('/auth/send-verification-email', {
             method: 'POST',
             body: JSON.stringify({ email }),
+        });
+    },
+
+    // Google OAuth APIs
+    getGoogleAuthUrl: (): Promise<{ authUrl: string; state: string }> =>
+    {
+        return apiClient.request<{ authUrl: string; state: string }>('/auth/oauth/google', {
+            method: 'GET',
+        });
+    },
+
+    handleGoogleCallback: (code: string, state?: string): Promise<AuthResponse> =>
+    {
+        return apiClient.request<AuthResponse>('/auth/oauth/google/callback', {
+            method: 'POST',
+            body: JSON.stringify({ code, ...(state && { state }) }),
         });
     },
 };

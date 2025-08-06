@@ -44,7 +44,16 @@ export const useAuth = () =>
             // Use user data directly from registration response
             loginToStore(response.user, response.access_token, response.refresh_token);
             toast.success('Registration successful! Please check your email to verify your account.');
-            void navigate('/');
+            
+            // Redirect to email verification page instead of home
+            if (!response.user.isEmailVerified)
+            {
+                void navigate('/auth/verify-email');
+            }
+            else
+            {
+                void navigate('/');
+            }
         },
         onError: (error: Error) =>
         {

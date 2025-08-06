@@ -14,44 +14,44 @@ The Barback design system embodies the sophisticated, premium atmosphere of an e
 
 ## Color System
 
-The color palette is defined using CSS variables in `src/index.css` for easy theming and consistency.
+The color palette follows Tailwind v4 conventions using the `@theme` directive in `src/index.css` for automatic utility class generation.
 
 ### Color Categories
 
 #### Background Colors
-- **Primary**: Deep charcoal base (`--background-primary`)
-- **Secondary**: Elevated surfaces (`--background-secondary`) 
-- **Tertiary**: Subtle distinctions (`--background-tertiary`)
+- **Primary**: Deep charcoal base (`background`, `card`)
+- **Secondary**: Elevated surfaces (`secondary`, `muted`) 
+- **Accent**: Interactive elements (`accent`)
 
 #### Text Colors
-- **Primary**: High contrast for main content (`--text-primary`)
-- **Secondary**: Reduced emphasis (`--text-secondary`)
-- **Tertiary**: Subtle text and placeholders (`--text-tertiary`)
+- **Primary**: High contrast for main content (`foreground`)
+- **Secondary**: Reduced emphasis (`muted-foreground`)
+- **Brand**: Gold accent text (`primary`)
 
 #### Brand Colors
-- **Gold Primary**: Main accent for actions (`--gold-primary`)
-- **Gold Secondary**: Hover states (`--gold-secondary`)
-- **Gold Tertiary**: Pressed states (`--gold-tertiary`)
+- **Gold Primary**: Main accent for actions (`primary` - 48 75% 53%)
+- **Gold Variants**: Hover and focus states (automatic opacity variants)
 
 #### Semantic Colors
-- **Success**: Emerald green with light/dark variants (`--success`, `--success-light`, `--success-dark`)
-- **Error**: Red with light/dark variants (`--error`, `--error-light`, `--error-dark`)
-- **Warning**: Amber with light/dark variants (`--warning`, `--warning-light`, `--warning-dark`)
-- **Info**: Blue with light/dark variants (`--info`, `--info-light`, `--info-dark`)
+- **Success**: Emerald green (`success` - 160 84% 39%)
+- **Error**: Red (`destructive` - 0 84% 60%)
+- **Warning**: Amber (`warning` - 38 92% 50%)
+- **Info**: Blue (`info` - 217 91% 60%)
 
 #### Usage in Code
-```css
-/* Use CSS variables directly */
-background-color: hsl(var(--background-primary));
-color: hsl(var(--text-primary));
+```tsx
+// Use Tailwind utility classes (automatically generated from @theme)
+<div className="bg-background text-foreground">
+  <h1 className="text-primary">Gold heading</h1>
+  <p className="text-muted-foreground">Muted text</p>
+  <button className="bg-primary text-primary-foreground hover:bg-primary/90">
+    Action Button
+  </button>
+</div>
 
-/* Or use Tailwind utilities */
-.bg-primary { background: hsl(var(--primary)); }
+// Focus and hover states work automatically
+<input className="border-input focus-visible:ring-ring focus-visible:ring-2" />
 ```
-
-## Typography System
-
-Typography is configured in both CSS variables and Tailwind config for maximum flexibility.
 
 ### Font Families
 - **Headings**: Playfair Display (sophisticated serif) - Use `font-heading` class
@@ -161,18 +161,27 @@ All color combinations meet WCAG 2.1 AA standards:
 
 ## Implementation Guide
 
-### CSS Variables
-All design tokens are defined in `src/index.css`:
-- **Colors**: HSL format for easy manipulation
-- **Typography**: Font family references
-- **Shadows**: Pre-defined elevation levels
-- **Effects**: Glow effects for interactions
+### Tailwind v4 Theme Configuration
+All design tokens are defined in `src/index.css` using the `@theme` directive:
+- **Colors**: HSL format in `--color-*` namespace for automatic utility generation
+- **Typography**: Font families in `--font-*` namespace
+- **Shadows**: Pre-defined elevation levels in `--shadow-*` namespace
+- **Spacing**: Custom spacing values in `--spacing-*` namespace
 
-### Tailwind Integration
-- **Custom fonts**: `font-heading`, `font-body`
-- **Custom breakpoints**: `tablet:`, `desktop:`, `large:`
+### Automatic Utility Generation
+Tailwind v4 automatically generates utility classes from theme variables:
+```css
+/* @theme variables become utilities */
+--color-primary: 48 75% 53%;     /* → .text-primary, .bg-primary, .border-primary */
+--color-ring: 48 75% 53%;        /* → .ring-ring, .focus-visible:ring-ring */
+--font-heading: 'Playfair Display'; /* → .font-heading */
+```
+
+### Best Practices
+- **Use utility classes**: `text-primary`, `bg-card`, `border-input`
+- **Leverage variants**: `hover:bg-primary/90`, `focus-visible:ring-ring`
 - **Touch targets**: `h-touch` class for 44px minimum
-- **shadcn/ui compatibility**: Semantic color variables
+- **No custom CSS**: Let Tailwind generate all utilities from theme variables
 
 ### Theme Switching
 ```jsx

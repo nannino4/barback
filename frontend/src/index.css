@@ -1,127 +1,115 @@
 @import "tailwindcss";
 
-/* Design System Variables - "The Speakeasy" Theme */
-:root {
-  /* Colors - HSL format for better manipulation */
-  
-  /* Background & Surface Colors */
-  --background-primary: 240 2% 4%;     /* #0a0a0b - Deep charcoal */
-  --background-secondary: 240 2% 10%;  /* #1a1a1c - Elevated surfaces */
-  --background-tertiary: 240 2% 16%;   /* #2a2a2d - Subtle distinctions */
-  
-  /* Text Colors */
-  --text-primary: 60 3% 97%;           /* #f8f8f2 - Primary content */
-  --text-secondary: 60 2% 66%;         /* #a8a8a3 - Secondary info */
-  --text-tertiary: 60 2% 42%;          /* #6b6b66 - Subtle text */
-  
-  /* Gold Accent Colors */
-  --gold-primary: 48 75% 53%;          /* #d4af37 - Primary gold */
-  --gold-secondary: 48 75% 42%;        /* #b8941f - Hover states */
-  --gold-tertiary: 48 75% 35%;         /* #9c7e1a - Pressed states */
-  
-  /* Semantic Colors */
-  --success: 160 84% 39%;              /* #10b981 - Success primary */
-  --success-light: 159 75% 55%;        /* #34d399 - Success light */
-  --success-dark: 160 84% 30%;         /* #059669 - Success dark */
-  
-  --error: 0 84% 60%;                  /* #ef4444 - Error primary */
-  --error-light: 0 77% 70%;            /* #f87171 - Error light */
-  --error-dark: 0 73% 51%;             /* #dc2626 - Error dark */
-  
-  --warning: 38 92% 50%;               /* #f59e0b - Warning primary */
-  --warning-light: 43 89% 58%;         /* #fbbf24 - Warning light */
-  --warning-dark: 32 95% 44%;          /* #d97706 - Warning dark */
-  
-  --info: 217 91% 60%;                 /* #3b82f6 - Info primary */
-  --info-light: 213 93% 68%;           /* #60a5fa - Info light */
-  --info-dark: 221 83% 53%;            /* #2563eb - Info dark */
-  
-  /* Border Colors */
-  --border-primary: 240 2% 23%;        /* #3a3a3d - Container borders */
-  --border-secondary: 240 2% 16%;      /* #2a2a2d - Subtle dividers */
-  --border-focus: 48 75% 53%;          /* #d4af37 - Focus borders */
-  
-  /* shadcn/ui Semantic Variables */
-  --background: var(--background-primary);
-  --foreground: var(--text-primary);
-  --card: var(--background-secondary);
-  --card-foreground: var(--text-primary);
-  --popover: var(--background-secondary);
-  --popover-foreground: var(--text-primary);
-  --primary: var(--gold-primary);
-  --primary-foreground: var(--background-primary);
-  --secondary: var(--background-tertiary);
-  --secondary-foreground: var(--text-primary);
-  --muted: var(--background-tertiary);
-  --muted-foreground: var(--text-secondary);
-  --accent: var(--background-tertiary);
-  --accent-foreground: var(--text-primary);
-  --destructive: var(--error);
-  --destructive-foreground: var(--text-primary);
-  --border: var(--border-primary);
-  --input: var(--border-primary);
-  --ring: var(--gold-primary);
-  --radius: 0.25rem; /* 4px base border radius */
-  
-  /* Typography Variables */
+@theme {
+  /* Typography - Tailwind v4 format */
   --font-heading: 'Playfair Display', 'Times New Roman', serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   
-  /* Shadow Variables */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px -1px rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  /* Custom spacing */
+  --spacing-touch: 2.75rem; /* 44px minimum touch target */
   
-  /* Glow Effects */
-  --glow-gold: 0 0 0 3px rgba(212, 175, 55, 0.2);
-  --glow-success: 0 0 0 3px rgba(16, 185, 129, 0.2);
-  --glow-error: 0 0 0 3px rgba(239, 68, 68, 0.2);
+  /* Color System - "The Speakeasy" Dark Theme - OKLCH Format */
+  /* Tailwind v4 will automatically generate all color utilities from these */
+  
+  /* Background colors */
+  --color-background: oklch(0.04 0.005 240);             /* Deep charcoal base */
+  --color-foreground: oklch(0.97 0.01 60);               /* High contrast text */
+  
+  --color-card: oklch(0.15 0.005 240);                   /* Elevated surfaces - lighter for better visibility */
+  --color-card-foreground: oklch(0.97 0.01 60);          /* Card text */
+  
+  --color-popover: oklch(0.15 0.005 240);                /* Popover background */
+  --color-popover-foreground: oklch(0.97 0.01 60);       /* Popover text */
+  
+  /* Brand colors - Gold accent */
+  --color-primary: oklch(0.76 0.17 93);                  /* Gold primary - generates text-primary, bg-primary, etc. */
+  --color-primary-foreground: oklch(0.04 0.005 240);     /* Dark text on gold */
+  
+  /* Secondary backgrounds */
+  --color-secondary: oklch(0.16 0.005 240);              /* Secondary background */
+  --color-secondary-foreground: oklch(0.97 0.01 60);     /* Secondary text */
+  
+  /* Muted elements */
+  --color-muted: oklch(0.16 0.005 240);                  /* Muted background */
+  --color-muted-foreground: oklch(0.66 0.01 60);         /* Muted text */
+  
+  /* Accent elements */
+  --color-accent: oklch(0.16 0.005 240);                 /* Accent background */
+  --color-accent-foreground: oklch(0.97 0.01 60);        /* Accent text */
+  
+  /* Semantic colors */
+  --color-destructive: oklch(0.60 0.20 25);              /* Error red */
+  --color-destructive-foreground: oklch(0.97 0.01 60);   /* Error text */
+  
+  --color-success: oklch(0.65 0.20 160);                 /* Success green */
+  --color-warning: oklch(0.76 0.20 38);                  /* Warning amber */
+  --color-info: oklch(0.60 0.18 217);                    /* Info blue */
+  
+  /* UI elements - subtle variations for better UX */
+  --color-border: oklch(0.25 0.005 240);                 /* Lighter borders for better visibility */
+  --color-input: oklch(0.22 0.005 240);                  /* Lighter inputs for better distinction */
+  --color-ring: var(--color-primary);                    /* Reuse primary for focus rings */
+  
+  /* Standard colors for compatibility */
+  --color-white: oklch(1.0 0 0);
+  --color-black: oklch(0.0 0 0);
+  
+  /* Border radius scale */
+  --radius: 0.25rem;
+  --radius-sm: 0.125rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  
+  /* Shadow scale - stronger for dark backgrounds */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+  
+  /* Custom design system tokens */
+  --height-touch: var(--spacing-touch);
 }
 
-/* Light Mode (Optional Alternative) */
+/* Light mode variant */
 .light {
-  --background-primary: 0 0% 98%;      /* Light background */
-  --background-secondary: 0 0% 96%;    /* Light elevated surfaces */
-  --background-tertiary: 0 0% 94%;     /* Light subtle distinctions */
-  
-  --text-primary: 240 2% 11%;          /* Dark text */
-  --text-secondary: 240 2% 45%;        /* Secondary dark text */
-  --text-tertiary: 240 2% 65%;         /* Subtle dark text */
-  
-  --border-primary: 240 2% 85%;        /* Light borders */
-  --border-secondary: 240 2% 90%;      /* Subtle light dividers */
-  
-  /* Update shadcn/ui variables for light mode */
-  --background: var(--background-primary);
-  --foreground: var(--text-primary);
-  --card: var(--background-secondary);
-  --card-foreground: var(--text-primary);
-  --popover: var(--background-secondary);
-  --popover-foreground: var(--text-primary);
-  --primary-foreground: var(--background-primary);
-  --secondary: var(--background-tertiary);
-  --secondary-foreground: var(--text-primary);
-  --muted: var(--background-tertiary);
-  --muted-foreground: var(--text-secondary);
-  --accent: var(--background-tertiary);
-  --accent-foreground: var(--text-primary);
-  --destructive-foreground: var(--background-primary);
-  --border: var(--border-primary);
-  --input: var(--border-primary);
+  --color-background: oklch(0.98 0 0);
+  --color-foreground: oklch(0.11 0.005 240);
+  --color-card: oklch(0.98 0 0);
+  --color-card-foreground: oklch(0.11 0.005 240);
+  --color-popover: oklch(0.98 0 0);
+  --color-popover-foreground: oklch(0.11 0.005 240);
+  --color-primary-foreground: oklch(0.98 0 0);
+  --color-secondary: oklch(0.94 0 0);
+  --color-secondary-foreground: oklch(0.11 0.005 240);
+  --color-muted: oklch(0.94 0 0);
+  --color-muted-foreground: oklch(0.45 0.005 240);
+  --color-accent: oklch(0.94 0 0);
+  --color-accent-foreground: oklch(0.11 0.005 240);
+  --color-destructive-foreground: oklch(0.98 0 0);
+  /* UI elements for light mode */
+  --color-border: oklch(0.82 0.005 240);
+  --color-input: oklch(0.88 0.005 240);
 }
 
-/* Base Styles */
+/* Base application styles */
 * {
-  border-color: hsl(var(--border));
+  border-color: var(--color-border);
 }
 
 body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
+  background-color: var(--color-background);
+  color: var(--color-foreground);
   font-family: var(--font-body);
   font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Enhanced UX styles */
+::placeholder {
+  color: color-mix(in oklch, var(--color-muted-foreground), transparent 50%);
+  opacity: 1;
 }
 
 /* Respect user's motion preferences */

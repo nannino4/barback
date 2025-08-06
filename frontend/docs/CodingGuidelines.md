@@ -7,21 +7,6 @@ This document defines the coding standards, formatting rules, naming conventions
 ### Brace Style
 Use Allman style braces (braces on their own line). Single-line blocks are allowed.
 
-```typescript
-// Correct - Multi-line
-if (condition)
-{
-    // code
-}
-else
-{
-    // code
-}
-
-// Also correct - Single line
-if (condition) { /* code */ }
-```
-
 ### Indentation & Spacing
 - **Indentation**: Use 4 spaces for indentation
 - **No Tabs**: Use spaces instead of tabs
@@ -41,115 +26,11 @@ if (condition) { /* code */ }
 ### Consistent Import Strategy
 **Always use `@` alias for internal imports** for consistency and maintainability:
 
-```typescript
-// ✅ Correct - Always use @ alias
-import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { useAuthStore } from '@/stores/authStore';
-import { authApi } from '@/lib/auth-api';
-import { registerSchema } from '@/lib/auth-validations';
-import type { RegisterData, LoginData } from '@/types/auth';
-import type { ApiError } from '@/types/api';
-
-// ❌ Incorrect - Don't use relative paths
-import { useAuthStore } from '../stores/authStore';
-import { authApi } from './auth-api';
-import type { RegisterData } from '../types/auth';
-```
-
 ### Import Organization
 Organize imports in this order:
 1. **External libraries** (React, third-party packages)
 2. **Internal modules** (using `@/` alias)
 3. **Type imports** (grouped at the end with `type` keyword)
-
-```typescript
-// External libraries first
-import React from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-
-// Internal modules with @ alias
-import { useAuthStore } from '@/stores/authStore';
-import { authApi } from '@/lib/auth-api';
-import { Button } from '@/components/ui/button';
-
-// Type imports last
-import type { RegisterData, LoginData } from '@/types/auth';
-import type { ApiError } from '@/types/api';
-```
-
-## Error Handling Patterns
-
-### Error Boundary Implementation
-```typescript
-interface ErrorBoundaryState {
-    hasError: boolean;
-    error: Error | null;
-}
-
-class ErrorBoundary extends React.Component<
-    React.PropsWithChildren<{}>,
-    ErrorBoundaryState
-> {
-    constructor(props: React.PropsWithChildren<{}>) {
-        super(props);
-        this.state = { hasError: false, error: null };
-    }
-    
-    static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-        return { hasError: true, error };
-    }
-    
-    componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-        console.error('Error boundary caught an error:', error, errorInfo);
-    }
-    
-    render() {
-        if (this.state.hasError)
-        {
-            return (
-                <div className="p-4 text-center">
-                    <h2 className="text-lg font-semibold text-red-600">
-                        Something went wrong
-                    </h2>
-                    <p className="text-gray-600 mt-2">
-                        {this.state.error?.message || 'An unexpected error occurred'}
-                    </p>
-                </div>
-            );
-        }
-        
-        return this.props.children;
-    }
-}
-```
-
-### Custom Error Classes
-```typescript
-class ApiError extends Error {
-    constructor(
-        public status: number,
-        public statusText: string,
-        message?: string,
-    ) {
-        super(message || `API Error: ${status} ${statusText}`);
-        this.name = 'ApiError';
-    }
-}
-
-class ValidationError extends Error {
-    constructor(
-        public field: string,
-        message: string,
-    ) {
-        super(`Validation error for ${field}: ${message}`);
-        this.name = 'ValidationError';
-    }
-}
-```
 
 ## Naming Conventions
 

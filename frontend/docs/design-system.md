@@ -161,15 +161,6 @@ All color combinations meet WCAG 2.1 AA standards:
 
 ## Implementation Guide
 
-### File Structure
-```
-src/
-├── index.css           # CSS variables and base styles
-├── components/ui/      # shadcn/ui components (when added)
-└── ...
-tailwind.config.js      # Extended theme configuration
-```
-
 ### CSS Variables
 All design tokens are defined in `src/index.css`:
 - **Colors**: HSL format for easy manipulation

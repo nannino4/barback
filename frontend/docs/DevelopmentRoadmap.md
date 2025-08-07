@@ -17,12 +17,15 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 - [X] Add core shadcn/ui components
 - [X] Implement authentication system
 - [X] Create basic routing structure
+- [X] Implement password reset functionality
 
 #### **Key Components**
 - `<ThemeToggle />` - Switch between light/dark mode ✅
 - `<LoginForm />` - Email/password and Google login ✅
 - `<RegisterForm />` - User registration with email verification ✅
 - `<ProtectedRoute />` - Role-based route protection ✅
+- `<ForgotPasswordPage />` - Password reset request ✅
+- `<ResetPasswordPage />` - New password creation ✅
 
 ### **Sprint 3-4: Organization & User Management**
 

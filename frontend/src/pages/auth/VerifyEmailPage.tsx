@@ -1,15 +1,15 @@
 import React from 'react';
-import { useSearchParams, Link, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Mail, RefreshCw } from 'lucide-react';
 import { InlineSpinner } from '@/components/ui/spinner';
 import { authApi } from '@/lib/auth-api';
 import { useAuthStore } from '@/stores/authStore';
-import { cn } from '@/lib/utils';
+import { AuthLayout } from '@/components/layout/AuthLayout';
+import { AuthCard, AuthFooterLink } from '@/components/features/auth/AuthCard';
 import type { ApiError } from '@/types/api';
 
 interface VerifyEmailPageProps
@@ -97,75 +97,68 @@ export const VerifyEmailPage: React.FC<VerifyEmailPageProps> = ({ className }) =
     };
 
     return (
-        <div className={cn('min-h-screen bg-background flex items-center justify-center p-4', className)}>
-            <Card className="w-full max-w-md bg-card border-border">
-                <CardHeader className="text-center space-y-4">
-                    <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+        <AuthLayout 
+            className={className}
+        >
+            <AuthCard 
+                title="Verify your email" 
+                description="Click the link in your email to verify your account and get started"
+                footer={
+                    <AuthFooterLink 
+                        text="Need to go back?" 
+                        linkText="Sign in instead" 
+                        linkTo="/auth/login" 
+                    />
+                }
+            >
+                <div className="flex justify-center mb-4">
+                    <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
                         <Mail className="w-8 h-8 text-primary" />
                     </div>
-                    <div>
-                        <CardTitle className="font-heading text-2xl font-semibold text-foreground">
-                            Verify your email
-                        </CardTitle>
-                        <CardDescription className="font-body text-sm text-muted-foreground mt-2">
-                            We've sent a verification link to your email address.
-                        </CardDescription>
+                </div>
+
+                <div className="text-center space-y-4">
+                    <p className="font-body text-sm text-muted-foreground">
+                        Need to resend the verification email?
+                    </p>
+                </div>
+
+                <div className="space-y-4">
+                    {/* Email input for resend */}
+                    <div className="space-y-2">
+                        <label className="font-body text-sm font-medium text-foreground">
+                            Email address
+                        </label>
+                        <Input
+                            type="email"
+                            placeholder="Enter your email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="h-touch font-body"
+                            disabled={resendEmailMutation.isPending}
+                        />
                     </div>
-                </CardHeader>
 
-                <CardContent className="space-y-6">
-                    <div className="text-center space-y-4">
-                        <p className="font-body text-sm text-muted-foreground">
-                            Click the link in your email to verify your account and get started.
-                        </p>
-                    </div>
-
-                    <div className="space-y-4">
-                        {/* Email input for resend */}
-                        <div className="space-y-2">
-                            <label className="font-body text-sm font-medium text-foreground">
-                                Email address
-                            </label>
-                            <Input
-                                type="email"
-                                placeholder="Enter your email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="h-touch font-body"
-                                disabled={resendEmailMutation.isPending}
-                            />
-                        </div>
-
-                        <Button
-                            onClick={handleResendEmail}
-                            variant="outline"
-                            className="w-full h-touch font-body"
-                            disabled={resendEmailMutation.isPending || !email.trim()}
-                        >
-                            {resendEmailMutation.isPending ? (
-                                <>
-                                    <InlineSpinner className="mr-2" />
-                                    Sending...
-                                </>
-                            ) : (
-                                <>
-                                    <RefreshCw className="mr-2 w-4 h-4" />
-                                    Resend verification email
-                                </>
-                            )}
-                        </Button>
-
-                        <div className="text-center">
-                            <Link
-                                to="/auth/login"
-                                className="font-body text-sm text-primary hover:text-primary/80 transition-colors"
-                            >
-                                Back to sign in
-                            </Link>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
+                    <Button
+                        onClick={handleResendEmail}
+                        variant="outline"
+                        className="w-full h-touch font-body"
+                        disabled={resendEmailMutation.isPending || !email.trim()}
+                    >
+                        {resendEmailMutation.isPending ? (
+                            <>
+                                <InlineSpinner className="mr-2" />
+                                Sending...
+                            </>
+                        ) : (
+                            <>
+                                <RefreshCw className="mr-2 w-4 h-4" />
+                                Resend verification email
+                            </>
+                        )}
+                    </Button>
+                </div>
+            </AuthCard>
+        </AuthLayout>
     );
 };

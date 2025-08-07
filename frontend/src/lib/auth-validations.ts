@@ -56,6 +56,27 @@ export const loginSchema = z.object({
     password: z.string().min(1, 'Password is required'),
 });
 
+// Forgot password schema
+export const forgotPasswordSchema = z.object({
+    email: z
+        .string()
+        .min(1, 'Email is required')
+        .email('Please enter a valid email address'),
+});
+
+// Reset password schema
+export const resetPasswordSchema = z
+    .object({
+        password: passwordSchema,
+        confirmPassword: z.string().min(1, 'Please confirm your password'),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: 'Passwords do not match',
+        path: ['confirmPassword'],
+    });
+
 // Infer types from schemas
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
+export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordData = z.infer<typeof resetPasswordSchema>;

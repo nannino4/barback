@@ -50,6 +50,30 @@ export const authApi = {
         });
     },
 
+    forgotPassword: (email: string): Promise<void> =>
+    {
+        return apiClient.request<void>('/auth/forgot-password', {
+            method: 'POST',
+            body: JSON.stringify({ email }),
+        });
+    },
+
+    resetPassword: (token: string, password: string): Promise<void> =>
+    {
+        return apiClient.request<void>('/auth/reset-password', {
+            method: 'POST',
+            body: JSON.stringify({ token, newPassword: password }),
+        });
+    },
+
+    // Validate reset token before showing form
+    validateResetToken: (token: string): Promise<void> =>
+    {
+        return apiClient.request<void>(`/auth/reset-password/${token}`, {
+            method: 'GET',
+        });
+    },
+
     // Google OAuth APIs
     getGoogleAuthUrl: (): Promise<{ authUrl: string; state: string }> =>
     {

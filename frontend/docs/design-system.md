@@ -62,17 +62,6 @@ The color palette follows Tailwind v4 conventions using the `@theme` directive i
 - Mobile-first approach with responsive adjustments
 - Follows a harmonious scale for visual hierarchy
 
-### Usage Examples
-```jsx
-// Tailwind classes
-<h1 className="font-heading text-4xl">Page Title</h1>
-<p className="font-body text-base">Body text</p>
-
-// Custom CSS
-h1 { font-family: var(--font-heading); }
-body { font-family: var(--font-body); }
-```
-
 ### Weight Guidelines
 - **300 (Light)**: Large headings, subtle emphasis
 - **400 (Regular)**: Default body text

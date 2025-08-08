@@ -54,10 +54,8 @@ src/
 │   ├── ui/
 │   │   └── __tests__/   # shadcn/ui component tests
 │   ├── features/
-│   │   ├── auth/
+│   │   ├── feature/
 │   │   │   └── __tests__/
-│   │   └── inventory/
-│   │       └── __tests__/
 ├── hooks/
 │   └── __tests__/       # Custom hook tests
 ├── lib/
@@ -67,6 +65,55 @@ src/
 ```
 
 ## Testing Patterns
+
+### Mobile-First Testing Considerations
+
+Since Barback is a mobile-first application, special attention should be paid to:
+
+```typescript
+// Test touch interactions and responsive behavior
+test('product form is touch-friendly on mobile', async () => {
+  // Mock mobile viewport
+  Object.defineProperty(window, 'innerWidth', { value: 375 })
+  Object.defineProperty(window, 'innerHeight', { value: 667 })
+  
+  render(<ProductForm onSubmit={vi.fn()} />)
+  
+  // Touch targets should be at least 44px (use h-touch class)
+  const submitButton = screen.getByRole('button', { name: /create product/i })
+  const styles = window.getComputedStyle(submitButton)
+  expect(parseInt(styles.minHeight)).toBeGreaterThanOrEqual(44)
+  
+  // Form should be usable with touch
+  const nameInput = screen.getByLabelText(/product name/i)
+  await user.type(nameInput, 'Grey Goose')
+  expect(nameInput).toHaveValue('Grey Goose')
+})
+
+// Test keyboard navigation for accessibility
+test('form is navigable with keyboard only', async () => {
+  render(<ProductForm onSubmit={vi.fn()} />)
+  
+  // Tab through form elements
+  await user.tab()
+  expect(screen.getByLabelText(/product name/i)).toHaveFocus()
+  
+  await user.tab()
+  expect(screen.getByLabelText(/category/i)).toHaveFocus()
+})
+
+// Test dark theme (default for bar environment)
+test('components render correctly in dark theme', () => {
+  render(
+    <div className="dark">
+      <ProductCard product={mockProduct} />
+    </div>
+  )
+  
+  // Verify dark theme styles are applied
+  expect(screen.getByRole('article')).toHaveClass('dark')
+})
+```
 
 ### Component Testing - Input/Output Focus
 

@@ -1,71 +1,19 @@
 # Subscription Management API Documentation
 
 ## Overview
-The Subscription Management module handles user subscriptions for organization ownership, payment methods, and Stripe integration. Users get a 3-month trial that automatically converts to a paid plan.
+The Subscription Management module handles user subscriptions for organization ownership, payment methods, and Stripe integration. Users can have multiple subscriptions - one per organization they want to own. Only the first subscription for each user includes a 3-month trial period.
 
 ## Subscription Workflow
 
-1. **Check Trial Eligibility**: Verify if user can start a trial
-2. **Start Trial**: Create 3-month trial subscription
+1. **Check Trial Eligibility**: Verify if user can start a trial (only available for users with no existing subscriptions)
+2. **Start Trial or Paid Subscription**: Create subscription based on eligibility
 3. **Create Organization**: Use active subscription to create organization
 4. **Auto-Conversion**: Trial converts to paid subscription automatically
-5. **Manage Subscription**: View, update, or cancel subscription
+5. **Manage Subscriptions**: View, update, or cancel subscriptions
 
 ## Subscription Endpoints
 
-### GET /api/subscription
-Get current user's subscription details.
-
-**Authentication**: Required (JWT)
-
-**Response** (200 OK):
-```json
-{
-  "id": "64a1b2c3d4e5f6789abc123",
-  "status": "trialing",
-  "autoRenew": true,
-  "createdAt": "2024-01-01T00:00:00.000Z",
-  "updatedAt": "2024-01-01T00:00:00.000Z"
-}
-```
-
-**Response** (200 OK) - No subscription:
-```json
-null
-```
-
-**Error Responses**:
-
-**401 Unauthorized** - Authentication Required:
-```json
-{
-  "message": "Unauthorized",
-  "statusCode": 401
-}
-```
-
-**500 Internal Server Error** - Database Operation Failed:
-```json
-{
-  "message": "Database operation failed: subscription lookup by user ID - [details]",
-  "error": "DATABASE_OPERATION_FAILED",
-  "statusCode": 500
-}
-```
-
-**Subscription Status Values**:
-- `trialing`: User is in trial period
-- `active`: Paid subscription is active
-- `past_due`: Payment failed, subscription may be suspended
-- `canceled`: Subscription has been cancelled
-- `unpaid`: Payment required
-- `incomplete`: Subscription setup incomplete
-- `incomplete_expired`: Setup expired
-- `paused`: Subscription temporarily paused
-
----
-
-### GET /api/subscription/trial-eligibility
+### GET /api/subscriptions/trial-eligibility
 Check if current user is eligible for a trial subscription.
 
 **Authentication**: Required (JWT)
@@ -86,11 +34,21 @@ Check if current user is eligible for a trial subscription.
 
 **Error Responses**:
 
-**401 Unauthorized** - Authentication Required:
+**401 Unauthorized** - Invalid or Missing JWT:
 ```json
 {
-  "message": "Unauthorized",
+  "message": "Invalid or expired token",
+  "error": "INVALID_AUTH_TOKEN",
   "statusCode": 401
+}
+```
+
+**403 Forbidden** - Email Not Verified:
+```json
+{
+  "message": "Email must be verified to access this resource.",
+  "error": "EMAIL_NOT_VERIFIED",
+  "statusCode": 403
 }
 ```
 
@@ -110,14 +68,25 @@ Check if current user is eligible for a trial subscription.
 
 ---
 
-### POST /api/subscription/start-owner-trial
-Start a trial subscription for becoming an organization owner.
+### POST /api/subscriptions
+Create either a trial or paid subscription using a unified endpoint.
 
 **Authentication**: Required (JWT)
 
-**Request Body**: Empty
+**Request Body**:
+```json
+{
+  "billingInterval": "monthly", // optional, defaults to "monthly". Options: "monthly", "yearly"
+  "isTrial": true                 // optional, defaults to false. When true attempts to create a trial subscription
+}
+```
 
-**Response** (201 Created):
+**Behavior**:
+- If `isTrial` is `true`, trial eligibility is validated. Ineligible users receive 409.
+- If `isTrial` is `false` or omitted, a paid subscription is created immediately.
+- Trial subscriptions automatically convert to paid at end of trial.
+
+**Response** (201 Created) - Trial:
 ```json
 {
   "id": "64a1b2c3d4e5f6789abc123",
@@ -130,11 +99,21 @@ Start a trial subscription for becoming an organization owner.
 
 **Error Responses**:
 
-**401 Unauthorized** - Authentication Required:
+**401 Unauthorized** - Invalid or Missing JWT:
 ```json
 {
-  "message": "Unauthorized",
+  "message": "Invalid or expired token",
+  "error": "INVALID_AUTH_TOKEN",
   "statusCode": 401
+}
+```
+
+**403 Forbidden** - Email Not Verified:
+```json
+{
+  "message": "Email must be verified to access this resource.",
+  "error": "EMAIL_NOT_VERIFIED",
+  "statusCode": 403
 }
 ```
 
@@ -202,98 +181,81 @@ Start a trial subscription for becoming an organization owner.
 ```
 
 **Notes**:
-- Creates Stripe customer and subscription
-- Trial period is 3 months
+- Creates Stripe customer and subscription (trial or paid)
+- Trial period is 3 months and only available on the first subscription for a user
 - Automatically converts to paid plan when trial ends
 - Required before creating an organization
 - If database save fails, Stripe subscription is automatically cancelled for cleanup
+- Single endpoint simplifies client logic vs separate trial/paid endpoints
 
 ---
 
-### DELETE /api/subscription/cancel
-Cancel the current subscription.
+// (Removed separate /start-paid endpoint in favor of unified POST /api/subscriptions)
+
+---
+
+### GET /api/subscriptions
+Get all subscriptions for the current user.
 
 **Authentication**: Required (JWT)
 
 **Response** (200 OK):
 ```json
-{
-  "id": "64a1b2c3d4e5f6789abc123",
-  "status": "canceled",
-  "autoRenew": false,
-  "createdAt": "2024-01-01T00:00:00.000Z",
-  "updatedAt": "2024-01-01T12:30:00.000Z"
-}
+[
+  {
+    "id": "64a1b2c3d4e5f6789abc123",
+    "status": "canceled",
+    "autoRenew": false,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T12:30:00.000Z"
+  },
+  {
+    "id": "64a1b2c3d4e5f6789abc124",
+    "status": "active",
+    "autoRenew": true,
+    "createdAt": "2024-01-02T00:00:00.000Z",
+    "updatedAt": "2024-01-02T00:00:00.000Z"
+  }
+]
 ```
 
 **Error Responses**:
 
-**401 Unauthorized** - Authentication Required:
+**401 Unauthorized** - Invalid or Missing JWT:
 ```json
 {
-  "message": "Unauthorized",
+  "message": "Invalid or expired token",
+  "error": "INVALID_AUTH_TOKEN",
   "statusCode": 401
 }
 ```
 
-**404 Not Found** - Subscription Not Found:
+**403 Forbidden** - Email Not Verified:
 ```json
 {
-  "message": "Subscription not found for user: [user_id]",
-  "error": "SUBSCRIPTION_NOT_FOUND",
-  "statusCode": 404
-}
-```
-
-**400 Bad Request** - Invalid Operation:
-```json
-{
-  "message": "Cannot cancel subscription with status: canceled",
-  "error": "INVALID_SUBSCRIPTION_OPERATION",
-  "statusCode": 400
-}
-```
-
-**400 Bad Request** - Stripe Subscription Operation Failed:
-```json
-{
-  "message": "Stripe subscription operation failed: subscription cancellation - [details]",
-  "error": "STRIPE_SUBSCRIPTION_FAILED",
-  "statusCode": 400
+  "message": "Email must be verified to access this resource.",
+  "error": "EMAIL_NOT_VERIFIED",
+  "statusCode": 403
 }
 ```
 
 **500 Internal Server Error** - Database Operation Failed:
 ```json
 {
-  "message": "Database operation failed: subscription status update - [details]",
+  "message": "Database operation failed: subscription lookup by user ID - [details]",
   "error": "DATABASE_OPERATION_FAILED",
   "statusCode": 500
 }
 ```
 
-**503 Service Unavailable** - Stripe Service Unavailable:
-```json
-{
-  "message": "Stripe service is temporarily unavailable. Please try again later.",
-  "error": "STRIPE_SERVICE_UNAVAILABLE",
-  "statusCode": 503
-}
-```
-
-**Effects**:
-- Cancels subscription with Stripe
-- Access to organization features continues until period end
-- No further billing occurs
-- Cannot be undone (user must start new subscription)
-
 **Notes**:
-- If Stripe subscription is not found, local cancellation proceeds
-- Already cancelled subscriptions return 400 error
+- Returns all subscriptions ordered by creation date (newest first)
+- Empty array if user has no subscriptions
+- Includes both active and canceled subscriptions
 
 ---
 
-### GET /api/subscription/plans
+### GET /api/subscriptions/plans
 Get available subscription plans (public endpoint).
 
 **Authentication**: Not required
@@ -501,11 +463,21 @@ Handle Stripe webhook events (internal use).
 
 ### Common Error Responses
 
-**Authentication Error** (401):
+**401 Unauthorized** (401):
 ```json
 {
-  "message": "Unauthorized",
+  "message": "Invalid or expired token",
+  "error": "INVALID_AUTH_TOKEN",
   "statusCode": 401
+}
+```
+
+**403 Forbidden** (403):
+```json
+{
+  "message": "Email must be verified to access this resource.",
+  "error": "EMAIL_NOT_VERIFIED",
+  "statusCode": 403
 }
 ```
 
@@ -606,37 +578,9 @@ Handle Stripe webhook events (internal use).
 ```bash
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
-STRIPE_BASIC_PLAN_PRICE_ID=price_...
+STRIPE_BASIC_MONTHLY_PRICE_ID=price_...
+STRIPE_BASIC_YEARLY_PRICE_ID=price_...
 ```
-
-### Frontend Integration Steps
-
-1. **Check Trial Eligibility**:
-   ```javascript
-   const response = await fetch('/api/subscription/trial-eligibility');
-   const { eligible } = await response.json();
-   ```
-
-2. **Start Trial Subscription**:
-   ```javascript
-   const response = await fetch('/api/subscription/start-owner-trial', {
-     method: 'POST',
-     headers: { 'Authorization': `Bearer ${token}` }
-   });
-   ```
-
-3. **Payment Method Setup** (using Stripe Elements):
-   ```javascript
-   // After Stripe Elements confirms payment method
-   const response = await fetch('/api/payment/methods', {
-     method: 'POST',
-     headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify({
-       paymentMethodId: result.paymentMethod.id,
-       setAsDefault: true
-     })
-   });
-   ```
 
 ## Security Notes
 
@@ -648,8 +592,8 @@ STRIPE_BASIC_PLAN_PRICE_ID=price_...
 
 ## Business Rules
 
-1. **Trial Period**: 3 months for new organization owners
-2. **Auto-Conversion**: Trial automatically converts to paid plan
-3. **Pricing**: $29.99/month for Basic Plan
+1. **Multiple Subscriptions**: Users can have multiple subscriptions (one per organization)
+2. **Trial Eligibility**: Only first subscription per user gets trial period
+3. **Auto-Conversion**: Trial automatically converts to paid plan
 4. **Cancellation**: Immediate cancellation, access until period end
-5. **Organization Ownership**: Requires active subscription
+5. **Organization Ownership**: Each organization requires its own active subscription

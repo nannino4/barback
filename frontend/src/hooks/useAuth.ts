@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/stores/authStore';
-import { authApi } from '@/lib/auth-api';
+import { authApi } from '@/api/auth-api';
 import type { RegisterData, RegisterFormData, LoginData } from '@/types/auth';
 import type { ApiError } from '@/types/api';
 

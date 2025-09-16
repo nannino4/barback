@@ -53,35 +53,18 @@ This document defines the technology choices, architectural patterns, and high-l
 
 ```
 src/
+├── api/                 # API client and hooks
 ├── components/
 │   ├── ui/              # shadcn/ui components (Button, Dialog, Card, etc.)
 │   ├── features/        # Feature-specific components
-│   │   ├── auth/        # Login, Register, UserProfile
-│   │   ├── inventory/   # ProductList, ProductForm, StockAdjustment
-│   │   ├── organization/# OrgSettings, UserInvites, MembersList
-│   │   └── analytics/   # Charts, Reports, Dashboard
 │   └── layout/          # Header, Sidebar, AppShell
 ├── hooks/               # Custom React hooks
-│   ├── useAuth.ts       # Authentication logic
-│   ├── useProducts.ts   # Product API operations
-│   └── useOrganization.ts
-├── stores/              # Zustand stores
-│   ├── authStore.ts     # User authentication state
-│   └── themeStore.ts    # Theme preferences (renamed from appStore)
 ├── lib/
-│   ├── api.ts           # Base API client
-│   ├── auth-api.ts      # Authentication API endpoints
-│   ├── auth-validations.ts # Authentication Zod schemas
 │   └── utils.ts         # General utilities (cn, formatters)
 ├── pages/               # Route components
-│   ├── auth/            # Login, Register, ForgotPassword
-│   ├── dashboard/       # Main dashboard
-│   ├── inventory/       # Inventory management
-│   └── settings/        # User and org settings
+├── stores/              # Zustand stores
+├── validation/          # Zod schemas for forms and data
 └── types/               # TypeScript type definitions
-    ├── api.ts           # API response types
-    ├── auth.ts          # User and auth types
-    └── inventory.ts     # Product and inventory types
 ```
 
 ## Key Architectural Patterns

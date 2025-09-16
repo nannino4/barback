@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { InlineSpinner } from '@/components/ui/spinner';
-import { authApi } from '@/lib/auth-api';
+import { authApi } from '@/api/auth-api';
 import { cn } from '@/lib/utils';
 
 interface GoogleLoginButtonProps

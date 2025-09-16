@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Mail, RefreshCw } from 'lucide-react';
 import { InlineSpinner } from '@/components/ui/spinner';
-import { authApi } from '@/lib/auth-api';
+import { authApi } from '@/api/auth-api';
 import { useAuthStore } from '@/stores/authStore';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { AuthCard, AuthFooterLink } from '@/components/features/auth/AuthCard';

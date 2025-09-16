@@ -1,14 +1,15 @@
 # Barback - Product Definition
 
+This document outlines the product vision, target users, and feature roadmap for Barback, a comprehensive inventory management solution tailored for cocktail bars.
+
 ## MVP Stage
 
 ### Target Users
-- **User Profile**: Cocktail bar owners, managers, bartenders in Rome/Italy using manual inventory systems and primarily accessing the app via mobile devices during work
-- **Primary Device Usage**: Mobile phones and tablets used on-the-go in bar environments
+- **User Profile**: Cocktail bar owners, managers, bartenders in Rome/Italy using manual inventory systems
 - **Value Proposition**: 
   - **Owners**: Reduce waste, gain consumption insights, optimize ordering, identify sitting stock
   - **Managers**: Real-time stock visibility, improve staff communication, automated low stock reminders, faster inventory accounting
-  - **Staff**: Faster inventory accounting with touch-optimized mobile interface
+  - **Staff**: Faster inventory accounting
 
 ### Features
 
@@ -23,7 +24,7 @@
 #### Subscriptions
 - Each user can activate a subscription
 - For each active subscription a user can create an organization of which is owner
-- Subscriptions can be paid or free (with a trial period)
+- The first subscription for a user starts with a free trial
 - Subscriptions renew automatically
 
 #### Organizations
@@ -32,7 +33,7 @@
 - Organization owners and managers can invite users via email
 - Invited users receive email invitations with accept/decline options
 - Invitations can be revoked by the inviter before acceptance
-- Users can accept invitations before completing registration
+- Users can accept or refuse invitations after completing registration
 - Users can view organizations they're invited to and part of
 
 #### Inventory

@@ -14,8 +14,8 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
-import { resetPasswordSchema, type ResetPasswordData } from '@/lib/auth-validations';
-import { authApi } from '@/lib/auth-api';
+import { resetPasswordSchema, type ResetPasswordData } from '@/validation/auth-validations';
+import { authApi } from '@/api/auth-api';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { AuthCard, AuthFooterLink } from '@/components/features/auth/AuthCard';
 import { cn } from '@/lib/utils';

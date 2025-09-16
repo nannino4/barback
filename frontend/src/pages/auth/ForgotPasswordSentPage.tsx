@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Mail, Clock, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { InlineSpinner } from '@/components/ui/spinner';
-import { authApi } from '@/lib/auth-api';
+import { authApi } from '@/api/auth-api';
 import { AuthLayout } from '@/components/layout/AuthLayout';
 import { AuthCard } from '@/components/features/auth/AuthCard';
 import toast from 'react-hot-toast';

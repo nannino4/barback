@@ -14,8 +14,8 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
-import { forgotPasswordSchema, type ForgotPasswordData } from '@/lib/auth-validations';
-import { authApi } from '@/lib/auth-api';
+import { forgotPasswordSchema, type ForgotPasswordData } from '@/validation/auth-validations';
+import { authApi } from '@/api/auth-api';
 import { AuthCard, AuthFooterLink } from '@/components/features/auth/AuthCard';
 import toast from 'react-hot-toast';
 

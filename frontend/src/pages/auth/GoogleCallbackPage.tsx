@@ -5,7 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Spinner } from '@/components/ui/spinner';
 import { useAuthStore } from '@/stores/authStore';
-import { authApi } from '@/lib/auth-api';
+import { authApi } from '@/api/auth-api';
 import type { ApiError } from '@/types/api';
 
 export const GoogleCallbackPage: React.FC = () =>

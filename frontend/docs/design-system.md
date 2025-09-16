@@ -131,13 +131,6 @@ Defined as CSS variables (`--shadow-sm` through `--shadow-xl`) with stronger opa
 
 ## Accessibility Guidelines
 
-### Contrast Ratios
-All color combinations meet WCAG 2.1 AA standards:
-- **Primary Text on Primary Background**: 14.8:1 (AAA)
-- **Secondary Text on Primary Background**: 7.2:1 (AAA)
-- **Primary Gold on Primary Background**: 4.7:1 (AA)
-- **White text on Primary Gold**: 4.7:1 (AA)
-
 ### Focus Management
 - All interactive elements have visible focus indicators
 - Focus trap implemented in modals and dialogs
@@ -156,15 +149,6 @@ All design tokens are defined in `src/index.css` using the `@theme` directive:
 - **Typography**: Font families in `--font-*` namespace
 - **Shadows**: Pre-defined elevation levels in `--shadow-*` namespace
 - **Spacing**: Custom spacing values in `--spacing-*` namespace
-
-### Automatic Utility Generation
-Tailwind v4 automatically generates utility classes from theme variables:
-```css
-/* @theme variables become utilities */
---color-primary: 48 75% 53%;     /* → .text-primary, .bg-primary, .border-primary */
---color-ring: 48 75% 53%;        /* → .ring-ring, .focus-visible:ring-ring */
---font-heading: 'Playfair Display'; /* → .font-heading */
-```
 
 ### Best Practices
 - **Use utility classes**: `text-primary`, `bg-card`, `border-input`

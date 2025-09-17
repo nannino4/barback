@@ -9,7 +9,7 @@ interface AuthLayoutProps
 
 export const AuthLayout: React.FC<AuthLayoutProps> = ({ 
     children, 
-    className 
+    className, 
 }) =>
 {
     return (

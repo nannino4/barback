@@ -21,7 +21,7 @@ export default tseslint.config([
     ],
     rules: {
       'brace-style': ['error', 'allman', { allowSingleLine: true }],
-      'indent': ['error', 4, 
+      'indent': ['error', 2, 
         {
           MemberExpression: 1,
           ignoredNodes: [

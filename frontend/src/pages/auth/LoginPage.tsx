@@ -4,9 +4,9 @@ import { LoginForm } from '@/components/features/auth/LoginForm';
 
 export const LoginPage: React.FC = () =>
 {
-    return (
-        <AuthLayout>
-            <LoginForm />
-        </AuthLayout>
-    );
+  return (
+    <AuthLayout>
+      <LoginForm />
+    </AuthLayout>
+  );
 };

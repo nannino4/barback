@@ -1,0 +1,187 @@
+{
+    "common": {
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "phoneNumber": "Phone Number",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "loading": "Loading...",
+        "save": "Save",
+        "close": "Close",
+        "back": "Back",
+        "next": "Next",
+        "error": "Error",
+        "success": "Success"
+    },
+    "auth": {
+        "login": {
+            "title": "Welcome back",
+            "description": "Sign in to your account to continue",
+            "emailPlaceholder": "Enter your email",
+            "passwordPlaceholder": "Enter your password",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
+            "forgotPassword": "Forgot your password?",
+            "signIn": "Sign In",
+            "signingIn": "Signing in...",
+            "noAccount": "Don't have an account?",
+            "signUp": "Sign up",
+            "continueWith": "Or continue with email",
+            "googleLogin": "Continue with Google"
+        },
+        "register": {
+            "title": "Create your account",
+            "description": "Get started with your new account",
+            "firstNamePlaceholder": "Enter your first name",
+            "lastNamePlaceholder": "Enter your last name",
+            "emailPlaceholder": "Enter your email",
+            "phoneNumberPlaceholder": "Enter your phone number (optional)",
+            "passwordPlaceholder": "Create a password",
+            "confirmPasswordPlaceholder": "Confirm your password",
+            "createAccount": "Create Account",
+            "creatingAccount": "Creating account...",
+            "hasAccount": "Already have an account?",
+            "signIn": "Sign in",
+            "continueWith": "Or continue with email",
+            "googleSignup": "Sign up with Google",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password"
+        },
+        "forgotPassword": {
+            "title": "Forgot your password?",
+            "description": "Enter your email address and we'll send you a link to reset your password",
+            "emailPlaceholder": "Enter your email",
+            "sendLink": "Send Reset Link",
+            "sendingLink": "Sending link...",
+            "backToLogin": "Back to Sign In",
+            "successMessage": "Password reset email sent again",
+            "genericSuccessMessage": "If an account exists with that email, you will receive password reset instructions."
+        },
+        "forgotPasswordSent": {
+            "title": "Check Your Email",
+            "description": "We've sent password reset instructions to:",
+            "linkExpires": "The link will expire in 15 minutes.",
+            "checkSpam": "Didn't receive the email? Check your spam folder.",
+            "resendingEmail": "Resending Email...",
+            "resendEmailCountdown": "Resend Email ({countdown}s)",
+            "resendEmail": "Resend Email",
+            "backToSignIn": "Back to Sign In"
+        },
+        "resetPassword": {
+            "title": "Reset Your Password",
+            "description": "Enter a new password for your account",
+            "newPassword": "New Password",
+            "newPasswordPlaceholder": "Enter your new password",
+            "confirmPassword": "Confirm Password", 
+            "confirmPasswordPlaceholder": "Confirm your new password",
+            "hidePassword": "Hide password",
+            "showPassword": "Show password",
+            "requirements": "Password Requirements:",
+            "requirementLength": "At least 8 characters",
+            "requirementUppercase": "One uppercase letter",
+            "requirementLowercase": "One lowercase letter", 
+            "requirementNumber": "One number",
+            "requirementSpecial": "One special character",
+            "updating": "Updating Password...",
+            "updateButton": "Update Password",
+            "successMessage": "Password updated successfully",
+            "errorMessage": "Failed to reset password. Please try again.",
+            "backToSignIn": "Back to Sign In"
+        },
+        "resetPasswordSuccess": {
+            "title": "Password Updated!",
+            "description": "Your password has been successfully updated. You can now sign in with your new password.",
+            "securityNotice": "For your security, all other sessions have been logged out.",
+            "emailNotice": "You will receive a confirmation email shortly.",
+            "signInButton": "Sign In with New Password"
+        },
+        "resetPasswordError": {
+            "title": "Reset Link Expired",
+            "description": "This password reset link has expired or is invalid. Reset links are only valid for 15 minutes for security reasons.",
+            "whatCanYouDo": "What can you do?",
+            "requestNewLink": "Request a new password reset link",
+            "trySigningIn": "Try signing in if you remember your password",
+            "contactSupport": "Contact support if you continue having issues",
+            "requestNewReset": "Request New Reset Link",
+            "backToSignIn": "Back to Sign In",
+            "needHelp": "Need help?",
+            "contactSupportLink": "Contact Support"
+        },
+        "verifyEmail": {
+            "title": "Verify your email",
+            "description": "Click the link in your email to verify your account and get started",
+            "signInInstead": "Sign in instead",
+            "needToGoBack": "Need to go back?",
+            "checkEmailInstructions": "We've sent a verification link to your email address. Please check your inbox and click the link to verify your account.",
+            "resendEmail": "Resend verification email",
+            "resendingEmail": "Resending email...",
+            "enterEmail": "Enter your email address",
+            "emailPlaceholder": "Enter your email address"
+        },
+        "emailVerification": {
+            "verifying": "Verifying your email...",
+            "success": "Email verified successfully! Redirecting...",
+            "error": "Verification failed. The link may be invalid or expired.",
+            "tryAgain": "Try Again"
+        }
+    },
+    "validation": {
+        "required": "This field is required",
+        "email": {
+            "required": "Email is required",
+            "invalid": "Please enter a valid email address",
+            "tooLong": "Email must be less than 255 characters"
+        },
+        "password": {
+            "required": "Password is required",
+            "minLength": "Password must be at least 8 characters",
+            "uppercase": "Password must contain at least one uppercase letter",
+            "lowercase": "Password must contain at least one lowercase letter",
+            "number": "Password must contain at least one number",
+            "specialChar": "Password must contain at least one special character",
+            "confirmRequired": "Please confirm your password",
+            "noMatch": "Passwords do not match"
+        },
+        "name": {
+            "firstNameRequired": "First name is required",
+            "lastNameRequired": "Last name is required",
+            "tooLong": "Name must be less than 50 characters",
+            "invalidChars": "Name can only contain letters, spaces, hyphens, and apostrophes"
+        },
+        "phone": {
+            "invalidFormat": "Phone number must be in Italian format (+393XXXXXXXXX)"
+        }
+    },
+    "theme": {
+        "toggle": "Toggle theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+    },
+    "language": {
+        "toggle": "Change language",
+        "english": "English",
+        "italian": "Italiano"
+    },
+    "home": {
+        "welcome": "Welcome to Barback",
+        "description": "The sophisticated inventory management system for cocktail bars. Built for mobile-first operations with the elegance of a premium speakeasy.",
+        "features": {
+            "inventory": {
+                "title": "Inventory Management",
+                "description": "Track your spirits, wines, and mixers with precision. Monitor stock levels and get alerts when supplies run low."
+            },
+            "mobile": {
+                "title": "Mobile Optimized", 
+                "description": "Designed for touch interactions and perfect for use in dimly lit bar environments."
+            },
+            "team": {
+                "title": "Team Collaboration",
+                "description": "Invite your team members and manage roles with precision. Keep everyone in sync."
+            }
+        }
+    }
+}

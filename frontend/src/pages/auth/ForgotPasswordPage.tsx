@@ -4,9 +4,9 @@ import { ForgotPasswordForm } from '@/components/features/auth/ForgotPasswordFor
 
 export const ForgotPasswordPage: React.FC = () =>
 {
-    return (
-        <AuthLayout>
-            <ForgotPasswordForm />
-        </AuthLayout>
-    );
+  return (
+    <AuthLayout>
+      <ForgotPasswordForm />
+    </AuthLayout>
+  );
 };

@@ -3,43 +3,43 @@ import { useThemeStore } from '@/stores/themeStore'
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) 
 {
-    const { theme } = useThemeStore()
+  const { theme } = useThemeStore()
 
-    useEffect(() => 
+  useEffect(() => 
+  {
+    const root = window.document.documentElement
+    root.classList.remove('light', 'dark')
+
+    if (theme === 'system') 
     {
-        const root = window.document.documentElement
-        root.classList.remove('light', 'dark')
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+        .matches
+        ? 'dark'
+        : 'light'
 
-        if (theme === 'system') 
-        {
-            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
-                .matches
-                ? 'dark'
-                : 'light'
+      root.classList.add(systemTheme)
+      return
+    }
 
-            root.classList.add(systemTheme)
-            return
-        }
+    root.classList.add(theme)
+  }, [theme])
 
-        root.classList.add(theme)
-    }, [theme])
+  // Listen for system theme changes
+  useEffect(() => 
+  {
+    if (theme !== 'system') return
 
-    // Listen for system theme changes
-    useEffect(() => 
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = () => 
     {
-        if (theme !== 'system') return
+      const root = window.document.documentElement
+      root.classList.remove('light', 'dark')
+      root.classList.add(mediaQuery.matches ? 'dark' : 'light')
+    }
 
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-        const handleChange = () => 
-        {
-            const root = window.document.documentElement
-            root.classList.remove('light', 'dark')
-            root.classList.add(mediaQuery.matches ? 'dark' : 'light')
-        }
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [theme])
 
-        mediaQuery.addEventListener('change', handleChange)
-        return () => mediaQuery.removeEventListener('change', handleChange)
-    }, [theme])
-
-    return <>{children}</>
+  return <>{children}</>
 }

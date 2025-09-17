@@ -13,25 +13,25 @@ import { ResetPasswordErrorPage } from '@/pages/auth/ResetPasswordErrorPage';
 
 export const AuthRouter: React.FC = () =>
 {
-    return (
-        <Routes>
-            {/* Authentication Pages */}
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/login" element={<LoginPage />} />
+  return (
+    <Routes>
+      {/* Authentication Pages */}
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/login" element={<LoginPage />} />
             
-            {/* Email Verification */}
-            <Route path="/verify-email" element={<VerifyEmailPage />} />
-            <Route path="/verify-email/:token" element={<EmailVerificationHandler />} />
+      {/* Email Verification */}
+      <Route path="/verify-email" element={<VerifyEmailPage />} />
+      <Route path="/verify-email/:token" element={<EmailVerificationHandler />} />
             
-            {/* Password Reset Flow */}
-            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/forgot-password/sent" element={<ForgotPasswordSentPage />} />
-            <Route path="/reset-password" element={<ResetPasswordPage />} />
-            <Route path="/reset-password/success" element={<ResetPasswordSuccessPage />} />
-            <Route path="/reset-password/error" element={<ResetPasswordErrorPage />} />
+      {/* Password Reset Flow */}
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/forgot-password/sent" element={<ForgotPasswordSentPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/reset-password/success" element={<ResetPasswordSuccessPage />} />
+      <Route path="/reset-password/error" element={<ResetPasswordErrorPage />} />
             
-            {/* OAuth Callbacks */}
-            <Route path="/oauth/google/callback" element={<GoogleCallbackPage />} />
-        </Routes>
-    );
+      {/* OAuth Callbacks */}
+      <Route path="/oauth/google/callback" element={<GoogleCallbackPage />} />
+    </Routes>
+  );
 };

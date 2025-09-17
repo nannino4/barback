@@ -49,6 +49,13 @@ This document defines the technology choices, architectural patterns, and high-l
 - **Loading States**: Built into TanStack Query
 - **Error Boundaries**: React error handling
 
+### Internationalization (i18n)
+- **react-i18next**: React integration for internationalization
+- **i18next**: Core internationalization framework
+- **i18next-browser-languagedetector**: Automatic language detection
+- **Languages**: English (default) and Italian
+- **Features**: Language switching, persistent preferences, validation message localization
+
 ## Project Structure
 
 ```

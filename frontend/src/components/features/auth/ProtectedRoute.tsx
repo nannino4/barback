@@ -10,39 +10,39 @@ interface ProtectedRouteProps
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-    children,
-    redirectTo = '/auth/login',
+  children,
+  redirectTo = '/auth/login',
 }) =>
 {
-    const { isAuthenticated, isLoading } = useAuth();
-    const location = useLocation();
+  const { isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
 
-    // Show loading state while checking authentication
-    if (isLoading)
-    {
-        return (
-            <div className="min-h-screen bg-background">
-                <Spinner 
-                    size="lg" 
-                    text="Loading..."
-                    className="min-h-screen"
-                />
-            </div>
-        );
-    }
+  // Show loading state while checking authentication
+  if (isLoading)
+  {
+    return (
+      <div className="min-h-screen bg-background">
+        <Spinner 
+          size="lg" 
+          text="Loading..."
+          className="min-h-screen"
+        />
+      </div>
+    );
+  }
 
-    // Redirect to login if not authenticated
-    if (!isAuthenticated)
-    {
-        return (
-            <Navigate
-                to={redirectTo}
-                state={{ from: location.pathname }}
-                replace
-            />
-        );
-    }
+  // Redirect to login if not authenticated
+  if (!isAuthenticated)
+  {
+    return (
+      <Navigate
+        to={redirectTo}
+        state={{ from: location.pathname }}
+        replace
+      />
+    );
+  }
 
-    // Render protected content
-    return <>{children}</>;
+  // Render protected content
+  return <>{children}</>;
 };

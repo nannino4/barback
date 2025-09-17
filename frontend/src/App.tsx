@@ -9,54 +9,54 @@ import { HomePage } from '@/pages/HomePage'
 
 // Create a client
 const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            staleTime: 5 * 60 * 1000, // 5 minutes
-            refetchOnWindowFocus: false,
-        },
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false,
     },
+  },
 })
 
 function AppContent()
 {
-    return (
-        <>
-            <Routes>
-                {/* Protected Home Route */}
-                <Route path="/" element={
-                    <ProtectedRoute>
-                        <MainLayout />
-                    </ProtectedRoute>
-                }>
-                    <Route index element={<HomePage />} />
-                </Route>
+  return (
+    <>
+      <Routes>
+        {/* Protected Home Route */}
+        <Route path="/" element={
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+        }>
+          <Route index element={<HomePage />} />
+        </Route>
                 
-                {/* Auth routes outside MainLayout */}
-                <Route path="/auth/*" element={<AuthRouter />} />
-            </Routes>
+        {/* Auth routes outside MainLayout */}
+        <Route path="/auth/*" element={<AuthRouter />} />
+      </Routes>
             
-            <Toaster
-                position="bottom-right"
-                toastOptions={{
-                    className: 'bg-card border border-border text-card-foreground font-body',
-                    duration: 4000,
-                }}
-            />
-        </>
-    );
+      <Toaster
+        position="bottom-right"
+        toastOptions={{
+          className: 'bg-card border border-border text-card-foreground font-body',
+          duration: 4000,
+        }}
+      />
+    </>
+  );
 }
 
 function App()
 {
-    return (
-        <QueryClientProvider client={queryClient}>
-            <ThemeProvider>
-                <BrowserRouter>
-                    <AppContent />
-                </BrowserRouter>
-            </ThemeProvider>
-        </QueryClientProvider>
-    )
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </ThemeProvider>
+    </QueryClientProvider>
+  )
 }
 
 export default App

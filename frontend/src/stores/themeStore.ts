@@ -7,13 +7,13 @@ type ThemeState = {
 }
 
 export const useThemeStore = create<ThemeState>()(
-    persist(
-        (set) => ({
-            theme: 'system',
-            setTheme: (theme) => set({ theme }),
-        }),
-        {
-            name: 'app-storage',
-        },
-    ),
+  persist(
+    (set) => ({
+      theme: 'system',
+      setTheme: (theme) => set({ theme }),
+    }),
+    {
+      name: 'app-storage',
+    },
+  ),
 )

@@ -8,139 +8,139 @@ import type { ApiError } from '@/types/api';
 
 export const useAuth = () =>
 {
-    const navigate = useNavigate();
-    const {
-        user,
-        isAuthenticated,
-        isLoading,
-        error,
-        login: loginToStore,
-        logout,
-        setLoading,
-        setError,
-        clearError,
-    } = useAuthStore();
+  const navigate = useNavigate();
+  const {
+    user,
+    isAuthenticated,
+    isLoading,
+    error,
+    login: loginToStore,
+    logout,
+    setLoading,
+    setError,
+    clearError,
+  } = useAuthStore();
 
-    const registerMutation = useMutation({
-        mutationFn: (formData: RegisterFormData) =>
-        {
-            // Transform form data to API data (remove confirmPassword)
-            const apiData: RegisterData = {
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                email: formData.email,
-                password: formData.password,
-                ...(formData.phoneNumber && { phoneNumber: formData.phoneNumber }),
-            };
-            return authApi.register(apiData);
-        },
-        onMutate: () =>
-        {
-            setLoading(true);
-            clearError();
-        },
-        onSuccess: (response) =>
-        {
-            // Use user data directly from registration response
-            loginToStore(response.user, response.access_token, response.refresh_token);
-            toast.success('Registration successful! Please check your email to verify your account.');
+  const registerMutation = useMutation({
+    mutationFn: (formData: RegisterFormData) =>
+    {
+      // Transform form data to API data (remove confirmPassword)
+      const apiData: RegisterData = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        ...(formData.phoneNumber && { phoneNumber: formData.phoneNumber }),
+      };
+      return authApi.register(apiData);
+    },
+    onMutate: () =>
+    {
+      setLoading(true);
+      clearError();
+    },
+    onSuccess: (response) =>
+    {
+      // Use user data directly from registration response
+      loginToStore(response.user, response.access_token, response.refresh_token);
+      toast.success('Registration successful! Please check your email to verify your account.');
             
-            // Redirect to email verification page instead of home
-            if (!response.user.isEmailVerified)
-            {
-                void navigate('/auth/verify-email');
-            }
-            else
-            {
-                void navigate('/');
-            }
-        },
-        onError: (error: Error) =>
-        {
-            try
-            {
-                const apiError = JSON.parse(error.message) as ApiError;
-                setError(apiError.message);
-                toast.error(apiError.message);
-            }
-            catch
-            {
-                setError('Registration failed. Please try again.');
-                toast.error('Registration failed. Please try again.');
-            }
-        },
-        onSettled: () =>
-        {
-            setLoading(false);
-        },
-    });
-
-    const loginMutation = useMutation({
-        mutationFn: (data: LoginData) => authApi.login(data),
-        onMutate: () =>
-        {
-            setLoading(true);
-            clearError();
-        },
-        onSuccess: (response) =>
-        {
-            // Use user data directly from login response
-            loginToStore(response.user, response.access_token, response.refresh_token);
-            toast.success('Login successful!');
-            void navigate('/');
-        },
-        onError: (error: Error) =>
-        {
-            try
-            {
-                const apiError = JSON.parse(error.message) as ApiError;
-                setError(apiError.message);
-                toast.error(apiError.message);
-            }
-            catch
-            {
-                setError('Login failed. Please try again.');
-                toast.error('Login failed. Please try again.');
-            }
-        },
-        onSettled: () =>
-        {
-            setLoading(false);
-        },
-    });
-
-    const handleRegister = (data: RegisterFormData) =>
+      // Redirect to email verification page instead of home
+      if (!response.user.isEmailVerified)
+      {
+        void navigate('/auth/verify-email');
+      }
+      else
+      {
+        void navigate('/');
+      }
+    },
+    onError: (error: Error) =>
     {
-        registerMutation.mutate(data);
-    };
-
-    const handleLogin = (data: LoginData) =>
+      try
+      {
+        const apiError = JSON.parse(error.message) as ApiError;
+        setError(apiError.message);
+        toast.error(apiError.message);
+      }
+      catch
+      {
+        setError('Registration failed. Please try again.');
+        toast.error('Registration failed. Please try again.');
+      }
+    },
+    onSettled: () =>
     {
-        loginMutation.mutate(data);
-    };
+      setLoading(false);
+    },
+  });
 
-    const handleLogout = () =>
+  const loginMutation = useMutation({
+    mutationFn: (data: LoginData) => authApi.login(data),
+    onMutate: () =>
     {
-        logout();
-        toast.success('Logged out successfully');
-        void navigate('/auth/login');
-    };
+      setLoading(true);
+      clearError();
+    },
+    onSuccess: (response) =>
+    {
+      // Use user data directly from login response
+      loginToStore(response.user, response.access_token, response.refresh_token);
+      toast.success('Login successful!');
+      void navigate('/');
+    },
+    onError: (error: Error) =>
+    {
+      try
+      {
+        const apiError = JSON.parse(error.message) as ApiError;
+        setError(apiError.message);
+        toast.error(apiError.message);
+      }
+      catch
+      {
+        setError('Login failed. Please try again.');
+        toast.error('Login failed. Please try again.');
+      }
+    },
+    onSettled: () =>
+    {
+      setLoading(false);
+    },
+  });
 
-    return {
-        // State
-        user,
-        isAuthenticated,
-        isLoading: isLoading || registerMutation.isPending || loginMutation.isPending,
-        error,
+  const handleRegister = (data: RegisterFormData) =>
+  {
+    registerMutation.mutate(data);
+  };
 
-        // Actions
-        register: handleRegister,
-        login: handleLogin,
-        logout: handleLogout,
-        clearError,
+  const handleLogin = (data: LoginData) =>
+  {
+    loginMutation.mutate(data);
+  };
 
-        // Mutation states
-        isRegistering: registerMutation.isPending,
-        isLoggingIn: loginMutation.isPending,
-    };
+  const handleLogout = () =>
+  {
+    logout();
+    toast.success('Logged out successfully');
+    void navigate('/auth/login');
+  };
+
+  return {
+    // State
+    user,
+    isAuthenticated,
+    isLoading: isLoading || registerMutation.isPending || loginMutation.isPending,
+    error,
+
+    // Actions
+    register: handleRegister,
+    login: handleLogin,
+    logout: handleLogout,
+    clearError,
+
+    // Mutation states
+    isRegistering: registerMutation.isPending,
+    isLoggingIn: loginMutation.isPending,
+  };
 };

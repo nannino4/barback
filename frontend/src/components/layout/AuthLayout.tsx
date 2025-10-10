@@ -1,12 +1,12 @@
 import React from 'react';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { LanguageToggle } from '@/components/LanguageToggle';
+import { LanguageSelector } from '@/components/LanguageSelector';
 import { cn } from '@/lib/utils';
 
 interface AuthLayoutProps
 {
-    children: React.ReactNode;
-    className?: string;
+  children: React.ReactNode;
+  className?: string;
 }
 
 export const AuthLayout: React.FC<AuthLayoutProps> = ({ 
@@ -18,7 +18,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
     <div className="min-h-screen bg-background flex items-center justify-center px-4 py-12">
       {/* Header Controls */}
       <div className="absolute top-4 right-4 flex items-center space-x-2">
-        <LanguageToggle />
+        <LanguageSelector />
         <ThemeToggle />
       </div>
             
@@ -26,10 +26,10 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({
         {/* Header */}
         <div className="text-center space-y-2">
           <h1 className="font-heading text-4xl font-semibold text-foreground">
-                        Barback
+            Barback
           </h1>
           <p className="font-body text-sm text-muted-foreground">
-                        Inventory management for cocktail bars
+            Inventory management for cocktail bars
           </p>
         </div>
 

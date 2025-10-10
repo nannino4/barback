@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/api/auth-api';
@@ -9,6 +9,7 @@ import type { ApiError } from '@/types/api';
 export const useAuth = () =>
 {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const {
     user,
     isAuthenticated,
@@ -52,7 +53,16 @@ export const useAuth = () =>
       }
       else
       {
-        void navigate('/');
+        // Check for redirect parameter after successful registration
+        const redirectUrl = searchParams.get('redirect');
+        if (redirectUrl)
+        {
+          void navigate(redirectUrl);
+        }
+        else
+        {
+          void navigate('/dashboard');
+        }
       }
     },
     onError: (error: Error) =>
@@ -87,7 +97,17 @@ export const useAuth = () =>
       // Use user data directly from login response
       loginToStore(response.user, response.access_token, response.refresh_token);
       toast.success('Login successful!');
-      void navigate('/');
+      
+      // Check for redirect parameter
+      const redirectUrl = searchParams.get('redirect');
+      if (redirectUrl)
+      {
+        void navigate(redirectUrl);
+      }
+      else
+      {
+        void navigate('/dashboard');
+      }
     },
     onError: (error: Error) =>
     {

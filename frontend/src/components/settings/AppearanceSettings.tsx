@@ -48,12 +48,12 @@ export function AppearanceSettings()
                   type="button"
                   onClick={() => setTheme(option.value)}
                   className={`
-                                        flex items-start gap-3 p-3 rounded-lg border transition-colors
-                                        ${theme === option.value 
-                  ? 'border-gold-primary bg-gold-primary/10' 
-                  : 'border-border-secondary hover:border-border-primary'
+                    flex items-start gap-3 p-3 rounded-lg border transition-colors
+                    ${theme === option.value 
+                  ? 'border-primary bg-primary/10 dark:border-primary/80 dark:bg-primary/20' 
+                  : 'border-border-secondary hover:border-border-primary dark:hover:border-border'
                 }
-                                    `}
+                  `}
                 >
                   <IconComponent className="h-5 w-5 mt-0.5 text-text-secondary" />
                   <div className="flex-1 text-left">
@@ -65,7 +65,7 @@ export function AppearanceSettings()
                     </div>
                   </div>
                   {theme === option.value && (
-                    <div className="h-2 w-2 rounded-full bg-gold-primary mt-2" />
+                    <div className="h-2 w-2 rounded-full bg-primary dark:bg-primary/90 mt-2" />
                   )}
                 </button>
               )

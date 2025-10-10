@@ -72,6 +72,30 @@ type ApiResponse<T> = {
 
 ## CSS and Styling Conventions
 
+### Dark/Light Mode Requirement
+**All components must support both light and dark modes.** Use Tailwind's `dark:` variant for dark mode styles.
+
+```typescript
+// ✅ CORRECT - Both modes styled
+<div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+    Click me
+  </Button>
+</div>
+
+// ❌ WRONG - Only light mode
+<div className="bg-white text-gray-900">
+  <Button className="bg-blue-600 hover:bg-blue-700">
+    Click me
+  </Button>
+</div>
+```
+
+**Key principles:**
+- Define colors for both modes: background, text, borders, hover states
+- Use semantic color variables when available (e.g., `bg-background`, `text-foreground`)
+- Test components in both themes during development
+
 ### Tailwind Class Organization
 ```typescript
 // Order: Layout → Spacing → Typography → Colors → States
@@ -82,10 +106,10 @@ const buttonClasses = cn(
     'px-4 py-2',
     // Typography
     'text-sm font-medium',
-    // Colors
-    'bg-blue-600 text-white',
-    // States
-    'hover:bg-blue-700 disabled:opacity-50',
+    // Colors (include dark mode)
+    'bg-blue-600 text-white dark:bg-blue-500 dark:text-gray-100',
+    // States (include dark mode)
+    'hover:bg-blue-700 dark:hover:bg-blue-600 disabled:opacity-50',
     // Custom classes
     className,
 );
@@ -126,3 +150,26 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
 - **External URLs**: Use `window.location.href` for full page redirects
 - **OAuth Flows**: Use `window.location.href` to redirect to OAuth providers
 - **Replace vs Push**: Use `{ replace: true }` when you don't want the user to go back
+
+## Internationalization (i18n)
+
+### Mandatory Localization
+**All user-facing text must use the localization system.** Never use hardcoded strings.
+
+```typescript
+// ❌ WRONG - Hardcoded text
+<button>Sign In</button>
+<p>Welcome back!</p>
+
+// ✅ CORRECT - Using translation keys
+const { t } = useI18n();
+
+<button>{t('auth.login.signIn')}</button>
+<p>{t('auth.login.welcomeBack')}</p>
+```
+
+### Key Requirements
+- **Always import** `useI18n` hook in components with text
+- **Organize keys** by feature in translation files (eg: `auth.*`, `inventory.*`)
+- **Add both languages**: Update English and Italian translation files simultaneously
+- **Use descriptive keys**: `auth.login.emailPlaceholder` not `login.email`

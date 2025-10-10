@@ -34,10 +34,11 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // Redirect to login if not authenticated
   if (!isAuthenticated)
   {
+    // Encode current path as redirect parameter
+    const redirectUrl = `${redirectTo}?redirect=${encodeURIComponent(location.pathname)}`;
     return (
       <Navigate
-        to={redirectTo}
-        state={{ from: location.pathname }}
+        to={redirectUrl}
         replace
       />
     );

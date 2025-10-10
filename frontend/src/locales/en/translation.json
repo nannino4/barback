@@ -166,6 +166,55 @@
         "english": "English",
         "italian": "Italiano"
     },
+    "nav": {
+        "login": "Login",
+        "logout": "Logout",
+        "home": "Home",
+        "dashboard": "Dashboard"
+    },
+    "landing": {
+        "hero": {
+            "title": "Barback",
+            "subtitle": "The sophisticated inventory management system for cocktail bars. Built for mobile-first operations with the elegance of a premium speakeasy.",
+            "getStarted": "Get Started",
+            "signIn": "Sign In"
+        },
+        "features": {
+            "inventory": {
+                "title": "Inventory Management",
+                "description": "Track your spirits, wines, and mixers with precision. Monitor stock levels and get alerts when supplies run low."
+            },
+            "mobile": {
+                "title": "Mobile Optimized",
+                "description": "Designed for touch interactions and perfect for use in dimly lit bar environments."
+            },
+            "team": {
+                "title": "Team Collaboration",
+                "description": "Invite your team members and manage roles with precision. Keep everyone in sync."
+            },
+            "alerts": {
+                "title": "Smart Alerts",
+                "description": "Get notified when inventory runs low with customizable threshold alerts and time-based reminders."
+            },
+            "analytics": {
+                "title": "Analytics & Insights",
+                "description": "Track consumption patterns by time period, category, and product to optimize your inventory."
+            },
+            "reports": {
+                "title": "Inventory Reports",
+                "description": "Generate detailed inventory reports by date range to track your stock movements and trends."
+            }
+        },
+        "cta": {
+            "title": "Ready to Transform Your Bar Management?",
+            "description": "Join cocktail bars in Rome that are already saving time and reducing waste with Barback.",
+            "button": "Start Free Trial"
+        }
+    },
+    "dashboard": {
+        "welcome": "Welcome to Your Dashboard",
+        "placeholder": "Your dashboard is being prepared. More features coming soon!"
+    },
     "home": {
         "welcome": "Welcome to Barback",
         "description": "The sophisticated inventory management system for cocktail bars. Built for mobile-first operations with the elegance of a premium speakeasy.",

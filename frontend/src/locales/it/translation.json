@@ -166,6 +166,55 @@
         "english": "English",
         "italian": "Italiano"
     },
+    "nav": {
+        "login": "Accedi",
+        "logout": "Logout",
+        "home": "Home",
+        "dashboard": "Dashboard"
+    },
+    "landing": {
+        "hero": {
+            "title": "Barback",
+            "subtitle": "Il sofisticato sistema di gestione inventario per cocktail bar. Costruito per operazioni mobile-first con l'eleganza di uno speakeasy premium.",
+            "getStarted": "Inizia",
+            "signIn": "Accedi"
+        },
+        "features": {
+            "inventory": {
+                "title": "Gestione Inventario",
+                "description": "Tieni traccia dei tuoi distillati, vini e mixer con precisione. Monitora i livelli di scorte e ricevi avvisi quando le forniture si esauriscono."
+            },
+            "mobile": {
+                "title": "Ottimizzato per Mobile",
+                "description": "Progettato per interazioni touch e perfetto per l'uso in ambienti bar poco illuminati."
+            },
+            "team": {
+                "title": "Collaborazione di Team",
+                "description": "Invita i membri del tuo team e gestisci i ruoli con precisione. Mantieni tutti sincronizzati."
+            },
+            "alerts": {
+                "title": "Avvisi Intelligenti",
+                "description": "Ricevi notifiche quando l'inventario si esaurisce con avvisi di soglia personalizzabili e promemoria basati sul tempo."
+            },
+            "analytics": {
+                "title": "Analisi e Insights",
+                "description": "Tieni traccia dei modelli di consumo per periodo di tempo, categoria e prodotto per ottimizzare il tuo inventario."
+            },
+            "reports": {
+                "title": "Report Inventario",
+                "description": "Genera report dettagliati dell'inventario per intervallo di date per tracciare i movimenti e le tendenze delle scorte."
+            }
+        },
+        "cta": {
+            "title": "Pronto a Trasformare la Gestione del Tuo Bar?",
+            "description": "Unisciti ai cocktail bar di Roma che già risparmiano tempo e riducono gli sprechi con Barback.",
+            "button": "Inizia Prova Gratuita"
+        }
+    },
+    "dashboard": {
+        "welcome": "Benvenuto nella Tua Dashboard",
+        "placeholder": "La tua dashboard è in preparazione. Altre funzionalità in arrivo!"
+    },
     "home": {
         "welcome": "Benvenuto in Barback",
         "description": "Il sofisticato sistema di gestione inventario per cocktail bar. Costruito per operazioni mobile-first con l'eleganza di uno speakeasy premium.",

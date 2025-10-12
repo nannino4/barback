@@ -2,10 +2,10 @@ import { Outlet } from 'react-router-dom';
 import { Navigation } from '@/components/Navigation';
 
 /**
- * RootLayout - Main layout for all pages with navigation
- * Provides consistent navigation and container structure
+ * AppLayout - Main application layout for all pages
+ * Provides consistent navigation and container structure across the entire app
  */
-export function RootLayout()
+export function AppLayout()
 {
   return (
     <div className="min-h-screen bg-background">

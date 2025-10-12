@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from '@/components/ThemeProvider'
-import { RootLayout } from '@/components/layout/RootLayout'
+import { AppLayout } from '@/components/layout/AppLayout'
 import { ProtectedRoute } from '@/components/features/auth/ProtectedRoute'
 import { AuthRouter } from '@/components/features/auth/AuthRouter'
 import { HomePage } from '@/pages/HomePage'
@@ -23,8 +23,8 @@ function AppContent()
   return (
     <>
       <Routes>
-        {/* Root layout wraps all non-auth routes with Navigation */}
-        <Route element={<RootLayout />}>
+        {/* AppLayout wraps ALL routes with consistent Navigation */}
+        <Route element={<AppLayout />}>
           {/* Public Landing Page */}
           <Route path="/" element={<LandingPage />} />
           
@@ -37,10 +37,10 @@ function AppContent()
               </ProtectedRoute>
             }
           />
+          
+          {/* Auth routes - now also use AppLayout for consistent navigation */}
+          <Route path="/auth/*" element={<AuthRouter />} />
         </Route>
-        
-        {/* Auth routes - separate layout without Navigation */}
-        <Route path="/auth/*" element={<AuthRouter />} />
       </Routes>
             
       <Toaster

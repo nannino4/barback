@@ -20,26 +20,12 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 - [X] Create basic routing structure
 - [X] Implement password reset functionality
 
-#### **Key Components**
-- `<ThemeToggle />` - Switch between light/dark mode ✅
-- `<LoginForm />` - Email/password and Google login ✅
-- `<RegisterForm />` - User registration with email verification ✅
-- `<ProtectedRoute />` - Role-based route protection ✅
-- `<ForgotPasswordPage />` - Password reset request ✅
-- `<ResetPasswordPage />` - New password creation ✅
-
 ### **Sprint 3-4: Organization & User Management**
 
 #### **Sprint Goals**
 - [ ] Implement organization creation and management
 - [ ] Build user invitation system
 - [ ] Create organization switching functionality
-
-#### **Key Components**
-- `<OrganizationSetup />` - Initial org creation
-- `<InviteUserForm />` - Send email invitations
-- `<MembersList />` - View and manage organization members
-- `<OrganizationSwitcher />` - Switch between organizations
 
 ### **Sprint 5-6: Core Inventory Management**
 

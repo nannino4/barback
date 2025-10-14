@@ -3,6 +3,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { ChevronDown, Check, X, AlertTriangle, Info } from 'lucide-react';
 
 const DesignSystemPage: React.FC = () =>
 {
@@ -12,291 +21,828 @@ const DesignSystemPage: React.FC = () =>
         {/* Header */}
         <header className="space-y-4">
           <h1 className="font-heading text-4xl font-bold text-primary md:text-5xl lg:text-6xl">
-                        The Speakeasy
+            The Speakeasy
           </h1>
           <p className="text-lg text-muted-foreground md:text-xl">
-                        Barback Design System - A sophisticated, mobile-first design for cocktail bar inventory management
+            Barback Design System - A sophisticated, mobile-first design for cocktail bar inventory management
           </p>
         </header>
 
-        {/* Color System */}
+        {/* Color System - Interactive Real-World Examples */}
         <section className="space-y-6">
           <div>
             <h2 className="font-heading text-3xl font-bold text-foreground">Color System</h2>
             <p className="mt-2 text-muted-foreground">
-                            OKLCH color space for perceptually uniform brightness and vibrant colors
+              OKLCH color space for perceptually uniform brightness and vibrant colors
             </p>
           </div>
 
-          {/* Base Colors */}
+          {/* Base & Surface Colors - Interactive Demo */}
           <Card>
             <CardHeader>
-              <CardTitle>Base Colors</CardTitle>
-              <CardDescription>Background and foreground foundations</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <ColorSwatch
-                name="Background"
-                className="bg-background text-foreground border-2 border-border"
-                description="Deep charcoal base"
-              />
-              <ColorSwatch
-                name="Foreground"
-                className="bg-foreground text-background"
-                description="High contrast text"
-              />
-              <ColorSwatch
-                name="Card"
-                className="bg-card text-card-foreground border-2 border-border"
-                description="Elevated surfaces"
-              />
-            </CardContent>
-          </Card>
-
-          {/* Brand Colors */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Brand Colors</CardTitle>
-              <CardDescription>Gold accent - the signature of sophistication</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <ColorSwatch
-                name="Primary"
-                className="bg-primary text-primary-foreground"
-                description="Gold primary"
-              />
-              <ColorSwatch
-                name="Primary Hover"
-                className="bg-primary/90 text-primary-foreground"
-                description="90% opacity"
-              />
-              <ColorSwatch
-                name="Primary Subtle"
-                className="bg-primary/20 text-primary"
-                description="20% opacity"
-              />
-              <ColorSwatch
-                name="Primary Ring"
-                className="border-4 border-ring bg-background text-foreground"
-                description="Focus state"
-              />
-            </CardContent>
-          </Card>
-
-          {/* Semantic Colors */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Semantic Colors</CardTitle>
-              <CardDescription>Status and feedback colors</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <ColorSwatch
-                name="Success"
-                className="bg-success text-success-foreground"
-                description="Success green"
-              />
-              <ColorSwatch
-                name="Warning"
-                className="bg-warning text-warning-foreground"
-                description="Warning amber"
-              />
-              <ColorSwatch
-                name="Destructive"
-                className="bg-destructive text-destructive-foreground"
-                description="Error red"
-              />
-              <ColorSwatch
-                name="Info"
-                className="bg-info text-info-foreground"
-                description="Info blue"
-              />
-            </CardContent>
-          </Card>
-
-          {/* UI Colors */}
-          <Card>
-            <CardHeader>
-              <CardTitle>UI Element Colors</CardTitle>
-              <CardDescription>Interactive UI elements with distinct appearances</CardDescription>
+              <CardTitle>Base & Surface Colors</CardTitle>
+              <CardDescription>Layer hierarchy with interactive examples - hover to see depth</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-foreground">Border</p>
-                  <div className="h-24 rounded-lg border-4 border-border bg-background flex items-center justify-center">
-                    <span className="text-sm text-muted-foreground">Border color</span>
+              {/* Background layer demo */}
+              <div className="rounded-lg bg-background border-2 border-border p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-foreground">background + foreground</p>
+                    <p className="text-xs text-muted-foreground">Base application layer</p>
                   </div>
+                  <code className="text-xs bg-muted px-2 py-1 rounded">bg-background</code>
                 </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-foreground">Input Background</p>
-                  <div className="h-24 rounded-lg bg-input border-2 border-border flex items-center justify-center">
-                    <span className="text-sm text-foreground">Input field</span>
+                
+                {/* Card layer on background */}
+                <div className="rounded-lg bg-card border border-border p-4 space-y-3 transition-shadow hover:shadow-md">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-card-foreground">card + card-foreground</p>
+                      <p className="text-xs text-muted-foreground">Elevated content surfaces</p>
+                    </div>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">bg-card</code>
+                  </div>
+
+                  {/* Input layer on card */}
+                  <div className="rounded-md bg-input border border-border p-3">
+                    <p className="text-sm text-foreground">input background</p>
+                    <p className="text-xs text-muted-foreground">Sunken input fields</p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded mt-1 inline-block">bg-input</code>
+                  </div>
+
+                  {/* Muted sections */}
+                  <div className="rounded-md bg-muted p-3">
+                    <p className="text-sm text-muted-foreground">muted + muted-foreground</p>
+                    <p className="text-xs text-muted-foreground">Subtle backgrounds and secondary text</p>
+                    <code className="text-xs bg-background px-2 py-1 rounded mt-1 inline-block">bg-muted</code>
                   </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-foreground">Focus Ring (try tabbing through inputs)</p>
-                <div className="flex flex-wrap gap-4">
-                  <input
-                    type="text"
-                    placeholder="Focus me"
-                    className="rounded-md border-2 border-border bg-input px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Then focus me"
-                    className="rounded-md border-2 border-border bg-input px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground"
+            </CardContent>
+          </Card>
+
+          {/* Brand Colors - Interactive Buttons */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Brand Colors (Gold)</CardTitle>
+              <CardDescription>Primary color with interactive states - hover and focus to see variations</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {/* Solid primary */}
+                <div className="space-y-3">
+                  <div className="rounded-lg bg-primary p-6 text-center transition-all hover:bg-primary/90 hover:shadow-primary cursor-pointer">
+                    <p className="font-medium text-primary-foreground">Primary</p>
+                    <p className="text-xs text-primary-foreground/80 mt-1">Hover me</p>
+                  </div>
+                  <code className="text-xs text-muted-foreground block text-center">bg-primary hover:bg-primary/90</code>
+                </div>
+
+                {/* Primary text on background */}
+                <div className="space-y-3">
+                  <div className="rounded-lg bg-background border-2 border-primary p-6 text-center transition-all hover:bg-primary/10">
+                    <p className="font-medium text-primary">Primary Text</p>
+                    <p className="text-xs text-muted-foreground mt-1">On background</p>
+                  </div>
+                  <code className="text-xs text-muted-foreground block text-center">text-primary border-primary</code>
+                </div>
+
+                {/* Subtle primary */}
+                <div className="space-y-3">
+                  <div className="rounded-lg bg-primary/20 border border-primary/30 p-6 text-center transition-all hover:bg-primary/30">
+                    <p className="font-medium text-primary">Subtle Accent</p>
+                    <p className="text-xs text-primary/80 mt-1">20% opacity</p>
+                  </div>
+                  <code className="text-xs text-muted-foreground block text-center">bg-primary/20</code>
+                </div>
+              </div>
+
+              {/* Focus ring demo */}
+              <div className="space-y-3">
+                <p className="text-sm font-medium text-foreground">Focus State (Tab to focus)</p>
+                <div className="flex flex-wrap gap-3">
+                  <button type="button" className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90">
+                    Focus this button
+                  </button>
+                  <input 
+                    type="text" 
+                    placeholder="Or this input..."
+                    className="rounded-md border-2 border-border bg-input px-4 py-2 text-sm"
                   />
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Simple 2px outline with gold color matching primary brand. Rounded for elegance.
+                  2px gold outline (ring-ring) with 2px offset - automatic from focus-visible
                 </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Semantic Colors - Real Feedback Components */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Semantic Colors</CardTitle>
+              <CardDescription>Status feedback in real components - hover for interaction states</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Success alert */}
+              <div className="rounded-lg bg-success/10 border-l-4 border-success p-4 transition-all hover:bg-success/20">
+                <div className="flex gap-3">
+                  <Check className="size-5 text-success shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-success">Stock updated successfully</p>
+                    <p className="text-xs text-muted-foreground mt-1">Your inventory has been updated with 12 new items</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Warning alert */}
+              <div className="rounded-lg bg-warning/10 border-l-4 border-warning p-4 transition-all hover:bg-warning/20">
+                <div className="flex gap-3">
+                  <AlertTriangle className="size-5 text-warning shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-warning">Low stock alert</p>
+                    <p className="text-xs text-muted-foreground mt-1">5 items are below par level and need reordering</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Error alert */}
+              <div className="rounded-lg bg-destructive/10 border-l-4 border-destructive p-4 transition-all hover:bg-destructive/20">
+                <div className="flex gap-3">
+                  <X className="size-5 text-destructive shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-destructive">Failed to save changes</p>
+                    <p className="text-xs text-muted-foreground mt-1">Please check your connection and try again</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Info alert */}
+              <div className="rounded-lg bg-info/10 border-l-4 border-info p-4 transition-all hover:bg-info/20">
+                <div className="flex gap-3">
+                  <Info className="size-5 text-info shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-info">Inventory report ready</p>
+                    <p className="text-xs text-muted-foreground mt-1">Your monthly inventory report is available for download</p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
         </section>
 
-        {/* Typography */}
+        {/* Typography - Real Content Examples */}
         <section className="space-y-6">
           <div>
             <h2 className="font-heading text-3xl font-bold text-foreground">Typography</h2>
             <p className="mt-2 text-muted-foreground">
-                            Playfair Display for headings, Inter for body text
+              Playfair Display for headings, Inter for body - creating hierarchy and readability
             </p>
           </div>
 
+          {/* Heading Hierarchy in Context */}
           <Card>
             <CardHeader>
-              <CardTitle>Heading Scale</CardTitle>
-              <CardDescription>Playfair Display - Sophisticated serif</CardDescription>
+              <CardTitle>Heading Hierarchy</CardTitle>
+              <CardDescription>Real-world heading structure with Playfair Display</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <p className="text-xs text-muted-foreground">4xl - 36px / 2.25rem</p>
-                <h1 className="font-heading text-4xl font-bold text-foreground">
-                                    The Quick Brown Fox
-                </h1>
+            <CardContent className="space-y-8">
+              {/* Page title example */}
+              <div className="space-y-3 pb-6 border-b border-border">
+                <div className="flex items-baseline gap-3">
+                  <h1 className="font-heading text-4xl font-bold text-foreground">
+                    Inventory Dashboard
+                  </h1>
+                  <code className="text-xs text-muted-foreground">text-4xl font-bold</code>
+                </div>
+                <p className="text-base text-muted-foreground">
+                  Main page titles and primary headings
+                </p>
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground">3xl - 30px / 1.875rem</p>
-                <h2 className="font-heading text-3xl font-bold text-foreground">
-                                    The Quick Brown Fox
-                </h2>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">2xl - 24px / 1.5rem</p>
-                <h3 className="font-heading text-2xl font-semibold text-foreground">
-                                    The Quick Brown Fox
-                </h3>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">xl - 20px / 1.25rem</p>
-                <h4 className="font-heading text-xl font-semibold text-foreground">
-                                    The Quick Brown Fox
-                </h4>
-              </div>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Body Text Scale</CardTitle>
-              <CardDescription>Inter - Clean, readable sans-serif</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <p className="text-xs text-muted-foreground">lg - 18px / 1.125rem</p>
-                <p className="text-lg text-foreground">
-                                    The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.
+              {/* Section title example */}
+              <div className="space-y-3 pb-6 border-b border-border">
+                <div className="flex items-baseline gap-3">
+                  <h2 className="font-heading text-3xl font-bold text-foreground">
+                    Low Stock Items
+                  </h2>
+                  <code className="text-xs text-muted-foreground">text-3xl font-bold</code>
+                </div>
+                <p className="text-base text-muted-foreground">
+                  Major section dividers and category headers
                 </p>
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground">base - 16px / 1rem</p>
-                <p className="text-base text-foreground">
-                                    The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.
+
+              {/* Subsection title example */}
+              <div className="space-y-3 pb-6 border-b border-border">
+                <div className="flex items-baseline gap-3">
+                  <h3 className="font-heading text-2xl font-semibold text-foreground">
+                    Spirits & Liquors
+                  </h3>
+                  <code className="text-xs text-muted-foreground">text-2xl font-semibold</code>
+                </div>
+                <p className="text-base text-muted-foreground">
+                  Subsection headers within categories
                 </p>
               </div>
-              <div>
-                <p className="text-xs text-muted-foreground">sm - 14px / 0.875rem</p>
-                <p className="text-sm text-foreground">
-                                    The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">xs - 12px / 0.75rem</p>
-                <p className="text-xs text-muted-foreground">
-                                    The quick brown fox jumps over the lazy dog. Pack my box with five dozen liquor jugs.
+
+              {/* Card title example */}
+              <div className="space-y-3">
+                <div className="flex items-baseline gap-3">
+                  <h4 className="font-heading text-xl font-semibold text-primary">
+                    Aperol Spritz
+                  </h4>
+                  <code className="text-xs text-muted-foreground">text-xl font-semibold text-primary</code>
+                </div>
+                <p className="text-base text-muted-foreground">
+                  Card titles and item names with brand color
                 </p>
               </div>
             </CardContent>
           </Card>
 
+          {/* Body Text in Real Components */}
           <Card>
             <CardHeader>
-              <CardTitle>Font Weights</CardTitle>
-              <CardDescription>Weight variations for emphasis and hierarchy</CardDescription>
+              <CardTitle>Body Text & Reading Hierarchy</CardTitle>
+              <CardDescription>Inter font family with proper sizing for readability</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2">
-              <p className="text-base font-light text-foreground">Light (300) - Large headings, subtle emphasis</p>
-              <p className="text-base font-normal text-foreground">Regular (400) - Default body text</p>
-              <p className="text-base font-medium text-foreground">Medium (500) - Labels, emphasized text</p>
-              <p className="text-base font-semibold text-foreground">Semibold (600) - Strong emphasis</p>
-              <p className="text-base font-bold text-foreground">Bold (700) - Headings, very strong emphasis</p>
+            <CardContent className="space-y-6">
+              {/* Large text for emphasis */}
+              <div className="space-y-2">
+                <div className="flex items-baseline gap-2">
+                  <p className="text-lg text-foreground">
+                    Total inventory value: €12,450
+                  </p>
+                  <code className="text-xs text-muted-foreground">text-lg</code>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Emphasis text, important stats, featured content
+                </p>
+              </div>
+
+              {/* Default body text */}
+              <div className="space-y-2">
+                <div className="flex items-baseline gap-2">
+                  <p className="text-base text-foreground">
+                    You have 15 items below par level that require immediate attention.
+                  </p>
+                  <code className="text-xs text-muted-foreground">text-base</code>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Default body text, descriptions, general content (16px)
+                </p>
+              </div>
+
+              {/* Small text for UI */}
+              <div className="space-y-2">
+                <div className="flex items-baseline gap-2">
+                  <p className="text-sm text-foreground">
+                    Last updated: 2 hours ago by Marco Rossi
+                  </p>
+                  <code className="text-xs text-muted-foreground">text-sm</code>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  UI labels, secondary information, metadata (14px)
+                </p>
+              </div>
+
+              {/* Extra small for captions */}
+              <div className="space-y-2">
+                <div className="flex items-baseline gap-2">
+                  <p className="text-xs text-muted-foreground">
+                    Stock levels are updated in real-time across all locations
+                  </p>
+                  <code className="text-xs text-muted-foreground">text-xs</code>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Captions, hints, helper text with muted color (12px)
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Weight Combinations */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Font Weights in Context</CardTitle>
+              <CardDescription>Weight variations create visual hierarchy</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2 p-4 bg-muted rounded-lg">
+                <p className="text-base font-semibold text-foreground">Product Name</p>
+                <p className="text-sm font-normal text-muted-foreground">Category: Spirits • Stock: 12 bottles</p>
+                <p className="text-xs font-medium text-primary">Reorder recommended</p>
+              </div>
+              
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div>
+                  <p className="text-lg font-bold text-foreground">€145.00</p>
+                  <p className="text-sm font-normal text-muted-foreground">Total value</p>
+                </div>
+                <Button size="sm">View Details</Button>
+              </div>
             </CardContent>
           </Card>
         </section>
 
-        {/* Spacing & Layout */}
+        {/* Interactive Components - Buttons */}
         <section className="space-y-6">
           <div>
-            <h2 className="font-heading text-3xl font-bold text-foreground">Spacing & Layout</h2>
+            <h2 className="font-heading text-3xl font-bold text-foreground">Interactive Components</h2>
             <p className="mt-2 text-muted-foreground">
-                            4px base unit with touch-friendly targets
+              Buttons, forms, and interactive elements with all states
+            </p>
+          </div>
+
+          {/* Button Variants - All States */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Button Variants & States</CardTitle>
+              <CardDescription>Hover, focus, and disabled states - try interacting with each</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              {/* Primary Actions */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-foreground">Primary Actions (Default)</h4>
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="default">Save Inventory</Button>
+                  <Button variant="default" disabled>Processing...</Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Gold background, white text. Hover: 90% opacity. Focus: gold ring. Use for primary CTAs.
+                </p>
+              </div>
+
+              {/* Secondary Actions */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-foreground">Secondary & Outline</h4>
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="secondary">Cancel</Button>
+                  <Button variant="outline">View Details</Button>
+                  <Button variant="ghost">Edit</Button>
+                  <Button variant="link">Learn More</Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Secondary: muted bg. Outline: border with hover bg. Ghost: transparent with hover. Link: underline.
+                </p>
+              </div>
+
+              {/* Semantic Actions */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-foreground">Semantic Variants</h4>
+                <div className="flex flex-wrap gap-3">
+                  <Button variant="success">Stock Updated</Button>
+                  <Button variant="warning">Low Stock</Button>
+                  <Button variant="destructive">Delete Item</Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Success: green. Warning: amber. Destructive: red. Each has matching focus ring color.
+                </p>
+              </div>
+
+              {/* Sizes */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-foreground">Size Variants</h4>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button variant="default" size="sm">Small</Button>
+                  <Button variant="default" size="default">Default</Button>
+                  <Button variant="default" size="lg">Large</Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Small: h-9 (36px). Default: h-11 (44px). Large: h-12 (48px).
+                </p>
+                <p className="text-xs text-success">
+                  ✅ Default now meets WCAG AAA touch target minimum (44px)
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Form Elements */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Form Elements & Validation</CardTitle>
+              <CardDescription>Inputs with all states including validation feedback</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="max-w-2xl space-y-6">
+                {/* Normal input */}
+                <div className="space-y-2">
+                  <Label htmlFor="normal">Product Name</Label>
+                  <Input
+                    id="normal"
+                    type="text"
+                    placeholder="Enter product name..."
+                  />
+                  <p className="text-xs text-muted-foreground">Default state with placeholder</p>
+                </div>
+
+                {/* With value */}
+                <div className="space-y-2">
+                  <Label htmlFor="filled">Category</Label>
+                  <Input
+                    id="filled"
+                    type="text"
+                    defaultValue="Spirits & Liquors"
+                  />
+                  <p className="text-xs text-muted-foreground">Input with value - hover and focus to see states</p>
+                </div>
+
+                {/* Disabled */}
+                <div className="space-y-2">
+                  <Label htmlFor="disabled">SKU (Auto-generated)</Label>
+                  <Input
+                    id="disabled"
+                    type="text"
+                    defaultValue="SKU-2024-001"
+                    disabled
+                  />
+                  <p className="text-xs text-muted-foreground">Disabled state with reduced opacity</p>
+                </div>
+
+                {/* Error state */}
+                <div className="space-y-2">
+                  <Label htmlFor="error" className="text-destructive">Stock Quantity *</Label>
+                  <Input
+                    id="error"
+                    type="number"
+                    placeholder="0"
+                    className="border-destructive focus-visible:ring-destructive"
+                    aria-invalid="true"
+                  />
+                  <p className="text-sm text-destructive flex items-center gap-1">
+                    <X className="size-4" />
+                    This field is required
+                  </p>
+                </div>
+
+                {/* Success state */}
+                <div className="space-y-2">
+                  <Label htmlFor="success" className="text-success">Email Address</Label>
+                  <Input
+                    id="success"
+                    type="email"
+                    defaultValue="inventory@barback.com"
+                    className="border-success focus-visible:ring-success"
+                  />
+                  <p className="text-sm text-success flex items-center gap-1">
+                    <Check className="size-4" />
+                    Email verified successfully
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Dropdown Menu */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Dropdown Menu</CardTitle>
+              <CardDescription>Interactive menu component with hover states</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-4">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                      Actions
+                      <ChevronDown className="ml-2 size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    <DropdownMenuLabel>Inventory Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Check className="mr-2 size-4" />
+                      Update Stock
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Info className="mr-2 size-4" />
+                      View Details
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-destructive focus:text-destructive">
+                      <X className="mr-2 size-4" />
+                      Delete Item
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="default">
+                      Filter by Category
+                      <ChevronDown className="ml-2 size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuLabel>Product Categories</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>All Items</DropdownMenuItem>
+                    <DropdownMenuItem>Spirits & Liquors</DropdownMenuItem>
+                    <DropdownMenuItem>Wine & Champagne</DropdownMenuItem>
+                    <DropdownMenuItem>Beer & Cider</DropdownMenuItem>
+                    <DropdownMenuItem>Mixers & Syrups</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              <p className="text-xs text-muted-foreground mt-4">
+                Click buttons to see dropdown menus with hover effects and proper elevation
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Card Variants */}
+        <section className="space-y-6">
+          <div>
+            <h2 className="font-heading text-3xl font-bold text-foreground">Card Variants</h2>
+            <p className="mt-2 text-muted-foreground">
+              Content containers with semantic colors and hover states
             </p>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>Touch Targets</CardTitle>
-              <CardDescription>Minimum 44px (2.75rem) for accessibility</CardDescription>
+              <CardTitle>Card Component Variants</CardTitle>
+              <CardDescription>All card styles with real inventory use cases - hover to see effects</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex flex-wrap items-center gap-4">
-                <button type="button" className="h-touch rounded-md bg-primary px-6 text-primary-foreground hover:bg-primary/90">
-                                    Touch-friendly Button
-                </button>
-                <button type="button" className="h-touch rounded-md bg-secondary px-6 text-secondary-foreground hover:bg-secondary/90">
-                                    Secondary Button
-                </button>
+            <CardContent className="space-y-6">
+              {/* Default cards */}
+              <div>
+                <h4 className="text-sm font-semibold text-foreground mb-3">Default & Highlighted</h4>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Default Card</CardTitle>
+                      <CardDescription>Standard content container</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        Basic card styling with border, shadow, and proper spacing. Used for general content.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card variant="highlighted">
+                    <CardHeader>
+                      <CardTitle className="text-primary">Highlighted Card</CardTitle>
+                      <CardDescription>Enhanced visibility</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        Stronger border (primary/30) with hover shadow. Hover to see the transition effect.
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground">
-                                All interactive elements use h-touch class for 44px minimum height
-              </p>
+
+              {/* Semantic cards */}
+              <div>
+                <h4 className="text-sm font-semibold text-foreground mb-3">Semantic Variants with Colored Shadows</h4>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  <Card variant="primary">
+                    <CardHeader>
+                      <CardTitle className="text-primary">Featured Product</CardTitle>
+                      <CardDescription>Top selling item</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-2xl font-bold text-foreground mb-1">Aperol</p>
+                      <p className="text-sm text-muted-foreground">12 bottles • €145.00</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card variant="success">
+                    <CardHeader>
+                      <CardTitle className="text-success">Stock Updated</CardTitle>
+                      <CardDescription>Recent change</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        Campari stock increased by 6 bottles
+                      </p>
+                      <p className="text-xs text-success mt-2">2 minutes ago</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card variant="warning">
+                    <CardHeader>
+                      <CardTitle className="text-warning">Low Stock Alert</CardTitle>
+                      <CardDescription>Action required</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        Gin Hendrick's below par level
+                      </p>
+                      <p className="text-xs text-warning mt-2">3 bottles remaining</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card variant="destructive">
+                    <CardHeader>
+                      <CardTitle className="text-destructive">Out of Stock</CardTitle>
+                      <CardDescription>Critical shortage</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        Prosecco completely depleted
+                      </p>
+                      <p className="text-xs text-destructive mt-2">Order immediately</p>
+                    </CardContent>
+                  </Card>
+
+                  <Card variant="info">
+                    <CardHeader>
+                      <CardTitle className="text-info">Inventory Report</CardTitle>
+                      <CardDescription>Monthly summary</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        January report is ready
+                      </p>
+                      <p className="text-xs text-info mt-2">Download PDF</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
             </CardContent>
           </Card>
+        </section>
+
+        {/* Gradients */}
+        <section className="space-y-6">
+          <div>
+            <h2 className="font-heading text-3xl font-bold text-foreground">Gradient Highlights</h2>
+            <p className="mt-2 text-muted-foreground">
+              Premium effects for featured content - hover to see transitions
+            </p>
+          </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>Spacing Scale</CardTitle>
-              <CardDescription>4px increments for consistent rhythm</CardDescription>
+              <CardTitle>Available Gradients</CardTitle>
+              <CardDescription>CSS custom properties for premium visual effects</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {[1, 2, 3, 4, 6, 8, 12, 16, 20, 24].map((size) => (
-                  <div key={size} className="flex items-center gap-4">
-                    <div className="w-16 text-sm text-muted-foreground">
-                      {size} ({size * 4}px)
+            <CardContent className="space-y-6">
+              {/* Highlight gradient */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-foreground">Subtle Highlight (--gradient-highlight)</h4>
+                <div className="rounded-xl border border-primary/20 bg-[image:var(--gradient-highlight)] p-6 transition-all hover:bg-[image:var(--gradient-highlight-hover)] hover:shadow-lg">
+                  <h3 className="font-heading text-xl font-semibold text-primary mb-2">
+                    Featured Cocktail Menu
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Subtle gold gradient background. Hover changes to --gradient-highlight-hover with stronger gold tint.
+                  </p>
+                  <code className="text-xs bg-muted px-2 py-1 rounded">bg-[image:var(--gradient-highlight)]</code>
+                </div>
+              </div>
+
+              {/* Premium gradient */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-foreground">Premium Shimmer (--gradient-premium)</h4>
+                <div className="rounded-xl bg-[image:var(--gradient-premium)] p-6 shadow-md transition-transform hover:scale-[1.02]">
+                  <h3 className="font-heading text-xl font-semibold text-primary-foreground mb-2">
+                    Upgrade to Premium
+                  </h3>
+                  <p className="text-sm text-primary-foreground/90 mb-4">
+                    Bold gold shimmer for CTAs and premium features. Scales slightly on hover for attention.
+                  </p>
+                  <Button variant="secondary" size="sm">Learn More</Button>
+                </div>
+                <code className="text-xs text-muted-foreground">bg-[image:var(--gradient-premium)]</code>
+              </div>
+
+              {/* Surface gradient - Light mode only */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-foreground">Popover vs Card Colors</h4>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="rounded-xl bg-card border border-border p-6 shadow-sm">
+                    <h3 className="font-heading text-xl font-semibold text-card-foreground mb-2">
+                      Card Component
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Uses <code className="text-xs bg-muted px-1 rounded">--color-card</code> for elevated surfaces
+                    </p>
+                  </div>
+                  
+                  <div className="rounded-xl bg-popover border border-border p-6 shadow-md">
+                    <h3 className="font-heading text-xl font-semibold text-popover-foreground mb-2">
+                      Popover Component
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      Uses <code className="text-xs bg-muted px-1 rounded">--color-popover</code> for dropdown menus
+                    </p>
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  💡 Currently identical values - kept as semantic aliases. Popover may get higher elevation styling in the future.
+                </p>
+              </div>
+
+              {/* Combined example */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-foreground">Combining Gradient + Colored Shadow</h4>
+                <div className="rounded-xl border border-success/30 bg-[image:var(--gradient-highlight)] p-6 shadow-success transition-all hover:shadow-lg">
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="font-heading text-xl font-semibold text-success mb-1">
+                        Best Seller This Month
+                      </h3>
+                      <p className="text-sm text-muted-foreground">Negroni • 127 sold</p>
                     </div>
-                    <div
-                      className="bg-primary"
-                      style={{
-                        width: `${size * 4}px`,
-                        height: '16px',
-                      }}
-                    />
+                    <Check className="size-6 text-success" />
+                  </div>
+                  <Button variant="success" size="sm">View Analytics</Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Gradient background + semantic colored shadow for maximum visual impact
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Spacing & Shadows */}
+        <section className="space-y-6">
+          <div>
+            <h2 className="font-heading text-3xl font-bold text-foreground">Spacing & Elevation</h2>
+            <p className="mt-2 text-muted-foreground">
+              Touch-friendly spacing and dual-layer shadow system
+            </p>
+          </div>
+
+          {/* Touch targets */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Touch-Friendly Spacing</CardTitle>
+              <CardDescription>Mobile-first with 44px minimum touch targets</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-3">
+                <p className="text-sm font-medium text-foreground">Touch Target Class (h-touch = 44px)</p>
+                <div className="flex flex-wrap items-center gap-4">
+                  <button type="button" className="h-touch rounded-md bg-primary px-6 text-primary-foreground hover:bg-primary/90 transition-colors">
+                    Touch Button
+                  </button>
+                  <button type="button" className="h-touch rounded-md bg-secondary px-6 text-secondary-foreground hover:bg-secondary/80 transition-colors">
+                    Secondary
+                  </button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Use h-touch class for 44px minimum height (WCAG AAA compliance for mobile)
+                </p>
+                <p className="text-xs text-success">
+                  ✅ Button default size now h-11 (44px) - meets accessibility standards
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <p className="text-sm font-medium text-foreground">Spacing Scale (4px base unit)</p>
+                <div className="space-y-2">
+                  {[1, 2, 4, 6, 8, 12].map((size) => (
+                    <div key={size} className="flex items-center gap-4">
+                      <div className="w-20 text-sm text-muted-foreground">
+                        {size} ({size * 4}px)
+                      </div>
+                      <div
+                        className="bg-primary rounded"
+                        style={{
+                          width: `${size * 4}px`,
+                          height: '16px',
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Shadow system */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Dual-Layer Shadow System</CardTitle>
+              <CardDescription>Contact + ambient layers for realistic depth</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {(['sm', 'default', 'md', 'lg', 'xl', '2xl'] as const).map((level) => (
+                  <div key={level} className="space-y-2">
+                    <div className={`h-24 rounded-lg bg-card ${level === 'default' ? 'shadow' : `shadow-${level}`} flex items-center justify-center transition-transform hover:scale-105`}>
+                      <span className="text-sm font-medium text-card-foreground">
+                        shadow-{level === 'default' ? 'default' : level}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
+              <p className="text-xs text-muted-foreground">
+                Each shadow combines tight lighter contact shadow + diffused lighter ambient shadow in dark mode
+              </p>
             </CardContent>
           </Card>
         </section>
@@ -306,298 +852,58 @@ const DesignSystemPage: React.FC = () =>
           <div>
             <h2 className="font-heading text-3xl font-bold text-foreground">Border Radius</h2>
             <p className="mt-2 text-muted-foreground">
-                            From sharp to rounded corners
+              From sharp to rounded - creating visual hierarchy
             </p>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>Radius Scale</CardTitle>
-              <CardDescription>Subtle to pronounced rounding</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <RadiusDemo size="sm" label="Small (2px)" />
-                <RadiusDemo size="default" label="Default (4px)" />
-                <RadiusDemo size="md" label="Medium (6px)" />
-                <RadiusDemo size="lg" label="Large (8px)" />
-                <RadiusDemo size="xl" label="XL (12px)" />
-                <RadiusDemo size="2xl" label="2XL (16px)" />
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* Shadows */}
-        <section className="space-y-6">
-          <div>
-            <h2 className="font-heading text-3xl font-bold text-foreground">Elevation & Shadows</h2>
-            <p className="mt-2 text-muted-foreground">
-                            Stronger shadows optimized for dark backgrounds
-            </p>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Shadow Scale</CardTitle>
-              <CardDescription>From subtle to prominent elevation</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                <ShadowDemo level="sm" label="Small" />
-                <ShadowDemo level="default" label="Default" />
-                <ShadowDemo level="md" label="Medium" />
-                <ShadowDemo level="lg" label="Large" />
-                <ShadowDemo level="xl" label="XL" />
-                <ShadowDemo level="2xl" label="2XL" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Colored Shadows (Semantic)</CardTitle>
-              <CardDescription>Colored glows for emphasis and branding</CardDescription>
+              <CardTitle>Radius Scale in Action</CardTitle>
+              <CardDescription>Real component examples showing each radius size</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 <div className="space-y-2">
-                  <div className="flex h-32 items-center justify-center rounded-lg bg-card shadow-primary">
-                    <span className="font-medium text-primary">Primary Glow</span>
+                  <div className="h-20 bg-primary rounded-sm flex items-center justify-center">
+                    <span className="text-sm font-medium text-primary-foreground">rounded-sm (2px)</span>
                   </div>
-                  <p className="text-sm text-muted-foreground">Gold shadow for brand elements</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex h-32 items-center justify-center rounded-lg bg-card shadow-success">
-                    <span className="font-medium text-success">Success Glow</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">Green shadow for positive actions</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex h-32 items-center justify-center rounded-lg bg-card shadow-destructive">
-                    <span className="font-medium text-destructive">Error Glow</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">Red shadow for warnings</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex h-32 items-center justify-center rounded-lg bg-card shadow-warning">
-                    <span className="font-medium text-warning">Warning Glow</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">Amber shadow for caution</p>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex h-32 items-center justify-center rounded-lg bg-card shadow-info">
-                    <span className="font-medium text-info">Info Glow</span>
-                  </div>
-                  <p className="text-sm text-muted-foreground">Blue shadow for information</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* Components */}
-        <section className="space-y-6">
-          <div>
-            <h2 className="font-heading text-3xl font-bold text-foreground">Components</h2>
-            <p className="mt-2 text-muted-foreground">
-                            Interactive elements and patterns
-            </p>
-          </div>
-
-          {/* Buttons */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Buttons</CardTitle>
-              <CardDescription>All button variants and states</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <p className="text-sm font-medium text-foreground">Primary Actions</p>
-                  <div className="flex flex-wrap gap-3">
-                    <Button variant="default">Default Button</Button>
-                    <Button variant="default" disabled>
-                                            Disabled
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <p className="text-sm font-medium text-foreground">Secondary Actions</p>
-                  <div className="flex flex-wrap gap-3">
-                    <Button variant="secondary">Secondary</Button>
-                    <Button variant="outline">Outline</Button>
-                    <Button variant="ghost">Ghost</Button>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <p className="text-sm font-medium text-foreground">Semantic Actions</p>
-                  <div className="flex flex-wrap gap-3">
-                    <Button variant="destructive">Delete</Button>
-                    <Button variant="success">Success</Button>
-                    <Button variant="warning">Warning</Button>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <p className="text-sm font-medium text-foreground">Sizes</p>
-                  <div className="flex flex-wrap items-center gap-3">
-                    <Button size="sm">Small</Button>
-                    <Button size="default">Default</Button>
-                    <Button size="lg">Large</Button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Form Elements */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Form Elements</CardTitle>
-              <CardDescription>Inputs and form controls</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="max-w-md space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="text-input">Text Input</Label>
-                  <Input
-                    id="text-input"
-                    type="text"
-                    placeholder="Enter text..."
-                  />
+                  <p className="text-xs text-muted-foreground">Subtle rounding for tight spaces</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email-input">Email Input</Label>
-                  <Input
-                    id="email-input"
-                    type="email"
-                    placeholder="email@example.com"
-                  />
+                  <div className="h-20 bg-primary rounded-md flex items-center justify-center">
+                    <span className="text-sm font-medium text-primary-foreground">rounded-md (6px)</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Default for inputs and buttons</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="disabled-input">Disabled Input</Label>
-                  <Input
-                    id="disabled-input"
-                    type="text"
-                    placeholder="Disabled"
-                    disabled
-                  />
+                  <div className="h-20 bg-primary rounded-lg flex items-center justify-center">
+                    <span className="text-sm font-medium text-primary-foreground">rounded-lg (8px)</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Standard for cards and containers</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="error-input">Input with Error</Label>
-                  <Input
-                    id="error-input"
-                    type="text"
-                    placeholder="Invalid input"
-                    className="border-destructive focus-visible:ring-destructive"
-                  />
-                  <p className="text-sm text-destructive">This field is required</p>
+                  <div className="h-20 bg-primary rounded-xl flex items-center justify-center">
+                    <span className="text-sm font-medium text-primary-foreground">rounded-xl (12px)</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Larger cards and modals</p>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
 
-          {/* Cards */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Cards</CardTitle>
-              <CardDescription>Container components for content grouping</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Simple Card</CardTitle>
-                    <CardDescription>Basic card with header</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                                            Card content goes here with consistent spacing and typography.
-                    </p>
-                  </CardContent>
-                </Card>
+                <div className="space-y-2">
+                  <div className="h-20 bg-primary rounded-2xl flex items-center justify-center">
+                    <span className="text-sm font-medium text-primary-foreground">rounded-2xl (16px)</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Feature cards and hero sections</p>
+                </div>
 
-                <Card variant="highlighted">
-                  <CardHeader>
-                    <CardTitle className="text-primary">Highlighted Card</CardTitle>
-                    <CardDescription>Enhanced visibility variant</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                                            Uses stronger border and shadow for emphasis with hover effect.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card variant="primary">
-                  <CardHeader>
-                    <CardTitle className="text-primary">Primary Card</CardTitle>
-                    <CardDescription>With colored glow shadow</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                                            Colored shadows add depth and draw attention.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Card variant="success">
-                  <CardHeader>
-                    <CardTitle className="text-success">Success Card</CardTitle>
-                    <CardDescription>Positive actions</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                                            For successful operations or confirmations.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card variant="destructive">
-                  <CardHeader>
-                    <CardTitle className="text-destructive">Destructive Card</CardTitle>
-                    <CardDescription>Warning or error states</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                                            For errors, deletions, or critical warnings.
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Card variant="warning">
-                  <CardHeader>
-                    <CardTitle className="text-warning">Warning Card</CardTitle>
-                    <CardDescription>Caution states</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                                            For alerts that need attention.
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card variant="info">
-                  <CardHeader>
-                    <CardTitle className="text-info">Info Card</CardTitle>
-                    <CardDescription>Informational content</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                                            For helpful information and tips.
-                    </p>
-                  </CardContent>
-                </Card>
+                <div className="space-y-2">
+                  <div className="h-20 bg-primary rounded-full flex items-center justify-center">
+                    <span className="text-sm font-medium text-primary-foreground">rounded-full</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">Pills, badges, and avatars</p>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -606,136 +912,172 @@ const DesignSystemPage: React.FC = () =>
         {/* Accessibility */}
         <section className="space-y-6">
           <div>
-            <h2 className="font-heading text-3xl font-bold text-foreground">Accessibility Features</h2>
+            <h2 className="font-heading text-3xl font-bold text-foreground">Accessibility</h2>
             <p className="mt-2 text-muted-foreground">
-                            Built-in support for accessibility standards
+              Built-in accessibility features and best practices
             </p>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>Focus States</CardTitle>
-              <CardDescription>Visible focus indicators for keyboard navigation</CardDescription>
+              <CardTitle>Focus Management</CardTitle>
+              <CardDescription>Tab through these elements to see focus indicators</CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                                    Tab through these elements to see focus rings:
-                </p>
-                <div className="flex flex-wrap gap-3">
-                  <Button>Button 1</Button>
-                  <Button variant="secondary">Button 2</Button>
-                  <Input placeholder="Focus me" className="max-w-xs" />
-                </div>
+            <CardContent className="space-y-4">
+              <div className="flex flex-wrap gap-3">
+                <Button>First Button</Button>
+                <Button variant="secondary">Second Button</Button>
+                <Input placeholder="Then this input" className="max-w-xs" />
+                <Button variant="outline">Final Button</Button>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Reduced Motion</CardTitle>
-              <CardDescription>
-                                Respects prefers-reduced-motion preference
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-muted-foreground">
-                                All animations and transitions are automatically disabled for users who prefer reduced motion.
-                                This ensures a comfortable experience for users with vestibular disorders or motion sensitivity.
+              <p className="text-xs text-muted-foreground">
+                2px gold outline (--color-ring) with 2px offset. Automatically applied to interactive elements.
               </p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Color Contrast</CardTitle>
-              <CardDescription>WCAG AA compliant color combinations</CardDescription>
+              <CardTitle>Color Contrast & Motion</CardTitle>
+              <CardDescription>WCAG compliance and motion sensitivity</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-2 rounded-md bg-background p-4">
+                <div className="space-y-2 rounded-md bg-background border border-border p-4">
                   <p className="text-sm font-medium text-foreground">
-                                        Foreground on Background
+                    High Contrast Text
                   </p>
-                  <p className="text-xs text-muted-foreground">High contrast</p>
+                  <p className="text-xs text-muted-foreground">OKLCH ensures perceptually uniform brightness</p>
                 </div>
                 <div className="space-y-2 rounded-md bg-primary p-4">
                   <p className="text-sm font-medium text-primary-foreground">
-                                        Primary Foreground on Primary
+                    Primary Contrast
                   </p>
-                  <p className="text-xs text-primary-foreground/80">Readable contrast</p>
+                  <p className="text-xs text-primary-foreground/80">Readable white text on gold</p>
                 </div>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                All animations respect prefers-reduced-motion. Transitions are disabled for users with motion sensitivity.
+              </p>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* System Issues & Notes */}
+        <section className="space-y-6">
+          <div>
+            <h2 className="font-heading text-3xl font-bold text-destructive">Design System Issues & Recommendations</h2>
+            <p className="mt-2 text-muted-foreground">
+              Items requiring attention or clarification
+            </p>
+          </div>
+
+          <Card variant="warning">
+            <CardHeader>
+              <CardTitle className="text-warning">Critical Issues</CardTitle>
+              <CardDescription>Problems that should be fixed</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <AlertTriangle className="size-4 text-warning" />
+                  Shadow naming fixed: --shadow-2xl (was --shadow--2xl)
+                </p>
+                <p className="text-xs text-muted-foreground pl-6">
+                  ✅ Fixed: Corrected double-dash naming to match Tailwind v4 conventions.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <AlertTriangle className="size-4 text-warning" />
+                  Dark mode shadows now use lighter colors
+                </p>
+                <p className="text-xs text-muted-foreground pl-6">
+                  ✅ Fixed: Dark mode shadows use white (oklch(1.0)) instead of black for proper contrast on dark backgrounds.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <AlertTriangle className="size-4 text-warning" />
+                  Button touch targets now meet WCAG AAA (44px minimum)
+                </p>
+                <p className="text-xs text-muted-foreground pl-6">
+                  ✅ Fixed: Default h-11 (44px), Small h-9 (36px for desktop), Large h-12 (48px).
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card variant="info">
+            <CardHeader>
+              <CardTitle className="text-info">Resolved Issues</CardTitle>
+              <CardDescription>Previously unclear tokens - now fixed</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <Info className="size-4 text-info" />
+                  Removed: --color-accent (redundant with muted)
+                </p>
+                <p className="text-xs text-muted-foreground pl-6">
+                  ✅ Removed: accent had identical value to muted. Now using muted for all hover states and subtle backgrounds.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <Info className="size-4 text-info" />
+                  Removed: --color-surface and --color-surface-raised
+                </p>
+                <p className="text-xs text-muted-foreground pl-6">
+                  ✅ Removed: Redundant tokens. Using --color-input for sunken surfaces and --color-card/--color-popover for raised surfaces.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <Info className="size-4 text-info" />
+                  Removed: --gradient-surface
+                </p>
+                <p className="text-xs text-muted-foreground pl-6">
+                  ✅ Removed: No valid use case found. Gradients limited to --gradient-highlight and --gradient-premium.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <Info className="size-4 text-info" />
+                  Color token clarity: muted vs secondary
+                </p>
+                <p className="text-xs text-muted-foreground pl-6">
+                  ✅ Clarified: muted = subtle backgrounds & hover states + muted-foreground for secondary text. secondary = exclusively for secondary button variant.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-foreground flex items-center gap-2">
+                  <Info className="size-4 text-info" />
+                  popover vs card - semantic aliases
+                </p>
+                <p className="text-xs text-muted-foreground pl-6">
+                  ✅ Documented: Both use identical values but kept as semantic aliases. Allows future differentiation for elevation hierarchy.
+                </p>
               </div>
             </CardContent>
           </Card>
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-border pt-8 text-center">
-          <p className="text-sm text-muted-foreground">
-                        Barback Design System • Built with React, TypeScript, Tailwind v4, and shadcn/ui
+        <footer className="border-t border-border pt-8 text-center pb-8">
+          <p className="text-sm text-muted-foreground mb-2">
+            Barback Design System • Built with React, TypeScript, Tailwind v4, and shadcn/ui
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Interactive design system showcasing all components, variants, and states
           </p>
         </footer>
-      </div>
-    </div>
-  );
-};
-
-// Helper Components
-interface ColorSwatchProps
-{
-    name: string;
-    className: string;
-    description: string;
-}
-
-const ColorSwatch: React.FC<ColorSwatchProps> = ({ name, className, description }) => 
-{
-  return (
-    <div className="space-y-2">
-      <div className={`h-24 rounded-lg ${className} flex items-center justify-center`}>
-        <span className="font-medium">{name}</span>
-      </div>
-      <div>
-        <p className="text-sm font-medium">{name}</p>
-        <p className="text-xs text-muted-foreground">{description}</p>
-      </div>
-    </div>
-  );
-};
-
-interface RadiusDemoProps
-{
-    size: 'sm' | 'default' | 'md' | 'lg' | 'xl' | '2xl';
-    label: string;
-}
-
-const RadiusDemo: React.FC<RadiusDemoProps> = ({ size, label }) => 
-{
-  const radiusClass = size === 'default' ? 'rounded' : `rounded-${size}`;
-    
-  return (
-    <div className="space-y-2">
-      <div className={`h-20 bg-primary ${radiusClass}`} />
-      <p className="text-sm text-muted-foreground">{label}</p>
-    </div>
-  );
-};
-
-interface ShadowDemoProps
-{
-    level: 'sm' | 'default' | 'md' | 'lg' | 'xl' | '2xl';
-    label: string;
-}
-
-const ShadowDemo: React.FC<ShadowDemoProps> = ({ level, label }) => 
-{
-  const shadowClass = level === 'default' ? 'shadow' : `shadow-${level}`;
-    
-  return (
-    <div className="space-y-2">
-      <div className={`h-24 rounded-lg bg-card ${shadowClass} flex items-center justify-center`}>
-        <span className="text-sm font-medium text-card-foreground">{label}</span>
       </div>
     </div>
   );

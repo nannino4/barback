@@ -1,9 +1,10 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import type { Theme } from '@/types/theme'
 
 type ThemeState = {
-  theme: 'light' | 'dark' | 'system'
-  setTheme: (theme: 'light' | 'dark' | 'system') => void
+  theme: Theme
+  setTheme: (theme: Theme) => void
 }
 
 export const useThemeStore = create<ThemeState>()(
@@ -13,7 +14,7 @@ export const useThemeStore = create<ThemeState>()(
       setTheme: (theme) => set({ theme }),
     }),
     {
-      name: 'app-storage',
+      name: 'theme-storage',
     },
   ),
 )

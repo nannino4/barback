@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Configure dark mode to use class-based strategy instead of media query
+   - Light mode: when .light class is present on <html>
+   - Dark mode: when .dark class is present on <html>
+   This overrides the default @media (prefers-color-scheme: dark) behavior */
+@variant dark (.dark &);
+
 @theme {
   /* ===================================
      TYPOGRAPHY SYSTEM
@@ -19,9 +25,143 @@
   
   /* ===================================
      COLOR SYSTEM - "The Speakeasy"
-     Dark Theme (Default) - OKLCH Format
+     Light Theme (Default) - OKLCH Format
      =================================== */
   
+  /* Base colors */
+  --color-background: oklch(0.96 0.005 60);        /* Slightly warm white */
+  --color-foreground: oklch(0.20 0.01 240);        /* Dark text */
+  
+  /* Surface colors - More distinct from background */
+  --color-card: oklch(0.99 0.002 60);              /* Pure white cards for contrast */
+  --color-card-foreground: oklch(0.20 0.01 240);
+  
+  --color-popover: oklch(0.99 0.002 60);           /* Pure white popovers */
+  --color-popover-foreground: oklch(0.20 0.01 240);
+  
+  /* Brand colors - Brighter, more golden for light backgrounds */
+  --color-primary: oklch(0.62 0.20 85);            /* Brighter, more saturated gold */
+  --color-primary-foreground: oklch(0.99 0.002 60);
+  
+  /* Secondary UI - For button variants */
+  --color-secondary: oklch(0.88 0.005 240);        /* Secondary button background */
+  --color-secondary-foreground: oklch(0.20 0.01 240);
+  
+  /* Muted/subtle UI - Used for backgrounds AND secondary text */
+  --color-muted: oklch(0.92 0.005 240);            /* Muted backgrounds & hover states */
+  --color-muted-foreground: oklch(0.50 0.01 240);  /* Secondary/de-emphasized text */
+  
+  /* Semantic colors - Optimized for light backgrounds */
+  --color-destructive: oklch(0.55 0.22 27);        /* Rich red for contrast */
+  --color-destructive-foreground: oklch(0.99 0.002 60);
+  
+  /* Semantic colors - Success (optimized for light) */
+  --color-success: oklch(0.45 0.18 160);           /* Darker green for contrast */
+  --color-success-foreground: oklch(0.99 0.002 60);
+  
+  /* Semantic colors - Warning (optimized for light) */
+  --color-warning: oklch(0.55 0.18 70);            /* Richer amber for contrast */
+  --color-warning-foreground: oklch(0.20 0.01 240);
+  
+  /* Semantic colors - Info (optimized for light) */
+  --color-info: oklch(0.50 0.18 240);              /* Deeper blue for contrast */
+  --color-info-foreground: oklch(0.99 0.002 60);
+  
+  /* Interactive UI elements - More distinct */
+  --color-border: oklch(0.80 0.005 240);           /* Visible borders */
+  --color-input: oklch(0.99 0.002 60);             /* White inputs */
+  --color-ring: oklch(0.62 0.20 85);               /* Gold focus ring - simpler */
+  
+  /* Utility colors */
+  --color-white: oklch(1.0 0 0);
+  --color-black: oklch(0.0 0 0);
+  
+  /* ===================================
+     SHADOW SCALE
+     Dual-layer shadows: darker contact + lighter ambient
+     Light mode (default): Use DARKER shadows to create depth
+     =================================== */
+  
+  /* Dual-layer shadow: tight darker contact + diffused darker ambient */
+  --shadow-sm: 
+    0 1px 1px 0 oklch(0.3 0 0 / 0.08),
+    0 2px 3px 0 oklch(0.3 0 0 / 0.05);
+  
+  --shadow: 
+    0 1px 2px 0 oklch(0.3 0 0 / 0.1),
+    0 3px 6px -1px oklch(0.3 0 0 / 0.08);
+  
+  --shadow-md: 
+    0 2px 3px -1px oklch(0.3 0 0 / 0.12),
+    0 6px 12px -2px oklch(0.3 0 0 / 0.1);
+  
+  --shadow-lg: 
+    0 4px 6px -1px oklch(0.3 0 0 / 0.14),
+    0 12px 24px -4px oklch(0.3 0 0 / 0.12);
+  
+  --shadow-xl: 
+    0 8px 10px -3px oklch(0.3 0 0 / 0.16),
+    0 20px 32px -6px oklch(0.3 0 0 / 0.14);
+  
+  --shadow-2xl: 
+    0 12px 16px -4px oklch(0.3 0 0 / 0.18),
+    0 32px 50px -8px oklch(0.3 0 0 / 0.16);
+  
+  /* Colored shadows for cards in light mode - subtle glow effect */
+  --shadow-primary: 
+    0 2px 3px -1px oklch(0.3 0 0 / 0.12),
+    0 8px 20px -2px oklch(0.62 0.20 85 / 0.25);
+  
+  --shadow-success: 
+    0 2px 3px -1px oklch(0.3 0 0 / 0.12),
+    0 8px 20px -2px oklch(0.45 0.18 160 / 0.25);
+  
+  --shadow-destructive: 
+    0 2px 3px -1px oklch(0.3 0 0 / 0.12),
+    0 8px 20px -2px oklch(0.55 0.22 27 / 0.25);
+  
+  --shadow-warning: 
+    0 2px 3px -1px oklch(0.3 0 0 / 0.12),
+    0 8px 20px -2px oklch(0.55 0.18 70 / 0.25);
+  
+  --shadow-info: 
+    0 2px 3px -1px oklch(0.3 0 0 / 0.12),
+    0 8px 20px -2px oklch(0.50 0.18 240 / 0.25);
+  
+  /* ===================================
+     GRADIENTS FOR HIGHLIGHT CARDS
+     Premium feel with subtle gold accent
+     =================================== */
+  
+  /* Subtle gold accent gradient for featured cards */
+  --gradient-highlight: linear-gradient(
+    135deg,
+    oklch(0.99 0.002 60) 0%,
+    oklch(0.96 0.005 60) 50%,
+    oklch(0.62 0.20 85 / 0.08) 100%
+  );
+  
+  --gradient-highlight-hover: linear-gradient(
+    135deg,
+    oklch(0.98 0.003 60) 0%,
+    oklch(0.95 0.006 60) 50%,
+    oklch(0.62 0.20 85 / 0.12) 100%
+  );
+  
+  /* Premium shimmer gradient for CTAs */
+  --gradient-premium: linear-gradient(
+    135deg,
+    oklch(0.62 0.20 85) 0%,
+    oklch(0.66 0.22 80) 50%,
+    oklch(0.62 0.20 85) 100%
+  );
+}
+
+/* ===================================
+   DARK MODE THEME OVERRIDES
+   =================================== */
+
+.dark {
   /* Base colors */
   --color-background: oklch(0.15 0.01 240);        /* Charcoal base */
   --color-foreground: oklch(0.97 0.01 60);         /* High contrast text */
@@ -45,38 +185,28 @@
   --color-muted: oklch(0.22 0.01 240);             /* Muted backgrounds & hover states */
   --color-muted-foreground: oklch(0.66 0.01 60);   /* Secondary/de-emphasized text */
   
-  /* Semantic colors - Destructive/Error (optimized for dark) */
+  /* Semantic colors - Destructive/Error */
   --color-destructive: oklch(0.58 0.25 27);        /* Vibrant red, good saturation */
   --color-destructive-foreground: oklch(0.97 0.01 60);
   
-  /* Semantic colors - Success (optimized for dark) */
+  /* Semantic colors - Success */
   --color-success: oklch(0.70 0.20 160);           /* Brighter green for dark backgrounds */
   --color-success-foreground: oklch(0.15 0.01 240);
   
-  /* Semantic colors - Warning (optimized for dark) */
+  /* Semantic colors - Warning */
   --color-warning: oklch(0.78 0.20 60);            /* Brighter amber for dark backgrounds */
   --color-warning-foreground: oklch(0.15 0.01 240);
   
-  /* Semantic colors - Info (optimized for dark) */
+  /* Semantic colors - Info */
   --color-info: oklch(0.65 0.20 240);              /* Brighter blue for dark backgrounds */
   --color-info-foreground: oklch(0.97 0.01 60);
   
-  /* Interactive UI elements - More distinct differences */
+  /* Interactive UI elements - More distinct */
   --color-border: oklch(0.35 0.01 240);            /* Visible borders */
   --color-input: oklch(0.18 0.01 240);             /* Darker input backgrounds for contrast */
-  --color-ring: oklch(0.78 0.18 93);               /* Gold focus ring - simpler, matches primary */
+  --color-ring: oklch(0.78 0.18 93);               /* Gold focus ring */
   
-  /* Utility colors */
-  --color-white: oklch(1.0 0 0);
-  --color-black: oklch(0.0 0 0);
-  
-  /* ===================================
-     SHADOW SCALE
-     Dual-layer shadows: darker contact + lighter ambient
-     Dark mode: Use LIGHTER shadows to contrast with dark background
-     =================================== */
-  
-  /* Dual-layer shadow: tight lighter contact + diffused lighter ambient */
+  /* Shadow scale - lighter shadows for dark backgrounds */
   --shadow-sm: 
     0 1px 1px 0 oklch(1.0 0 0 / 0.05),
     0 2px 4px 0 oklch(1.0 0 0 / 0.03);
@@ -122,12 +252,7 @@
     0 2px 3px -1px oklch(1.0 0 0 / 0.08),
     0 8px 20px -2px oklch(0.65 0.20 240 / 0.3);
   
-  /* ===================================
-     GRADIENTS FOR HIGHLIGHT CARDS
-     Premium feel with subtle gold accent
-     =================================== */
-  
-  /* Subtle gold accent gradient for featured cards */
+  /* Gradients for dark mode */
   --gradient-highlight: linear-gradient(
     135deg,
     oklch(0.20 0.01 240) 0%,
@@ -142,127 +267,11 @@
     oklch(0.78 0.18 93 / 0.12) 100%
   );
   
-  /* Premium shimmer gradient for CTAs */
   --gradient-premium: linear-gradient(
     135deg,
     oklch(0.78 0.18 93) 0%,
     oklch(0.82 0.20 85) 50%,
     oklch(0.78 0.18 93) 100%
-  );
-}
-
-/* ===================================
-   LIGHT MODE THEME OVERRIDES
-   =================================== */
-
-.light {
-  /* Base colors */
-  --color-background: oklch(0.96 0.005 60);        /* Slightly warm white */
-  --color-foreground: oklch(0.20 0.01 240);        /* Dark text */
-  
-  /* Surface colors - More distinct from background */
-  --color-card: oklch(0.99 0.002 60);              /* Pure white cards for contrast */
-  --color-card-foreground: oklch(0.20 0.01 240);
-  
-  --color-popover: oklch(0.99 0.002 60);           /* Pure white popovers */
-  --color-popover-foreground: oklch(0.20 0.01 240);
-  
-  /* Brand colors - Brighter, more golden for light backgrounds */
-  --color-primary: oklch(0.62 0.20 85);            /* Brighter, more saturated gold */
-  --color-primary-foreground: oklch(0.99 0.002 60);
-  
-  /* Secondary UI - For button variants, not surfaces! */
-  --color-secondary: oklch(0.88 0.005 240);        /* Secondary button background */
-  --color-secondary-foreground: oklch(0.20 0.01 240);
-  
-  /* Muted/subtle UI - Used for backgrounds AND secondary text */
-  --color-muted: oklch(0.92 0.005 240);            /* Muted backgrounds & hover states */
-  --color-muted-foreground: oklch(0.50 0.01 240);  /* Secondary/de-emphasized text */
-  
-  /* Semantic colors - Optimized for light backgrounds */
-  --color-destructive: oklch(0.55 0.22 27);        /* Rich red for contrast */
-  --color-destructive-foreground: oklch(0.99 0.002 60);
-  
-  --color-success: oklch(0.45 0.18 160);           /* Darker green for contrast */
-  --color-success-foreground: oklch(0.99 0.002 60);
-  
-  --color-warning: oklch(0.55 0.18 70);            /* Richer amber for contrast */
-  --color-warning-foreground: oklch(0.20 0.01 240);
-  
-  --color-info: oklch(0.50 0.18 240);              /* Deeper blue for contrast */
-  --color-info-foreground: oklch(0.99 0.002 60);
-  
-  /* Interactive UI elements - More distinct */
-  --color-border: oklch(0.80 0.005 240);           /* Visible borders */
-  --color-input: oklch(0.99 0.002 60);             /* White inputs */
-  --color-ring: oklch(0.62 0.20 85);               /* Gold focus ring - simpler */
-  
-  /* Shadow scale - dual-layer for light backgrounds */
-  --shadow-sm: 
-    0 1px 1px 0 oklch(0.3 0 0 / 0.08),
-    0 2px 3px 0 oklch(0.3 0 0 / 0.05);
-  
-  --shadow: 
-    0 1px 2px 0 oklch(0.3 0 0 / 0.5),
-    0 3px 6px -1px oklch(0.3 0 0 / 0.08);
-  
-  --shadow-md: 
-    0 2px 3px -1px oklch(0.3 0 0 / 0.12),
-    0 6px 12px -2px oklch(0.3 0 0 / 0.1);
-  
-  --shadow-lg: 
-    0 4px 6px -1px oklch(0.3 0 0 / 0.14),
-    0 12px 20px -4px oklch(0.3 0 0 / 0.12);
-  
-  --shadow-xl: 
-    0 8px 10px -3px oklch(0.3 0 0 / 0.16),
-    0 20px 28px -6px oklch(0.3 0 0 / 0.14);
-  
-  --shadow-2xl: 
-    0 12px 16px -4px oklch(0.3 0 0 / 0.18),
-    0 32px 48px -8px oklch(0.3 0 0 / 0.16);
-  
-  /* Colored shadows for cards in light mode - subtle glow effect */
-  --shadow-primary: 
-    0 2px 3px -1px oklch(0.3 0 0 / 0.1),
-    0 8px 20px -2px oklch(0.62 0.20 85 / 0.2);
-  
-  --shadow-success: 
-    0 2px 3px -1px oklch(0.3 0 0 / 0.1),
-    0 8px 20px -2px oklch(0.45 0.18 160 / 0.2);
-  
-  --shadow-destructive: 
-    0 2px 3px -1px oklch(0.3 0 0 / 0.1),
-    0 8px 20px -2px oklch(0.55 0.22 27 / 0.2);
-  
-  --shadow-warning: 
-    0 2px 3px -1px oklch(0.3 0 0 / 0.1),
-    0 8px 20px -2px oklch(0.55 0.18 70 / 0.2);
-  
-  --shadow-info: 
-    0 2px 3px -1px oklch(0.3 0 0 / 0.1),
-    0 8px 20px -2px oklch(0.50 0.18 240 / 0.2);
-  
-  /* Gradients for light mode */
-  --gradient-highlight: linear-gradient(
-    135deg,
-    oklch(0.99 0.002 60) 0%,
-    oklch(0.96 0.005 60) 50%,
-    oklch(0.62 0.20 85 / 0.08) 100%
-  );
-  
-  --gradient-highlight-hover: linear-gradient(
-    135deg,
-    oklch(0.98 0.003 60) 0%,
-    oklch(0.94 0.008 60) 50%,
-    oklch(0.62 0.20 85 / 0.12) 100%
-  );
-  
-  --gradient-premium: linear-gradient(
-    135deg,
-    oklch(0.62 0.20 85) 0%,
-    oklch(0.68 0.22 80) 50%,
-    oklch(0.62 0.20 85) 100%
   );
 }
 

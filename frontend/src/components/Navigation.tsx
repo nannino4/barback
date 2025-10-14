@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Home } from 'lucide-react';
+import { Home, Palette } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { LanguageSelector } from '@/components/LanguageSelector';
@@ -37,6 +37,15 @@ export const Navigation: React.FC = () =>
             >
               <Home className="h-6 w-6" />
               <span>Barback</span>
+            </Link>
+            
+            {/* Design System Link */}
+            <Link
+              to="/design-system"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Palette className="h-4 w-4" />
+              <span className="hidden sm:inline">Design System</span>
             </Link>
           </div>
 

@@ -1,102 +1,181 @@
 @import "tailwindcss";
 
 @theme {
-  /* Typography - Tailwind v4 format */
+  /* ===================================
+     TYPOGRAPHY SYSTEM
+     =================================== */
+  
+  /* Font Families */
   --font-heading: 'Playfair Display', 'Times New Roman', serif;
   --font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   
-  /* Custom spacing */
-  --spacing-touch: 2.75rem; /* 44px minimum touch target */
+  /* ===================================
+     SPACING SYSTEM
+     =================================== */
   
-  /* Color System - "The Speakeasy" Dark Theme - OKLCH Format */
-  /* Tailwind v4 will automatically generate all color utilities from these */
+  /* Custom spacing - only what's truly needed */
+  --spacing-touch: 2.75rem; /* 44px minimum touch target for mobile accessibility */
   
-  /* Background colors */
-  --color-background: oklch(0.04 0.005 240);             /* Deep charcoal base */
-  --color-foreground: oklch(0.97 0.01 60);               /* High contrast text */
+  /* ===================================
+     COLOR SYSTEM - "The Speakeasy"
+     Dark Theme (Default) - OKLCH Format
+     =================================== */
   
-  --color-card: oklch(0.15 0.005 240);                   /* Elevated surfaces - lighter for better visibility */
-  --color-card-foreground: oklch(0.97 0.01 60);          /* Card text */
+  /* Base colors */
+  --color-background: oklch(0.15 0.01 240);        /* Charcoal base */
+  --color-foreground: oklch(0.97 0.01 60);         /* High contrast text */
   
-  --color-popover: oklch(0.15 0.005 240);                /* Popover background */
-  --color-popover-foreground: oklch(0.97 0.01 60);       /* Popover text */
+  /* Surface colors - More distinct from background */
+  --color-card: oklch(0.20 0.01 240);              /* Elevated surfaces */
+  --color-card-foreground: oklch(0.97 0.01 60);
   
-  /* Brand colors - Gold accent */
-  --color-primary: oklch(0.76 0.17 93);                  /* Gold primary - generates text-primary, bg-primary, etc. */
-  --color-primary-foreground: oklch(0.04 0.005 240);     /* Dark text on gold */
+  --color-popover: oklch(0.20 0.01 240);           /* Popover surfaces */
+  --color-popover-foreground: oklch(0.97 0.01 60);
   
-  /* Secondary backgrounds */
-  --color-secondary: oklch(0.16 0.005 240);              /* Secondary background */
-  --color-secondary-foreground: oklch(0.97 0.01 60);     /* Secondary text */
+  /* Brand colors - Gold accent (optimized for dark mode) */
+  --color-primary: oklch(0.78 0.18 93);            /* Brighter gold for dark backgrounds */
+  --color-primary-foreground: oklch(0.15 0.01 240);
   
-  /* Muted elements */
-  --color-muted: oklch(0.16 0.005 240);                  /* Muted background */
-  --color-muted-foreground: oklch(0.66 0.01 60);         /* Muted text */
+  /* Secondary UI */
+  --color-secondary: oklch(0.22 0.01 240);         /* Secondary surfaces */
+  --color-secondary-foreground: oklch(0.97 0.01 60);
   
-  /* Accent elements */
-  --color-accent: oklch(0.16 0.005 240);                 /* Accent background */
-  --color-accent-foreground: oklch(0.97 0.01 60);        /* Accent text */
+  /* Muted/subtle UI */
+  --color-muted: oklch(0.22 0.01 240);             /* Muted backgrounds */
+  --color-muted-foreground: oklch(0.66 0.01 60);   /* Muted text */
   
-  /* Semantic colors */
-  --color-destructive: oklch(0.60 0.20 25);              /* Error red */
-  --color-destructive-foreground: oklch(0.97 0.01 60);   /* Error text */
+  /* Accent UI */
+  --color-accent: oklch(0.22 0.01 240);            /* Accent backgrounds */
+  --color-accent-foreground: oklch(0.97 0.01 60);
   
-  --color-success: oklch(0.65 0.20 160);                 /* Success green */
-  --color-warning: oklch(0.76 0.20 38);                  /* Warning amber */
-  --color-info: oklch(0.60 0.18 217);                    /* Info blue */
+  /* Semantic colors - Destructive/Error (optimized for dark) */
+  --color-destructive: oklch(0.58 0.25 27);        /* Vibrant red, good saturation */
+  --color-destructive-foreground: oklch(0.97 0.01 60);
   
-  /* UI elements - subtle variations for better UX */
-  --color-border: oklch(0.25 0.005 240);                 /* Lighter borders for better visibility */
-  --color-input: oklch(0.22 0.005 240);                  /* Lighter inputs for better distinction */
-  --color-ring: var(--color-primary);                    /* Reuse primary for focus rings */
+  /* Semantic colors - Success (optimized for dark) */
+  --color-success: oklch(0.70 0.20 160);           /* Brighter green for dark backgrounds */
+  --color-success-foreground: oklch(0.15 0.01 240);
   
-  /* Standard colors for compatibility */
+  /* Semantic colors - Warning (optimized for dark) */
+  --color-warning: oklch(0.78 0.20 60);            /* Brighter amber for dark backgrounds */
+  --color-warning-foreground: oklch(0.15 0.01 240);
+  
+  /* Semantic colors - Info (optimized for dark) */
+  --color-info: oklch(0.65 0.20 240);              /* Brighter blue for dark backgrounds */
+  --color-info-foreground: oklch(0.97 0.01 60);
+  
+  /* Interactive UI elements - More distinct differences */
+  --color-border: oklch(0.35 0.01 240);            /* Visible borders */
+  --color-input: oklch(0.18 0.01 240);             /* Darker input backgrounds for contrast */
+  --color-ring: oklch(0.78 0.18 93);               /* Gold focus ring - simpler, matches primary */
+  
+  /* Utility colors */
   --color-white: oklch(1.0 0 0);
   --color-black: oklch(0.0 0 0);
   
-  /* Border radius scale */
-  --radius: 0.25rem;
-  --radius-sm: 0.125rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
+  /* ===================================
+     SHADOW SCALE
+     Dark mode: Lighter gray shadows for depth
+     =================================== */
   
-  /* Shadow scale - stronger for dark backgrounds */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
-  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.5), 0 1px 2px -1px rgb(0 0 0 / 0.5);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+  --shadow-sm: 0 1px 2px 0 rgb(60 60 60 / 0.5);
+  --shadow: 0 1px 3px 0 rgb(80 80 80 / 0.6), 0 1px 2px -1px rgb(60 60 60 / 0.5);
+  --shadow-md: 0 4px 6px -1px rgb(80 80 80 / 0.6), 0 2px 4px -2px rgb(70 70 70 / 0.5);
+  --shadow-lg: 0 10px 15px -3px rgb(90 90 90 / 0.7), 0 4px 6px -4px rgb(80 80 80 / 0.6);
+  --shadow-xl: 0 20px 25px -5px rgb(100 100 100 / 0.7), 0 8px 10px -6px rgb(90 90 90 / 0.6);
+  --shadow--2xl: 0 25px 50px -12px rgb(120 120 120 / 0.8);
   
-  /* Custom design system tokens */
+  /* Colored shadows for cards in dark mode */
+  --shadow-primary: 0 4px 20px -2px oklch(0.78 0.18 93 / 0.15);
+  --shadow-success: 0 4px 20px -2px oklch(0.70 0.20 160 / 0.15);
+  --shadow-destructive: 0 4px 20px -2px oklch(0.58 0.25 27 / 0.15);
+  --shadow-warning: 0 4px 20px -2px oklch(0.78 0.20 60 / 0.15);
+  --shadow-info: 0 4px 20px -2px oklch(0.65 0.20 240 / 0.15);
+  
+  /* ===================================
+     CUSTOM DESIGN TOKENS
+     Only essential custom values
+     =================================== */
+  
   --height-touch: var(--spacing-touch);
 }
 
-/* Light mode variant */
+/* ===================================
+   LIGHT MODE THEME OVERRIDES
+   =================================== */
+
 .light {
-  --color-background: oklch(0.98 0 0);
-  --color-foreground: oklch(0.11 0.005 240);
-  --color-card: oklch(0.98 0 0);
-  --color-card-foreground: oklch(0.11 0.005 240);
-  --color-popover: oklch(0.98 0 0);
-  --color-popover-foreground: oklch(0.11 0.005 240);
-  --color-primary-foreground: oklch(0.98 0 0);
-  --color-secondary: oklch(0.94 0 0);
-  --color-secondary-foreground: oklch(0.11 0.005 240);
-  --color-muted: oklch(0.94 0 0);
-  --color-muted-foreground: oklch(0.45 0.005 240);
-  --color-accent: oklch(0.94 0 0);
-  --color-accent-foreground: oklch(0.11 0.005 240);
-  --color-destructive-foreground: oklch(0.98 0 0);
-  /* UI elements for light mode */
-  --color-border: oklch(0.82 0.005 240);
-  --color-input: oklch(0.88 0.005 240);
+  /* Base colors */
+  --color-background: oklch(0.96 0.005 60);        /* Slightly warm white */
+  --color-foreground: oklch(0.20 0.01 240);        /* Dark text */
+  
+  /* Surface colors - More distinct from background */
+  --color-card: oklch(0.99 0.002 60);              /* Pure white cards for contrast */
+  --color-card-foreground: oklch(0.20 0.01 240);
+  
+  --color-popover: oklch(0.99 0.002 60);           /* Pure white popovers */
+  --color-popover-foreground: oklch(0.20 0.01 240);
+  
+  /* Brand colors - Brighter, more golden for light backgrounds */
+  --color-primary: oklch(0.62 0.20 85);            /* Brighter, more saturated gold */
+  --color-primary-foreground: oklch(0.99 0.002 60);
+  
+  /* Secondary UI */
+  --color-secondary: oklch(0.92 0.005 240);        /* Light gray surfaces */
+  --color-secondary-foreground: oklch(0.20 0.01 240);
+  
+  /* Muted/subtle UI */
+  --color-muted: oklch(0.92 0.005 240);            /* Muted backgrounds */
+  --color-muted-foreground: oklch(0.50 0.01 240);  /* Muted text */
+  
+  /* Accent UI */
+  --color-accent: oklch(0.92 0.005 240);           /* Accent backgrounds */
+  --color-accent-foreground: oklch(0.20 0.01 240);
+  
+  /* Semantic colors - Optimized for light backgrounds */
+  --color-destructive: oklch(0.55 0.22 27);        /* Rich red for contrast */
+  --color-destructive-foreground: oklch(0.99 0.002 60);
+  
+  --color-success: oklch(0.45 0.18 160);           /* Darker green for contrast */
+  --color-success-foreground: oklch(0.99 0.002 60);
+  
+  --color-warning: oklch(0.55 0.18 70);            /* Richer amber for contrast */
+  --color-warning-foreground: oklch(0.20 0.01 240);
+  
+  --color-info: oklch(0.50 0.18 240);              /* Deeper blue for contrast */
+  --color-info-foreground: oklch(0.99 0.002 60);
+  
+  /* Interactive UI elements - More distinct */
+  --color-border: oklch(0.80 0.005 240);           /* Visible borders */
+  --color-input: oklch(0.99 0.002 60);             /* White inputs */
+  --color-ring: oklch(0.62 0.20 85);               /* Gold focus ring - simpler */
+  
+  /* Shadow scale - subtle for light backgrounds */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.12), 0 4px 6px -4px rgb(0 0 0 / 0.08);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.15), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow--2xl: 0 25px 50px -12px rgb(0 0 0 / 0.18);
+  
+  /* Colored shadows for cards in light mode - more subtle */
+  --shadow-primary: 0 4px 20px -2px oklch(0.62 0.20 85 / 0.12);
+  --shadow-success: 0 4px 20px -2px oklch(0.45 0.18 160 / 0.12);
+  --shadow-destructive: 0 4px 20px -2px oklch(0.55 0.22 27 / 0.12);
+  --shadow-warning: 0 4px 20px -2px oklch(0.55 0.18 70 / 0.12);
+  --shadow-info: 0 4px 20px -2px oklch(0.50 0.18 240 / 0.12);
 }
 
-/* Base application styles */
-* {
+/* ===================================
+   BASE APPLICATION STYLES
+   =================================== */
+
+*,
+*::before,
+*::after {
   border-color: var(--color-border);
+  box-sizing: border-box;
 }
 
 body {
@@ -104,15 +183,38 @@ body {
   color: var(--color-foreground);
   font-family: var(--font-body);
   font-feature-settings: "rlig" 1, "calt" 1;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Enhanced UX styles */
+/* ===================================
+   ENHANCED UX STYLES
+   =================================== */
+
 ::placeholder {
-  color: color-mix(in oklch, var(--color-muted-foreground), transparent 50%);
+  color: oklch(from var(--color-muted-foreground) l c h / 0.5);
   opacity: 1;
 }
 
-/* Respect user's motion preferences */
+/* Simplified, elegant focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+/* Smooth scrolling with preference support */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ===================================
+   ACCESSIBILITY - REDUCED MOTION
+   =================================== */
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

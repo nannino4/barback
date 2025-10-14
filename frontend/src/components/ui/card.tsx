@@ -2,13 +2,28 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-function Card({ className, ...props }: React.ComponentProps<"div">) 
+interface CardProps extends React.ComponentProps<"div"> {
+  variant?: "default" | "highlighted" | "primary" | "success" | "destructive" | "warning" | "info";
+}
+
+function Card({ className, variant = "default", ...props }: CardProps) 
 {
+  const variantClasses = {
+    default: "bg-card text-card-foreground border-border",
+    highlighted: "bg-card text-card-foreground border-primary/30 shadow-md hover:shadow-lg transition-shadow",
+    primary: "bg-card text-card-foreground border-primary/40 shadow-primary",
+    success: "bg-card text-card-foreground border-success/40 shadow-success",
+    destructive: "bg-card text-card-foreground border-destructive/40 shadow-destructive",
+    warning: "bg-card text-card-foreground border-warning/40 shadow-warning",
+    info: "bg-card text-card-foreground border-info/40 shadow-info",
+  };
+
   return (
     <div
       data-slot="card"
       className={cn(
-        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        "flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        variantClasses[variant],
         className,
       )}
       {...props}

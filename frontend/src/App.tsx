@@ -7,6 +7,7 @@ import { ProtectedRoute } from '@/components/features/auth/ProtectedRoute'
 import { AuthRouter } from '@/components/features/auth/AuthRouter'
 import { HomePage } from '@/pages/HomePage'
 import { LandingPage } from '@/pages/LandingPage'
+import DesignSystemPage from '@/pages/DesignSystemPage'
 
 // Create a client
 const queryClient = new QueryClient({
@@ -27,6 +28,9 @@ function AppContent()
         <Route element={<AppLayout />}>
           {/* Public Landing Page */}
           <Route path="/" element={<LandingPage />} />
+          
+          {/* Design System Showcase */}
+          <Route path="/design-system" element={<DesignSystemPage />} />
           
           {/* Protected Dashboard */}
           <Route

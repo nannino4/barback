@@ -16,7 +16,7 @@ import { ChevronDown, Check, X, AlertTriangle, Info } from 'lucide-react';
 const DesignSystemPage: React.FC = () =>
 {
   return (
-    <div className="min-h-screen bg-background-dark p-4 md:p-8">
+    <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="mx-auto max-w-7xl space-y-12">
         {/* Header */}
         <header className="space-y-4">
@@ -101,8 +101,8 @@ const DesignSystemPage: React.FC = () =>
               <div className="rounded-lg bg-muted p-4 space-y-2">
                 <p className="text-sm font-medium text-foreground">Usage Rules:</p>
                 <ul className="text-xs text-muted-foreground space-y-1 ml-4 list-disc">
-                  <li><strong>background-dark:</strong> Page base layer (this design system page uses it)</li>
-                  <li><strong>background:</strong> Container cards that hold other cards/examples</li>
+                  <li><strong>background-dark:</strong> Rarely needed - use for special sunken panels</li>
+                  <li><strong>background:</strong> Page base layer + Container panels that hold other cards/examples</li>
                   <li><strong>background-light:</strong> Rarely needed - use for special elevated panels</li>
                   <li><strong>card:</strong> ONLY for actual Card components (auto-applied by Card component)</li>
                   <li><strong>input:</strong> ONLY for Input fields (auto-applied by Input component)</li>
@@ -359,19 +359,23 @@ const DesignSystemPage: React.FC = () =>
               <CardDescription>Weight variations create visual hierarchy</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2 p-4 bg-muted rounded-lg">
-                <p className="text-base font-semibold text-foreground">Product Name</p>
-                <p className="text-sm font-normal text-muted-foreground">Category: Spirits • Stock: 12 bottles</p>
-                <p className="text-xs font-medium text-primary">Reorder recommended</p>
-              </div>
+              <Card className="shadow-sm">
+                <CardContent className="space-y-2 pt-6">
+                  <p className="text-base font-semibold text-foreground">Product Name</p>
+                  <p className="text-sm font-normal text-muted-foreground">Category: Spirits • Stock: 12 bottles</p>
+                  <p className="text-xs font-medium text-primary">Reorder recommended</p>
+                </CardContent>
+              </Card>
               
-              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                <div>
-                  <p className="text-lg font-bold text-foreground">€145.00</p>
-                  <p className="text-sm font-normal text-muted-foreground">Total value</p>
-                </div>
-                <Button size="sm">View Details</Button>
-              </div>
+              <Card className="shadow-sm">
+                <CardContent className="flex items-center justify-between pt-6">
+                  <div>
+                    <p className="text-lg font-bold text-foreground">€145.00</p>
+                    <p className="text-sm font-normal text-muted-foreground">Total value</p>
+                  </div>
+                  <Button size="sm">View Details</Button>
+                </CardContent>
+              </Card>
             </CardContent>
           </Card>
         </section>
@@ -517,7 +521,7 @@ const DesignSystemPage: React.FC = () =>
                     id="success"
                     type="email"
                     defaultValue="inventory@barback.com"
-                    className="bg-input shadow-sm border-success focus-visible:ring-success"
+                    className="bg-input shadow-sm border-success"
                   />
                   <p className="text-sm text-success flex items-center gap-1">
                     <Check className="size-4" />
@@ -604,8 +608,8 @@ const DesignSystemPage: React.FC = () =>
             <CardContent className="space-y-6">
               {/* Default cards */}
               <div>
-                <h4 className="text-sm font-semibold text-foreground mb-3">Default & Highlighted</h4>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <h4 className="text-sm font-semibold text-foreground mb-3">Default, Bordered & Highlighted</h4>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   <Card className="shadow-md">
                     <CardHeader>
                       <CardTitle>Default Card</CardTitle>
@@ -613,89 +617,32 @@ const DesignSystemPage: React.FC = () =>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground">
-                        Basic card styling with shadow-md. Card component auto-applies bg-card.
+                        Basic card styling with shadow-md. No border by default.
                       </p>
                     </CardContent>
                   </Card>
 
-                  <Card variant="highlighted" className="shadow-lg">
+                  <Card variant="bordered" className="shadow-md">
+                    <CardHeader>
+                      <CardTitle>Bordered Card</CardTitle>
+                      <CardDescription>With subtle border</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        Default card with a subtle border using border-border color.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  <Card variant="highlighted">
                     <CardHeader>
                       <CardTitle className="text-primary">Highlighted Card</CardTitle>
                       <CardDescription>Enhanced visibility</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground">
-                        Stronger border (primary/30) with shadow-lg. Hover to see the transition effect.
+                        Stronger border (primary/30) with shadow-lg for featured content and important sections.
                       </p>
-                    </CardContent>
-                  </Card>
-                </div>
-              </div>
-
-              {/* Semantic cards */}
-              <div>
-                <h4 className="text-sm font-semibold text-foreground mb-3">Semantic Variants</h4>
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  <Card variant="primary" className="shadow-md">
-                    <CardHeader>
-                      <CardTitle className="text-primary">Featured Product</CardTitle>
-                      <CardDescription>Top selling item</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-2xl font-bold text-foreground mb-1">Aperol</p>
-                      <p className="text-sm text-muted-foreground">12 bottles • €145.00</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card variant="success" className="shadow-md">
-                    <CardHeader>
-                      <CardTitle className="text-success">Stock Updated</CardTitle>
-                      <CardDescription>Recent change</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">
-                        Campari stock increased by 6 bottles
-                      </p>
-                      <p className="text-xs text-success mt-2">2 minutes ago</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card variant="warning" className="shadow-md">
-                    <CardHeader>
-                      <CardTitle className="text-warning">Low Stock Alert</CardTitle>
-                      <CardDescription>Action required</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">
-                        Gin Hendrick's below par level
-                      </p>
-                      <p className="text-xs text-warning mt-2">3 bottles remaining</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card variant="destructive" className="shadow-md">
-                    <CardHeader>
-                      <CardTitle className="text-destructive">Out of Stock</CardTitle>
-                      <CardDescription>Critical shortage</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">
-                        Prosecco completely depleted
-                      </p>
-                      <p className="text-xs text-destructive mt-2">Order immediately</p>
-                    </CardContent>
-                  </Card>
-
-                  <Card variant="info" className="shadow-md">
-                    <CardHeader>
-                      <CardTitle className="text-info">Inventory Report</CardTitle>
-                      <CardDescription>Monthly summary</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm text-muted-foreground">
-                        January report is ready
-                      </p>
-                      <p className="text-xs text-info mt-2">Download PDF</p>
                     </CardContent>
                   </Card>
                 </div>
@@ -864,11 +811,13 @@ const DesignSystemPage: React.FC = () =>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {(['sm', 'default', 'md', 'lg', 'xl', '2xl'] as const).map((level) => (
                   <div key={level} className="space-y-2">
-                    <div className={`h-24 rounded-lg bg-card ${level === 'default' ? 'shadow' : `shadow-${level}`} flex items-center justify-center transition-transform hover:scale-105`}>
-                      <span className="text-sm font-medium text-card-foreground">
-                        shadow-{level === 'default' ? 'default' : level}
-                      </span>
-                    </div>
+                    <Card className={`${level === 'default' ? 'shadow' : `shadow-${level}`} transition-transform hover:scale-105`}>
+                      <CardContent className="h-24 flex items-center justify-center">
+                        <span className="text-sm font-medium text-card-foreground">
+                          shadow-{level === 'default' ? 'default' : level}
+                        </span>
+                      </CardContent>
+                    </Card>
                     <p className="text-xs text-center text-muted-foreground">
                       {level === 'sm' && 'Subtle depth'}
                       {level === 'default' && 'Standard cards'}

@@ -137,35 +137,37 @@
 
 .light {
   /* Background hierarchy - darkest to lightest */
-  --color-background-dark: oklch(0.92 0.005 240);  /* Deepest: recessed areas, wells */
-  --color-background: oklch(0.96 0.005 60);        /* Base: main app sections */
-  --color-background-light: oklch(0.99 0.002 60);  /* Elevated: cards, popovers */
+  --color-background-dark: oklch(0.92 0.01 60);    /* Deepest: recessed areas, wells */
+  --color-background: oklch(0.96 0.01 60);         /* Base: main app sections */
+  --color-background-light: oklch(0.99 0.01 60);   /* Elevated: cards, popovers */
   --color-foreground: oklch(0.20 0.01 240);        /* Dark text */
   
   /* Surface colors - More distinct from background */
-  --color-card: oklch(1 0 0);                      /* Pure white for cards */
-  --color-card-foreground: oklch(0.20 0.01 240);  --color-popover: oklch(0.99 0.002 60);           /* Pure white popovers */
+  --color-card: oklch(0.995 0.005 60);             /* Very light, subtle warmth for cards */
+  --color-card-foreground: oklch(0.20 0.01 240);
+  
+  --color-popover: oklch(0.995 0.005 60);          /* Same as card for popovers */
   --color-popover-foreground: oklch(0.20 0.01 240);
   
   /* Muted/subtle UI - Used for backgrounds AND secondary text */
-  --color-muted: oklch(0.92 0.005 240);            /* Muted backgrounds & hover states */
+  --color-muted: oklch(0.92 0.01 60);              /* Muted backgrounds & hover states */
   --color-muted-foreground: oklch(0.50 0.01 240);  /* Secondary/de-emphasized text */
   
   /* Brand colors - Brighter, more golden for light backgrounds */
   --color-primary: oklch(0.62 0.20 85);            /* Brighter, more saturated gold */
-  --color-primary-foreground: oklch(0.99 0.002 60);
+  --color-primary-foreground: oklch(0.995 0.005 60);
   
   /* Secondary UI - For button variants */
-  --color-secondary: oklch(0.88 0.005 240);        /* Secondary button background */
+  --color-secondary: oklch(0.88 0.01 60);          /* Secondary button background */
   --color-secondary-foreground: oklch(0.20 0.01 240);
   
   /* Semantic colors - Optimized for light backgrounds */
   --color-destructive: oklch(0.55 0.22 27);        /* Rich red for contrast */
-  --color-destructive-foreground: oklch(0.99 0.002 60);
+  --color-destructive-foreground: oklch(0.995 0.005 60);
   
   /* Semantic colors - Success (optimized for light) */
   --color-success: oklch(0.45 0.18 160);           /* Darker green for contrast */
-  --color-success-foreground: oklch(0.99 0.002 60);
+  --color-success-foreground: oklch(0.995 0.005 60);
   
   /* Semantic colors - Warning (optimized for light) */
   --color-warning: oklch(0.55 0.18 70);            /* Richer amber for contrast */
@@ -173,12 +175,12 @@
   
   /* Semantic colors - Info (optimized for light) */
   --color-info: oklch(0.50 0.18 240);              /* Deeper blue for contrast */
-  --color-info-foreground: oklch(0.99 0.002 60);
+  --color-info-foreground: oklch(0.995 0.005 60);
   
   /* Interactive UI elements - More distinct */
-  --color-border: oklch(0.80 0.005 240);           /* Visible borders */
-  --color-input: oklch(0.99 0.002 60);             /* White inputs */
-  --color-ring: oklch(0.62 0.20 85);               /* Gold focus ring - simpler */
+  --color-border: oklch(0.80 0.01 60);             /* Visible borders */
+  --color-input: oklch(0.99 0.01 60);              /* Very light, consistent with background-light */
+  --color-ring: oklch(0.62 0.20 85);               /* Gold focus ring */
 
   
   /* Inset highlight color for top inner glow */
@@ -220,7 +222,6 @@
 *,
 *::before,
 *::after {
-  border-color: var(--color-border);
   box-sizing: border-box;
 }
 

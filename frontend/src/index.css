@@ -28,16 +28,22 @@
      Light Theme (Default) - OKLCH Format
      =================================== */
   
-  /* Base colors */
-  --color-background: oklch(0.15 0.01 240);        /* Charcoal base */
+  /* Background hierarchy - darkest to lightest */
+  --color-background-dark: oklch(0.12 0.01 240);   /* Deepest: recessed areas, wells */
+  --color-background: oklch(0.15 0.01 240);        /* Base: main app sections */
+  --color-background-light: oklch(0.18 0.01 240);  /* Elevated: cards, popovers */
   --color-foreground: oklch(0.97 0.01 60);         /* High contrast text */
   
   /* Surface colors - More distinct from background */
-  --color-card: oklch(0.20 0.01 240);              /* Elevated surfaces */
+  --color-card: oklch(0.20 0.01 240);              /* Card component backgrounds */
   --color-card-foreground: oklch(0.97 0.01 60);
   
   --color-popover: oklch(0.20 0.01 240);           /* Popover surfaces */
   --color-popover-foreground: oklch(0.97 0.01 60);
+  
+  /* Muted/subtle UI - Used for backgrounds AND secondary text */
+  --color-muted: oklch(0.22 0.01 240);             /* Muted backgrounds & hover states */
+  --color-muted-foreground: oklch(0.66 0.01 60);   /* Secondary/de-emphasized text */
   
   /* Brand colors - Gold accent (optimized for dark mode) */
   --color-primary: oklch(0.78 0.18 93);            /* Brighter gold for dark backgrounds */
@@ -46,10 +52,6 @@
   /* Secondary UI - For button variants */
   --color-secondary: oklch(0.25 0.01 240);         /* Secondary button background */
   --color-secondary-foreground: oklch(0.97 0.01 60);
-  
-  /* Muted/subtle UI - Used for backgrounds AND secondary text */
-  --color-muted: oklch(0.22 0.01 240);             /* Muted backgrounds & hover states */
-  --color-muted-foreground: oklch(0.66 0.01 60);   /* Secondary/de-emphasized text */
   
   /* Semantic colors - Destructive/Error */
   --color-destructive: oklch(0.58 0.25 27);        /* Vibrant red, good saturation */
@@ -72,73 +74,39 @@
   --color-input: oklch(0.18 0.01 240);             /* Darker input backgrounds for contrast */
   --color-ring: oklch(0.78 0.18 93);               /* Gold focus ring */
   
-  /* Shadow color for dark mode (lighter shadows) */
-  --color-shadow-sm-darker: oklch(1.0 0 0 / 0.05);
-  --color-shadow-sm-lighter: oklch(1.0 0 0 / 0.03);
-  --color-shadow-darker: oklch(1.0 0 0 / 0.06);
-  --color-shadow-lighter: oklch(1.0 0 0 / 0.04);
-  --color-shadow-md-darker: oklch(1.0 0 0 / 0.08);
-  --color-shadow-md-lighter: oklch(1.0 0 0 / 0.06);
-  --color-shadow-lg-darker: oklch(1.0 0 0 / 0.1);
-  --color-shadow-lg-lighter: oklch(1.0 0 0 / 0.08);
-  --color-shadow-xl-darker: oklch(1.0 0 0 / 0.2);
-  --color-shadow-xl-lighter: oklch(1.0 0 0 / 0.15);
-  --color-shadow-2xl-darker: oklch(1.0 0 0 / 0.08);
-  --color-shadow-2xl-lighter: oklch(1.0 0 0 / 0.1);
-
-  --color-shadow-semantic: oklch(1.0 0 0 / 0.08);
-  --color-shadow-primary: oklch(0.78 0.18 93 / 0.1);
-  --color-shadow-success: oklch(0.70 0.20 160 / 0.1);
-  --color-shadow-destructive: oklch(0.58 0.25 27 / 0.1);
-  --color-shadow-warning: oklch(0.78 0.20 60 / 0.1);
-  --color-shadow-info: oklch(0.65 0.20 240 / 0.1);
-
+  /* Inset highlight color for top inner glow */
+  --color-highlight-inset: oklch(1 0 0 / 0.08);    /* Subtle white inset for premium feel */
   
-  /* Shadow scale - lighter shadows for dark backgrounds */
+  /* Elevation shadow scale - dual layer (contact + ambient) with inset highlight */
   --shadow-sm: 
-    0 1px 1px 0 var(--color-shadow-sm-darker),
-    0 2px 4px 0 var(--color-shadow-sm-lighter);
+    inset 0 1px 0 0 var(--color-highlight-inset),
+    0 1px 1px 0 oklch(0 0 0 / 0.12),
+    0 2px 4px 0 oklch(0 0 0 / 0.08);
   
   --shadow: 
-    0 1px 2px 0 var(--color-shadow-darker),
-    0 3px 6px -1px var(--color-shadow-lighter);
+    inset 0 1px 0 0 var(--color-highlight-inset),
+    0 1px 2px 0 oklch(0 0 0 / 0.12),
+    0 3px 6px -1px oklch(0 0 0 / 0.08);
 
   --shadow-md: 
-    0 2px 3px -1px var(--color-shadow-md-darker),
-    0 6px 12px -2px var(--color-shadow-md-lighter);
+    inset 0 1px 0 0 var(--color-highlight-inset),
+    0 2px 3px -1px oklch(0 0 0 / 0.12),
+    0 6px 12px -2px oklch(0 0 0 / 0.08);
 
   --shadow-lg: 
-    0 4px 6px -1px var(--color-shadow-lg-darker),
-    0 12px 24px -4px var(--color-shadow-lg-lighter);
+    inset 0 1px 0 0 var(--color-highlight-inset),
+    0 4px 6px -1px oklch(0 0 0 / 0.12),
+    0 12px 24px -4px oklch(0 0 0 / 0.08);
   
   --shadow-xl: 
-    0 8px 10px -3px var(--color-shadow-xl-darker),
-    0 20px 32px -6px var(--color-shadow-xl-lighter);
+    inset 0 1px 0 0 var(--color-highlight-inset),
+    0 8px 10px -3px oklch(0 0 0 / 0.12),
+    0 20px 32px -6px oklch(0 0 0 / 0.08);
 
   --shadow-2xl: 
-    0 12px 16px -4px var(--color-shadow-2xl-darker),
-    0 32px 50px -8px var(--color-shadow-2xl-lighter);
-
-  /* Colored shadows for cards in dark mode - subtle glow effect */
-  --shadow-primary: 
-    0 2px 3px -1px var(--color-shadow-semantic),
-    0 8px 20px -2px var(--color-shadow-primary);
-  
-  --shadow-success: 
-    0 2px 3px -1px var(--color-shadow-semantic),
-    0 8px 20px -2px var(--color-shadow-success);
-
-  --shadow-destructive: 
-    0 2px 3px -1px var(--color-shadow-semantic),
-    0 8px 20px -2px var(--color-shadow-destructive);
-
-  --shadow-warning: 
-    0 2px 3px -1px var(--color-shadow-semantic),
-    0 8px 20px -2px var(--color-shadow-warning);
-
-  --shadow-info: 
-    0 2px 3px -1px var(--color-shadow-semantic),
-    0 8px 20px -2px var(--color-shadow-info);
+    inset 0 1px 0 0 var(--color-highlight-inset),
+    0 12px 16px -4px oklch(0 0 0 / 0.12),
+    0 32px 50px -8px oklch(0 0 0 / 0.08);
 
   /* Gradients for dark mode */
   --gradient-highlight: linear-gradient(
@@ -163,21 +131,25 @@
   );
 }
 
-/* ===================================
-   LIGHT MODE THEME OVERRIDES
-   =================================== */
+  /* ===================================
+     LIGHT MODE THEME OVERRIDES
+     =================================== */
 
 .light {
-  /* Base colors */
-  --color-background: oklch(0.96 0.005 60);        /* Slightly warm white */
+  /* Background hierarchy - darkest to lightest */
+  --color-background-dark: oklch(0.92 0.005 240);  /* Deepest: recessed areas, wells */
+  --color-background: oklch(0.96 0.005 60);        /* Base: main app sections */
+  --color-background-light: oklch(0.99 0.002 60);  /* Elevated: cards, popovers */
   --color-foreground: oklch(0.20 0.01 240);        /* Dark text */
   
   /* Surface colors - More distinct from background */
-  --color-card: oklch(0.99 0.002 60);              /* Pure white cards for contrast */
-  --color-card-foreground: oklch(0.20 0.01 240);
-  
-  --color-popover: oklch(0.99 0.002 60);           /* Pure white popovers */
+  --color-card: oklch(1 0 0);                      /* Pure white for cards */
+  --color-card-foreground: oklch(0.20 0.01 240);  --color-popover: oklch(0.99 0.002 60);           /* Pure white popovers */
   --color-popover-foreground: oklch(0.20 0.01 240);
+  
+  /* Muted/subtle UI - Used for backgrounds AND secondary text */
+  --color-muted: oklch(0.92 0.005 240);            /* Muted backgrounds & hover states */
+  --color-muted-foreground: oklch(0.50 0.01 240);  /* Secondary/de-emphasized text */
   
   /* Brand colors - Brighter, more golden for light backgrounds */
   --color-primary: oklch(0.62 0.20 85);            /* Brighter, more saturated gold */
@@ -186,10 +158,6 @@
   /* Secondary UI - For button variants */
   --color-secondary: oklch(0.88 0.005 240);        /* Secondary button background */
   --color-secondary-foreground: oklch(0.20 0.01 240);
-  
-  /* Muted/subtle UI - Used for backgrounds AND secondary text */
-  --color-muted: oklch(0.92 0.005 240);            /* Muted backgrounds & hover states */
-  --color-muted-foreground: oklch(0.50 0.01 240);  /* Secondary/de-emphasized text */
   
   /* Semantic colors - Optimized for light backgrounds */
   --color-destructive: oklch(0.55 0.22 27);        /* Rich red for contrast */
@@ -211,22 +179,10 @@
   --color-border: oklch(0.80 0.005 240);           /* Visible borders */
   --color-input: oklch(0.99 0.002 60);             /* White inputs */
   --color-ring: oklch(0.62 0.20 85);               /* Gold focus ring - simpler */
-  
-  /* Base shadow colors for light mode (dark shadows) */
-  --color-shadow-sm-darker: oklch(0.3 0 0 / 0.05);
-  --color-shadow-sm-lighter: oklch(0.3 0 0 / 0.03);
-  --color-shadow-darker: oklch(0.3 0 0 / 0.06);
-  --color-shadow-lighter: oklch(0.3 0 0 / 0.04);
-  --color-shadow-md-darker: oklch(0.3 0 0 / 0.08);
-  --color-shadow-md-lighter: oklch(0.3 0 0 / 0.06);
-  --color-shadow-lg-darker: oklch(0.3 0 0 / 0.1);
-  --color-shadow-lg-lighter: oklch(0.3 0 0 / 0.08);
-  --color-shadow-xl-darker: oklch(0.3 0 0 / 0.2);
-  --color-shadow-xl-lighter: oklch(0.3 0 0 / 0.15);
-  --color-shadow-2xl-darker: oklch(0.3 0 0 / 0.08);
-  --color-shadow-2xl-lighter: oklch(0.3 0 0 / 0.1);
 
-  --color-shadow-semantic: oklch(0.3 0 0 / 0.08);
+  
+  /* Inset highlight color for top inner glow */
+  --color-highlight-inset: oklch(1 0 0 / 0.50);    /* Stronger white inset for light mode */
   
   /* ===================================
      GRADIENTS FOR HIGHLIGHT CARDS

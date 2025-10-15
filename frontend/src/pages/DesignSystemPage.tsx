@@ -16,7 +16,7 @@ import { ChevronDown, Check, X, AlertTriangle, Info } from 'lucide-react';
 const DesignSystemPage: React.FC = () =>
 {
   return (
-    <div className="min-h-screen bg-background p-4 md:p-8">
+    <div className="min-h-screen bg-background-dark p-4 md:p-8">
       <div className="mx-auto max-w-7xl space-y-12">
         {/* Header */}
         <header className="space-y-4">
@@ -38,52 +38,81 @@ const DesignSystemPage: React.FC = () =>
           </div>
 
           {/* Base & Surface Colors - Interactive Demo */}
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
-              <CardTitle>Base & Surface Colors</CardTitle>
-              <CardDescription>Layer hierarchy with interactive examples - hover to see depth</CardDescription>
+              <CardTitle>Background Hierarchy</CardTitle>
+              <CardDescription>Proper layering from deepest (page base) to elevated (cards) - hover to see depth</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Background layer demo */}
-              <div className="rounded-lg bg-background border-2 border-border p-6 space-y-4">
+              {/* Deepest layer - page base */}
+              <div className="rounded-lg bg-background-dark border-2 border-border p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-foreground">background + foreground</p>
-                    <p className="text-xs text-muted-foreground">Base application layer</p>
+                    <p className="text-sm font-medium text-foreground">background-dark</p>
+                    <p className="text-xs text-muted-foreground">Deepest - Page base, recessed wells</p>
                   </div>
-                  <code className="text-xs bg-muted px-2 py-1 rounded">bg-background</code>
+                  <code className="text-xs bg-muted px-2 py-1 rounded">bg-background-dark</code>
                 </div>
                 
-                {/* Card layer on background */}
-                <div className="rounded-lg bg-card border border-border p-4 space-y-3 transition-shadow hover:shadow-md">
+                {/* Middle layer - containers */}
+                <div className="rounded-md bg-background border border-border p-4 space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-card-foreground">card + card-foreground</p>
-                      <p className="text-xs text-muted-foreground">Elevated content surfaces</p>
+                      <p className="text-sm text-foreground">background</p>
+                      <p className="text-xs text-muted-foreground">Middle - Container cards, main sections</p>
                     </div>
-                    <code className="text-xs bg-muted px-2 py-1 rounded">bg-card</code>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">bg-background</code>
                   </div>
-
-                  {/* Input layer on card */}
-                  <div className="rounded-md bg-input border border-border p-3">
-                    <p className="text-sm text-foreground">input background</p>
-                    <p className="text-xs text-muted-foreground">Sunken input fields</p>
-                    <code className="text-xs bg-muted px-2 py-1 rounded mt-1 inline-block">bg-input</code>
+                  
+                  {/* Elevated layer - background-light */}
+                  <div className="rounded-md bg-background-light border border-border p-3">
+                    <p className="text-sm text-foreground">background-light</p>
+                    <p className="text-xs text-muted-foreground">Elevated - Raised panels (rarely used)</p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded mt-1 inline-block">bg-background-light</code>
                   </div>
+                  
+                  {/* Highest layer - card */}
+                  <div className="rounded-lg bg-card shadow-md border border-border p-4 space-y-3 transition-shadow hover:shadow-lg">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-card-foreground">card</p>
+                        <p className="text-xs text-muted-foreground">Highest - Card component (use with &lt;Card&gt;)</p>
+                      </div>
+                      <code className="text-xs bg-muted px-2 py-1 rounded">bg-card</code>
+                    </div>
 
-                  {/* Muted sections */}
-                  <div className="rounded-md bg-muted p-3">
-                    <p className="text-sm text-muted-foreground">muted + muted-foreground</p>
-                    <p className="text-xs text-muted-foreground">Subtle backgrounds and secondary text</p>
-                    <code className="text-xs bg-background px-2 py-1 rounded mt-1 inline-block">bg-muted</code>
+                    {/* Input field inside card */}
+                    <div className="rounded-md bg-input border border-border p-3 shadow-sm">
+                      <p className="text-sm text-foreground">input</p>
+                      <p className="text-xs text-muted-foreground">Sunken - Input fields (use with &lt;Input&gt;)</p>
+                      <code className="text-xs bg-muted px-2 py-1 rounded mt-1 inline-block">bg-input</code>
+                    </div>
+
+                    {/* Muted sections */}
+                    <div className="rounded-md bg-muted p-3">
+                      <p className="text-sm text-muted-foreground">muted</p>
+                      <p className="text-xs text-muted-foreground">Subtle - Secondary content areas</p>
+                      <code className="text-xs bg-background px-2 py-1 rounded mt-1 inline-block">bg-muted</code>
+                    </div>
                   </div>
                 </div>
+              </div>
+              
+              <div className="rounded-lg bg-muted p-4 space-y-2">
+                <p className="text-sm font-medium text-foreground">Usage Rules:</p>
+                <ul className="text-xs text-muted-foreground space-y-1 ml-4 list-disc">
+                  <li><strong>background-dark:</strong> Page base layer (this design system page uses it)</li>
+                  <li><strong>background:</strong> Container cards that hold other cards/examples</li>
+                  <li><strong>background-light:</strong> Rarely needed - use for special elevated panels</li>
+                  <li><strong>card:</strong> ONLY for actual Card components (auto-applied by Card component)</li>
+                  <li><strong>input:</strong> ONLY for Input fields (auto-applied by Input component)</li>
+                </ul>
               </div>
             </CardContent>
           </Card>
 
           {/* Brand Colors - Interactive Buttons */}
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Brand Colors (Gold)</CardTitle>
               <CardDescription>Primary color with interactive states - hover and focus to see variations</CardDescription>
@@ -92,11 +121,11 @@ const DesignSystemPage: React.FC = () =>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {/* Solid primary */}
                 <div className="space-y-3">
-                  <div className="rounded-lg bg-primary p-6 text-center transition-all hover:bg-primary/90 hover:shadow-primary cursor-pointer">
+                  <div className="rounded-lg bg-primary shadow-primary p-6 text-center transition-all hover:bg-primary/90 hover:scale-105 cursor-pointer">
                     <p className="font-medium text-primary-foreground">Primary</p>
                     <p className="text-xs text-primary-foreground/80 mt-1">Hover me</p>
                   </div>
-                  <code className="text-xs text-muted-foreground block text-center">bg-primary hover:bg-primary/90</code>
+                  <code className="text-xs text-muted-foreground block text-center">shadow-primary</code>
                 </div>
 
                 {/* Primary text on background */}
@@ -139,14 +168,14 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Semantic Colors - Real Feedback Components */}
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Semantic Colors</CardTitle>
               <CardDescription>Status feedback in real components - hover for interaction states</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Success alert */}
-              <div className="rounded-lg bg-success/10 border-l-4 border-success p-4 transition-all hover:bg-success/20">
+              <div className="rounded-lg bg-success/10 border-l-4 border-success shadow-md p-4 transition-all hover:bg-success/20 hover:scale-[1.02]">
                 <div className="flex gap-3">
                   <Check className="size-5 text-success shrink-0 mt-0.5" />
                   <div className="flex-1">
@@ -157,7 +186,7 @@ const DesignSystemPage: React.FC = () =>
               </div>
 
               {/* Warning alert */}
-              <div className="rounded-lg bg-warning/10 border-l-4 border-warning p-4 transition-all hover:bg-warning/20">
+              <div className="rounded-lg bg-warning/10 border-l-4 border-warning shadow-md p-4 transition-all hover:bg-warning/20 hover:scale-[1.02]">
                 <div className="flex gap-3">
                   <AlertTriangle className="size-5 text-warning shrink-0 mt-0.5" />
                   <div className="flex-1">
@@ -168,7 +197,7 @@ const DesignSystemPage: React.FC = () =>
               </div>
 
               {/* Error alert */}
-              <div className="rounded-lg bg-destructive/10 border-l-4 border-destructive p-4 transition-all hover:bg-destructive/20">
+              <div className="rounded-lg bg-destructive/10 border-l-4 border-destructive shadow-md p-4 transition-all hover:bg-destructive/20 hover:scale-[1.02]">
                 <div className="flex gap-3">
                   <X className="size-5 text-destructive shrink-0 mt-0.5" />
                   <div className="flex-1">
@@ -179,7 +208,7 @@ const DesignSystemPage: React.FC = () =>
               </div>
 
               {/* Info alert */}
-              <div className="rounded-lg bg-info/10 border-l-4 border-info p-4 transition-all hover:bg-info/20">
+              <div className="rounded-lg bg-info/10 border-l-4 border-info shadow-md p-4 transition-all hover:bg-info/20 hover:scale-[1.02]">
                 <div className="flex gap-3">
                   <Info className="size-5 text-info shrink-0 mt-0.5" />
                   <div className="flex-1">
@@ -202,7 +231,7 @@ const DesignSystemPage: React.FC = () =>
           </div>
 
           {/* Heading Hierarchy in Context */}
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Heading Hierarchy</CardTitle>
               <CardDescription>Real-world heading structure with Playfair Display</CardDescription>
@@ -263,7 +292,7 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Body Text in Real Components */}
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Body Text & Reading Hierarchy</CardTitle>
               <CardDescription>Inter font family with proper sizing for readability</CardDescription>
@@ -324,7 +353,7 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Weight Combinations */}
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Font Weights in Context</CardTitle>
               <CardDescription>Weight variations create visual hierarchy</CardDescription>
@@ -357,7 +386,7 @@ const DesignSystemPage: React.FC = () =>
           </div>
 
           {/* Button Variants - All States */}
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Button Variants & States</CardTitle>
               <CardDescription>Hover, focus, and disabled states - try interacting with each</CardDescription>
@@ -421,10 +450,10 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Form Elements */}
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Form Elements & Validation</CardTitle>
-              <CardDescription>Inputs with all states including validation feedback</CardDescription>
+              <CardDescription>Inputs with bg-input background and all validation states</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="max-w-2xl space-y-6">
@@ -435,8 +464,9 @@ const DesignSystemPage: React.FC = () =>
                     id="normal"
                     type="text"
                     placeholder="Enter product name..."
+                    className="bg-input shadow-sm"
                   />
-                  <p className="text-xs text-muted-foreground">Default state with placeholder</p>
+                  <p className="text-xs text-muted-foreground">bg-input with subtle inset shadow</p>
                 </div>
 
                 {/* With value */}
@@ -446,6 +476,7 @@ const DesignSystemPage: React.FC = () =>
                     id="filled"
                     type="text"
                     defaultValue="Spirits & Liquors"
+                    className="bg-input shadow-sm"
                   />
                   <p className="text-xs text-muted-foreground">Input with value - hover and focus to see states</p>
                 </div>
@@ -458,6 +489,7 @@ const DesignSystemPage: React.FC = () =>
                     type="text"
                     defaultValue="SKU-2024-001"
                     disabled
+                    className="bg-input shadow-sm"
                   />
                   <p className="text-xs text-muted-foreground">Disabled state with reduced opacity</p>
                 </div>
@@ -469,7 +501,7 @@ const DesignSystemPage: React.FC = () =>
                     id="error"
                     type="number"
                     placeholder="0"
-                    className="border-destructive focus-visible:ring-destructive"
+                    className="bg-input shadow-sm border-destructive focus-visible:ring-destructive"
                     aria-invalid="true"
                   />
                   <p className="text-sm text-destructive flex items-center gap-1">
@@ -485,7 +517,7 @@ const DesignSystemPage: React.FC = () =>
                     id="success"
                     type="email"
                     defaultValue="inventory@barback.com"
-                    className="border-success focus-visible:ring-success"
+                    className="bg-input shadow-sm border-success focus-visible:ring-success"
                   />
                   <p className="text-sm text-success flex items-center gap-1">
                     <Check className="size-4" />
@@ -497,7 +529,7 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Dropdown Menu */}
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Dropdown Menu</CardTitle>
               <CardDescription>Interactive menu component with hover states</CardDescription>
@@ -564,7 +596,7 @@ const DesignSystemPage: React.FC = () =>
             </p>
           </div>
 
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Card Component Variants</CardTitle>
               <CardDescription>All card styles with real inventory use cases - hover to see effects</CardDescription>
@@ -574,26 +606,26 @@ const DesignSystemPage: React.FC = () =>
               <div>
                 <h4 className="text-sm font-semibold text-foreground mb-3">Default & Highlighted</h4>
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <Card>
+                  <Card className="shadow-md">
                     <CardHeader>
                       <CardTitle>Default Card</CardTitle>
                       <CardDescription>Standard content container</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground">
-                        Basic card styling with border, shadow, and proper spacing. Used for general content.
+                        Basic card styling with shadow-md. Card component auto-applies bg-card.
                       </p>
                     </CardContent>
                   </Card>
 
-                  <Card variant="highlighted">
+                  <Card variant="highlighted" className="shadow-lg">
                     <CardHeader>
                       <CardTitle className="text-primary">Highlighted Card</CardTitle>
                       <CardDescription>Enhanced visibility</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground">
-                        Stronger border (primary/30) with hover shadow. Hover to see the transition effect.
+                        Stronger border (primary/30) with shadow-lg. Hover to see the transition effect.
                       </p>
                     </CardContent>
                   </Card>
@@ -602,9 +634,9 @@ const DesignSystemPage: React.FC = () =>
 
               {/* Semantic cards */}
               <div>
-                <h4 className="text-sm font-semibold text-foreground mb-3">Semantic Variants with Colored Shadows</h4>
+                <h4 className="text-sm font-semibold text-foreground mb-3">Semantic Variants</h4>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  <Card variant="primary">
+                  <Card variant="primary" className="shadow-md">
                     <CardHeader>
                       <CardTitle className="text-primary">Featured Product</CardTitle>
                       <CardDescription>Top selling item</CardDescription>
@@ -615,7 +647,7 @@ const DesignSystemPage: React.FC = () =>
                     </CardContent>
                   </Card>
 
-                  <Card variant="success">
+                  <Card variant="success" className="shadow-md">
                     <CardHeader>
                       <CardTitle className="text-success">Stock Updated</CardTitle>
                       <CardDescription>Recent change</CardDescription>
@@ -628,7 +660,7 @@ const DesignSystemPage: React.FC = () =>
                     </CardContent>
                   </Card>
 
-                  <Card variant="warning">
+                  <Card variant="warning" className="shadow-md">
                     <CardHeader>
                       <CardTitle className="text-warning">Low Stock Alert</CardTitle>
                       <CardDescription>Action required</CardDescription>
@@ -641,7 +673,7 @@ const DesignSystemPage: React.FC = () =>
                     </CardContent>
                   </Card>
 
-                  <Card variant="destructive">
+                  <Card variant="destructive" className="shadow-md">
                     <CardHeader>
                       <CardTitle className="text-destructive">Out of Stock</CardTitle>
                       <CardDescription>Critical shortage</CardDescription>
@@ -654,7 +686,7 @@ const DesignSystemPage: React.FC = () =>
                     </CardContent>
                   </Card>
 
-                  <Card variant="info">
+                  <Card variant="info" className="shadow-md">
                     <CardHeader>
                       <CardTitle className="text-info">Inventory Report</CardTitle>
                       <CardDescription>Monthly summary</CardDescription>
@@ -681,7 +713,7 @@ const DesignSystemPage: React.FC = () =>
             </p>
           </div>
 
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Available Gradients</CardTitle>
               <CardDescription>CSS custom properties for premium visual effects</CardDescription>
@@ -776,7 +808,7 @@ const DesignSystemPage: React.FC = () =>
           </div>
 
           {/* Touch targets */}
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Touch-Friendly Spacing</CardTitle>
               <CardDescription>Mobile-first with 44px minimum touch targets</CardDescription>
@@ -823,10 +855,10 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Shadow system */}
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
-              <CardTitle>Dual-Layer Shadow System</CardTitle>
-              <CardDescription>Contact + ambient layers for realistic depth</CardDescription>
+              <CardTitle>Elevation Shadow System</CardTitle>
+              <CardDescription>Dual-layer shadows (contact + ambient) with inset highlight on top edge</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -837,12 +869,118 @@ const DesignSystemPage: React.FC = () =>
                         shadow-{level === 'default' ? 'default' : level}
                       </span>
                     </div>
+                    <p className="text-xs text-center text-muted-foreground">
+                      {level === 'sm' && 'Subtle depth'}
+                      {level === 'default' && 'Standard cards'}
+                      {level === 'md' && 'Elevated elements'}
+                      {level === 'lg' && 'Modal dialogs'}
+                      {level === 'xl' && 'Top-layer UI'}
+                      {level === '2xl' && 'Maximum depth'}
+                    </p>
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-muted-foreground">
-                Each shadow combines tight lighter contact shadow + diffused lighter ambient shadow in dark mode
-              </p>
+              <div className="rounded-lg bg-muted p-4 space-y-2">
+                <p className="text-sm font-medium text-foreground">Shadow Structure:</p>
+                <ul className="text-xs text-muted-foreground space-y-1 ml-4 list-disc">
+                  <li><strong>Inset highlight:</strong> Subtle top inner glow for premium feel</li>
+                  <li><strong>Contact shadow:</strong> Sharper, darker shadow close to element</li>
+                  <li><strong>Ambient shadow:</strong> Softer, diffused shadow for depth</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Colored shadows with Tailwind utilities */}
+          <Card className="bg-background shadow-md">
+            <CardHeader>
+              <CardTitle>Colored Shadows (Tailwind Utilities)</CardTitle>
+              <CardDescription>Using Tailwind's shadow-{'{'}color{'}'} utilities for semantic emphasis - hover to see effect</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {/* Primary colored shadow */}
+                <div className="space-y-2">
+                  <div className="h-24 rounded-lg bg-card border-2 border-primary/20 shadow-lg shadow-primary/25 flex items-center justify-center transition-all hover:shadow-xl hover:shadow-primary/40 hover:border-primary/30 cursor-pointer">
+                    <span className="text-sm font-medium text-primary">
+                      shadow-primary
+                    </span>
+                  </div>
+                  <p className="text-xs text-center text-muted-foreground">Gold glow for CTAs</p>
+                  <code className="text-xs text-muted-foreground block text-center">shadow-lg shadow-primary/25</code>
+                </div>
+
+                {/* Success colored shadow */}
+                <div className="space-y-2">
+                  <div className="h-24 rounded-lg bg-card border-2 border-success/20 shadow-lg shadow-success/25 flex items-center justify-center transition-all hover:shadow-xl hover:shadow-success/40 hover:border-success/30 cursor-pointer">
+                    <span className="text-sm font-medium text-success">
+                      shadow-success
+                    </span>
+                  </div>
+                  <p className="text-xs text-center text-muted-foreground">Green glow for positive actions</p>
+                  <code className="text-xs text-muted-foreground block text-center">shadow-lg shadow-success/25</code>
+                </div>
+
+                {/* Destructive colored shadow */}
+                <div className="space-y-2">
+                  <div className="h-24 rounded-lg bg-card border-2 border-destructive/20 shadow-lg shadow-destructive/25 flex items-center justify-center transition-all hover:shadow-xl hover:shadow-destructive/40 hover:border-destructive/30 cursor-pointer">
+                    <span className="text-sm font-medium text-destructive">
+                      shadow-destructive
+                    </span>
+                  </div>
+                  <p className="text-xs text-center text-muted-foreground">Red glow for warnings</p>
+                  <code className="text-xs text-muted-foreground block text-center">shadow-lg shadow-destructive/25</code>
+                </div>
+
+                {/* Warning colored shadow */}
+                <div className="space-y-2">
+                  <div className="h-24 rounded-lg bg-card border-2 border-warning/20 shadow-lg shadow-warning/25 flex items-center justify-center transition-all hover:shadow-xl hover:shadow-warning/40 hover:border-warning/30 cursor-pointer">
+                    <span className="text-sm font-medium text-warning">
+                      shadow-warning
+                    </span>
+                  </div>
+                  <p className="text-xs text-center text-muted-foreground">Amber glow for caution</p>
+                  <code className="text-xs text-muted-foreground block text-center">shadow-lg shadow-warning/25</code>
+                </div>
+
+                {/* Info colored shadow */}
+                <div className="space-y-2">
+                  <div className="h-24 rounded-lg bg-card border-2 border-info/20 shadow-lg shadow-info/25 flex items-center justify-center transition-all hover:shadow-xl hover:shadow-info/40 hover:border-info/30 cursor-pointer">
+                    <span className="text-sm font-medium text-info">
+                      shadow-info
+                    </span>
+                  </div>
+                  <p className="text-xs text-center text-muted-foreground">Blue glow for information</p>
+                  <code className="text-xs text-muted-foreground block text-center">shadow-lg shadow-info/25</code>
+                </div>
+
+                {/* Combined example */}
+                <div className="space-y-2">
+                  <div className="h-24 rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 shadow-xl shadow-primary/30 flex items-center justify-center transition-all hover:shadow-2xl hover:shadow-primary/50 hover:scale-105 cursor-pointer">
+                    <span className="text-sm font-medium text-primary">
+                      Featured
+                    </span>
+                  </div>
+                  <p className="text-xs text-center text-muted-foreground">Combined effects</p>
+                  <code className="text-xs text-muted-foreground block text-center">shadow-xl shadow-primary/30</code>
+                </div>
+              </div>
+
+              <div className="rounded-lg bg-muted p-4 space-y-2">
+                <p className="text-sm font-medium text-foreground">How It Works:</p>
+                <ul className="text-xs text-muted-foreground space-y-1 ml-4 list-disc">
+                  <li>Tailwind automatically provides <code className="bg-background px-1 rounded">shadow-{'{'}color{'}'}</code> utilities for all theme colors</li>
+                  <li>Combine elevation (<code className="bg-background px-1 rounded">shadow-lg</code>) with color (<code className="bg-background px-1 rounded">shadow-primary/25</code>)</li>
+                  <li>Use opacity modifiers (e.g., <code className="bg-background px-1 rounded">/25</code>) to control glow intensity</li>
+                  <li>Best combined with matching borders for strongest visual effect</li>
+                </ul>
+                <div className="text-xs text-muted-foreground space-y-1 pt-2">
+                  <p className="font-medium text-foreground">Example Usage:</p>
+                  <code className="block bg-background-dark px-2 py-1 rounded">
+                    &lt;Card className="shadow-lg shadow-primary/25 border-2 border-primary/20"&gt;
+                  </code>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </section>
@@ -856,7 +994,7 @@ const DesignSystemPage: React.FC = () =>
             </p>
           </div>
 
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Radius Scale in Action</CardTitle>
               <CardDescription>Real component examples showing each radius size</CardDescription>
@@ -918,7 +1056,7 @@ const DesignSystemPage: React.FC = () =>
             </p>
           </div>
 
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Focus Management</CardTitle>
               <CardDescription>Tab through these elements to see focus indicators</CardDescription>
@@ -936,7 +1074,7 @@ const DesignSystemPage: React.FC = () =>
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="bg-background shadow-md">
             <CardHeader>
               <CardTitle>Color Contrast & Motion</CardTitle>
               <CardDescription>WCAG compliance and motion sensitivity</CardDescription>

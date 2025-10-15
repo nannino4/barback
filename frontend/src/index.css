@@ -1,11 +1,5 @@
 @import "tailwindcss";
 
-/* Configure dark mode to use class-based strategy instead of media query
-   - Light mode: when .light class is present on <html>
-   - Dark mode: when .dark class is present on <html>
-   This overrides the default @media (prefers-color-scheme: dark) behavior */
-@variant dark (.dark &);
-
 @theme {
   /* ===================================
      TYPOGRAPHY SYSTEM
@@ -40,6 +34,8 @@
   
   --color-popover: oklch(0.20 0.01 240);           /* Popover surfaces */
   --color-popover-foreground: oklch(0.97 0.01 60);
+
+  --color-input: oklch(0.18 0.01 240);             /* Darker input backgrounds for contrast */
   
   /* Muted/subtle UI - Used for backgrounds AND secondary text */
   --color-muted: oklch(0.22 0.01 240);             /* Muted backgrounds & hover states */
@@ -71,7 +67,6 @@
   
   /* Interactive UI elements - More distinct */
   --color-border: oklch(0.35 0.01 240);            /* Visible borders */
-  --color-input: oklch(0.18 0.01 240);             /* Darker input backgrounds for contrast */
   --color-ring: oklch(0.78 0.18 93);               /* Gold focus ring */
   
   /* Inset highlight color for top inner glow */
@@ -148,6 +143,8 @@
   
   --color-popover: oklch(0.995 0.005 60);          /* Same as card for popovers */
   --color-popover-foreground: oklch(0.20 0.01 240);
+
+  --color-input: oklch(0.99 0.01 60);              /* Very light, consistent with background-light */
   
   /* Muted/subtle UI - Used for backgrounds AND secondary text */
   --color-muted: oklch(0.92 0.01 60);              /* Muted backgrounds & hover states */
@@ -179,9 +176,7 @@
   
   /* Interactive UI elements - More distinct */
   --color-border: oklch(0.80 0.01 60);             /* Visible borders */
-  --color-input: oklch(0.99 0.01 60);              /* Very light, consistent with background-light */
   --color-ring: oklch(0.62 0.20 85);               /* Gold focus ring */
-
   
   /* Inset highlight color for top inner glow */
   --color-highlight-inset: oklch(1 0 0 / 0.50);    /* Stronger white inset for light mode */
@@ -272,3 +267,9 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Configure dark mode to use class-based strategy instead of media query
+   - Light mode: when .light class is present on <html>
+   - Dark mode: when .dark class is present on <html>
+   This overrides the default @media (prefers-color-scheme: dark) behavior */
+@variant dark (.dark &);

@@ -61,9 +61,9 @@ export function LandingPage()
 
       {/* Features Section */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mt-16">
-        <Card className="border-border bg-background-secondary">
+        <Card className="bg-background-secondary">
           <CardHeader>
-            <CardTitle className="text-primary dark:text-primary/90">
+            <CardTitle className="text-primary">
               {t('landing.features.inventory.title')}
             </CardTitle>
           </CardHeader>
@@ -74,9 +74,9 @@ export function LandingPage()
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-background-secondary">
+        <Card className="bg-background-secondary">
           <CardHeader>
-            <CardTitle className="text-primary dark:text-primary/90">
+            <CardTitle className="text-primary">
               {t('landing.features.mobile.title')}
             </CardTitle>
           </CardHeader>
@@ -87,9 +87,9 @@ export function LandingPage()
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-background-secondary">
+        <Card className="bg-background-secondary">
           <CardHeader>
-            <CardTitle className="text-primary dark:text-primary/90">
+            <CardTitle className="text-primary">
               {t('landing.features.team.title')}
             </CardTitle>
           </CardHeader>
@@ -100,9 +100,9 @@ export function LandingPage()
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-background-secondary">
+        <Card className="bg-background-secondary">
           <CardHeader>
-            <CardTitle className="text-primary dark:text-primary/90">
+            <CardTitle className="text-primary">
               {t('landing.features.alerts.title')}
             </CardTitle>
           </CardHeader>
@@ -113,9 +113,9 @@ export function LandingPage()
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-background-secondary">
+        <Card className="bg-background-secondary">
           <CardHeader>
-            <CardTitle className="text-primary dark:text-primary/90">
+            <CardTitle className="text-primary">
               {t('landing.features.analytics.title')}
             </CardTitle>
           </CardHeader>
@@ -126,9 +126,9 @@ export function LandingPage()
           </CardContent>
         </Card>
 
-        <Card className="border-border bg-background-secondary">
+        <Card className="bg-background-secondary">
           <CardHeader>
-            <CardTitle className="text-primary dark:text-primary/90">
+            <CardTitle className="text-primary">
               {t('landing.features.reports.title')}
             </CardTitle>
           </CardHeader>
@@ -141,7 +141,7 @@ export function LandingPage()
       </div>
 
       {/* CTA Section */}
-      <div className="text-center mt-16 p-12 rounded-lg border border-border bg-background-secondary">
+      <div className="text-center mt-16 p-12 rounded-lg border bg-background-secondary">
         <h2 className="font-heading text-3xl font-bold text-text-primary mb-4">
           {t('landing.cta.title')}
         </h2>

@@ -40,8 +40,8 @@ export const UserMenu: React.FC = () =>
               className="h-8 w-8 rounded-full object-cover"
             />
           ) : (
-            <div className="h-8 w-8 rounded-full bg-primary dark:bg-primary/80 flex items-center justify-center">
-              <span className="text-sm font-semibold text-primary-foreground dark:text-foreground">
+            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+              <span className="text-sm font-semibold text-primary-foreground">
                 {userInitials}
               </span>
             </div>
@@ -52,8 +52,8 @@ export const UserMenu: React.FC = () =>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
+        <DropdownMenuLabel>
+          <div className="flex flex-col space-y-1 font-normal">
             <p className="text-sm font-medium leading-none">{userFullName}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
@@ -63,7 +63,7 @@ export const UserMenu: React.FC = () =>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={logout}
-          className="cursor-pointer text-destructive focus:text-destructive dark:text-red-400 dark:focus:text-red-400"
+          className="cursor-pointer text-destructive focus:text-destructive"
         >
           <LogOut className="mr-2 h-4 w-4" />
           <span>{t('nav.logout')}</span>

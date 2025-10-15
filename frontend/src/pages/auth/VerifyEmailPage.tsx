@@ -96,10 +96,10 @@ export const VerifyEmailPage: React.FC = () =>
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="font-heading text-4xl font-semibold text-foreground">
+          <h1 className="font-heading text-4xl font-semibold">
             Barback
           </h1>
-          <p className="font-body text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Inventory management for cocktail bars
           </p>
         </div>
@@ -121,7 +121,7 @@ export const VerifyEmailPage: React.FC = () =>
           </div>
 
           <div className="text-center space-y-4">
-            <p className="font-body text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
                         Need to resend the verification email?
             </p>
           </div>
@@ -129,7 +129,7 @@ export const VerifyEmailPage: React.FC = () =>
           <div className="space-y-4">
             {/* Email input for resend */}
             <div className="space-y-2">
-              <label className="font-body text-sm font-medium text-foreground">
+              <label className="text-sm font-medium">
                             Email address
               </label>
               <Input
@@ -137,7 +137,7 @@ export const VerifyEmailPage: React.FC = () =>
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-touch font-body"
+                className="h-touch"
                 disabled={resendEmailMutation.isPending}
               />
             </div>
@@ -145,7 +145,7 @@ export const VerifyEmailPage: React.FC = () =>
             <Button
               onClick={handleResendEmail}
               variant="outline"
-              className="w-full h-touch font-body"
+              className="w-full h-touch"
               disabled={resendEmailMutation.isPending || !email.trim()}
             >
               {resendEmailMutation.isPending ? (

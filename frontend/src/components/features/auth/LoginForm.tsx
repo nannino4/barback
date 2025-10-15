@@ -52,12 +52,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
   };
 
   return (
-    <Card className={cn('w-full max-w-md mx-auto bg-card border-border', className)}>
+    <Card className={cn('w-full max-w-md mx-auto', className)}>
       <CardHeader className="text-center space-y-2">
-        <CardTitle className="font-heading text-2xl font-semibold text-foreground">
+        <CardTitle className="text-2xl">
           {t('auth.login.title')}
         </CardTitle>
-        <CardDescription className="font-body text-sm text-muted-foreground">
+        <CardDescription>
           {t('auth.login.description')}
         </CardDescription>
       </CardHeader>
@@ -69,10 +69,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
         {/* Divider */}
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border" />
+            <span className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground font-body">
+            <span className="bg-card px-2 text-muted-foreground">
               {t('auth.login.continueWith')}
             </span>
           </div>
@@ -87,7 +87,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-body text-sm font-medium text-foreground">
+                  <FormLabel>
                     {t('common.email')}
                   </FormLabel>
                   <FormControl>
@@ -96,7 +96,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
                       type="email"
                       placeholder={t('auth.login.emailPlaceholder')}
                       disabled={isLoggingIn}
-                      className="font-body"
                       autoComplete="email"
                     />
                   </FormControl>
@@ -111,7 +110,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-body text-sm font-medium text-foreground">
+                  <FormLabel>
                     {t('common.password')}
                   </FormLabel>
                   <FormControl>
@@ -121,7 +120,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
                         type={showPassword ? 'text' : 'password'}
                         placeholder={t('auth.login.passwordPlaceholder')}
                         disabled={isLoggingIn}
-                        className="font-body pr-10"
+                        className="pr-10"
                         autoComplete="current-password"
                       />
                       <Button
@@ -152,7 +151,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
             <div className="flex justify-end">
               <Link
                 to="/auth/forgot-password"
-                className="font-body text-sm text-primary hover:text-primary/80 transition-colors"
+                className="text-sm text-primary hover:text-primary/80 transition-colors"
               >
                 {t('auth.login.forgotPassword')}
               </Link>
@@ -161,7 +160,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
             {/* Error Display */}
             {error && (
               <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20">
-                <p className="font-body text-sm text-destructive">
+                <p className="text-sm text-destructive">
                   {error}
                 </p>
               </div>
@@ -170,7 +169,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full h-touch font-body text-sm font-medium"
+              className="w-full h-touch"
               disabled={isLoggingIn}
             >
               {isLoggingIn ? (
@@ -187,7 +186,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
 
         {/* Register Link */}
         <div className="text-center">
-          <p className="font-body text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {t('auth.login.noAccount')}{' '}
             <Link
               to="/auth/register"

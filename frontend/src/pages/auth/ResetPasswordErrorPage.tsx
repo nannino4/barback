@@ -13,10 +13,10 @@ export const ResetPasswordErrorPage: React.FC = () =>
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="font-heading text-4xl font-semibold text-foreground">
+          <h1 className="font-heading text-4xl font-semibold">
             Barback
           </h1>
-          <p className="font-body text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Inventory management for cocktail bars
           </p>
         </div>
@@ -34,25 +34,25 @@ export const ResetPasswordErrorPage: React.FC = () =>
 
             {/* What can you do section */}
             <div className="space-y-3">
-              <p className="font-body text-sm text-foreground font-medium">
+              <p className="text-sm font-medium">
                 {t('auth.resetPasswordError.whatCanYouDo')}
               </p>
               <ul className="space-y-2 text-left">
                 <li className="flex items-start space-x-2">
                   <span className="text-primary">•</span>
-                  <span className="font-body text-sm text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     {t('auth.resetPasswordError.requestNewLink')}
                   </span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <span className="text-primary">•</span>
-                  <span className="font-body text-sm text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     {t('auth.resetPasswordError.trySigningIn')}
                   </span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <span className="text-primary">•</span>
-                  <span className="font-body text-sm text-muted-foreground">
+                  <span className="text-sm text-muted-foreground">
                     {t('auth.resetPasswordError.contactSupport')}
                   </span>
                 </li>
@@ -64,7 +64,7 @@ export const ResetPasswordErrorPage: React.FC = () =>
               {/* Request New Reset Link Button */}
               <Button
                 asChild
-                className="w-full h-touch font-body text-sm font-medium"
+                className="w-full h-touch"
               >
                 <Link to="/auth/forgot-password">
                   <Mail className="mr-2 h-4 w-4" />
@@ -76,7 +76,7 @@ export const ResetPasswordErrorPage: React.FC = () =>
               <Button
                 asChild
                 variant="outline"
-                className="w-full h-touch font-body text-sm font-medium"
+                className="w-full h-touch"
               >
                 <Link to="/auth/login">
                   <ArrowLeft className="mr-2 h-4 w-4" />
@@ -86,8 +86,8 @@ export const ResetPasswordErrorPage: React.FC = () =>
             </div>
 
             {/* Support Contact */}
-            <div className="pt-4 border-t border-border">
-              <p className="font-body text-xs text-muted-foreground">
+            <div className="pt-4 border-t">
+              <p className="text-xs text-muted-foreground">
                 {t('auth.resetPasswordError.needHelp')}{' '}
                 <a
                   href="mailto:support@barback.app"

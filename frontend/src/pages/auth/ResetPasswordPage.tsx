@@ -145,10 +145,10 @@ export const ResetPasswordPage: React.FC = () =>
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="font-heading text-4xl font-semibold text-foreground">
+          <h1 className="font-heading text-4xl font-semibold">
             Barback
           </h1>
-          <p className="font-body text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Inventory management for cocktail bars
           </p>
         </div>
@@ -171,7 +171,7 @@ export const ResetPasswordPage: React.FC = () =>
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-body text-sm font-medium text-foreground">
+                    <FormLabel>
                       {t('auth.resetPassword.newPassword')}
                     </FormLabel>
                     <FormControl>
@@ -182,7 +182,7 @@ export const ResetPasswordPage: React.FC = () =>
                           type={showPassword ? 'text' : 'password'}
                           placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
                           disabled={isSubmitting}
-                          className="font-body pl-10 pr-10"
+                          className="pl-10 pr-10"
                           autoComplete="new-password"
                           autoFocus
                         />
@@ -216,7 +216,7 @@ export const ResetPasswordPage: React.FC = () =>
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-body text-sm font-medium text-foreground">
+                    <FormLabel>
                       {t('auth.resetPassword.confirmPassword')}
                     </FormLabel>
                     <FormControl>
@@ -227,7 +227,7 @@ export const ResetPasswordPage: React.FC = () =>
                           type={showConfirmPassword ? 'text' : 'password'}
                           placeholder={t('auth.resetPassword.confirmPasswordPlaceholder')}
                           disabled={isSubmitting}
-                          className="font-body pl-10 pr-10"
+                          className="pl-10 pr-10"
                           autoComplete="new-password"
                         />
                         <Button
@@ -257,7 +257,7 @@ export const ResetPasswordPage: React.FC = () =>
               {/* Password Requirements */}
               {password && (
                 <div className="space-y-2">
-                  <p className="font-body text-sm font-medium text-foreground">
+                  <p className="text-sm font-medium">
                     {t('auth.resetPassword.requirements')}
                   </p>
                   <div className="space-y-1">
@@ -273,7 +273,7 @@ export const ResetPasswordPage: React.FC = () =>
                         )}
                         <span
                           className={cn(
-                            'font-body text-xs',
+                            'text-xs',
                             requirement.test(password)
                               ? 'text-success'
                               : 'text-muted-foreground',
@@ -290,7 +290,7 @@ export const ResetPasswordPage: React.FC = () =>
               {/* Error Display */}
               {error && (
                 <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20">
-                  <p className="font-body text-sm text-destructive">
+                  <p className="text-sm text-destructive">
                     {error}
                   </p>
                 </div>
@@ -299,7 +299,7 @@ export const ResetPasswordPage: React.FC = () =>
               {/* Submit Button */}
               <Button
                 type="submit"
-                className="w-full h-touch font-body text-sm font-medium"
+                className="w-full h-touch"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (

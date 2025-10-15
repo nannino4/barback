@@ -505,7 +505,6 @@ const DesignSystemPage: React.FC = () =>
                     id="error"
                     type="number"
                     placeholder="0"
-                    className="bg-input shadow-sm border-destructive focus-visible:ring-destructive"
                     aria-invalid="true"
                   />
                   <p className="text-sm text-destructive flex items-center gap-1">

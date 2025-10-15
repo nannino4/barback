@@ -21,19 +21,19 @@ export const AuthCard: React.FC<AuthCardProps> = ({
 }) =>
 {
   return (
-    <Card className={cn('w-full max-w-md mx-auto bg-card border-border', className)}>
+    <Card className={cn('w-full max-w-md mx-auto', className)}>
       <CardHeader className="text-center space-y-2">
-        <CardTitle className="font-heading text-2xl font-semibold text-foreground">
+        <CardTitle className="text-2xl">
           {title}
         </CardTitle>
         {description && (
-          <CardDescription className="font-body text-sm text-muted-foreground">
+          <CardDescription>
             {description}
           </CardDescription>
         )}
       </CardHeader>
 
-      <CardContent className="space-y-6">
+      <CardContent>
         {children}
         {footer && (
           <div className="text-center">
@@ -59,7 +59,7 @@ export const AuthFooterLink: React.FC<AuthFooterLinkProps> = ({
 }) =>
 {
   return (
-    <p className="font-body text-sm text-muted-foreground">
+    <p className="text-sm">
       {text}{' '}
       <Link
         to={linkTo}

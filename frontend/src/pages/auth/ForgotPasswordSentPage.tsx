@@ -57,10 +57,10 @@ export const ForgotPasswordSentPage: React.FC = () =>
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
-          <h1 className="font-heading text-4xl font-semibold text-foreground">
+          <h1 className="font-heading text-4xl font-semibold">
             Barback
           </h1>
-          <p className="font-body text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Inventory management for cocktail bars
           </p>
         </div>
@@ -78,7 +78,7 @@ export const ForgotPasswordSentPage: React.FC = () =>
 
             {/* Email Address */}
             {email && (
-              <p className="font-body text-sm font-semibold text-foreground">
+              <p className="text-sm font-semibold">
                 {email}
               </p>
             )}
@@ -87,11 +87,11 @@ export const ForgotPasswordSentPage: React.FC = () =>
             <div className="space-y-2">
               <div className="flex items-center justify-center space-x-2 text-muted-foreground">
                 <Clock className="h-4 w-4" />
-                <p className="font-body text-sm">
+                <p className="text-sm">
                   {t('auth.forgotPasswordSent.linkExpires')}
                 </p>
               </div>
-              <p className="font-body text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 {t('auth.forgotPasswordSent.checkSpam')}
               </p>
             </div>
@@ -101,7 +101,7 @@ export const ForgotPasswordSentPage: React.FC = () =>
               <Button
                 onClick={() => void handleResendEmail()}
                 variant="outline"
-                className="w-full h-touch font-body text-sm font-medium"
+                className="w-full h-touch"
                 disabled={isResending || resendCooldown > 0}
               >
                 {isResending ? (
@@ -124,10 +124,10 @@ export const ForgotPasswordSentPage: React.FC = () =>
             )}
 
             {/* Back to Login Link */}
-            <div className="pt-4 border-t border-border">
+            <div className="pt-4 border-t">
               <Link
                 to="/auth/login"
-                className="font-body text-sm text-primary hover:text-primary/80 font-medium transition-colors"
+                className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
               >
                 {t('auth.forgotPasswordSent.backToSignIn')}
               </Link>

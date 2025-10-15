@@ -72,29 +72,30 @@ type ApiResponse<T> = {
 
 ## CSS and Styling Conventions
 
-### Dark/Light Mode Requirement
-**All components must support both light and dark modes.** Use Tailwind's `dark:` variant for dark mode styles.
+### Dark/Light Mode via CSS Variables
+**All components automatically support both themes via CSS variables.** The design system uses OKLCH color variables that change based on the `.light` or `.dark` class on `<html>`.
 
 ```typescript
-// ✅ CORRECT - Both modes styled
-<div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-  <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
+// ✅ CORRECT - CSS variables adapt automatically
+<div className="bg-background text-foreground">
+  <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
     Click me
   </Button>
 </div>
 
-// ❌ WRONG - Only light mode
-<div className="bg-white text-gray-900">
-  <Button className="bg-blue-600 hover:bg-blue-700">
+// ❌ WRONG - Manual dark: overrides (unnecessary and breaks theme system)
+<div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+  <Button className="bg-primary hover:bg-primary/90 dark:bg-primary/80">
     Click me
   </Button>
 </div>
 ```
 
 **Key principles:**
-- Define colors for both modes: background, text, borders, hover states
-- Use semantic color variables when available (e.g., `bg-background`, `text-foreground`)
-- Test components in both themes during development
+- **Use CSS variables**: `bg-background`, `text-foreground`, `border-border`, `text-primary`
+- **Never use `dark:` variants** for colors defined in the theme (exceptions: animations, transforms)
+- **Theme switches automatically**: CSS variables update when theme changes
+- **Test both themes**: Verify appearance by toggling theme, not by adding `dark:` classes
 
 ### Tailwind Class Organization
 ```typescript
@@ -106,10 +107,10 @@ const buttonClasses = cn(
     'px-4 py-2',
     // Typography
     'text-sm font-medium',
-    // Colors (include dark mode)
-    'bg-blue-600 text-white dark:bg-blue-500 dark:text-gray-100',
-    // States (include dark mode)
-    'hover:bg-blue-700 dark:hover:bg-blue-600 disabled:opacity-50',
+    // Colors (CSS variables only - NO dark: variants)
+    'bg-primary text-primary-foreground',
+    // States (NO dark: variants)
+    'hover:bg-primary/90 disabled:opacity-50',
     // Custom classes
     className,
 );
@@ -121,7 +122,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
     return (
         <Card
             className={cn(
-                'p-4 border border-gray-200 rounded-lg',
+                'p-4 border border-border rounded-lg',
                 'hover:shadow-md transition-shadow',
                 className,
             )}
@@ -137,6 +138,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
         </Card>
     );
 };
+```
+
+## Focus State Patterns
+- **Ring-only**: Use `focus-visible:ring-*` for focus indication, never change borders
+- **Use color variables**: `ring-ring`, `ring-destructive`, `ring-success` (not manual opacity)
+- **Component handles it**: Input and Button components already have focus states—don't override
+- **No manual styling**: Never add `focus:border-*` or `focus-visible:border-*` to inputs/buttons
+- **Consistent width**: Use `ring-[3px]` for all focus rings
+
+```tsx
+// ❌ WRONG - Manual focus styles, border change, manual opacity
+<Input className="focus:border-ring focus:ring-2 focus:ring-ring/20" />
+
+// ✅ CORRECT - Component handles focus automatically
+<Input />
+
+// ✅ CORRECT - Custom component using ring-only
+<button className="focus-visible:ring-ring focus-visible:ring-[3px]">Click</button>
 ```
 
 ## Loading State Patterns

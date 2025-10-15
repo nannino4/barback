@@ -55,9 +55,7 @@ export const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
       type="button"
       variant="outline"
       className={cn(
-        'w-full h-touch relative',
-        'border border-border hover:bg-muted',
-        'font-body text-sm font-medium',
+        'w-full h-touch',
         className,
       )}
       onClick={handleGoogleLogin}

@@ -94,7 +94,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="font-body text-sm font-medium text-foreground">
+                <FormLabel>
                   {t('common.email')}
                 </FormLabel>
                 <FormControl>
@@ -105,7 +105,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
                       type="email"
                       placeholder={t('auth.forgotPassword.emailPlaceholder')}
                       disabled={isSubmitting}
-                      className="font-body pl-10"
+                      className="pl-10"
                       autoComplete="email"
                       autoFocus
                     />
@@ -119,7 +119,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full h-touch font-body text-sm font-medium"
+            className="w-full h-touch"
             disabled={isSubmitting}
           >
             {isSubmitting ? (

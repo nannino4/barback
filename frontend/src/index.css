@@ -239,12 +239,8 @@ body {
   opacity: 1;
 }
 
-/* Simplified, elegant focus ring */
-:focus-visible {
-  outline: 2px solid var(--color-ring);
-  outline-offset: 2px;
-  border-radius: 0.25rem;
-}
+/* Focus states are handled by individual components via ring utilities */
+/* No global focus-visible styles to avoid conflicts with component-level rings */
 
 /* Smooth scrolling with preference support */
 @media (prefers-reduced-motion: no-preference) {

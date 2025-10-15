@@ -82,14 +82,14 @@ export const GoogleCallbackPage: React.FC = () =>
   }, [searchParams, navigate, handleGoogleCallbackMutation]);
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="text-center space-y-4">
         <Spinner 
           size="lg" 
           text="Completing Google sign-in..."
           className="min-h-[200px]"
         />
-        <p className="font-body text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
                     Please wait while we complete your authentication...
         </p>
       </div>

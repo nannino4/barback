@@ -50,12 +50,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
   };
 
   return (
-    <Card className={cn('w-full max-w-md mx-auto bg-card border-border', className)}>
+    <Card className={cn('w-full max-w-md mx-auto', className)}>
       <CardHeader className="text-center space-y-2">
-        <CardTitle className="font-heading text-2xl font-semibold text-card-foreground">
+        <CardTitle className="text-2xl">
           {t('auth.register.title')}
         </CardTitle>
-        <CardDescription className="font-body text-sm text-muted-foreground">
+        <CardDescription>
           {t('auth.register.description')}
         </CardDescription>
       </CardHeader>
@@ -75,18 +75,18 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-body text-sm font-medium text-foreground">
+                    <FormLabel>
                       {t('common.firstName')}
                     </FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t('auth.register.firstNamePlaceholder')}
                         autoComplete="given-name"
-                        className="h-touch bg-background border-input focus:border-ring focus:ring-2 focus:ring-ring/20"
+                        className="h-touch"
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage className="text-destructive text-xs" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -95,18 +95,18 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-body text-sm font-medium text-foreground">
+                    <FormLabel>
                       {t('common.lastName')}
                     </FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t('auth.register.lastNamePlaceholder')}
                         autoComplete="family-name"
-                        className="h-touch bg-background border-input focus:border-ring focus:ring-2 focus:ring-ring/20"
+                        className="h-touch"
                         {...field}
                       />
                     </FormControl>
-                    <FormMessage className="text-destructive text-xs" />
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -117,7 +117,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-body text-sm font-medium text-foreground">
+                  <FormLabel>
                     {t('common.email')}
                   </FormLabel>
                   <FormControl>
@@ -125,11 +125,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                       type="email"
                       placeholder={t('auth.register.emailPlaceholder')}
                       autoComplete="email"
-                      className="h-touch bg-background border-input focus:border-ring focus:ring-2 focus:ring-ring/20"
+                      className="h-touch"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage className="text-destructive text-xs" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -139,7 +139,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
               name="phoneNumber"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-body text-sm font-medium text-foreground">
+                  <FormLabel>
                     {t('common.phoneNumber')}
                     <span className="text-muted-foreground ml-1">(Optional)</span>
                   </FormLabel>
@@ -148,11 +148,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                       type="tel"
                       placeholder="+393XXXXXXXXX"
                       autoComplete="tel"
-                      className="h-touch bg-background border-input focus:border-ring focus:ring-2 focus:ring-ring/20"
+                      className="h-touch"
                       {...field}
                     />
                   </FormControl>
-                  <FormMessage className="text-destructive text-xs" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -162,7 +162,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-body text-sm font-medium text-foreground">
+                  <FormLabel>
                     {t('common.password')}
                   </FormLabel>
                   <FormControl>
@@ -171,7 +171,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                         type={showPassword ? 'text' : 'password'}
                         placeholder={t('auth.register.passwordPlaceholder')}
                         autoComplete="new-password"
-                        className="h-touch bg-background border-input focus:border-ring focus:ring-2 focus:ring-ring/20 pr-12"
+                        className="h-touch pr-12"
                         {...field}
                       />
                       <button
@@ -190,7 +190,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                       </button>
                     </div>
                   </FormControl>
-                  <FormMessage className="text-destructive text-xs" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -200,7 +200,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-body text-sm font-medium text-foreground">
+                  <FormLabel>
                     {t('common.confirmPassword')}
                   </FormLabel>
                   <FormControl>
@@ -209,7 +209,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                         type={showConfirmPassword ? 'text' : 'password'}
                         placeholder={t('auth.register.confirmPasswordPlaceholder')}
                         autoComplete="new-password"
-                        className="h-touch bg-background border-input focus:border-ring focus:ring-2 focus:ring-ring/20 pr-12"
+                        className="h-touch pr-12"
                         {...field}
                       />
                       <button
@@ -228,7 +228,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                       </button>
                     </div>
                   </FormControl>
-                  <FormMessage className="text-destructive text-xs" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -241,7 +241,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
 
             <Button
               type="submit"
-              className="w-full h-touch bg-primary hover:bg-primary/90 text-primary-foreground font-body font-medium"
+              className="w-full h-touch"
               disabled={isRegistering}
             >
               {isRegistering ? (
@@ -255,12 +255,12 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
             </Button>
 
             <div className="text-center">
-              <span className="font-body text-sm text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {t('auth.register.hasAccount')}{' '}
               </span>
               <Link
                 to="/auth/login"
-                className="font-body text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
               >
                 {t('auth.register.signIn')}
               </Link>

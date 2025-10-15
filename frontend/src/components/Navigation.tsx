@@ -33,7 +33,7 @@ export const Navigation: React.FC = () =>
           <div className="flex items-center gap-6">
             <Link
               to={user ? '/dashboard' : '/'}
-              className="flex items-center gap-2 font-heading text-xl font-bold text-primary hover:text-primary/80 dark:hover:text-primary/90 transition-colors"
+              className="flex items-center gap-2 font-heading text-xl font-bold text-primary hover:text-primary/80 transition-colors"
             >
               <Home className="h-6 w-6" />
               <span>Barback</span>

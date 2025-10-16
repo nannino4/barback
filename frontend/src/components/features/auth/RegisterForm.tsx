@@ -6,7 +6,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { InlineSpinner } from '@/components/ui/spinner';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -51,13 +51,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
 
   return (
     <Card className={cn('w-full max-w-md mx-auto', className)}>
-      <CardHeader className="text-center space-y-2">
+      <CardHeader className="text-center">
         <CardTitle className="text-2xl">
           {t('auth.register.title')}
         </CardTitle>
-        <CardDescription>
-          {t('auth.register.description')}
-        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <Form {...form}>

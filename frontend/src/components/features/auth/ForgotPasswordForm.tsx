@@ -76,7 +76,6 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
   return (
     <AuthCard
       title={t('auth.forgotPassword.title')}
-      description={t('auth.forgotPassword.description')}
       className={className}
       footer={
         <AuthFooterLink

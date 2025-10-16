@@ -38,7 +38,7 @@ const DesignSystemPage: React.FC = () =>
           </div>
 
           {/* Base & Surface Colors - Interactive Demo */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Surface Color Hierarchy</CardTitle>
               <CardDescription>Two-layer system: background (page base) and card (elevated surfaces)</CardDescription>
@@ -94,7 +94,7 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Brand Colors - Interactive Buttons */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Brand Colors (Gold)</CardTitle>
               <CardDescription>Primary color with interactive states - hover and focus to see variations</CardDescription>
@@ -150,7 +150,7 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Secondary & Accent Colors - Interactive Buttons */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Secondary & Accent Colors</CardTitle>
               <CardDescription>Less prominent interactive elements - hover to see states</CardDescription>
@@ -201,7 +201,7 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Semantic Colors - Real Feedback Components */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Semantic Colors</CardTitle>
               <CardDescription>Status feedback in real components - hover for interaction states</CardDescription>
@@ -264,7 +264,7 @@ const DesignSystemPage: React.FC = () =>
           </div>
 
           {/* Heading Hierarchy in Context */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Heading Hierarchy</CardTitle>
               <CardDescription>Real-world heading structure with Playfair Display</CardDescription>
@@ -325,7 +325,7 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Body Text in Real Components */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Body Text & Reading Hierarchy</CardTitle>
               <CardDescription>Inter font family with proper sizing for readability</CardDescription>
@@ -386,7 +386,7 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Weight Combinations */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Font Weights in Context</CardTitle>
               <CardDescription>Weight variations create visual hierarchy</CardDescription>
@@ -423,7 +423,7 @@ const DesignSystemPage: React.FC = () =>
           </div>
 
           {/* Button Variants - All States */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Button Variants & States</CardTitle>
               <CardDescription>Hover, focus, and disabled states - try interacting with each</CardDescription>
@@ -488,7 +488,7 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Form Elements */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Form Elements & Validation</CardTitle>
               <CardDescription>Inputs with bg-input background and all validation states</CardDescription>
@@ -566,7 +566,7 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Dropdown Menu */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Dropdown Menu</CardTitle>
               <CardDescription>Interactive menu component with hover states</CardDescription>
@@ -633,7 +633,7 @@ const DesignSystemPage: React.FC = () =>
             </p>
           </div>
 
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Card Component Variants</CardTitle>
               <CardDescription>All card styles with real inventory use cases - hover to see effects</CardDescription>
@@ -693,7 +693,7 @@ const DesignSystemPage: React.FC = () =>
             </p>
           </div>
 
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Available Gradients</CardTitle>
               <CardDescription>CSS custom properties for premium visual effects</CardDescription>
@@ -788,7 +788,7 @@ const DesignSystemPage: React.FC = () =>
           </div>
 
           {/* Touch targets */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Touch-Friendly Spacing</CardTitle>
               <CardDescription>Mobile-first with 44px minimum touch targets</CardDescription>
@@ -835,7 +835,7 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Shadow system */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Elevation Shadow System</CardTitle>
               <CardDescription>Dual-layer shadows (contact + ambient) with inset highlight on top edge</CardDescription>
@@ -874,7 +874,7 @@ const DesignSystemPage: React.FC = () =>
           </Card>
 
           {/* Colored shadows with Tailwind utilities */}
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Colored Shadows (Tailwind Utilities)</CardTitle>
               <CardDescription>Using Tailwind's shadow-{'{'}color{'}'} utilities for semantic emphasis - hover to see effect</CardDescription>
@@ -976,7 +976,7 @@ const DesignSystemPage: React.FC = () =>
             </p>
           </div>
 
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Radius Scale in Action</CardTitle>
               <CardDescription>Real component examples showing each radius size</CardDescription>
@@ -1038,7 +1038,7 @@ const DesignSystemPage: React.FC = () =>
             </p>
           </div>
 
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Focus Management</CardTitle>
               <CardDescription>Tab through these elements to see focus indicators</CardDescription>
@@ -1056,7 +1056,7 @@ const DesignSystemPage: React.FC = () =>
             </CardContent>
           </Card>
 
-          <Card className="bg-background shadow-md">
+          <Card variant='bordered' className="bg-background">
             <CardHeader>
               <CardTitle>Color Contrast & Motion</CardTitle>
               <CardDescription>WCAG compliance and motion sensitivity</CardDescription>

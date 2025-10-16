@@ -33,7 +33,7 @@ Email verification is a mandatory security feature that ensures users have acces
    ├── Backend validates token
    ├── Account marked as verified
    ├── Success page displayed
-   └── Auto-redirect to dashboard/organization setup
+   └── Auto-redirect to dashboard
    ↓
 6. Full App Access Granted
    ├── User can create/join organizations
@@ -136,70 +136,4 @@ Unverified User Attempts Access:
    ├── Invalidate verification token
    ├── Log verification event
    └── Trigger welcome email sequence
-```
-
-## UI Specifications
-
-### Email Verification Required Page UI
-
-#### Main Verification Page Layout
-```
-Mobile Layout (< 768px):
-┌─────────────────────────────────┐
-│                                 │ ← 10vh top spacing
-│           🍸 Barback            │ ← Logo + wordmark
-│                                 │ ← 3rem spacing
-│         📧 Check Your Email     │ ← Large icon + title
-│                                 │ ← 2rem spacing
-│  We've sent a verification      │ ← Instructions text
-│  link to your email address:   │   (center aligned)
-│                                 │ ← 1rem spacing
-│      user@example.com           │ ← User email (bold, large)
-│                                 │ ← 2rem spacing
-│  Click the link in the email    │ ← Action instructions
-│  to verify your account and     │   (readable font size)
-│  unlock all Barback features.   │
-│                                 │ ← 1.5rem spacing
-│  ⚠️ Email verification is       │ ← Warning notice
-│  required to access your        │   (amber background)
-│  organization and inventory.    │
-│                                 │ ← 2rem spacing
-│  ┌─────────────────────────┐   │
-│  │     Resend Email        │   │ ← Secondary button
-│  └─────────────────────────┘   │   (disabled if cooling down)
-│                                 │
-│  Next resend available in 45s   │ ← Cooldown timer
-│                                 │ ← 2rem spacing
-│  Didn't receive the email?      │ ← Troubleshooting section
-│                                 │
-│  • Check your spam folder       │ ← Helpful tips
-│  • Ensure the email is correct  │   (bullet points)
-│  • Contact support if needed    │
-│                                 │ ← 1.5rem spacing
-│      Change email address       │ ← Change email link
-│                                 │ ← 5vh bottom spacing
-└─────────────────────────────────┘
-```
-
-### Email Verification Success Page UI
-
-#### Success Page Layout
-```
-Success Page Layout:
-┌─────────────────────────────────┐
-│           🍸 Barback            │
-│                                 │
-│         ✅ Email Verified!      │ ← Success icon + message
-│                                 │
-│  Your email has been verified   │ ← Confirmation text
-│  successfully. You now have     │
-│  full access to Barback.        │
-│                                 │
-│  ┌─────────────────────────┐   │
-│  │    Continue to App      │   │ ← Primary CTA button
-│  └─────────────────────────┘   │
-│                                 │
-│  Redirecting automatically      │ ← Auto-redirect notice
-│  in 3 seconds...                │   with countdown
-└─────────────────────────────────┘
 ```

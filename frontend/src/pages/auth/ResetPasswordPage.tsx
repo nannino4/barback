@@ -1,11 +1,12 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Eye, EyeOff, Lock, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { InlineSpinner } from '@/components/ui/spinner';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -16,7 +17,6 @@ import {
 } from '@/components/ui/form';
 import { resetPasswordSchema, type ResetPasswordData } from '@/validation/auth-validations';
 import { authApi } from '@/api/auth-api';
-import { AuthCard, AuthFooterLink } from '@/components/features/auth/AuthCard';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import { useI18n } from '@/hooks/useI18n';
@@ -144,167 +144,175 @@ export const ResetPasswordPage: React.FC = () =>
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
       <div className="w-full max-w-md">
-        <AuthCard
-          title={t('auth.resetPassword.title')}
-          footer={
-            <AuthFooterLink
-              text=""
-              linkText={t('auth.resetPassword.backToSignIn')}
-              linkTo="/auth/login"
-            />
-          }
-        >
-          <Form {...form}>
-            <form onSubmit={handleFormSubmit} className="space-y-4" noValidate>
-              {/* New Password Field */}
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {t('auth.resetPassword.newPassword')}
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          {...field}
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
-                          disabled={isSubmitting}
-                          className="pl-10 pr-10"
-                          autoComplete="new-password"
-                          autoFocus
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                          onClick={() => setShowPassword(!showPassword)}
-                          disabled={isSubmitting}
-                        >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4 text-muted-foreground" />
-                          ) : (
-                            <Eye className="h-4 w-4 text-muted-foreground" />
-                          )}
-                          <span className="sr-only">
-                            {showPassword ? t('auth.resetPassword.hidePassword') : t('auth.resetPassword.showPassword')}
-                          </span>
-                        </Button>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+        <Card className="w-full max-w-md mx-auto">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">
+              {t('auth.resetPassword.title')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Form {...form}>
+              <form onSubmit={handleFormSubmit} className="space-y-4" noValidate>
+                {/* New Password Field */}
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t('auth.resetPassword.newPassword')}
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            {...field}
+                            type={showPassword ? 'text' : 'password'}
+                            placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
+                            disabled={isSubmitting}
+                            className="pl-10 pr-10"
+                            autoComplete="new-password"
+                            autoFocus
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            onClick={() => setShowPassword(!showPassword)}
+                            disabled={isSubmitting}
+                          >
+                            {showPassword ? (
+                              <EyeOff className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                              <Eye className="h-4 w-4 text-muted-foreground" />
+                            )}
+                            <span className="sr-only">
+                              {showPassword ? t('auth.resetPassword.hidePassword') : t('auth.resetPassword.showPassword')}
+                            </span>
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Confirm Password Field */}
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>
-                      {t('auth.resetPassword.confirmPassword')}
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          {...field}
-                          type={showConfirmPassword ? 'text' : 'password'}
-                          placeholder={t('auth.resetPassword.confirmPasswordPlaceholder')}
-                          disabled={isSubmitting}
-                          className="pl-10 pr-10"
-                          autoComplete="new-password"
-                        />
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          disabled={isSubmitting}
-                        >
-                          {showConfirmPassword ? (
-                            <EyeOff className="h-4 w-4 text-muted-foreground" />
-                          ) : (
-                            <Eye className="h-4 w-4 text-muted-foreground" />
-                          )}
-                          <span className="sr-only">
-                            {showConfirmPassword ? t('auth.resetPassword.hidePassword') : t('auth.resetPassword.showPassword')}
-                          </span>
-                        </Button>
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                {/* Confirm Password Field */}
+                <FormField
+                  control={form.control}
+                  name="confirmPassword"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {t('auth.resetPassword.confirmPassword')}
+                      </FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            {...field}
+                            type={showConfirmPassword ? 'text' : 'password'}
+                            placeholder={t('auth.resetPassword.confirmPasswordPlaceholder')}
+                            disabled={isSubmitting}
+                            className="pl-10 pr-10"
+                            autoComplete="new-password"
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            disabled={isSubmitting}
+                          >
+                            {showConfirmPassword ? (
+                              <EyeOff className="h-4 w-4 text-muted-foreground" />
+                            ) : (
+                              <Eye className="h-4 w-4 text-muted-foreground" />
+                            )}
+                            <span className="sr-only">
+                              {showConfirmPassword ? t('auth.resetPassword.hidePassword') : t('auth.resetPassword.showPassword')}
+                            </span>
+                          </Button>
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              {/* Password Requirements */}
-              {password && (
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">
-                    {t('auth.resetPassword.requirements')}
-                  </p>
-                  <div className="space-y-1">
-                    {passwordRequirements.map((requirement) => (
-                      <div
-                        key={requirement.key}
-                        className="flex items-center space-x-2"
-                      >
-                        {requirement.test(password) ? (
-                          <CheckCircle className="h-4 w-4 text-success" />
-                        ) : (
-                          <XCircle className="h-4 w-4 text-muted-foreground" />
-                        )}
-                        <span
-                          className={cn(
-                            'text-xs',
-                            requirement.test(password)
-                              ? 'text-success'
-                              : 'text-muted-foreground',
-                          )}
+                {/* Password Requirements */}
+                {password && (
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">
+                      {t('auth.resetPassword.requirements')}
+                    </p>
+                    <div className="space-y-1">
+                      {passwordRequirements.map((requirement) => (
+                        <div
+                          key={requirement.key}
+                          className="flex items-center space-x-2"
                         >
-                          {t(requirement.key)}
-                        </span>
-                      </div>
-                    ))}
+                          {requirement.test(password) ? (
+                            <CheckCircle className="h-4 w-4 text-success" />
+                          ) : (
+                            <XCircle className="h-4 w-4 text-muted-foreground" />
+                          )}
+                          <span
+                            className={cn(
+                              'text-xs',
+                              requirement.test(password)
+                                ? 'text-success'
+                                : 'text-muted-foreground',
+                            )}
+                          >
+                            {t(requirement.key)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-
-              {/* Error Display */}
-              {error && (
-                <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20">
-                  <p className="text-sm text-destructive">
-                    {error}
-                  </p>
-                </div>
-              )}
-
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                className="w-full h-touch"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <>
-                    <InlineSpinner className="mr-2" />
-                    {t('auth.resetPassword.updating')}
-                  </>
-                ) : (
-                  t('auth.resetPassword.updateButton')
                 )}
-              </Button>
-            </form>
-          </Form>
-        </AuthCard>
+
+                {/* Error Display */}
+                {error && (
+                  <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20">
+                    <p className="text-sm text-destructive">
+                      {error}
+                    </p>
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <Button
+                  type="submit"
+                  className="w-full h-touch"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <InlineSpinner className="mr-2" />
+                      {t('auth.resetPassword.updating')}
+                    </>
+                  ) : (
+                    t('auth.resetPassword.updateButton')
+                  )}
+                </Button>
+              </form>
+            </Form>
+
+            {/* Back to Sign In Link */}
+            <div className="text-center pt-4">
+              <Link
+                to="/auth/login"
+                className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
+              >
+                {t('auth.resetPassword.backToSignIn')}
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

@@ -19,23 +19,21 @@
   
   /* ===================================
      COLOR SYSTEM - "The Speakeasy"
-     Light Theme (Default) - OKLCH Format
+     Dark Theme (Default) - OKLCH Format
      =================================== */
   
-  /* Background hierarchy - darkest to lightest */
-  --color-background-dark: oklch(0.12 0.01 240);   /* Deepest: recessed areas, wells */
-  --color-background: oklch(0.15 0.01 240);        /* Base: main app sections */
-  --color-background-light: oklch(0.18 0.01 240);  /* Elevated: cards, popovers */
+  /* Base surface colors */
+  --color-background: oklch(0.15 0.01 240);        /* Page base layer */
   --color-foreground: oklch(0.97 0.01 60);         /* High contrast text */
   
-  /* Surface colors - More distinct from background */
-  --color-card: oklch(0.20 0.01 240);              /* Card component backgrounds */
+  /* Elevated surface colors */
+  --color-card: oklch(0.20 0.01 240);              /* Elevated surfaces (cards, panels) */
   --color-card-foreground: oklch(0.97 0.01 60);
   
-  --color-popover: oklch(0.20 0.01 240);           /* Popover surfaces */
+  --color-popover: oklch(0.20 0.01 240);           /* Floating surfaces (dropdowns, popovers) */
   --color-popover-foreground: oklch(0.97 0.01 60);
 
-  --color-input: oklch(0.18 0.01 240);             /* Darker input backgrounds for contrast */
+  --color-input: oklch(0.18 0.01 240);             /* Form input backgrounds */
   
   /* Muted/subtle UI - Used for backgrounds AND secondary text */
   --color-muted: oklch(0.22 0.01 240);             /* Muted backgrounds & hover states */
@@ -48,6 +46,10 @@
   /* Secondary UI - For button variants */
   --color-secondary: oklch(0.25 0.01 240);         /* Secondary button background */
   --color-secondary-foreground: oklch(0.97 0.01 60);
+  
+  /* Accent - Tertiary interactive elements */
+  --color-accent: oklch(0.22 0.01 240);            /* Subtle interactive elements */
+  --color-accent-foreground: oklch(0.97 0.01 60);
   
   /* Semantic colors - Destructive/Error */
   --color-destructive: oklch(0.58 0.25 27);        /* Vibrant red, good saturation */
@@ -131,20 +133,18 @@
      =================================== */
 
 .light {
-  /* Background hierarchy - darkest to lightest */
-  --color-background-dark: oklch(0.92 0.01 60);    /* Deepest: recessed areas, wells */
-  --color-background: oklch(0.96 0.01 60);         /* Base: main app sections */
-  --color-background-light: oklch(0.99 0.01 60);   /* Elevated: cards, popovers */
-  --color-foreground: oklch(0.20 0.01 240);        /* Dark text */
+  /* Base surface colors */
+  --color-background: oklch(0.96 0.01 60);         /* Page base layer */
+  --color-foreground: oklch(0.20 0.01 240);        /* High contrast text */
   
-  /* Surface colors - More distinct from background */
-  --color-card: oklch(0.995 0.005 60);             /* Very light, subtle warmth for cards */
+  /* Elevated surface colors */
+  --color-card: oklch(0.995 0.005 60);             /* Elevated surfaces (cards, panels) */
   --color-card-foreground: oklch(0.20 0.01 240);
   
-  --color-popover: oklch(0.995 0.005 60);          /* Same as card for popovers */
+  --color-popover: oklch(0.995 0.005 60);          /* Floating surfaces (dropdowns, popovers) */
   --color-popover-foreground: oklch(0.20 0.01 240);
 
-  --color-input: oklch(0.99 0.01 60);              /* Very light, consistent with background-light */
+  --color-input: oklch(0.99 0.01 60);              /* Form input backgrounds */
   
   /* Muted/subtle UI - Used for backgrounds AND secondary text */
   --color-muted: oklch(0.92 0.01 60);              /* Muted backgrounds & hover states */
@@ -157,6 +157,10 @@
   /* Secondary UI - For button variants */
   --color-secondary: oklch(0.88 0.01 60);          /* Secondary button background */
   --color-secondary-foreground: oklch(0.20 0.01 240);
+  
+  /* Accent - Tertiary interactive elements */
+  --color-accent: oklch(0.90 0.01 60);             /* Subtle interactive elements */
+  --color-accent-foreground: oklch(0.20 0.01 240);
   
   /* Semantic colors - Optimized for light backgrounds */
   --color-destructive: oklch(0.55 0.22 27);        /* Rich red for contrast */

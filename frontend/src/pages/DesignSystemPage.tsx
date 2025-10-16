@@ -40,60 +40,42 @@ const DesignSystemPage: React.FC = () =>
           {/* Base & Surface Colors - Interactive Demo */}
           <Card className="bg-background shadow-md">
             <CardHeader>
-              <CardTitle>Background Hierarchy</CardTitle>
-              <CardDescription>Proper layering from deepest (page base) to elevated (cards) - hover to see depth</CardDescription>
+              <CardTitle>Surface Color Hierarchy</CardTitle>
+              <CardDescription>Two-layer system: background (page base) and card (elevated surfaces)</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Deepest layer - page base */}
-              <div className="rounded-lg bg-background-dark border-2 border-border p-6 space-y-4">
+              {/* Base layer - page background */}
+              <div className="rounded-lg bg-background border-2 border-border p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-foreground">background-dark</p>
-                    <p className="text-xs text-muted-foreground">Deepest - Page base, recessed wells</p>
+                    <p className="text-sm font-medium text-foreground">background</p>
+                    <p className="text-xs text-muted-foreground">Page base layer - set on body element</p>
                   </div>
-                  <code className="text-xs bg-muted px-2 py-1 rounded">bg-background-dark</code>
+                  <code className="text-xs bg-muted px-2 py-1 rounded">bg-background</code>
                 </div>
                 
-                {/* Middle layer - containers */}
-                <div className="rounded-md bg-background border border-border p-4 space-y-3">
+                {/* Elevated layer - card surfaces */}
+                <div className="rounded-lg bg-card shadow-md border border-border p-4 space-y-3 transition-shadow hover:shadow-lg">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-foreground">background</p>
-                      <p className="text-xs text-muted-foreground">Middle - Container cards, main sections</p>
+                      <p className="text-sm font-medium text-card-foreground">card</p>
+                      <p className="text-xs text-muted-foreground">Elevated surfaces - use with &lt;Card&gt; component</p>
                     </div>
-                    <code className="text-xs bg-muted px-2 py-1 rounded">bg-background</code>
+                    <code className="text-xs bg-muted px-2 py-1 rounded">bg-card</code>
                   </div>
-                  
-                  {/* Elevated layer - background-light */}
-                  <div className="rounded-md bg-background-light border border-border p-3">
-                    <p className="text-sm text-foreground">background-light</p>
-                    <p className="text-xs text-muted-foreground">Elevated - Raised panels (rarely used)</p>
-                    <code className="text-xs bg-muted px-2 py-1 rounded mt-1 inline-block">bg-background-light</code>
+
+                  {/* Input field inside card */}
+                  <div className="rounded-md bg-input border border-border p-3 shadow-sm">
+                    <p className="text-sm text-foreground">input</p>
+                    <p className="text-xs text-muted-foreground">Form fields - use with &lt;Input&gt; component</p>
+                    <code className="text-xs bg-muted px-2 py-1 rounded mt-1 inline-block">bg-input</code>
                   </div>
-                  
-                  {/* Highest layer - card */}
-                  <div className="rounded-lg bg-card shadow-md border border-border p-4 space-y-3 transition-shadow hover:shadow-lg">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-card-foreground">card</p>
-                        <p className="text-xs text-muted-foreground">Highest - Card component (use with &lt;Card&gt;)</p>
-                      </div>
-                      <code className="text-xs bg-muted px-2 py-1 rounded">bg-card</code>
-                    </div>
 
-                    {/* Input field inside card */}
-                    <div className="rounded-md bg-input border border-border p-3 shadow-sm">
-                      <p className="text-sm text-foreground">input</p>
-                      <p className="text-xs text-muted-foreground">Sunken - Input fields (use with &lt;Input&gt;)</p>
-                      <code className="text-xs bg-muted px-2 py-1 rounded mt-1 inline-block">bg-input</code>
-                    </div>
-
-                    {/* Muted sections */}
-                    <div className="rounded-md bg-muted p-3">
-                      <p className="text-sm text-muted-foreground">muted</p>
-                      <p className="text-xs text-muted-foreground">Subtle - Secondary content areas</p>
-                      <code className="text-xs bg-background px-2 py-1 rounded mt-1 inline-block">bg-muted</code>
-                    </div>
+                  {/* Muted sections */}
+                  <div className="rounded-md bg-muted p-3">
+                    <p className="text-sm text-muted-foreground">muted</p>
+                    <p className="text-xs text-muted-foreground">Secondary content areas and hover states</p>
+                    <code className="text-xs bg-background px-2 py-1 rounded mt-1 inline-block">bg-muted</code>
                   </div>
                 </div>
               </div>
@@ -101,11 +83,11 @@ const DesignSystemPage: React.FC = () =>
               <div className="rounded-lg bg-muted p-4 space-y-2">
                 <p className="text-sm font-medium text-foreground">Usage Rules:</p>
                 <ul className="text-xs text-muted-foreground space-y-1 ml-4 list-disc">
-                  <li><strong>background-dark:</strong> Rarely needed - use for special sunken panels</li>
-                  <li><strong>background:</strong> Page base layer + Container panels that hold other cards/examples</li>
-                  <li><strong>background-light:</strong> Rarely needed - use for special elevated panels</li>
-                  <li><strong>card:</strong> ONLY for actual Card components (auto-applied by Card component)</li>
-                  <li><strong>input:</strong> ONLY for Input fields (auto-applied by Input component)</li>
+                  <li><strong>background:</strong> Page base - applied to body element automatically</li>
+                  <li><strong>card:</strong> Elevated surfaces - auto-applied by &lt;Card&gt; component</li>
+                  <li><strong>popover:</strong> Floating menus - auto-applied by dropdown/popover components</li>
+                  <li><strong>input:</strong> Form fields - auto-applied by &lt;Input&gt; component</li>
+                  <li><strong>muted:</strong> Secondary areas, disabled states, hover backgrounds</li>
                 </ul>
               </div>
             </CardContent>
@@ -163,6 +145,57 @@ const DesignSystemPage: React.FC = () =>
                 <p className="text-xs text-muted-foreground">
                   2px gold outline (ring-ring) with 2px offset - automatic from focus-visible
                 </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Secondary & Accent Colors - Interactive Buttons */}
+          <Card className="bg-background shadow-md">
+            <CardHeader>
+              <CardTitle>Secondary & Accent Colors</CardTitle>
+              <CardDescription>Less prominent interactive elements - hover to see states</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {/* Secondary button */}
+                <div className="space-y-3">
+                  <Button variant="secondary" className="w-full">
+                    Secondary Action
+                  </Button>
+                  <div className="space-y-1">
+                    <p className="text-xs text-center text-muted-foreground">Less emphasis than primary</p>
+                    <code className="text-xs text-muted-foreground block text-center">variant="secondary"</code>
+                  </div>
+                </div>
+
+                {/* Accent button */}
+                <div className="space-y-3">
+                  <Button variant="accent" className="w-full">
+                    Accent Action
+                  </Button>
+                  <div className="space-y-1">
+                    <p className="text-xs text-center text-muted-foreground">Subtle tertiary actions</p>
+                    <code className="text-xs text-muted-foreground block text-center">variant="accent"</code>
+                  </div>
+                </div>
+
+                {/* Accent badge */}
+                <div className="space-y-3">
+                  <div className="rounded-lg bg-accent p-6 text-center transition-all hover:bg-accent/80">
+                    <p className="font-medium text-accent-foreground">Badge</p>
+                    <p className="text-xs text-accent-foreground/80 mt-1">Accent background</p>
+                  </div>
+                  <code className="text-xs text-muted-foreground block text-center">bg-accent</code>
+                </div>
+              </div>
+
+              <div className="rounded-lg bg-muted p-4 space-y-2">
+                <p className="text-sm font-medium text-foreground">Usage Guidelines:</p>
+                <ul className="text-xs text-muted-foreground space-y-1 ml-4 list-disc">
+                  <li><strong>Primary:</strong> Main CTAs, important actions</li>
+                  <li><strong>Secondary:</strong> Supporting actions, less emphasis</li>
+                  <li><strong>Accent:</strong> Tertiary actions, badges, subtle highlights</li>
+                </ul>
               </div>
             </CardContent>
           </Card>
@@ -410,15 +443,16 @@ const DesignSystemPage: React.FC = () =>
 
               {/* Secondary Actions */}
               <div className="space-y-3">
-                <h4 className="text-sm font-semibold text-foreground">Secondary & Outline</h4>
+                <h4 className="text-sm font-semibold text-foreground">Secondary, Accent & Outline</h4>
                 <div className="flex flex-wrap gap-3">
                   <Button variant="secondary">Cancel</Button>
+                  <Button variant="accent">View Stats</Button>
                   <Button variant="outline">View Details</Button>
                   <Button variant="ghost">Edit</Button>
                   <Button variant="link">Learn More</Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Secondary: muted bg. Outline: border with hover bg. Ghost: transparent with hover. Link: underline.
+                  Secondary: muted bg. Accent: subtle emphasis. Outline: border with hover bg. Ghost: transparent. Link: underline.
                 </p>
               </div>
 
@@ -924,7 +958,7 @@ const DesignSystemPage: React.FC = () =>
                 </ul>
                 <div className="text-xs text-muted-foreground space-y-1 pt-2">
                   <p className="font-medium text-foreground">Example Usage:</p>
-                  <code className="block bg-background-dark px-2 py-1 rounded">
+                  <code className="block bg-muted px-2 py-1 rounded">
                     &lt;Card className="shadow-lg shadow-primary/25 border-2 border-primary/20"&gt;
                   </code>
                 </div>

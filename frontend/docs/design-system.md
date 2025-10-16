@@ -18,39 +18,54 @@ The color palette follows Tailwind v4 conventions using the `@theme` directive i
 
 ### Color Categories
 
-#### Background Colors
-- **Primary**: Deep charcoal base (`background`, `card`)
-- **Secondary**: Elevated surfaces (`secondary`, `muted`) 
-- **Accent**: Interactive elements (`accent`)
+#### Surface Colors (Background Hierarchy)
+- **background**: Page base layer - main app background
+- **card**: Elevated surfaces - cards, panels, dialogs  
+- **popover**: Floating surfaces - dropdowns, tooltips (currently same as card)
+- **input**: Form field backgrounds - inputs, textareas
+- **muted**: Secondary content areas - disabled states, hover backgrounds
 
 #### Text Colors
-- **Primary**: High contrast for main content (`foreground`)
-- **Secondary**: Reduced emphasis (`muted-foreground`)
-- **Brand**: Gold accent text (`primary`)
+- **foreground**: High contrast text for main content
+- **muted-foreground**: Reduced emphasis text for descriptions, labels
+- **card-foreground**: Text on card surfaces
+- **primary-foreground**: Text on primary colored backgrounds
 
 #### Brand Colors
-- **Gold Primary**: Main accent for actions (`primary` - 48 75% 53%)
-- **Gold Variants**: Hover and focus states (automatic opacity variants)
+- **primary**: Gold accent (`oklch(0.78 0.18 93)` dark / `oklch(0.62 0.20 85)` light)
+- **secondary**: Secondary interactive elements (muted appearance)
+- **accent**: Tertiary interactive elements (subtle emphasis between secondary and muted)
+- **ring**: Focus ring color (matches primary)
 
 #### Semantic Colors
-- **Success**: Emerald green (`success` - 160 84% 39%)
-- **Error**: Red (`destructive` - 0 84% 60%)
-- **Warning**: Amber (`warning` - 38 92% 50%)
-- **Info**: Blue (`info` - 217 91% 60%)
+- **success**: Emerald green for positive feedback
+- **destructive**: Red for errors and destructive actions
+- **warning**: Amber for warnings and caution
+- **info**: Blue for informational messages
+
+#### Interactive Elements
+- **border**: Default border color for dividers and outlines
+- **ring**: Focus ring color (gold, matches primary)
 
 #### Usage in Code
 ```tsx
 // Use Tailwind utility classes (automatically generated from @theme)
 <div className="bg-background text-foreground">
-  <h1 className="text-primary">Gold heading</h1>
-  <p className="text-muted-foreground">Muted text</p>
-  <button className="bg-primary text-primary-foreground hover:bg-primary/90">
-    Action Button
-  </button>
+  <Card className="bg-card">  {/* Auto-applied by Card component */}
+    <h1 className="text-primary">Gold heading</h1>
+    <p className="text-muted-foreground">Secondary text</p>
+  </Card>
+  
+  <Input className="bg-input" />  {/* Auto-applied by Input component */}
+  
+  {/* Button variants showcase color hierarchy */}
+  <Button variant="default">Primary Action</Button>
+  <Button variant="secondary">Secondary Action</Button>
+  <Button variant="accent">Tertiary Action</Button>
 </div>
 
 // Focus and hover states work automatically
-<input className="border-input focus-visible:ring-ring focus-visible:ring-2" />
+<input className="border-input focus-visible:ring-ring focus-visible:ring-[3px]" />
 ```
 
 ### Font Families

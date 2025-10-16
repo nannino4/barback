@@ -8,7 +8,7 @@ This document defines the coding standards, formatting rules, naming conventions
 Use Allman style braces (braces on their own line). Single-line blocks are allowed.
 
 ### Indentation & Spacing
-- **Indentation**: Use 4 spaces for indentation
+- **Indentation**: Use 2 spaces for indentation
 - **No Tabs**: Use spaces instead of tabs
 - **Line Length**: Maximum 80 columns when possible
 - **Trailing Commas**: Use trailing commas for multiline structures

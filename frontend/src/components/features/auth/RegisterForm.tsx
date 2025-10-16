@@ -34,6 +34,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
+    mode: 'onTouched',
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -43,6 +44,17 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
       confirmPassword: '',
     },
   });
+
+  // Watch password field to trigger confirmPassword validation when it changes
+  const passwordValue = form.watch('password');
+  
+  React.useEffect(() =>
+  {
+    if (form.formState.touchedFields.confirmPassword)
+    {
+      void form.trigger('confirmPassword');
+    }
+  }, [passwordValue, form]);
 
   const onSubmit = (data: RegisterFormData) =>
   {

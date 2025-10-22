@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSearchParams, useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
@@ -12,51 +12,77 @@ import { useAuthStore } from '@/stores/authStore';
 import { useI18n } from '@/hooks/useI18n';
 import type { ApiError } from '@/types/api';
 
+const COOLDOWN_KEY = 'email_verification_cooldown';
+const COOLDOWN_DURATION = 60; // seconds
+
 export const VerifyEmailPage: React.FC = () =>
 {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const [email, setEmail] = React.useState('');
   const { user } = useAuthStore();
   const { t } = useI18n();
+  
+  // Initialize cooldown from localStorage if it exists and is still valid
+  const getInitialCooldown = (): number =>
+  {
+    const stored = localStorage.getItem(COOLDOWN_KEY);
+    if (!stored) return 0;
+    
+    try
+    {
+      const data = JSON.parse(stored) as { expiresAt: number };
+      const remaining = Math.max(0, Math.floor((data.expiresAt - Date.now()) / 1000));
+      return remaining;
+    }
+    catch
+    {
+      return 0;
+    }
+  };
+  
+  const [cooldownSeconds, setCooldownSeconds] = React.useState(getInitialCooldown());
 
-  // Auto-populate email if user is logged in
+  // Email is always the user's email (since route is protected)
+  const email = user?.email || '';
+
+  // Redirect if user is already verified
   React.useEffect(() =>
   {
-    if (user?.email)
-    {
-      setEmail(user.email);
-    }
-  }, [user]);
-
-  // Handle email verification from URL token
-  const verifyFromTokenMutation = useMutation({
-    mutationFn: (token: string) => authApi.verifyEmailByUrl(token),
-    onSuccess: () =>
+    if (user?.isEmailVerified)
     {
       toast.success(t('auth.emailVerification.success'));
-      void navigate('/');
-    },
-    onError: (error: Error) =>
+      void navigate('/dashboard', { replace: true });
+    }
+  }, [user?.isEmailVerified, navigate, t]);
+
+  // Cooldown timer effect with localStorage persistence
+  React.useEffect(() =>
+  {
+    if (cooldownSeconds > 0)
     {
-      try
+      // Save cooldown expiration to localStorage
+      const expiresAt = Date.now() + (cooldownSeconds * 1000);
+      localStorage.setItem(COOLDOWN_KEY, JSON.stringify({ expiresAt }));
+      
+      const timer = setTimeout(() =>
       {
-        const apiError = JSON.parse(error.message) as ApiError;
-        toast.error(apiError.message);
-      }
-      catch
-      {
-        toast.error('Email verification failed. Please try again.');
-      }
-    },
-  });
+        setCooldownSeconds(cooldownSeconds - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+    else
+    {
+      // Clear localStorage when cooldown reaches 0
+      localStorage.removeItem(COOLDOWN_KEY);
+    }
+  }, [cooldownSeconds]);
 
   // Handle resend verification email
   const resendEmailMutation = useMutation({
-    mutationFn: (emailAddress: string) => authApi.resendVerificationEmail(emailAddress),
+    mutationFn: (emailAddress: string) => authApi.sendVerificationEmail(emailAddress),
     onSuccess: () =>
     {
-      toast.success('Verification email sent! Check your inbox.');
+      toast.success(t('auth.verifyEmail.emailSentSuccess'));
+      setCooldownSeconds(COOLDOWN_DURATION);
     },
     onError: (error: Error) =>
     {
@@ -72,23 +98,9 @@ export const VerifyEmailPage: React.FC = () =>
     },
   });
 
-  // Check for token in URL params on mount
-  React.useEffect(() =>
-  {
-    const token = searchParams.get('token');
-    if (token)
-    {
-      verifyFromTokenMutation.mutate(token);
-    }
-  }, [searchParams, verifyFromTokenMutation]);
-
   const handleResendEmail = () =>
   {
-    if (!email.trim())
-    {
-      toast.error(t('auth.verifyEmail.enterEmail'));
-      return;
-    }
+    // Email is guaranteed to exist since route is protected and user is authenticated
     resendEmailMutation.mutate(email);
   };
 
@@ -109,37 +121,50 @@ export const VerifyEmailPage: React.FC = () =>
             </div>
 
             <div className="text-center space-y-4">
+              <p className="text-sm text-foreground">
+                {t('auth.verifyEmail.sentToEmail')} <strong>{email}</strong>
+              </p>
               <p className="text-sm text-muted-foreground">
-                        Need to resend the verification email?
+                {t('auth.verifyEmail.clickLinkInstructions')}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {t('auth.verifyEmail.didntReceive')}
               </p>
             </div>
 
             <div className="space-y-4">
-              {/* Email input for resend */}
+              {/* Email display - read-only since user is authenticated */}
               <div className="space-y-2">
                 <label className="text-sm font-medium">
-                            Email address
+                  {t('auth.verifyEmail.emailAddress')}
                 </label>
                 <Input
                   type="email"
-                  placeholder="Enter your email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
                   className="h-touch"
-                  disabled={resendEmailMutation.isPending}
+                  disabled
+                  readOnly
                 />
+                <p className="text-xs text-muted-foreground">
+                  {t('auth.verifyEmail.accountEmail')}
+                </p>
               </div>
 
               <Button
                 onClick={handleResendEmail}
                 variant="outline"
                 className="w-full h-touch"
-                disabled={resendEmailMutation.isPending || !email.trim()}
+                disabled={resendEmailMutation.isPending || cooldownSeconds > 0}
               >
                 {resendEmailMutation.isPending ? (
                   <>
                     <InlineSpinner className="mr-2" />
                     {t('auth.verifyEmail.resendingEmail')}
+                  </>
+                ) : cooldownSeconds > 0 ? (
+                  <>
+                    <RefreshCw className="mr-2 w-4 h-4" />
+                    {t('auth.verifyEmail.resendInSeconds', { seconds: cooldownSeconds })}
                   </>
                 ) : (
                   <>
@@ -148,19 +173,6 @@ export const VerifyEmailPage: React.FC = () =>
                   </>
                 )}
               </Button>
-            </div>
-
-            {/* Footer Link */}
-            <div className="text-center pt-4">
-              <p className="text-sm text-muted-foreground">
-                {t('auth.verifyEmail.needToGoBack')}{' '}
-                <Link
-                  to="/auth/login"
-                  className="text-primary hover:text-primary/80 font-medium transition-colors"
-                >
-                  {t('auth.verifyEmail.signInInstead')}
-                </Link>
-              </p>
             </div>
           </CardContent>
         </Card>

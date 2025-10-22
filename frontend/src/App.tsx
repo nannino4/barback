@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { AppLayout } from '@/components/layout/AppLayout'
-import { ProtectedRoute } from '@/components/features/auth/ProtectedRoute'
+import { VerifiedRoute } from '@/components/features/auth/VerifiedRoute'
 import { AuthRouter } from '@/components/features/auth/AuthRouter'
 import { HomePage } from '@/pages/HomePage'
 import { LandingPage } from '@/pages/LandingPage'
@@ -32,13 +32,13 @@ function AppContent()
           {/* Design System Showcase */}
           <Route path="/design-system" element={<DesignSystemPage />} />
           
-          {/* Protected Dashboard */}
+          {/* Protected Dashboard - Requires authentication AND email verification */}
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute>
+              <VerifiedRoute>
                 <HomePage />
-              </ProtectedRoute>
+              </VerifiedRoute>
             }
           />
           

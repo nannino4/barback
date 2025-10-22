@@ -62,7 +62,7 @@
             "linkExpires": "Il link scadrà tra 15 minuti.",
             "checkSpam": "Non hai ricevuto l'email? Controlla la cartella spam.",
             "resendingEmail": "Reinvio Email...",
-            "resendEmailCountdown": "Reinvia Email ({countdown}s)",
+            "resendEmailCountdown": "Reinvia Email ({{countdown}}s)",
             "resendEmail": "Reinvia Email",
             "backToSignIn": "Torna all'Accesso"
         },
@@ -103,22 +103,54 @@
             "needHelp": "Hai bisogno di aiuto?",
             "contactSupportLink": "Contatta il Supporto"
         },
-        "verifyEmail": {
+        "sendVerificationEmail": {
             "title": "Verifica la tua email",
-            "signInInstead": "Accedi invece",
-            "needToGoBack": "Devi tornare indietro?",
-            "checkEmailInstructions": "Abbiamo inviato un link di verifica al tuo indirizzo email. Controlla la tua casella di posta e clicca il link per verificare il tuo account.",
+            "emailSentTitle": "Email inviata!",
+            "sendFailedTitle": "Invio email fallito",
+            "sentTo": "Email di verifica inviata a",
+            "clickLinkInstructions": "Clicca il link nell'email per verificare il tuo account e accedere a tutte le funzionalità.",
+            "tryAgainInstructions": "Riprova o contatta il supporto se il problema persiste.",
             "resendEmail": "Reinvia email di verifica",
             "resendingEmail": "Reinvio email...",
-            "enterEmail": "Inserisci il tuo indirizzo email",
-            "emailPlaceholder": "Inserisci il tuo indirizzo email"
+            "resendInSeconds": "Reinvia tra {{seconds}}s",
+            "emailSentSuccess": "Email di verifica inviata! Controlla la tua casella di posta.",
+            "checkYourEmail": "Controlla la tua email",
+            "alreadySentDuringRegistration": "Abbiamo già inviato un'email di verifica a {{email}} al momento della registrazione.",
+            "checkSpamAndResend": "Non l'hai ricevuta? Controlla la cartella spam o richiedi una nuova email di verifica qui sotto."
+        },
+        "verifyEmailCallback": {
+            "verifying": "Verifica della tua email...",
+            "verifyingInstructions": "Attendere prego mentre verifichiamo il tuo indirizzo email...",
+            "success": "Email verificata con successo! Ora puoi accedere a tutte le funzionalità.",
+            "successTitle": "Email Verificata!",
+            "successMessage": "La tua email è stata verificata con successo. Ora hai accesso completo a tutte le funzionalità.",
+            "redirecting": "Reindirizzamento in corso...",
+            "redirectingIn": "Reindirizzamento tra {{seconds}}s...",
+            "errorTitle": "Verifica Fallita",
+            "errorInstructions": "Il link di verifica potrebbe essere non valido o scaduto. Richiedi un nuovo link qui sotto.",
+            "invalidLink": "Link di verifica non valido.",
+            "requestNewLink": "Richiedi Nuovo Link di Verifica",
+            "goToLogin": "Vai al Login"
         },
         "emailVerification": {
-            "verifying": "Verifica della tua email...",
-            "success": "Email verificata con successo! Reindirizzamento...",
-            "error": "Verifica fallita. Il link potrebbe essere non valido o scaduto.",
-            "tryAgain": "Riprova"
+            "success": "Email verificata con successo! Ora puoi accedere a tutte le funzionalità."
+        },
+        "errors": {
+            "emailAlreadyVerified": "La tua email è già verificata! Reindirizzamento...",
+            "invalidOrExpiredToken": "Questo link di verifica non è valido o è scaduto. Richiedine uno nuovo.",
+            "userNotFound": "Account non trovato. Registrati prima.",
+            "emailSendingFailed": "Invio email di verifica fallito. Riprova più tardi.",
+            "emailConfigError": "Il servizio email è temporaneamente non disponibile. Riprova più tardi.",
+            "genericError": "Si è verificato un errore. Riprova."
         }
+    },
+    "errors": {
+        "networkError": "Errore di rete. Controlla la connessione e riprova.",
+        "rateLimitExceeded": "Troppe richieste. Attendi prima di riprovare.",
+        "rateLimitExceededWithTime": "Troppe richieste. Attendi {{seconds}} secondi prima di riprovare.",
+        "unauthorized": "La tua sessione è scaduta. Accedi di nuovo.",
+        "serverError": "Si è verificato un errore del server. Riprova più tardi o contatta il supporto.",
+        "sessionExpired": "La tua sessione è scaduta. Accedi di nuovo."
     },
     "validation": {
         "required": "Questo campo è richiesto",

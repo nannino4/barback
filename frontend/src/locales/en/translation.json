@@ -62,7 +62,7 @@
             "linkExpires": "The link will expire in 15 minutes.",
             "checkSpam": "Didn't receive the email? Check your spam folder.",
             "resendingEmail": "Resending Email...",
-            "resendEmailCountdown": "Resend Email ({countdown}s)",
+            "resendEmailCountdown": "Resend Email ({{countdown}}s)",
             "resendEmail": "Resend Email",
             "backToSignIn": "Back to Sign In"
         },
@@ -103,22 +103,54 @@
             "needHelp": "Need help?",
             "contactSupportLink": "Contact Support"
         },
-        "verifyEmail": {
+        "sendVerificationEmail": {
             "title": "Verify your email",
-            "signInInstead": "Sign in instead",
-            "needToGoBack": "Need to go back?",
-            "checkEmailInstructions": "We've sent a verification link to your email address. Please check your inbox and click the link to verify your account.",
+            "emailSentTitle": "Email sent!",
+            "sendFailedTitle": "Failed to send email",
+            "sentTo": "Verification email sent to",
+            "clickLinkInstructions": "Click the link in the email to verify your account and access all features.",
+            "tryAgainInstructions": "Please try again or contact support if the problem persists.",
             "resendEmail": "Resend verification email",
             "resendingEmail": "Resending email...",
-            "enterEmail": "Enter your email address",
-            "emailPlaceholder": "Enter your email address"
+            "resendInSeconds": "Resend in {{seconds}}s",
+            "emailSentSuccess": "Verification email sent! Check your inbox.",
+            "checkYourEmail": "Check your email",
+            "alreadySentDuringRegistration": "We've already sent a verification email to {{email}} when you registered.",
+            "checkSpamAndResend": "Didn't receive it? Check your spam folder or request a new verification email below."
+        },
+        "verifyEmailCallback": {
+            "verifying": "Verifying your email...",
+            "verifyingInstructions": "Please wait while we verify your email address...",
+            "success": "Email verified successfully! You can now access all features.",
+            "successTitle": "Email Verified!",
+            "successMessage": "Your email has been successfully verified. You now have full access to all features.",
+            "redirecting": "Redirecting you now...",
+            "redirectingIn": "Redirecting in {{seconds}}s...",
+            "errorTitle": "Verification Failed",
+            "errorInstructions": "The verification link may be invalid or expired. Request a new link below.",
+            "invalidLink": "Invalid verification link.",
+            "requestNewLink": "Request New Verification Link",
+            "goToLogin": "Go to Login"
         },
         "emailVerification": {
-            "verifying": "Verifying your email...",
-            "success": "Email verified successfully! Redirecting...",
-            "error": "Verification failed. The link may be invalid or expired.",
-            "tryAgain": "Try Again"
+            "success": "Email verified successfully! You can now access all features."
+        },
+        "errors": {
+            "emailAlreadyVerified": "Your email is already verified! Redirecting...",
+            "invalidOrExpiredToken": "This verification link is invalid or has expired. Please request a new one.",
+            "userNotFound": "Account not found. Please register first.",
+            "emailSendingFailed": "Failed to send verification email. Please try again later.",
+            "emailConfigError": "Email service is temporarily unavailable. Please try again later.",
+            "genericError": "An error occurred. Please try again."
         }
+    },
+    "errors": {
+        "networkError": "Network error. Please check your connection and try again.",
+        "rateLimitExceeded": "Too many requests. Please wait before trying again.",
+        "rateLimitExceededWithTime": "Too many requests. Please wait {{seconds}} seconds before trying again.",
+        "unauthorized": "Your session has expired. Please sign in again.",
+        "serverError": "A server error occurred. Please try again later or contact support.",
+        "sessionExpired": "Your session has expired. Please sign in again."
     },
     "validation": {
         "required": "This field is required",

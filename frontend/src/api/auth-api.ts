@@ -42,7 +42,7 @@ export const authApi = {
     });
   },
 
-  resendVerificationEmail: (email: string): Promise<void> =>
+  sendVerificationEmail: (email: string): Promise<void> =>
   {
     return apiClient.request<void>('/auth/send-verification-email', {
       method: 'POST',

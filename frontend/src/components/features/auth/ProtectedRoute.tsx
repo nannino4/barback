@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Spinner } from '@/components/ui/spinner';
 import { useAuth } from '@/hooks/useAuth';
+import { useI18n } from '@/hooks/useI18n';
 
 interface ProtectedRouteProps
 {
@@ -16,6 +17,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 {
   const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
+  const { t } = useI18n();
 
   // Show loading state while checking authentication
   if (isLoading)
@@ -24,7 +26,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       <div className="min-h-screen bg-background">
         <Spinner 
           size="lg" 
-          text="Loading..."
+          text={t('common.loading')}
           className="min-h-screen"
         />
       </div>

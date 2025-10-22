@@ -49,7 +49,7 @@ export const useAuth = () =>
       // Redirect to email verification page instead of home
       if (!response.user.isEmailVerified)
       {
-        void navigate('/auth/verify-email');
+        void navigate('/auth/send-verification-email');
       }
       else
       {
@@ -98,15 +98,24 @@ export const useAuth = () =>
       loginToStore(response.user, response.access_token, response.refresh_token);
       toast.success('Login successful!');
       
-      // Check for redirect parameter
-      const redirectUrl = searchParams.get('redirect');
-      if (redirectUrl)
+      // Check email verification status and redirect accordingly
+      if (!response.user.isEmailVerified)
       {
-        void navigate(redirectUrl);
+        // User is authenticated but not verified - redirect to verify email
+        void navigate('/auth/send-verification-email');
       }
       else
       {
-        void navigate('/dashboard');
+        // User is verified - check for redirect parameter or go to dashboard
+        const redirectUrl = searchParams.get('redirect');
+        if (redirectUrl)
+        {
+          void navigate(redirectUrl);
+        }
+        else
+        {
+          void navigate('/dashboard');
+        }
       }
     },
     onError: (error: Error) =>

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { User, AuthState } from '@/types/auth';
+import { AuthTokenManager } from '@/lib/auth-tokens';
 
 interface AuthStore extends AuthState {
     setUser: (user: User | null) => void;
@@ -33,9 +34,8 @@ export const useAuthStore = create<AuthStore>()(
 
       login: (user: User, accessToken: string, refreshToken: string) =>
       {
-        // Store tokens in localStorage
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
+        // Store tokens using AuthTokenManager
+        AuthTokenManager.setTokens(accessToken, refreshToken);
                 
         set({
           user,
@@ -47,9 +47,8 @@ export const useAuthStore = create<AuthStore>()(
 
       logout: () =>
       {
-        // Clear tokens from localStorage
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
+        // Clear tokens using AuthTokenManager
+        AuthTokenManager.clearTokens();
                 
         set({
           user: null,

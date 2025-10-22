@@ -53,10 +53,10 @@ export class AuthTokenManager
 }
 
 /**
- * Auth interceptor that adds Authorization header to requests
- * Use this in the API client to automatically inject tokens
+ * Adds Authorization header to request config if access token exists
+ * Use this in the API client to automatically inject auth tokens
  */
-export const addAuthInterceptor = (config: RequestInit): RequestInit =>
+export const addAuthHeader = (config: RequestInit): RequestInit =>
 {
   const token = AuthTokenManager.getAccessToken();
   

@@ -1,13 +1,18 @@
 import type { ApiError } from '@/types/api';
-import { AuthTokenManager, addAuthInterceptor } from '@/lib/auth-tokens';
+import { AuthTokenManager, addAuthHeader } from '@/lib/auth-tokens';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000/api';
 
+/**
+ * Backend error response structure
+ * Matches the error format from backend API documentation
+ */
 interface ErrorResponse
 {
-    message: string;
-    error?: string;
-    field?: string;
+    message: string | string[]; // Can be single message or array of validation errors
+    error?: string; // Error code (e.g., 'EMAIL_ALREADY_VERIFIED', 'RATE_LIMIT_EXCEEDED')
+    field?: string; // Field name for validation errors
+    statusCode: number;
 }
 
 class ApiClient
@@ -74,9 +79,61 @@ class ApiClient
     return data.access_token;
   }
 
-  async request<T>(
+  /**
+   * Helper to check if response has JSON content
+   */
+  private hasJsonContent(response: Response): boolean
+  {
+    const contentType = response.headers.get('content-type');
+    const contentLength = response.headers.get('content-length');
+    
+    // No content scenarios
+    if (response.status === 204) return false;
+    if (contentLength === '0') return false;
+    if (!contentType?.includes('application/json')) return false;
+    
+    return true;
+  }
+
+  /**
+   * Helper to parse error response and create ApiError
+   */
+  private async parseErrorResponse(response: Response): Promise<ApiError>
+  {
+    try
+    {
+      const errorData = await response.json() as ErrorResponse;
+      
+      // Handle validation errors (array of messages)
+      const message = Array.isArray(errorData.message) 
+        ? errorData.message.join(', ')
+        : errorData.message || 'An unexpected error occurred';
+      
+      return {
+        message,
+        statusCode: response.status,
+        error: errorData.error,
+        field: errorData.field,
+      };
+    }
+    catch
+    {
+      // If we can't parse the error response, return generic error
+      return {
+        message: 'An unexpected error occurred',
+        statusCode: response.status,
+      };
+    }
+  }
+
+  /**
+   * Main request method
+   * Returns void for empty responses (204, no content)
+   * Returns T for JSON responses
+   */
+  async request<T = void>(
     endpoint: string,
-        options: RequestInit = {},
+    options: RequestInit = {},
   ): Promise<T>
   {
     const url = `${this.baseUrl}${endpoint}`;
@@ -90,8 +147,8 @@ class ApiClient
       ...options,
     };
 
-    // Apply auth interceptor to add Authorization header
-    config = addAuthInterceptor(config);
+    // Add Authorization header if access token exists
+    config = addAuthHeader(config);
 
     try
     {
@@ -103,6 +160,7 @@ class ApiClient
         try
         {
           const newToken = await this.refreshAccessToken();
+          
           // Retry the original request with new token
           const retryConfig = {
             ...config,
@@ -115,30 +173,14 @@ class ApiClient
                     
           if (!retryResponse.ok)
           {
-            const errorData = await retryResponse.json().catch((): ErrorResponse => ({
-              message: 'An unexpected error occurred',
-            })) as ErrorResponse;
-                        
-            const apiError: ApiError = {
-              message: errorData.message || 'An unexpected error occurred',
-              status: retryResponse.status,
-              error: errorData.error,
-              field: errorData.field,
-              retryAfter: retryResponse.status === 429 
-                ? parseInt(retryResponse.headers.get('Retry-After') || '60', 10)
-                : undefined,
-            };
-                        
+            const apiError = await this.parseErrorResponse(retryResponse);
             throw new Error(JSON.stringify(apiError));
           }
                     
-          // Check if retry response has content before parsing JSON
-          const retryContentType = retryResponse.headers.get('content-type');
-          const retryContentLength = retryResponse.headers.get('content-length');
-          
-          if (!retryContentType?.includes('application/json') || retryContentLength === '0' || retryResponse.status === 204)
+          // Handle successful retry response
+          if (!this.hasJsonContent(retryResponse))
           {
-            return {} as T;
+            return undefined as T; // For void responses
           }
           
           return await retryResponse.json() as T;
@@ -152,33 +194,17 @@ class ApiClient
         }
       }
             
+      // Handle error responses
       if (!response.ok)
       {
-        const errorData = await response.json().catch((): ErrorResponse => ({
-          message: 'An unexpected error occurred',
-        })) as ErrorResponse;
-                
-        const apiError: ApiError = {
-          message: errorData.message || 'An unexpected error occurred',
-          status: response.status,
-          error: errorData.error,
-          field: errorData.field,
-          retryAfter: response.status === 429 
-            ? parseInt(response.headers.get('Retry-After') || '60', 10)
-            : undefined,
-        };
-                
+        const apiError = await this.parseErrorResponse(response);
         throw new Error(JSON.stringify(apiError));
       }
 
-      // Check if response has content before parsing JSON
-      const contentType = response.headers.get('content-type');
-      const contentLength = response.headers.get('content-length');
-      
-      // If no content or empty response, return empty object
-      if (!contentType?.includes('application/json') || contentLength === '0' || response.status === 204)
+      // Handle successful response
+      if (!this.hasJsonContent(response))
       {
-        return {} as T;
+        return undefined as T; // For void responses
       }
 
       return await response.json() as T;
@@ -187,10 +213,10 @@ class ApiClient
     {
       if (error instanceof TypeError)
       {
-        // Network error
+        // Network error (connection failed, CORS, etc.)
         const networkError: ApiError = {
           message: 'Network error. Please check your connection.',
-          status: 0,
+          statusCode: 0,
         };
         throw new Error(JSON.stringify(networkError));
       }

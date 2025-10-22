@@ -75,7 +75,7 @@ export const VerifyEmailCallbackPage: React.FC = () =>
       }
       
       // Handle different error status codes
-      switch (apiError.status)
+      switch (apiError.statusCode)
       {
       case 401:
         // Unauthorized - session expired, redirect to login
@@ -87,14 +87,12 @@ export const VerifyEmailCallbackPage: React.FC = () =>
         // User not found
         setVerificationStatus('error');
         setErrorMessage(t('auth.errors.userNotFound'));
-        toast.error(t('auth.errors.userNotFound'));
         break;
         
       case 429:
         // Rate limited
         setVerificationStatus('error');
         setErrorMessage(t('errors.rateLimitExceeded'));
-        toast.error(t('errors.rateLimitExceeded'));
         break;
         
       default:
@@ -103,7 +101,6 @@ export const VerifyEmailCallbackPage: React.FC = () =>
         setVerificationStatus('error');
         const localizedMessage = getLocalizedErrorMessage(apiError, t);
         setErrorMessage(localizedMessage);
-        toast.error(localizedMessage);
         break;
       }
       }

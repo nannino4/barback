@@ -42,7 +42,7 @@ export const SendVerificationEmailPage: React.FC = () =>
 
   // Send verification email mutation
   const sendEmailMutation = useMutation({
-    mutationFn: (emailAddress: string) => authApi.sendVerificationEmail(emailAddress),
+    mutationFn: () => authApi.sendVerificationEmail(),
     onSuccess: () =>
     {
       setSendStatus('success');
@@ -54,8 +54,19 @@ export const SendVerificationEmailPage: React.FC = () =>
       const apiError = parseApiError(error);
       
       // Handle different error status codes
-      switch (apiError.status)
+      switch (apiError.statusCode)
       {
+      case 400:
+        // Email already verified - treat as success
+        if (apiError.error === 'EMAIL_ALREADY_VERIFIED')
+        {
+          toast.success(t('auth.errors.emailAlreadyVerified'));
+          void navigate('/dashboard', { replace: true });
+          return;
+        }
+        // Other 400 errors fall through to default
+        break;
+        
       case 401:
         // Unauthorized - session expired
         toast.error(t('errors.sessionExpired'));
@@ -66,26 +77,22 @@ export const SendVerificationEmailPage: React.FC = () =>
         // User not found
         setSendStatus('error');
         setErrorMessage(t('auth.errors.userNotFound'));
-        toast.error(t('auth.errors.userNotFound'));
         break;
         
       case 429:
         // Rate limited
         setSendStatus('error');
         setErrorMessage(t('errors.rateLimitExceeded'));
-        toast.error(t('errors.rateLimitExceeded'));
         startCooldown();
         break;
+      }
         
-      default:
+      // Default: use localized message mapping
+      if (sendStatus !== 'error')
       {
-        // All other errors - use localized message mapping
         setSendStatus('error');
         const localizedMessage = getLocalizedErrorMessage(apiError, t);
         setErrorMessage(localizedMessage);
-        toast.error(localizedMessage);
-        break;
-      }
       }
     },
   });
@@ -96,7 +103,7 @@ export const SendVerificationEmailPage: React.FC = () =>
     if (isCooldownActive || sendEmailMutation.isPending) return;
     
     setErrorMessage('');
-    sendEmailMutation.mutate(email);
+    sendEmailMutation.mutate();
   };
 
   return (
@@ -155,7 +162,7 @@ export const SendVerificationEmailPage: React.FC = () =>
                 </div>
               )}
 
-              {sendStatus === 'error' && (
+              {sendStatus === 'error' && errorMessage && (
                 <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
                   <div className="flex items-start gap-2">
                     <AlertCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />

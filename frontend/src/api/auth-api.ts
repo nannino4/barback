@@ -1,5 +1,6 @@
 import { apiClient } from '@/api/api';
 import type { AuthResponse, RegisterData, LoginData } from '@/types/auth';
+import { AuthResponseSchema, GoogleAuthUrlResponseSchema } from '@/validation/api-schemas';
 
 export const authApi = {
   register: (data: RegisterData): Promise<AuthResponse> =>
@@ -7,7 +8,7 @@ export const authApi = {
     return apiClient.request<AuthResponse>('/auth/register/email', {
       method: 'POST',
       body: JSON.stringify(data),
-    });
+    }, AuthResponseSchema);
   },
 
   login: (data: LoginData): Promise<AuthResponse> =>
@@ -15,7 +16,7 @@ export const authApi = {
     return apiClient.request<AuthResponse>('/auth/login/email', {
       method: 'POST',
       body: JSON.stringify(data),
-    });
+    }, AuthResponseSchema);
   },
 
   refreshToken: (): Promise<AuthResponse> =>
@@ -24,15 +25,7 @@ export const authApi = {
     return apiClient.request<AuthResponse>('/auth/refresh-token', {
       method: 'POST',
       body: JSON.stringify({ refresh_token: refreshToken }),
-    });
-  },
-
-  verifyEmail: (token: string): Promise<void> =>
-  {
-    return apiClient.request<void>('/auth/verify-email', {
-      method: 'POST',
-      body: JSON.stringify({ token }),
-    });
+    }, AuthResponseSchema);
   },
 
   verifyEmailByUrl: (token: string): Promise<void> =>
@@ -42,11 +35,10 @@ export const authApi = {
     });
   },
 
-  sendVerificationEmail: (email: string): Promise<void> =>
+  sendVerificationEmail: (): Promise<void> =>
   {
     return apiClient.request<void>('/auth/send-verification-email', {
       method: 'POST',
-      body: JSON.stringify({ email }),
     });
   },
 
@@ -79,7 +71,7 @@ export const authApi = {
   {
     return apiClient.request<{ authUrl: string; state: string }>('/auth/oauth/google', {
       method: 'GET',
-    });
+    }, GoogleAuthUrlResponseSchema);
   },
 
   handleGoogleCallback: (code: string, state?: string): Promise<AuthResponse> =>
@@ -87,6 +79,6 @@ export const authApi = {
     return apiClient.request<AuthResponse>('/auth/oauth/google/callback', {
       method: 'POST',
       body: JSON.stringify({ code, ...(state && { state }) }),
-    });
+    }, AuthResponseSchema);
   },
 };

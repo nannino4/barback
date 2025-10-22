@@ -1,5 +1,6 @@
 import type { ApiError } from '@/types/api';
 import { AuthTokenManager, addAuthHeader } from '@/lib/auth-tokens';
+import type { z } from 'zod';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000/api';
 
@@ -127,13 +128,18 @@ class ApiClient
   }
 
   /**
-   * Main request method
+   * Main request method with optional runtime validation
    * Returns void for empty responses (204, no content)
    * Returns T for JSON responses
+   * 
+   * @param endpoint - API endpoint path
+   * @param options - Fetch request options
+   * @param schema - Optional Zod schema for runtime validation
    */
   async request<T = void>(
     endpoint: string,
     options: RequestInit = {},
+    schema?: z.ZodSchema<T>,
   ): Promise<T>
   {
     const url = `${this.baseUrl}${endpoint}`;
@@ -183,7 +189,27 @@ class ApiClient
             return undefined as T; // For void responses
           }
           
-          return await retryResponse.json() as T;
+          const retryData: unknown = await retryResponse.json();
+          
+          // Validate with Zod schema if provided
+          if (schema)
+          {
+            try
+            {
+              return schema.parse(retryData);
+            }
+            catch (zodError)
+            {
+              console.error('API response validation error:', zodError);
+              const validationError: ApiError = {
+                message: 'Invalid response format from server',
+                statusCode: retryResponse.status,
+              };
+              throw new Error(JSON.stringify(validationError));
+            }
+          }
+          
+          return retryData as T;
         }
         catch (refreshError)
         {
@@ -207,7 +233,28 @@ class ApiClient
         return undefined as T; // For void responses
       }
 
-      return await response.json() as T;
+      const data: unknown = await response.json();
+      
+      // Validate with Zod schema if provided
+      if (schema)
+      {
+        try
+        {
+          return schema.parse(data);
+        }
+        catch (zodError)
+        {
+          // Schema validation failed - backend returned unexpected data
+          console.error('API response validation error:', zodError);
+          const validationError: ApiError = {
+            message: 'Invalid response format from server',
+            statusCode: response.status,
+          };
+          throw new Error(JSON.stringify(validationError));
+        }
+      }
+      
+      return data as T;
     }
     catch (error)
     {

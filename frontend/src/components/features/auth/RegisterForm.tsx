@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { registerSchema, type RegisterFormData } from '@/validation/auth-validations';
+import { registerSchema, type RegisterFormData } from '@/validation/auth-form-schemas';
 import { useAuth } from '@/hooks/useAuth';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';

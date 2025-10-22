@@ -1,7 +1,28 @@
 import { z } from 'zod';
 import { getValidationMessage } from '@/validation/validation-utils';
 
-// Password validation schema
+/**
+ * Authentication Form Validation Schemas
+ * 
+ * These schemas validate user input in authentication forms (client-side).
+ * They provide user-friendly, internationalized error messages and enforce
+ * business logic rules (password complexity, field formats, etc.)
+ * 
+ * Usage: With React Hook Form + zodResolver
+ */
+
+// ============================================================================
+// Shared Schemas
+// ============================================================================
+
+/**
+ * Password validation schema with security requirements:
+ * - Minimum 8 characters
+ * - At least 1 uppercase letter
+ * - At least 1 lowercase letter
+ * - At least 1 number
+ * - At least 1 special character
+ */
 const passwordSchema = z
   .string()
   .min(8, getValidationMessage('validation.password.minLength'))
@@ -10,7 +31,14 @@ const passwordSchema = z
   .regex(/[0-9]/, getValidationMessage('validation.password.number'))
   .regex(/[^A-Za-z0-9]/, getValidationMessage('validation.password.specialChar'));
 
-// Registration schema
+// ============================================================================
+// Form Schemas
+// ============================================================================
+
+/**
+ * Registration form schema
+ * Validates new user registration with password confirmation
+ */
 export const registerSchema = z
   .object({
     firstName: z
@@ -48,7 +76,10 @@ export const registerSchema = z
     path: ['confirmPassword'],
   });
 
-// Login schema
+/**
+ * Login form schema
+ * Simple email + password validation
+ */
 export const loginSchema = z.object({
   email: z
     .string()
@@ -57,7 +88,10 @@ export const loginSchema = z.object({
   password: z.string().min(1, getValidationMessage('validation.password.required')),
 });
 
-// Forgot password schema
+/**
+ * Forgot password form schema
+ * Only requires email address
+ */
 export const forgotPasswordSchema = z.object({
   email: z
     .string()
@@ -65,7 +99,10 @@ export const forgotPasswordSchema = z.object({
     .email(getValidationMessage('validation.email.invalid')),
 });
 
-// Reset password schema
+/**
+ * Reset password form schema
+ * New password with confirmation
+ */
 export const resetPasswordSchema = z
   .object({
     password: passwordSchema,
@@ -76,7 +113,10 @@ export const resetPasswordSchema = z
     path: ['confirmPassword'],
   });
 
-// Infer types from schemas
+// ============================================================================
+// TypeScript Types
+// ============================================================================
+
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
 export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;

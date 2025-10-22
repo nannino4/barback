@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { resetPasswordSchema, type ResetPasswordData } from '@/validation/auth-validations';
+import { resetPasswordSchema, type ResetPasswordData } from '@/validation/auth-form-schemas';
 import { authApi } from '@/api/auth-api';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';

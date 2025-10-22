@@ -1,6 +1,46 @@
+import { z } from 'zod';
 import { apiClient } from '@/api/api';
 import type { AuthResponse, RegisterData, LoginData } from '@/types/auth';
-import { AuthResponseSchema, GoogleAuthUrlResponseSchema } from '@/validation/api-schemas';
+
+// ============================================================================
+// Response Schemas - API Contract Validation
+// ============================================================================
+// These schemas validate data received from the backend to ensure type safety
+// and catch breaking API changes at runtime.
+
+/**
+ * User schema - validates user object structure from API
+ */
+export const UserSchema = z.object({
+  id: z.string(),
+  email: z.string().email(),
+  firstName: z.string(),
+  lastName: z.string(),
+  phoneNumber: z.string().optional(),
+  profilePictureUrl: z.string().url().optional(),
+  isEmailVerified: z.boolean(),
+});
+
+/**
+ * Auth response schema - validates login/register/refresh token responses
+ */
+export const AuthResponseSchema = z.object({
+  access_token: z.string(),
+  refresh_token: z.string(),
+  user: UserSchema,
+});
+
+/**
+ * Google OAuth auth URL response schema
+ */
+export const GoogleAuthUrlResponseSchema = z.object({
+  authUrl: z.string().url(),
+  state: z.string(),
+});
+
+// ============================================================================
+// API Methods
+// ============================================================================
 
 export const authApi = {
   register: (data: RegisterData): Promise<AuthResponse> =>

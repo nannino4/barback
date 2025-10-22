@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { forgotPasswordSchema, type ForgotPasswordData } from '@/validation/auth-validations';
+import { forgotPasswordSchema, type ForgotPasswordData } from '@/validation/auth-form-schemas';
 import { authApi } from '@/api/auth-api';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';

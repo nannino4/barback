@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { loginSchema, type LoginData } from '@/validation/auth-validations';
+import { loginSchema, type LoginData } from '@/validation/auth-form-schemas';
 import { useAuth } from '@/hooks/useAuth';
 import { useI18n } from '@/hooks/useI18n';
 import { GoogleLoginButton } from '@/components/features/auth/GoogleLoginButton';

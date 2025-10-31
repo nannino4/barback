@@ -4,22 +4,19 @@ import toast from 'react-hot-toast';
 import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/api/auth-api';
 import type { RegisterData, RegisterFormData, LoginData } from '@/types/auth';
-import type { ApiError } from '@/types/api';
+import { getLocalizedErrorMessage, isKnownError } from '@/lib/errors';
+import { useI18n } from '@/hooks/useI18n';
 
 export const useAuth = () =>
 {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { t } = useI18n();
   const {
     user,
     isAuthenticated,
-    isLoading,
-    error,
     login: loginToStore,
     logout,
-    setLoading,
-    setError,
-    clearError,
   } = useAuthStore();
 
   const registerMutation = useMutation({
@@ -35,16 +32,11 @@ export const useAuth = () =>
       };
       return authApi.register(apiData);
     },
-    onMutate: () =>
-    {
-      setLoading(true);
-      clearError();
-    },
     onSuccess: (response) =>
     {
       // Use user data directly from registration response
       loginToStore(response.user, response.access_token, response.refresh_token);
-      toast.success('Registration successful! Please check your email to verify your account.');
+      toast.success(t('auth.register.success'));
             
       // Redirect to email verification page instead of home
       if (!response.user.isEmailVerified)
@@ -67,36 +59,22 @@ export const useAuth = () =>
     },
     onError: (error: Error) =>
     {
-      try
-      {
-        const apiError = JSON.parse(error.message) as ApiError;
-        setError(apiError.message);
-        toast.error(apiError.message);
-      }
-      catch
-      {
-        setError('Registration failed. Please try again.');
-        toast.error('Registration failed. Please try again.');
-      }
-    },
-    onSettled: () =>
-    {
-      setLoading(false);
+      // Use localized error message for known errors, fallback for unknown
+      const message = isKnownError(error)
+        ? getLocalizedErrorMessage(error, t)
+        : t('errors.genericError');
+      
+      toast.error(message);
     },
   });
 
   const loginMutation = useMutation({
     mutationFn: (data: LoginData) => authApi.login(data),
-    onMutate: () =>
-    {
-      setLoading(true);
-      clearError();
-    },
     onSuccess: (response) =>
     {
       // Use user data directly from login response
       loginToStore(response.user, response.access_token, response.refresh_token);
-      toast.success('Login successful!');
+      toast.success(t('auth.login.success'));
       
       // Check email verification status and redirect accordingly
       if (!response.user.isEmailVerified)
@@ -120,21 +98,12 @@ export const useAuth = () =>
     },
     onError: (error: Error) =>
     {
-      try
-      {
-        const apiError = JSON.parse(error.message) as ApiError;
-        setError(apiError.message);
-        toast.error(apiError.message);
-      }
-      catch
-      {
-        setError('Login failed. Please try again.');
-        toast.error('Login failed. Please try again.');
-      }
-    },
-    onSettled: () =>
-    {
-      setLoading(false);
+      // Use localized error message for known errors, fallback for unknown
+      const message = isKnownError(error)
+        ? getLocalizedErrorMessage(error, t)
+        : t('errors.genericError');
+      
+      toast.error(message);
     },
   });
 
@@ -151,7 +120,7 @@ export const useAuth = () =>
   const handleLogout = () =>
   {
     logout();
-    toast.success('Logged out successfully');
+    toast.success(t('auth.logout.success'));
     void navigate('/auth/login');
   };
 
@@ -159,16 +128,13 @@ export const useAuth = () =>
     // State
     user,
     isAuthenticated,
-    isLoading: isLoading || registerMutation.isPending || loginMutation.isPending,
-    error,
 
     // Actions
     register: handleRegister,
     login: handleLogin,
     logout: handleLogout,
-    clearError,
 
-    // Mutation states
+    // Mutation states (use these for loading indicators)
     isRegistering: registerMutation.isPending,
     isLoggingIn: loginMutation.isPending,
   };

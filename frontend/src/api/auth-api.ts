@@ -1,42 +1,12 @@
-import { z } from 'zod';
 import { apiClient } from '@/api/api';
-import type { AuthResponse, RegisterData, LoginData } from '@/types/auth';
-
-// ============================================================================
-// Response Schemas - API Contract Validation
-// ============================================================================
-// These schemas validate data received from the backend to ensure type safety
-// and catch breaking API changes at runtime.
-
-/**
- * User schema - validates user object structure from API
- */
-export const UserSchema = z.object({
-  id: z.string(),
-  email: z.string().email(),
-  firstName: z.string(),
-  lastName: z.string(),
-  phoneNumber: z.string().optional(),
-  profilePictureUrl: z.string().url().optional(),
-  isEmailVerified: z.boolean(),
-});
-
-/**
- * Auth response schema - validates login/register/refresh token responses
- */
-export const AuthResponseSchema = z.object({
-  access_token: z.string(),
-  refresh_token: z.string(),
-  user: UserSchema,
-});
-
-/**
- * Google OAuth auth URL response schema
- */
-export const GoogleAuthUrlResponseSchema = z.object({
-  authUrl: z.string().url(),
-  state: z.string(),
-});
+import {
+  AuthResponseSchema,
+  GoogleAuthUrlResponseSchema,
+  type AuthResponse,
+  type RegisterData,
+  type LoginData,
+  type GoogleAuthUrlResponse,
+} from '@/types/auth';
 
 // ============================================================================
 // API Methods
@@ -59,32 +29,23 @@ export const authApi = {
     }, AuthResponseSchema);
   },
 
-  refreshToken: (): Promise<AuthResponse> =>
-  {
-    const refreshToken = localStorage.getItem('refreshToken');
-    return apiClient.request<AuthResponse>('/auth/refresh-token', {
-      method: 'POST',
-      body: JSON.stringify({ refresh_token: refreshToken }),
-    }, AuthResponseSchema);
-  },
-
   verifyEmailByUrl: (token: string): Promise<void> =>
   {
-    return apiClient.request<void>(`/auth/verify-email/${token}`, {
+    return apiClient.request(`/auth/verify-email/${token}`, {
       method: 'GET',
     });
   },
 
   sendVerificationEmail: (): Promise<void> =>
   {
-    return apiClient.request<void>('/auth/send-verification-email', {
+    return apiClient.request('/auth/send-verification-email', {
       method: 'POST',
     });
   },
 
   forgotPassword: (email: string): Promise<void> =>
   {
-    return apiClient.request<void>('/auth/forgot-password', {
+    return apiClient.request('/auth/forgot-password', {
       method: 'POST',
       body: JSON.stringify({ email }),
     });
@@ -92,7 +53,7 @@ export const authApi = {
 
   resetPassword: (token: string, password: string): Promise<void> =>
   {
-    return apiClient.request<void>('/auth/reset-password', {
+    return apiClient.request('/auth/reset-password', {
       method: 'POST',
       body: JSON.stringify({ token, newPassword: password }),
     });
@@ -101,15 +62,15 @@ export const authApi = {
   // Validate reset token before showing form
   validateResetToken: (token: string): Promise<void> =>
   {
-    return apiClient.request<void>(`/auth/reset-password/${token}`, {
+    return apiClient.request(`/auth/reset-password/${token}`, {
       method: 'GET',
     });
   },
 
   // Google OAuth APIs
-  getGoogleAuthUrl: (): Promise<{ authUrl: string; state: string }> =>
+  getGoogleAuthUrl: (): Promise<GoogleAuthUrlResponse> =>
   {
-    return apiClient.request<{ authUrl: string; state: string }>('/auth/oauth/google', {
+    return apiClient.request<GoogleAuthUrlResponse>('/auth/oauth/google', {
       method: 'GET',
     }, GoogleAuthUrlResponseSchema);
   },

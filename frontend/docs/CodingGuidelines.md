@@ -170,6 +170,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
 - **OAuth Flows**: Use `window.location.href` to redirect to OAuth providers
 - **Replace vs Push**: Use `{ replace: true }` when you don't want the user to go back
 
+## Promise Handling
+- **Use `void` operator** when intentionally ignoring promise return values
+- **Never ignore promises** that might contain errors without explicit handling
+- **Prefer `await` or `.catch()`** for promises where errors need handling
+- **Common patterns**:
+  - Navigation: `void navigate('/path')` - safe to ignore
+  - Form submission: `void form.handleSubmit(fn)()` - errors handled in callbacks
+  - Background tasks: `void someAsyncTask()` - fire and forget patterns
+
+```typescript
+// ✅ CORRECT - Intentionally ignoring promise with void
+void navigate('/dashboard');
+void form.handleSubmit(onSubmit)(e);
+
+// ✅ CORRECT - Handling promise errors explicitly
+try {
+  await apiCall();
+} catch (error) {
+  handleError(error);
+}
+
+// ❌ WRONG - Floating promise without void or error handling
+navigate('/dashboard'); // ESLint error
+someAsyncTask(); // Potential unhandled rejection
+```
+
 ## Internationalization (i18n)
 
 ### Mandatory Localization

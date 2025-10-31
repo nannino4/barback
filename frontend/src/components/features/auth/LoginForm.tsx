@@ -29,7 +29,7 @@ interface LoginFormProps
 export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
 {
   const [showPassword, setShowPassword] = React.useState(false);
-  const { login, isLoggingIn, error } = useAuth();
+  const { login, isLoggingIn } = useAuth();
   const { t } = useI18n();
 
   const form = useForm<LoginData>({
@@ -153,15 +153,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
                 {t('auth.login.forgotPassword')}
               </Link>
             </div>
-
-            {/* Error Display */}
-            {error && (
-              <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20">
-                <p className="text-sm text-destructive">
-                  {error}
-                </p>
-              </div>
-            )}
 
             {/* Submit Button */}
             <Button

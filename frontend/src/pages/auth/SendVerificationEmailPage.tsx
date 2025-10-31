@@ -10,7 +10,7 @@ import { authApi } from '@/api/auth-api';
 import { useAuthStore } from '@/stores/authStore';
 import { useI18n } from '@/hooks/useI18n';
 import { useCooldown } from '@/hooks/useCooldown';
-import { parseApiError, getLocalizedErrorMessage } from '@/lib/error-utils';
+import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
 import { EMAIL_RESEND_COOLDOWN_MS } from '@/lib/constants';
 
 type SendStatus = 'idle' | 'success' | 'error';
@@ -51,14 +51,19 @@ export const SendVerificationEmailPage: React.FC = () =>
     },
     onError: (error: Error) =>
     {
-      const apiError = parseApiError(error);
+      if (!ApiError.isApiError(error))
+      {
+        setSendStatus('error');
+        setErrorMessage(t('errors.genericError'));
+        return;
+      }
       
       // Handle different error status codes
-      switch (apiError.statusCode)
+      switch (error.statusCode)
       {
       case 400:
         // Email already verified - treat as success
-        if (apiError.error === 'EMAIL_ALREADY_VERIFIED')
+        if (error.error === 'EMAIL_ALREADY_VERIFIED')
         {
           toast.success(t('auth.errors.emailAlreadyVerified'));
           void navigate('/dashboard', { replace: true });
@@ -69,7 +74,7 @@ export const SendVerificationEmailPage: React.FC = () =>
         
       case 401:
         // Unauthorized - session expired
-        toast.error(t('errors.sessionExpired'));
+        toast.error(t('auth.errors.unauthorized'));
         void navigate('/auth/login', { replace: true });
         return;
         
@@ -91,7 +96,7 @@ export const SendVerificationEmailPage: React.FC = () =>
       if (sendStatus !== 'error')
       {
         setSendStatus('error');
-        const localizedMessage = getLocalizedErrorMessage(apiError, t);
+        const localizedMessage = getLocalizedErrorMessage(error, t);
         setErrorMessage(localizedMessage);
       }
     },

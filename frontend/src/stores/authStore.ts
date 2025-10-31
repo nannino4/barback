@@ -1,15 +1,20 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User, AuthState } from '@/types/auth';
+import type { User } from '@/types/auth';
 import { AuthTokenManager } from '@/lib/auth-tokens';
 
-interface AuthStore extends AuthState {
+/**
+ * Auth store state interface
+ * Note: Error handling is done via toasts, not store state
+ */
+interface AuthStore {
+    user: User | null;
+    isAuthenticated: boolean;
+    isLoading: boolean;
     setUser: (user: User | null) => void;
     setLoading: (loading: boolean) => void;
-    setError: (error: string | null) => void;
     login: (user: User, accessToken: string, refreshToken: string) => void;
     logout: () => void;
-    clearError: () => void;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -18,7 +23,6 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
       isAuthenticated: false,
       isLoading: false,
-      error: null,
 
       setUser: (user) =>
         set({
@@ -29,9 +33,6 @@ export const useAuthStore = create<AuthStore>()(
       setLoading: (isLoading) =>
         set({ isLoading }),
 
-      setError: (error) =>
-        set({ error }),
-
       login: (user: User, accessToken: string, refreshToken: string) =>
       {
         // Store tokens using AuthTokenManager
@@ -41,7 +42,6 @@ export const useAuthStore = create<AuthStore>()(
           user,
           isAuthenticated: true,
           isLoading: false,
-          error: null,
         });
       },
 
@@ -54,12 +54,8 @@ export const useAuthStore = create<AuthStore>()(
           user: null,
           isAuthenticated: false,
           isLoading: false,
-          error: null,
         });
       },
-
-      clearError: () =>
-        set({ error: null }),
     }),
     {
       name: 'auth-storage',

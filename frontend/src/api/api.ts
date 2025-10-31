@@ -1,6 +1,7 @@
-import type { ApiError } from '@/types/api';
+import { ApiError, NetworkError, ValidationError } from '@/lib/errors';
 import { AuthTokenManager, addAuthHeader } from '@/lib/auth-tokens';
-import type { z } from 'zod';
+import { logger } from '@/lib/logger';
+import { z } from 'zod';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000/api';
 
@@ -8,133 +9,192 @@ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://lo
  * Backend error response structure
  * Matches the error format from backend API documentation
  */
-interface ErrorResponse
-{
-    message: string | string[]; // Can be single message or array of validation errors
-    error?: string; // Error code (e.g., 'EMAIL_ALREADY_VERIFIED', 'RATE_LIMIT_EXCEEDED')
-    field?: string; // Field name for validation errors
-    statusCode: number;
-}
+const ErrorResponseSchema = z.object({
+  message: z.union([z.string(), z.array(z.string())]),
+  error: z.string().optional(),
+  statusCode: z.number(),
+});
 
 class ApiClient
 {
   private baseUrl: string;
-  private isRefreshing = false;
-  private refreshPromise: Promise<string> | null = null;
+  private onSessionExpired?: () => void;
+  private defaultTimeoutMs = 30000; // 30 seconds default timeout
 
   constructor(baseUrl: string)
   {
     this.baseUrl = baseUrl;
   }
 
-  private async refreshAccessToken(): Promise<string>
+  /**
+   * Set callback for when session expires
+   * Should be called by AuthProvider on initialization
+   * 
+   * Note: With proactive token refresh, this should rarely be called.
+   * It's a fallback for edge cases where a 401 occurs despite refresh attempts.
+   */
+  setSessionExpiredHandler(handler: () => void): void
   {
-    if (this.isRefreshing && this.refreshPromise)
-    {
-      return this.refreshPromise;
-    }
-
-    this.isRefreshing = true;
-    this.refreshPromise = this.performTokenRefresh();
-
-    try
-    {
-      const newToken = await this.refreshPromise;
-      return newToken;
-    }
-    finally
-    {
-      this.isRefreshing = false;
-      this.refreshPromise = null;
-    }
-  }
-
-  private async performTokenRefresh(): Promise<string>
-  {
-    const refreshToken = AuthTokenManager.getRefreshToken();
-    if (!refreshToken)
-    {
-      throw new Error('No refresh token available');
-    }
-
-    const response = await fetch(`${this.baseUrl}/auth/refresh-token`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ refresh_token: refreshToken }),
-    });
-
-    if (!response.ok)
-    {
-      // Refresh token is invalid, clear all tokens
-      AuthTokenManager.clearTokens();
-      // Redirect to login
-      window.location.href = '/auth/login';
-      throw new Error('Session expired');
-    }
-
-    const data = await response.json() as { access_token: string; refresh_token: string };
-    AuthTokenManager.setTokens(data.access_token, data.refresh_token);
-        
-    return data.access_token;
+    this.onSessionExpired = handler;
   }
 
   /**
-   * Helper to check if response has JSON content
+   * Execute fetch with timeout using AbortController
+   * Prevents requests from hanging indefinitely
    */
-  private hasJsonContent(response: Response): boolean
+  private async fetchWithTimeout(
+    url: string,
+    config: RequestInit,
+    timeoutMs = this.defaultTimeoutMs,
+  ): Promise<Response>
   {
-    const contentType = response.headers.get('content-type');
-    const contentLength = response.headers.get('content-length');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    try
+    {
+      const response = await fetch(url, {
+        ...config,
+        signal: controller.signal,
+      });
+      return response;
+    }
+    catch (error)
+    {
+      if (error instanceof Error && error.name === 'AbortError')
+      {
+        logger.warn(`Request timeout after ${timeoutMs}ms:`, url);
+        throw new NetworkError(); // Treat timeout as network error
+      }
+      throw error;
+    }
+    finally
+    {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  /**
+   * Handle 401 Unauthorized responses
+   * 
+   * Clears tokens and triggers session expired handler.
+   * This is a fallback - with proactive token refresh, 401s should rarely occur.
+   */
+  private handleUnauthorized(): never
+  {
+    const hasTokens = AuthTokenManager.getAccessToken() !== null;
     
-    // No content scenarios
-    if (response.status === 204) return false;
-    if (contentLength === '0') return false;
-    if (!contentType?.includes('application/json')) return false;
+    AuthTokenManager.clearTokens();
     
-    return true;
+    // Only trigger session expired handler if we actually had tokens
+    // This prevents double-triggering when token refresh fails
+    if (hasTokens && this.onSessionExpired)
+    {
+      this.onSessionExpired();
+    }
+    
+    throw new ApiError(
+      'Session expired',
+      401,
+      'INVALID_ACCESS_TOKEN',
+    );
   }
 
   /**
    * Helper to parse error response and create ApiError
+   * 
+   * Note: Backend returns validation errors as arrays of translation keys,
+   * not plain English messages. These keys need to be translated in the UI.
    */
   private async parseErrorResponse(response: Response): Promise<ApiError>
   {
     try
     {
-      const errorData = await response.json() as ErrorResponse;
+      const rawData: unknown = await response.json();
       
-      // Handle validation errors (array of messages)
-      const message = Array.isArray(errorData.message) 
-        ? errorData.message.join(', ')
-        : errorData.message || 'An unexpected error occurred';
+      // Validate error response structure with Zod
+      const errorData = ErrorResponseSchema.parse(rawData);
       
-      return {
+      // Pass message as-is (can be string or array of translation keys)
+      // ApiError constructor will handle arrays appropriately
+      const message = errorData.message || 'An unexpected error occurred';
+      
+      return new ApiError(
         message,
-        statusCode: response.status,
-        error: errorData.error,
-        field: errorData.field,
-      };
+        response.status,
+        errorData.error,
+      );
     }
-    catch
+    catch (parseError)
     {
+      // Log the parsing failure for debugging
+      logger.warn('Failed to parse error response:', {
+        status: response.status,
+        url: response.url,
+        error: parseError,
+      });
+      
+      // In development, include parse error details for debugging
+      if (import.meta.env.DEV)
+      {
+        const parseErrorMsg = parseError instanceof Error 
+          ? parseError.message 
+          : 'Unknown parse error';
+        
+        return new ApiError(
+          `Failed to parse error response: ${parseErrorMsg}`,
+          response.status,
+        );
+      }
+      
       // If we can't parse the error response, return generic error
-      return {
-        message: 'An unexpected error occurred',
-        statusCode: response.status,
-      };
+      return new ApiError(
+        'An unexpected error occurred',
+        response.status,
+      );
     }
   }
 
   /**
-   * Main request method with optional runtime validation
-   * Returns void for empty responses (204, no content)
-   * Returns T for JSON responses
+   * Handle fetch errors and convert TypeErrors to NetworkErrors
+   */
+  private handleFetchError(error: unknown): never
+  {
+    // Network errors from fetch API have specific characteristics
+    if (error instanceof TypeError)
+    {
+      const errorMessage = error.message.toLowerCase();
+      const isNetworkError = 
+        errorMessage.includes('fetch') ||
+        errorMessage.includes('network') ||
+        errorMessage.includes('failed to fetch');
+      
+      if (isNetworkError)
+      {
+        throw new NetworkError();
+      }
+    }
+    throw error;
+  }
+
+  /**
+   * Universal request method - handles both void and typed responses
    * 
    * @param endpoint - API endpoint path
    * @param options - Fetch request options
-   * @param schema - Optional Zod schema for runtime validation
+   * @param schema - Optional Zod schema for response validation. If omitted, returns void.
+   * 
+   * Usage:
+   * ```ts
+   * // Void response (no body expected)
+   * await apiClient.request('/auth/logout', { method: 'POST' });
+   * 
+   * // Typed response with validation
+   * const user = await apiClient.request('/users/me', { method: 'GET' }, UserSchema);
+   * ```
+   * 
+   * Note: Content-Type is set to 'application/json' automatically when a body is present.
+   * For non-JSON bodies (e.g., FormData), set Content-Type in options.headers to override.
    */
   async request<T = void>(
     endpoint: string,
@@ -143,11 +203,14 @@ class ApiClient
   ): Promise<T>
   {
     const url = `${this.baseUrl}${endpoint}`;
-        
+    
     // Build base config
+    const hasBody = options.body !== undefined;
+    const shouldAddContentType = hasBody && !options.headers;
+    
     let config: RequestInit = {
       headers: {
-        'Content-Type': 'application/json',
+        ...(shouldAddContentType && { 'Content-Type': 'application/json' }),
         ...options.headers,
       },
       ...options,
@@ -158,116 +221,44 @@ class ApiClient
 
     try
     {
-      const response = await fetch(url, config);
+      const response = await this.fetchWithTimeout(url, config);
             
-      // Handle 401 Unauthorized - attempt token refresh
-      if (response.status === 401 && AuthTokenManager.hasValidSession())
+      // Handle 401 Unauthorized - session expired (fallback, shouldn't happen with proactive refresh)
+      if (response.status === 401)
       {
-        try
-        {
-          const newToken = await this.refreshAccessToken();
-          
-          // Retry the original request with new token
-          const retryConfig = {
-            ...config,
-            headers: {
-              ...config.headers,
-              Authorization: `Bearer ${newToken}`,
-            },
-          };
-          const retryResponse = await fetch(url, retryConfig);
-                    
-          if (!retryResponse.ok)
-          {
-            const apiError = await this.parseErrorResponse(retryResponse);
-            throw new Error(JSON.stringify(apiError));
-          }
-                    
-          // Handle successful retry response
-          if (!this.hasJsonContent(retryResponse))
-          {
-            return undefined as T; // For void responses
-          }
-          
-          const retryData: unknown = await retryResponse.json();
-          
-          // Validate with Zod schema if provided
-          if (schema)
-          {
-            try
-            {
-              return schema.parse(retryData);
-            }
-            catch (zodError)
-            {
-              console.error('API response validation error:', zodError);
-              const validationError: ApiError = {
-                message: 'Invalid response format from server',
-                statusCode: retryResponse.status,
-              };
-              throw new Error(JSON.stringify(validationError));
-            }
-          }
-          
-          return retryData as T;
-        }
-        catch (refreshError)
-        {
-          // If refresh fails, clear tokens and redirect to login
-          AuthTokenManager.clearTokens();
-          window.location.href = '/auth/login';
-          throw refreshError;
-        }
+        this.handleUnauthorized();
       }
             
       // Handle error responses
       if (!response.ok)
       {
         const apiError = await this.parseErrorResponse(response);
-        throw new Error(JSON.stringify(apiError));
+        throw apiError;
       }
 
-      // Handle successful response
-      if (!this.hasJsonContent(response))
+      // If no schema provided, return void (don't parse response body)
+      if (!schema)
       {
-        return undefined as T; // For void responses
+        return undefined as T; // void responses
       }
 
+      // Parse and validate response body
       const data: unknown = await response.json();
       
-      // Validate with Zod schema if provided
-      if (schema)
+      try
       {
-        try
-        {
-          return schema.parse(data);
-        }
-        catch (zodError)
-        {
-          // Schema validation failed - backend returned unexpected data
-          console.error('API response validation error:', zodError);
-          const validationError: ApiError = {
-            message: 'Invalid response format from server',
-            statusCode: response.status,
-          };
-          throw new Error(JSON.stringify(validationError));
-        }
+        return schema.parse(data);
       }
-      
-      return data as T;
+      catch (zodError)
+      {
+        // Schema validation failed - backend returned unexpected data
+        logger.error('API response validation error:', zodError);
+        throw new ValidationError(response.status);
+      }
     }
     catch (error)
     {
-      if (error instanceof TypeError)
-      {
-        // Network error (connection failed, CORS, etc.)
-        const networkError: ApiError = {
-          message: 'Network error. Please check your connection.',
-          statusCode: 0,
-        };
-        throw new Error(JSON.stringify(networkError));
-      }
-      throw error;
+      this.handleFetchError(error);
     }
   }
 }

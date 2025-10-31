@@ -6,13 +6,15 @@ import toast from 'react-hot-toast';
 import { Spinner } from '@/components/ui/spinner';
 import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/api/auth-api';
-import type { ApiError } from '@/types/api';
+import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
+import { useI18n } from '@/hooks/useI18n';
 
 export const GoogleCallbackPage: React.FC = () =>
 {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { login: loginToStore } = useAuthStore();
+  const { t } = useI18n();
 
   const handleGoogleCallbackMutation = useMutation({
     mutationFn: ({ code, state }: { code: string; state?: string }) =>
@@ -33,12 +35,11 @@ export const GoogleCallbackPage: React.FC = () =>
       // Clear the OAuth state
       sessionStorage.removeItem('google_oauth_state');
             
-      try
+      if (ApiError.isApiError(error))
       {
-        const apiError = JSON.parse(error.message) as ApiError;
-        toast.error(apiError.message);
+        toast.error(getLocalizedErrorMessage(error, t));
       }
-      catch
+      else
       {
         toast.error('Authentication failed. Please try again.');
       }
@@ -70,11 +71,17 @@ export const GoogleCallbackPage: React.FC = () =>
 
     // Validate state parameter (CSRF protection)
     const storedState = sessionStorage.getItem('google_oauth_state');
-    if (state && storedState && state !== storedState)
+    
+    // CRITICAL: If we stored a state, we MUST validate it
+    if (storedState)
     {
-      toast.error('Invalid authentication state. Please try again.');
-      void navigate('/auth/login');
-      return;
+      if (!state || state !== storedState)
+      {
+        sessionStorage.removeItem('google_oauth_state');
+        toast.error('Invalid authentication state. Please try again.');
+        void navigate('/auth/login');
+        return;
+      }
     }
 
     // Process the OAuth callback

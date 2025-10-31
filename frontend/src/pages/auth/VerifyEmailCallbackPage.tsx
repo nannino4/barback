@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
@@ -10,7 +10,7 @@ import { authApi } from '@/api/auth-api';
 import { useAuthStore } from '@/stores/authStore';
 import { useI18n } from '@/hooks/useI18n';
 import { useCooldown } from '@/hooks/useCooldown';
-import { parseApiError, getLocalizedErrorMessage, isSuccessError } from '@/lib/error-utils';
+import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
 import { SUCCESS_REDIRECT_DELAY } from '@/lib/constants';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
@@ -51,10 +51,8 @@ export const VerifyEmailCallbackPage: React.FC = () =>
     },
     onError: (error: Error) =>
     {
-      const apiError = parseApiError(error);
-      
       // Handle EMAIL_ALREADY_VERIFIED as success from UX perspective
-      if (isSuccessError(apiError))
+      if (ApiError.isApiError(error) && error.error === 'EMAIL_ALREADY_VERIFIED')
       {
         // Update user's verification status if logged in
         if (user)
@@ -74,35 +72,45 @@ export const VerifyEmailCallbackPage: React.FC = () =>
         return;
       }
       
-      // Handle different error status codes
-      switch (apiError.statusCode)
+      // Handle API errors
+      if (ApiError.isApiError(error))
       {
-      case 401:
-        // Unauthorized - session expired, redirect to login
-        toast.error(t('errors.sessionExpired'));
-        void navigate('/auth/login', { replace: true });
-        return;
-        
-      case 404:
-        // User not found
-        setVerificationStatus('error');
-        setErrorMessage(t('auth.errors.userNotFound'));
-        break;
-        
-      case 429:
-        // Rate limited
-        setVerificationStatus('error');
-        setErrorMessage(t('errors.rateLimitExceeded'));
-        break;
-        
-      default:
-      {
-        // All other errors - use localized message mapping
-        setVerificationStatus('error');
-        const localizedMessage = getLocalizedErrorMessage(apiError, t);
-        setErrorMessage(localizedMessage);
-        break;
+        // Handle different error status codes
+        switch (error.statusCode)
+        {
+        case 401:
+          // Unauthorized - session expired, redirect to login
+          toast.error(t('auth.errors.unauthorized'));
+          void navigate('/auth/login', { replace: true });
+          return;
+          
+        case 404:
+          // User not found
+          setVerificationStatus('error');
+          setErrorMessage(t('auth.errors.userNotFound'));
+          break;
+          
+        case 429:
+          // Rate limited
+          setVerificationStatus('error');
+          setErrorMessage(t('errors.rateLimitExceeded'));
+          break;
+          
+        default:
+        {
+          // All other errors - use localized message mapping
+          setVerificationStatus('error');
+          const localizedMessage = getLocalizedErrorMessage(error, t);
+          setErrorMessage(localizedMessage);
+          break;
+        }
+        }
       }
+      else
+      {
+        // Unknown error
+        setVerificationStatus('error');
+        setErrorMessage(t('errors.genericError'));
       }
     },
   });
@@ -125,15 +133,15 @@ export const VerifyEmailCallbackPage: React.FC = () =>
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]); // Only token in dependencies, mutation is stable
 
-  const handleRetry = useCallback(() =>
+  const handleRetry = () =>
   {
     void navigate('/auth/send-verification-email', { replace: true });
-  }, [navigate]);
+  };
 
-  const handleGoToLogin = useCallback(() =>
+  const handleGoToLogin = () =>
   {
     void navigate('/auth/login', { replace: true });
-  }, [navigate]);
+  };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">

@@ -135,22 +135,61 @@
         "emailVerification": {
             "success": "Email verified successfully! You can now access all features."
         },
+        "logout": {
+            "success": "Logged out successfully"
+        },
         "errors": {
             "emailAlreadyVerified": "Your email is already verified! Redirecting...",
             "invalidOrExpiredToken": "This verification link is invalid or has expired. Please request a new one.",
             "userNotFound": "Account not found. Please register first.",
-            "emailSendingFailed": "Failed to send verification email. Please try again later.",
-            "emailConfigError": "Email service is temporarily unavailable. Please try again later.",
-            "genericError": "An error occurred. Please try again."
+            "invalidCredentials": "Invalid email or password. Please try again.",
+            "unauthorized": "Your session has expired. Please sign in again.",
+            "sessionExpired": "Your session has expired. Please sign in again.",
+            "emailAlreadyExists": "An account with this email already exists. Please sign in instead.",
+            "wrongAuthProvider": "This account uses a different sign-in method. Please use the correct sign-in option."
         }
     },
     "errors": {
         "networkError": "Network error. Please check your connection and try again.",
+        "emailSendingFailed": "Failed to send email. Please try again later.",
+        "emailConfigError": "Email service is temporarily unavailable. Please try again later.",
+        "emailServiceUnavailable": "Email service is temporarily unavailable. Please try again later.",
         "rateLimitExceeded": "Too many requests. Please wait before trying again.",
         "rateLimitExceededWithTime": "Too many requests. Please wait {{seconds}} seconds before trying again.",
-        "unauthorized": "Your session has expired. Please sign in again.",
+        "unauthorized": "Access denied. Please sign in to continue.",
+        "forbidden": "You don't have permission to perform this action.",
+        "badRequest": "Invalid request. Please check your input.",
+        "notFoundError": "The requested resource was not found.",
         "serverError": "A server error occurred. Please try again later or contact support.",
-        "sessionExpired": "Your session has expired. Please sign in again."
+        "serviceUnavailable": "The service is temporarily unavailable. Please try again later.",
+        "validationError": "The data received from the server is invalid. Please try again.",
+        "genericError": "An unexpected error occurred. Please try again.",
+        "boundary": {
+            "title": "Something went wrong",
+            "message": "We're sorry, but something unexpected happened. The error has been logged and we'll look into it.",
+            "apiErrorTitle": "Server Error",
+            "networkErrorTitle": "Connection Error",
+            "validationErrorTitle": "Data Error",
+            "tryAgain": "Try Again",
+            "reloadPage": "Reload Page",
+            "footer": "If this problem persists, please contact support."
+        },
+        "routeError": {
+            "title": "Page Error",
+            "message": "This page encountered an unexpected error. You can try again or navigate back to safety.",
+            "tryAgain": "Try Again",
+            "backHome": "Back to Home",
+            "footer": "Your other pages should still work normally."
+        },
+        "notFound": {
+            "title": "Page Not Found",
+            "message": "The page you're looking for doesn't exist or has been moved.",
+            "suggestions": "Here are some helpful links:",
+            "goBack": "Go Back",
+            "goHome": "Go to Home",
+            "goDashboard": "Go to Dashboard",
+            "goLogin": "Sign In"
+        }
     },
     "validation": {
         "required": "This field is required",

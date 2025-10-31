@@ -135,22 +135,62 @@
         "emailVerification": {
             "success": "Email verificata con successo! Ora puoi accedere a tutte le funzionalità."
         },
+        "logout": {
+            "success": "Disconnessione avvenuta con successo"
+        },
         "errors": {
             "emailAlreadyVerified": "La tua email è già verificata! Reindirizzamento...",
             "invalidOrExpiredToken": "Questo link di verifica non è valido o è scaduto. Richiedine uno nuovo.",
             "userNotFound": "Account non trovato. Registrati prima.",
-            "emailSendingFailed": "Invio email di verifica fallito. Riprova più tardi.",
-            "emailConfigError": "Il servizio email è temporaneamente non disponibile. Riprova più tardi.",
-            "genericError": "Si è verificato un errore. Riprova."
+            "invalidCredentials": "Email o password non validi. Riprova.",
+            "unauthorized": "La tua sessione è scaduta. Effettua nuovamente l'accesso.",
+            "sessionExpired": "La tua sessione è scaduta. Effettua nuovamente l'accesso.",
+            "emailAlreadyExists": "Esiste già un account con questa email. Effettua l'accesso.",
+            "wrongAuthProvider": "Questo account utilizza un metodo di accesso diverso. Utilizza l'opzione corretta."
         }
     },
     "errors": {
         "networkError": "Errore di rete. Controlla la connessione e riprova.",
+        "emailSendingFailed": "Invio email fallito. Riprova più tardi.",
+        "emailConfigError": "Il servizio email è temporaneamente non disponibile. Riprova più tardi.",
+        "emailServiceUnavailable": "Il servizio email è temporaneamente non disponibile. Riprova più tardi.",
         "rateLimitExceeded": "Troppe richieste. Attendi prima di riprovare.",
         "rateLimitExceededWithTime": "Troppe richieste. Attendi {{seconds}} secondi prima di riprovare.",
-        "unauthorized": "La tua sessione è scaduta. Accedi di nuovo.",
-        "serverError": "Si è verificato un errore del server. Riprova più tardi o contatta il supporto.",
-        "sessionExpired": "La tua sessione è scaduta. Accedi di nuovo."
+        "unauthorized": "Accesso negato. Effettua l'accesso per continuare.",
+        "forbidden": "Non hai il permesso per eseguire questa azione.",
+        "badRequest": "Richiesta non valida. Controlla i dati inseriti.",
+        "notFoundError": "La risorsa richiesta non è stata trovata.",
+        "serverError": "Si è verificato un errore del server. Riprova più tardi o contatta l'assistenza.",
+        "serviceUnavailable": "Il servizio è temporaneamente non disponibile. Riprova più tardi.",
+        "validationError": "I dati ricevuti dal server non sono validi. Riprova.",
+        "genericError": "Si è verificato un errore imprevisto. Riprova.",
+        "sessionExpired": "La tua sessione è scaduta. Accedi di nuovo.",
+        "boundary": {
+            "title": "Qualcosa è andato storto",
+            "message": "Ci dispiace, ma si è verificato un errore imprevisto. L'errore è stato registrato e lo esamineremo.",
+            "apiErrorTitle": "Errore del Server",
+            "networkErrorTitle": "Errore di Connessione",
+            "validationErrorTitle": "Errore nei Dati",
+            "tryAgain": "Riprova",
+            "reloadPage": "Ricarica Pagina",
+            "footer": "Se il problema persiste, contatta l'assistenza."
+        },
+        "routeError": {
+            "title": "Errore della Pagina",
+            "message": "Questa pagina ha riscontrato un errore imprevisto. Puoi riprovare o tornare alla sicurezza.",
+            "tryAgain": "Riprova",
+            "backHome": "Torna alla Home",
+            "footer": "Le altre pagine dovrebbero funzionare normalmente."
+        },
+        "notFound": {
+            "title": "Pagina Non Trovata",
+            "message": "La pagina che stai cercando non esiste o è stata spostata.",
+            "suggestions": "Ecco alcuni link utili:",
+            "goBack": "Torna Indietro",
+            "goHome": "Vai alla Home",
+            "goDashboard": "Vai alla Dashboard",
+            "goLogin": "Accedi"
+        }
     },
     "validation": {
         "required": "Questo campo è richiesto",

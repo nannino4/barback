@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 import { Eye, EyeOff, Lock, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +18,7 @@ import {
 } from '@/components/ui/form';
 import { resetPasswordSchema, type ResetPasswordData } from '@/validation/auth-form-schemas';
 import { authApi } from '@/api/auth-api';
+import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import { useI18n } from '@/hooks/useI18n';
@@ -36,8 +38,6 @@ export const ResetPasswordPage: React.FC = () =>
     
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
 
   const passwordRequirements: PasswordRequirement[] = [
     {
@@ -72,6 +72,45 @@ export const ResetPasswordPage: React.FC = () =>
 
   const password = form.watch('password');
 
+  // Token validation mutation
+  const validateTokenMutation = useMutation({
+    mutationFn: (validationToken: string) => authApi.validateResetToken(validationToken),
+    onError: () =>
+    {
+      void navigate('/auth/reset-password/error', { replace: true });
+    },
+  });
+
+  // Reset password mutation
+  const resetPasswordMutation = useMutation({
+    mutationFn: ({ token: resetToken, password: newPassword }: { token: string; password: string }) =>
+      authApi.resetPassword(resetToken, newPassword),
+    onSuccess: () =>
+    {
+      toast.success(t('auth.resetPassword.successMessage'));
+      void navigate('/auth/reset-password/success', { replace: true });
+    },
+    onError: (error: Error) =>
+    {
+      if (ApiError.isApiError(error))
+      {
+        // Invalid or expired token - redirect to error page
+        if (error.error === 'INVALID_PASSWORD_RESET_TOKEN' || error.statusCode === 401)
+        {
+          void navigate('/auth/reset-password/error', { replace: true });
+          return;
+        }
+        
+        // Other errors - show localized message
+        toast.error(getLocalizedErrorMessage(error, t));
+      }
+      else
+      {
+        toast.error(t('auth.resetPassword.errorMessage'));
+      }
+    },
+  });
+
   // Validate token when component mounts
   React.useEffect(() =>
   {
@@ -81,53 +120,15 @@ export const ResetPasswordPage: React.FC = () =>
       return;
     }
 
-    const validateToken = async () =>
-    {
-      try
-      {
-        await authApi.validateResetToken(token);
-      }
-      catch
-      {
-        void navigate('/auth/reset-password/error', { replace: true });
-      }
-    };
-
-    void validateToken();
+    validateTokenMutation.mutate(token);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, navigate]);
 
-  const onSubmit = async (data: ResetPasswordData) =>
+  const onSubmit = (data: ResetPasswordData) =>
   {
-    if (!token)
-    {
-      return;
-    }
-
-    setIsSubmitting(true);
-    setError(null);
-
-    try
-    {
-      await authApi.resetPassword(token, data.password);
-      toast.success(t('auth.resetPassword.successMessage'));
-      void navigate('/auth/reset-password/success', { replace: true });
-    }
-    catch (error: unknown)
-    {
-      const errorMessage = error instanceof Error ? error.message : '';
-      if (errorMessage.includes('expired') || errorMessage.includes('invalid'))
-      {
-        void navigate('/auth/reset-password/error', { replace: true });
-      }
-      else
-      {
-        setError(t('auth.resetPassword.errorMessage'));
-      }
-    }
-    finally
-    {
-      setIsSubmitting(false);
-    }
+    if (!token) return;
+    
+    resetPasswordMutation.mutate({ token, password: data.password });
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) =>
@@ -169,7 +170,7 @@ export const ResetPasswordPage: React.FC = () =>
                             {...field}
                             type={showPassword ? 'text' : 'password'}
                             placeholder={t('auth.resetPassword.newPasswordPlaceholder')}
-                            disabled={isSubmitting}
+                            disabled={resetPasswordMutation.isPending}
                             className="pl-10 pr-10"
                             autoComplete="new-password"
                             autoFocus
@@ -180,7 +181,7 @@ export const ResetPasswordPage: React.FC = () =>
                             size="sm"
                             className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                             onClick={() => setShowPassword(!showPassword)}
-                            disabled={isSubmitting}
+                            disabled={resetPasswordMutation.isPending}
                           >
                             {showPassword ? (
                               <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -214,7 +215,7 @@ export const ResetPasswordPage: React.FC = () =>
                             {...field}
                             type={showConfirmPassword ? 'text' : 'password'}
                             placeholder={t('auth.resetPassword.confirmPasswordPlaceholder')}
-                            disabled={isSubmitting}
+                            disabled={resetPasswordMutation.isPending}
                             className="pl-10 pr-10"
                             autoComplete="new-password"
                           />
@@ -224,7 +225,7 @@ export const ResetPasswordPage: React.FC = () =>
                             size="sm"
                             className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            disabled={isSubmitting}
+                            disabled={resetPasswordMutation.isPending}
                           >
                             {showConfirmPassword ? (
                               <EyeOff className="h-4 w-4 text-muted-foreground" />
@@ -275,22 +276,13 @@ export const ResetPasswordPage: React.FC = () =>
                   </div>
                 )}
 
-                {/* Error Display */}
-                {error && (
-                  <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20">
-                    <p className="text-sm text-destructive">
-                      {error}
-                    </p>
-                  </div>
-                )}
-
                 {/* Submit Button */}
                 <Button
                   type="submit"
                   className="w-full h-touch"
-                  disabled={isSubmitting}
+                  disabled={resetPasswordMutation.isPending}
                 >
-                  {isSubmitting ? (
+                  {resetPasswordMutation.isPending ? (
                     <>
                       <InlineSpinner className="mr-2" />
                       {t('auth.resetPassword.updating')}

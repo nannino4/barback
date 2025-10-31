@@ -2,6 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
 import { Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,7 +31,6 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
 {
   const navigate = useNavigate();
   const { t } = useI18n();
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const form = useForm<ForgotPasswordData>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -39,33 +39,33 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
     },
   });
 
-  const onSubmit = async (data: ForgotPasswordData) =>
-  {
-    setIsSubmitting(true);
-
-    try
+  const forgotPasswordMutation = useMutation({
+    mutationFn: (email: string) => authApi.forgotPassword(email),
+    onSuccess: () =>
     {
-      await authApi.forgotPassword(data.email);
+      const email = form.getValues('email');
       toast.success(t('auth.forgotPasswordSent.description'));
       void navigate('/auth/forgot-password/sent', { 
-        state: { email: data.email },
+        state: { email },
         replace: true,
       });
-    }
-    catch
+    },
+    onError: () =>
     {
-      // Always show generic message for security
-      const message = t('auth.forgotPasswordSent.instructions');
-      toast.success(message);
+      // Security: Always show success message even on error
+      // This prevents email enumeration attacks
+      const email = form.getValues('email');
+      toast.success(t('auth.forgotPasswordSent.instructions'));
       void navigate('/auth/forgot-password/sent', { 
-        state: { email: data.email },
+        state: { email },
         replace: true,
       });
-    }
-    finally
-    {
-      setIsSubmitting(false);
-    }
+    },
+  });
+
+  const onSubmit = (data: ForgotPasswordData) =>
+  {
+    forgotPasswordMutation.mutate(data.email);
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) =>
@@ -100,7 +100,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
                         {...field}
                         type="email"
                         placeholder={t('auth.forgotPassword.emailPlaceholder')}
-                        disabled={isSubmitting}
+                        disabled={forgotPasswordMutation.isPending}
                         className="pl-10"
                         autoComplete="email"
                         autoFocus
@@ -116,9 +116,9 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
             <Button
               type="submit"
               className="w-full h-touch"
-              disabled={isSubmitting}
+              disabled={forgotPasswordMutation.isPending}
             >
-              {isSubmitting ? (
+              {forgotPasswordMutation.isPending ? (
                 <>
                   <InlineSpinner className="mr-2" />
                   {t('auth.forgotPassword.sendingLink')}

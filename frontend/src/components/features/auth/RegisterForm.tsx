@@ -29,7 +29,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
 {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const { register, isRegistering, error } = useAuth();
+  const { register, isRegistering } = useAuth();
   const { t } = useI18n();
 
   const form = useForm<RegisterFormData>({
@@ -241,12 +241,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                 </FormItem>
               )}
             />
-
-            {error && (
-              <div className="bg-destructive/10 border border-destructive/20 rounded-md p-4 text-sm text-destructive">
-                {error}
-              </div>
-            )}
 
             <Button
               type="submit"

@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 import { InlineSpinner } from '@/components/ui/spinner';
 import { authApi } from '@/api/auth-api';
+import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
 
@@ -33,14 +34,14 @@ export const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
     },
     onError: (error: Error) =>
     {
-      try
+      if (ApiError.isApiError(error))
       {
-        const errorData = JSON.parse(error.message) as { message?: string };
-        toast.error(errorData.message || 'Failed to connect to Google');
+        const message = getLocalizedErrorMessage(error, t);
+        toast.error(message);
       }
-      catch
+      else
       {
-        toast.error('Failed to connect to Google. Please try again.');
+        toast.error(t('errors.genericError'));
       }
     },
   });

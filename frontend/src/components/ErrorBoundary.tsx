@@ -5,6 +5,7 @@ import { AlertCircle, RefreshCcw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
+import { logger } from '@/lib/logger';
 import { 
   ApiError, 
   NetworkError, 
@@ -112,10 +113,53 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps)
  * Wraps the entire app to catch unhandled React errors.
  * Uses react-error-boundary for modern hook support.
  * 
+ * CURRENT USAGE:
+ * Single root boundary for the entire app. All routes share this boundary.
+ * 
+ * FUTURE USAGE - When to add additional error boundaries:
+ * 
+ * 1. **Feature-specific boundaries** (recommended for production apps):
+ *    - Wrap major feature sections (inventory, orders, reports)
+ *    - Allows one feature to fail without crashing the entire app
+ *    - Example: <InventoryErrorBoundary><InventoryPage /></InventoryErrorBoundary>
+ * 
+ * 2. **Complex component boundaries**:
+ *    - Wrap third-party components that might throw errors
+ *    - Wrap heavy data visualizations or charts
+ *    - Example: <ChartErrorBoundary><ComplexChart /></ChartErrorBoundary>
+ * 
+ * 3. **Modal/Dialog boundaries**:
+ *    - Wrap modal content to prevent modal errors from crashing the app
+ *    - Example: <DialogErrorBoundary><ProductFormDialog /></DialogErrorBoundary>
+ * 
+ * WHEN NOT TO USE:
+ * - Don't wrap individual buttons, inputs, or simple components
+ * - Don't nest too many boundaries (adds complexity)
+ * - For simple apps with few features, a single root boundary is sufficient
+ * 
+ * BEST PRACTICES:
+ * - Error boundaries only catch **render errors**, not async errors
+ * - Use try-catch or .catch() for async operations (API calls, promises)
+ * - Use TanStack Query's built-in error handling for data fetching
+ * - Show toast messages for user-facing errors (validation, network)
+ * - Use error boundaries for unexpected errors (bugs, crashes)
+ * 
  * Usage:
  * ```tsx
+ * // Current: Single root boundary
  * <ErrorBoundaryWithI18n>
  *   <App />
+ * </ErrorBoundaryWithI18n>
+ * 
+ * // Future: Feature-specific boundaries
+ * <ErrorBoundaryWithI18n>
+ *   <Routes>
+ *     <Route path="/inventory" element={
+ *       <InventoryErrorBoundary>
+ *         <InventoryPage />
+ *       </InventoryErrorBoundary>
+ *     } />
+ *   </Routes>
  * </ErrorBoundaryWithI18n>
  * ```
  */
@@ -128,7 +172,7 @@ export const ErrorBoundaryWithI18n: React.FC<{ children: React.ReactNode }> = ({
     // Only log full details in development to avoid memory issues
     if (import.meta.env.DEV)
     {
-      console.error('Error caught by ErrorBoundary:', error, errorInfo);
+      logger.error('Error caught by ErrorBoundary:', { error, errorInfo });
     }
     
     // TODO: Log to error tracking service in production (Sentry, LogRocket, etc.)

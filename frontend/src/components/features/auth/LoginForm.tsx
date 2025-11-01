@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { InlineSpinner } from '@/components/ui/spinner';
@@ -19,6 +19,7 @@ import { loginSchema, type LoginData } from '@/validation/auth-form-schemas';
 import { useAuth } from '@/hooks/useAuth';
 import { useI18n } from '@/hooks/useI18n';
 import { GoogleLoginButton } from '@/components/features/auth/GoogleLoginButton';
+import { getLocalizedErrorMessage, isKnownError } from '@/lib/errors';
 import { cn } from '@/lib/utils';
 
 interface LoginFormProps
@@ -29,7 +30,7 @@ interface LoginFormProps
 export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
 {
   const [showPassword, setShowPassword] = React.useState(false);
-  const { login, isLoggingIn } = useAuth();
+  const { login, isLoggingIn, loginError } = useAuth();
   const { t } = useI18n();
 
   const form = useForm<LoginData>({
@@ -78,6 +79,18 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
         {/* Email/Password Form */}
         <Form {...form}>
           <form onSubmit={handleFormSubmit} className="space-y-4" noValidate>
+            {/* Error Message Display */}
+            {loginError && (
+              <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-2">
+                <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-destructive">
+                  {isKnownError(loginError)
+                    ? getLocalizedErrorMessage(loginError, t)
+                    : t('errors.genericError')}
+                </p>
+              </div>
+            )}
+
             {/* Email Field */}
             <FormField
               control={form.control}

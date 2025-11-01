@@ -133,21 +133,21 @@ export class AuthTokenManager
 /**
  * Adds Authorization header to request config if access token exists
  * Use this in the API client to automatically inject auth tokens
+ * 
+ * Handles both plain object headers and Headers instances properly
  */
 export const addAuthHeader = (config: RequestInit): RequestInit =>
 {
   const token = AuthTokenManager.getAccessToken();
   
-  if (token)
-  {
-    return {
-      ...config,
-      headers: {
-        ...config.headers,
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  }
+  if (!token) return config;
   
-  return config;
+  // Create a new Headers instance to handle all header types
+  const headers = new Headers(config.headers);
+  headers.set('Authorization', `Bearer ${token}`);
+  
+  return {
+    ...config,
+    headers,
+  };
 };

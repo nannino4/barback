@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ErrorBoundaryWithI18n } from '@/components/ErrorBoundary'
-import { RouteErrorBoundary } from '@/components/RouteErrorBoundary'
 import { AuthProvider } from '@/components/features/auth/AuthProvider'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { VerifiedRoute } from '@/components/features/auth/VerifiedRoute'
@@ -33,6 +32,18 @@ const queryClient = new QueryClient({
       },
     },
     mutations: {
+      // Retry transient errors for mutations too
+      retry: (failureCount, error) =>
+      {
+        // Don't retry on 4xx errors (client errors like validation)
+        if (ApiError.isApiError(error) && error.statusCode >= 400 && error.statusCode < 500)
+        {
+          return false;
+        }
+        // Retry up to 1 time for 5xx or network errors (fewer than queries)
+        // Mutations are more sensitive, so we retry less aggressively
+        return failureCount < 1;
+      },
       // Global mutation error handler
       onError: (error) =>
       {
@@ -56,47 +67,24 @@ function AppContent()
       <Routes>
         {/* AppLayout wraps ALL routes with consistent Navigation */}
         <Route element={<AppLayout />}>
-          {/* Public Routes - with error boundary */}
-          <Route
-            path="/"
-            element={
-              <RouteErrorBoundary>
-                <LandingPage />
-              </RouteErrorBoundary>
-            }
-          />
+          {/* Public Routes */}
+          <Route path="/" element={<LandingPage />} />
           
           {/* Design System Showcase */}
-          <Route
-            path="/design-system"
-            element={
-              <RouteErrorBoundary>
-                <DesignSystemPage />
-              </RouteErrorBoundary>
-            }
-          />
+          <Route path="/design-system" element={<DesignSystemPage />} />
           
           {/* Protected Dashboard - Requires authentication AND email verification */}
           <Route
             path="/dashboard"
             element={
-              <RouteErrorBoundary>
-                <VerifiedRoute>
-                  <HomePage />
-                </VerifiedRoute>
-              </RouteErrorBoundary>
+              <VerifiedRoute>
+                <HomePage />
+              </VerifiedRoute>
             }
           />
           
-          {/* Auth routes - with error boundary */}
-          <Route
-            path="/auth/*"
-            element={
-              <RouteErrorBoundary>
-                <AuthRouter />
-              </RouteErrorBoundary>
-            }
-          />
+          {/* Auth routes */}
+          <Route path="/auth/*" element={<AuthRouter />} />
 
           {/* 404 Not Found - Catch-all route */}
           <Route path="*" element={<NotFoundPage />} />

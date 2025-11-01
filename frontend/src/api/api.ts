@@ -94,7 +94,7 @@ class ApiClient
     }
     
     throw new ApiError(
-      'Session expired',
+      'errors.unauthorized',
       401,
       'INVALID_ACCESS_TOKEN',
     );
@@ -115,9 +115,19 @@ class ApiClient
       // Validate error response structure with Zod
       const errorData = ErrorResponseSchema.parse(rawData);
       
-      // Pass message as-is (can be string or array of translation keys)
-      // ApiError constructor will handle arrays appropriately
-      const message = errorData.message || 'An unexpected error occurred';
+      // Backend validation errors are arrays of translation keys
+      let message: string | string[];
+      if (Array.isArray(errorData.message))
+      {
+        // Filter out empty arrays or use fallback translation key
+        message = errorData.message.length > 0 
+          ? errorData.message 
+          : ['errors.validationError'];
+      }
+      else
+      {
+        message = errorData.message || 'errors.validationError';
+      }
       
       return new ApiError(
         message,
@@ -149,7 +159,7 @@ class ApiClient
       
       // If we can't parse the error response, return generic error
       return new ApiError(
-        'An unexpected error occurred',
+        'errors.genericError',
         response.status,
       );
     }
@@ -181,7 +191,7 @@ class ApiClient
    * Universal request method - handles both void and typed responses
    * 
    * @param endpoint - API endpoint path
-   * @param options - Fetch request options
+   * @param options - Fetch request options (can include custom timeout)
    * @param schema - Optional Zod schema for response validation. If omitted, returns void.
    * 
    * Usage:
@@ -191,6 +201,13 @@ class ApiClient
    * 
    * // Typed response with validation
    * const user = await apiClient.request('/users/me', { method: 'GET' }, UserSchema);
+   * 
+   * // Custom timeout for long-running request
+   * const report = await apiClient.request(
+   *   '/reports/generate',
+   *   { method: 'POST', timeout: 120000 }, // 2 minutes
+   *   ReportSchema
+   * );
    * ```
    * 
    * Note: Content-Type is set to 'application/json' automatically when a body is present.
@@ -198,22 +215,29 @@ class ApiClient
    */
   async request<T = void>(
     endpoint: string,
-    options: RequestInit = {},
+    options: RequestInit & { timeout?: number } = {},
     schema?: z.ZodSchema<T>,
   ): Promise<T>
   {
     const url = `${this.baseUrl}${endpoint}`;
     
+    // Extract custom timeout if provided
+    const { timeout, ...fetchOptions } = options;
+    
     // Build base config
-    const hasBody = options.body !== undefined;
-    const shouldAddContentType = hasBody && !options.headers;
+    const hasBody = fetchOptions.body !== undefined;
+    
+    // Check if Content-Type is already set in headers
+    const headers = fetchOptions.headers as Record<string, string> | undefined;
+    const hasContentType = headers && 'Content-Type' in headers;
+    const shouldAddContentType = hasBody && !hasContentType;
     
     let config: RequestInit = {
       headers: {
         ...(shouldAddContentType && { 'Content-Type': 'application/json' }),
-        ...options.headers,
+        ...fetchOptions.headers,
       },
-      ...options,
+      ...fetchOptions,
     };
 
     // Add Authorization header if access token exists
@@ -221,7 +245,12 @@ class ApiClient
 
     try
     {
-      const response = await this.fetchWithTimeout(url, config);
+      // Use custom timeout or default
+      const response = await this.fetchWithTimeout(
+        url,
+        config,
+        timeout || this.defaultTimeoutMs,
+      );
             
       // Handle 401 Unauthorized - session expired (fallback, shouldn't happen with proactive refresh)
       if (response.status === 401)
@@ -240,6 +269,21 @@ class ApiClient
       if (!schema)
       {
         return undefined as T; // void responses
+      }
+
+      // Validate Content-Type before parsing JSON
+      const contentType = response.headers.get('content-type');
+      if (!contentType?.includes('application/json'))
+      {
+        logger.warn('Non-JSON response received:', {
+          status: response.status,
+          contentType,
+          url: response.url,
+        });
+        throw new ApiError(
+          'errors.validationError',
+          response.status,
+        );
       }
 
       // Parse and validate response body

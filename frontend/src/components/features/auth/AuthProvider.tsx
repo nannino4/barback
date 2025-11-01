@@ -70,7 +70,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) =>
       }
     };
 
-    // Set handler on both services
+    // Set handler on both services (defense in depth)
+    // - Token Refresh Service: Calls handler when proactive refresh fails (invalid refresh token)
+    // - API Client: Calls handler when a 401 occurs (fallback for edge cases like manual token removal)
+    // 
+    // IMPORTANT: Both handlers can fire simultaneously (e.g., if refresh token expires AND
+    // a concurrent API call returns 401). This is acceptable - the handler is idempotent
+    // (logout clears tokens, navigate replaces state). Future enhancement could add
+    // deduplication via a flag if needed.
     tokenRefreshService.setSessionExpiredHandler(handleSessionExpired);
     apiClient.setSessionExpiredHandler(handleSessionExpired);
 

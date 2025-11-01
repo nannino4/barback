@@ -26,7 +26,7 @@ export class TokenRefreshService
 {
   private static instance: TokenRefreshService | null = null;
   private intervalId: NodeJS.Timeout | null = null;
-  private isRefreshing = false;
+  private refreshPromise: Promise<void> | null = null;
   private onSessionExpired?: () => void;
   private refreshTokenEndpoint: string;
 
@@ -132,18 +132,41 @@ export class TokenRefreshService
 
   /**
    * Refresh the access token using the refresh token
+   * 
+   * This method uses a promise queue pattern to handle concurrent refresh requests.
+   * If a refresh is already in progress, subsequent calls will wait for the same
+   * promise to resolve instead of starting duplicate refresh requests.
+   * 
    * Public method to allow manual refresh if needed
    */
   async refreshAccessToken(): Promise<void>
   {
-    // Prevent concurrent refresh attempts
-    if (this.isRefreshing)
+    // Return existing refresh promise if one is in progress
+    if (this.refreshPromise)
     {
-      logger.info('Token refresh already in progress, skipping');
-      return;
+      logger.info('Token refresh already in progress, waiting for completion...');
+      return this.refreshPromise;
     }
 
-    this.isRefreshing = true;
+    // Create new refresh promise
+    this.refreshPromise = this.performRefresh();
+    
+    try
+    {
+      await this.refreshPromise;
+    }
+    finally
+    {
+      // Clear the promise when done (success or failure)
+      this.refreshPromise = null;
+    }
+  }
+
+  /**
+   * Internal method that performs the actual token refresh
+   */
+  private async performRefresh(): Promise<void>
+  {
 
     try
     {
@@ -215,10 +238,6 @@ export class TokenRefreshService
         // Transient error - keep tokens and retry on next check
         logger.warn('Token refresh failed (will retry on next interval):', error);
       }
-    }
-    finally
-    {
-      this.isRefreshing = false;
     }
   }
 

@@ -218,3 +218,65 @@ const { t } = useI18n();
 - **Organize keys** by feature in translation files (eg: `auth.*`, `inventory.*`)
 - **Add both languages**: Update English and Italian translation files simultaneously
 - **Use descriptive keys**: `auth.login.emailPlaceholder` not `login.email`
+
+## Form Error Handling
+
+### Declarative Error Display Pattern
+**Always display form errors declaratively using mutation error state.** Never use imperative `onError` callbacks with toasts for form validation or API errors.
+
+```typescript
+// ❌ WRONG - Imperative error handling with toasts
+const loginMutation = useMutation({
+  mutationFn: authApi.login,
+  onError: (error) => {
+    toast.error(getLocalizedErrorMessage(error, t)); // Don't do this!
+  }
+});
+
+// ✅ CORRECT - Declarative error handling
+const loginMutation = useMutation({
+  mutationFn: authApi.login,
+  onSuccess: (response) => {
+    // Success toasts and redirects are OK in onSuccess
+    toast.success(t('auth.login.success'));
+    navigate('/dashboard');
+  }
+  // No onError - let component handle errors declaratively
+});
+
+// In component JSX - display error state
+{loginMutation.error && (
+  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-2">
+    <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+    <p className="text-sm text-destructive">
+      {isKnownError(loginMutation.error)
+        ? getLocalizedErrorMessage(loginMutation.error, t)
+        : t('errors.genericError')}
+    </p>
+  </div>
+)}
+```
+
+### When to Use Each Pattern
+
+**Declarative (Display in JSX)**: ✅ Recommended
+- Form submission errors (login, register, password reset)
+- Validation errors from backend
+- Errors where user needs to read and understand
+- Errors where user might retry with corrections
+
+**Imperative (Toast/Alert)**: Use Sparingly
+- Success confirmations
+- Background operation failures (non-blocking)
+- OAuth callback errors (when no form is visible)
+- Session expiry notifications
+
+### Error Handling Best Practices
+1. **Expose error state** from custom hooks (e.g., `loginError`, `registerError`)
+2. **Use `isKnownError` type guard** to check error types before displaying
+3. **Always localize** error messages using `getLocalizedErrorMessage`
+4. **Clear errors automatically** - TanStack Query clears errors on next mutation
+5. **Show specific errors** - Use error codes to show precise messages (not generic)
+6. **Make errors persistent** - Display in UI so user can read and understand
+7. **Allow retrying** - Keep form state so user can fix and resubmit
+

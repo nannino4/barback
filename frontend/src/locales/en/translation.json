@@ -146,7 +146,12 @@
             "unauthorized": "Your session has expired. Please sign in again.",
             "sessionExpired": "Your session has expired. Please sign in again.",
             "emailAlreadyExists": "An account with this email already exists. Please sign in instead.",
-            "wrongAuthProvider": "This account uses a different sign-in method. Please use the correct sign-in option."
+            "wrongAuthProvider": "This account uses a different sign-in method. Please use the correct sign-in option.",
+            "authenticationFailed": "Authentication failed. Please try again.",
+            "googleAuthCancelled": "Google authentication was cancelled or failed.",
+            "invalidGoogleResponse": "Invalid authentication response from Google.",
+            "invalidAuthState": "Invalid authentication state. Please try again.",
+            "googleSignInSuccess": "Successfully signed in with Google!"
         }
     },
     "errors": {

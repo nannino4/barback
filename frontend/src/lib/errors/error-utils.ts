@@ -10,20 +10,17 @@ import { COMMON_ERROR_HANDLERS, STATUS_CODE_HANDLERS } from './common-errors';
 import { isAuthErrorCode, isCommonErrorCode } from './error-codes';
 
 /**
- * Format validation errors as a readable list
- * Used when backend returns multiple validation errors
+ * Format validation errors for toast display
+ * Returns only the first error to keep toasts concise and readable
  * 
  * @param errors - Array of error messages
- * @returns Formatted error message (bullet list for multiple, single string for one)
+ * @returns First error message from the array
  */
 export const formatValidationErrors = (errors: string[]): string =>
 {
-  if (errors.length === 1)
-  {
-    return errors[0];
-  }
-  
-  return errors.map((err, index) => `${index + 1}. ${err}`).join('\n');
+  // Always return the first error for toast notifications
+  // Full error list should be displayed in forms or dedicated error UI
+  return errors[0] || 'Validation error';
 };
 
 /**
@@ -62,13 +59,21 @@ export const getLocalizedErrorMessage = (
     // Priority 1: Handle validation errors (array of translation keys)
     if (error.validationErrors && error.validationErrors.length > 0)
     {
-      // Translate each validation key
-      const translatedErrors = error.validationErrors.map((key) =>
+      // Translate each validation key, skip keys that don't translate
+      const translatedErrors = error.validationErrors
+        .map((key) =>
+        {
+          const translated = t(key);
+          // Only include translations that actually worked (changed from key)
+          return translated !== key ? translated : null;
+        })
+        .filter((msg): msg is string => msg !== null); // Remove null entries
+      
+      // If no translations worked, fallback to generic validation error
+      if (translatedErrors.length === 0)
       {
-        // Try to translate the key, fallback to the key itself if not found
-        const translated = t(key);
-        return translated === key ? key : translated;
-      });
+        return t('errors.validationError');
+      }
       
       // Format as list if multiple errors
       return formatValidationErrors(translatedErrors);

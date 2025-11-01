@@ -146,7 +146,12 @@
             "unauthorized": "La tua sessione è scaduta. Effettua nuovamente l'accesso.",
             "sessionExpired": "La tua sessione è scaduta. Effettua nuovamente l'accesso.",
             "emailAlreadyExists": "Esiste già un account con questa email. Effettua l'accesso.",
-            "wrongAuthProvider": "Questo account utilizza un metodo di accesso diverso. Utilizza l'opzione corretta."
+            "wrongAuthProvider": "Questo account utilizza un metodo di accesso diverso. Utilizza l'opzione corretta.",
+            "authenticationFailed": "Autenticazione fallita. Riprova.",
+            "googleAuthCancelled": "L'autenticazione Google è stata annullata o è fallita.",
+            "invalidGoogleResponse": "Risposta di autenticazione non valida da Google.",
+            "invalidAuthState": "Stato di autenticazione non valido. Riprova.",
+            "googleSignInSuccess": "Accesso con Google effettuato con successo!"
         }
     },
     "errors": {

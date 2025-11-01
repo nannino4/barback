@@ -27,7 +27,7 @@ export const GoogleCallbackPage: React.FC = () =>
       // Clear the OAuth state
       sessionStorage.removeItem('google_oauth_state');
             
-      toast.success('Successfully signed in with Google!');
+      toast.success(t('auth.errors.googleSignInSuccess'));
       void navigate('/');
     },
     onError: (error: Error) =>
@@ -41,7 +41,7 @@ export const GoogleCallbackPage: React.FC = () =>
       }
       else
       {
-        toast.error('Authentication failed. Please try again.');
+        toast.error(t('auth.errors.authenticationFailed'));
       }
       void navigate('/auth/login');
     },
@@ -56,7 +56,7 @@ export const GoogleCallbackPage: React.FC = () =>
     // Check for OAuth errors
     if (error)
     {
-      toast.error('Google authentication was cancelled or failed.');
+      toast.error(t('auth.errors.googleAuthCancelled'));
       void navigate('/auth/login');
       return;
     }
@@ -64,7 +64,7 @@ export const GoogleCallbackPage: React.FC = () =>
     // Check for authorization code
     if (!code)
     {
-      toast.error('Invalid authentication response from Google.');
+      toast.error(t('auth.errors.invalidGoogleResponse'));
       void navigate('/auth/login');
       return;
     }
@@ -78,7 +78,7 @@ export const GoogleCallbackPage: React.FC = () =>
       if (!state || state !== storedState)
       {
         sessionStorage.removeItem('google_oauth_state');
-        toast.error('Invalid authentication state. Please try again.');
+        toast.error(t('auth.errors.invalidAuthState'));
         void navigate('/auth/login');
         return;
       }
@@ -86,7 +86,7 @@ export const GoogleCallbackPage: React.FC = () =>
 
     // Process the OAuth callback
     handleGoogleCallbackMutation.mutate({ code, state: state || undefined });
-  }, [searchParams, navigate, handleGoogleCallbackMutation]);
+  }, [searchParams, navigate, handleGoogleCallbackMutation, t]);
 
   return (
     <div className="min-h-screen flex items-center justify-center">

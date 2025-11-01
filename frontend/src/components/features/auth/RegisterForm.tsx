@@ -2,7 +2,7 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { InlineSpinner } from '@/components/ui/spinner';
@@ -18,6 +18,7 @@ import {
 import { registerSchema, type RegisterFormData } from '@/validation/auth-form-schemas';
 import { useAuth } from '@/hooks/useAuth';
 import { useI18n } from '@/hooks/useI18n';
+import { getLocalizedErrorMessage, isKnownError } from '@/lib/errors';
 import { cn } from '@/lib/utils';
 
 interface RegisterFormProps
@@ -29,7 +30,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
 {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const { register, isRegistering } = useAuth();
+  const { register, isRegistering, registerError } = useAuth();
   const { t } = useI18n();
 
   const form = useForm<RegisterFormData>({
@@ -78,6 +79,18 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
             }} 
             className="space-y-4"
           >
+            {/* Error Message Display */}
+            {registerError && (
+              <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-2">
+                <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-destructive">
+                  {isKnownError(registerError)
+                    ? getLocalizedErrorMessage(registerError, t)
+                    : t('errors.genericError')}
+                </p>
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}

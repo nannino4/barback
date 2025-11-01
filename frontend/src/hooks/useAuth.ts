@@ -4,7 +4,6 @@ import toast from 'react-hot-toast';
 import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/api/auth-api';
 import type { RegisterData, RegisterFormData, LoginData } from '@/types/auth';
-import { getLocalizedErrorMessage, isKnownError } from '@/lib/errors';
 import { useI18n } from '@/hooks/useI18n';
 
 export const useAuth = () =>
@@ -57,15 +56,6 @@ export const useAuth = () =>
         }
       }
     },
-    onError: (error: Error) =>
-    {
-      // Use localized error message for known errors, fallback for unknown
-      const message = isKnownError(error)
-        ? getLocalizedErrorMessage(error, t)
-        : t('errors.genericError');
-      
-      toast.error(message);
-    },
   });
 
   const loginMutation = useMutation({
@@ -96,15 +86,6 @@ export const useAuth = () =>
         }
       }
     },
-    onError: (error: Error) =>
-    {
-      // Use localized error message for known errors, fallback for unknown
-      const message = isKnownError(error)
-        ? getLocalizedErrorMessage(error, t)
-        : t('errors.genericError');
-      
-      toast.error(message);
-    },
   });
 
   const handleRegister = (data: RegisterFormData) =>
@@ -134,8 +115,12 @@ export const useAuth = () =>
     login: handleLogin,
     logout: handleLogout,
 
-    // Mutation states (use these for loading indicators)
+    // Mutation states (use these for loading indicators and error display)
     isRegistering: registerMutation.isPending,
     isLoggingIn: loginMutation.isPending,
+    
+    // Error states (use these to display errors declaratively)
+    registerError: registerMutation.error,
+    loginError: loginMutation.error,
   };
 };

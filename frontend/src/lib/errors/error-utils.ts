@@ -10,17 +10,33 @@ import { COMMON_ERROR_HANDLERS, STATUS_CODE_HANDLERS } from './common-errors';
 import { isAuthErrorCode, isCommonErrorCode } from './error-codes';
 
 /**
- * Format validation errors for toast display
- * Returns only the first error to keep toasts concise and readable
+ * Format validation errors for display
  * 
  * @param errors - Array of error messages
- * @returns First error message from the array
+ * @param context - Display context: 'form' returns all errors as list, 'toast' returns first error
+ * @returns Formatted error message(s)
  */
-export const formatValidationErrors = (errors: string[]): string =>
+export const formatValidationErrors = (
+  errors: string[],
+  context: 'form' | 'toast' = 'form',
+): string =>
 {
-  // Always return the first error for toast notifications
-  // Full error list should be displayed in forms or dedicated error UI
-  return errors[0] || 'Validation error';
+  if (errors.length === 0) return 'Validation error';
+  
+  // For toasts, return only the first error to keep it concise
+  if (context === 'toast')
+  {
+    return errors[0];
+  }
+  
+  // For forms, return all errors as a formatted list
+  if (errors.length === 1)
+  {
+    return errors[0];
+  }
+  
+  // Multiple errors: format as bullet list
+  return errors.map((err) => `• ${err}`).join('\n');
 };
 
 /**
@@ -34,16 +50,37 @@ export const formatValidationErrors = (errors: string[]): string =>
  * 
  * @param error - ApiError instance with error code and status
  * @param t - Translation function from useI18n()
+ * @param context - Display context: 'form' for full error lists, 'toast' for single error
  * @returns Localized error message
  */
 export const getLocalizedErrorMessage = (
   error: ApiError | NetworkError | ValidationError,
   t: (key: string) => string,
+  context: 'form' | 'toast' = 'form',
 ): string =>
 {
   // Handle network errors
   if (error instanceof NetworkError)
   {
+    // Map specific reasons to detailed translation keys
+    if (error.reason === 'timeout')
+    {
+      return t('errors.networkTimeout');
+    }
+    if (error.reason === 'cors')
+    {
+      return t('errors.networkCors');
+    }
+    if (error.reason === 'connection-refused')
+    {
+      return t('errors.networkConnectionRefused');
+    }
+    if (error.reason === 'dns-failure')
+    {
+      return t('errors.networkDnsFailure');
+    }
+    
+    // Generic network error
     return t('errors.networkError');
   }
 
@@ -75,8 +112,8 @@ export const getLocalizedErrorMessage = (
         return t('errors.validationError');
       }
       
-      // Format as list if multiple errors
-      return formatValidationErrors(translatedErrors);
+      // Format based on context
+      return formatValidationErrors(translatedErrors, context);
     }
 
     // Priority 2: Check auth-specific error codes (type-safe)

@@ -21,7 +21,14 @@ export type AuthErrorCode =
   | 'WRONG_AUTH_PROVIDER'
   | 'PASSWORD_HASHING_FAILED'
   | 'TOKEN_GENERATION_FAILED'
-  | 'DATABASE_OPERATION_FAILED';
+  | 'DATABASE_OPERATION_FAILED'
+  // Google OAuth errors
+  | 'GOOGLE_TOKEN_EXCHANGE_FAILED'
+  | 'GOOGLE_USER_INFO_FAILED'
+  | 'GOOGLE_TOKEN_INVALID'
+  | 'GOOGLE_EMAIL_NOT_VERIFIED'
+  | 'GOOGLE_ACCOUNT_LINKING_CONFLICT'
+  | 'GOOGLE_CONFIGURATION_ERROR';
 
 /**
  * Common/system-level error codes
@@ -30,6 +37,8 @@ export type AuthErrorCode =
 export type CommonErrorCode =
   | 'RATE_LIMIT_EXCEEDED'
   | 'EMAIL_SERVICE_UNAVAILABLE'
+  | 'EMAIL_SENDING_FAILED'
+  | 'EMAIL_CONFIGURATION_ERROR'
   | 'INTERNAL_SERVER_ERROR';
 
 /**
@@ -55,6 +64,12 @@ export const isAuthErrorCode = (code: string): code is AuthErrorCode =>
     'PASSWORD_HASHING_FAILED',
     'TOKEN_GENERATION_FAILED',
     'DATABASE_OPERATION_FAILED',
+    'GOOGLE_TOKEN_EXCHANGE_FAILED',
+    'GOOGLE_USER_INFO_FAILED',
+    'GOOGLE_TOKEN_INVALID',
+    'GOOGLE_EMAIL_NOT_VERIFIED',
+    'GOOGLE_ACCOUNT_LINKING_CONFLICT',
+    'GOOGLE_CONFIGURATION_ERROR',
   ];
   return authCodes.includes(code as AuthErrorCode);
 };
@@ -67,6 +82,8 @@ export const isCommonErrorCode = (code: string): code is CommonErrorCode =>
   const commonCodes: CommonErrorCode[] = [
     'RATE_LIMIT_EXCEEDED',
     'EMAIL_SERVICE_UNAVAILABLE',
+    'EMAIL_SENDING_FAILED',
+    'EMAIL_CONFIGURATION_ERROR',
     'INTERNAL_SERVER_ERROR',
   ];
   return commonCodes.includes(code as CommonErrorCode);

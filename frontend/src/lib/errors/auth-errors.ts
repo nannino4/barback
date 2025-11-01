@@ -34,6 +34,14 @@ export const AUTH_ERROR_HANDLERS: Record<AuthErrorCode, ErrorCodeHandler> = {
   // Authorization errors  
   WRONG_AUTH_PROVIDER: (t) => t('auth.errors.wrongAuthProvider'),
   
+  // Google OAuth errors
+  GOOGLE_TOKEN_EXCHANGE_FAILED: (t) => t('auth.errors.googleTokenExchangeFailed'),
+  GOOGLE_USER_INFO_FAILED: (t) => t('auth.errors.googleUserInfoFailed'),
+  GOOGLE_TOKEN_INVALID: (t) => t('auth.errors.googleTokenInvalid'),
+  GOOGLE_EMAIL_NOT_VERIFIED: (t) => t('auth.errors.googleEmailNotVerified'),
+  GOOGLE_ACCOUNT_LINKING_CONFLICT: (t) => t('auth.errors.googleAccountLinkingConflict'),
+  GOOGLE_CONFIGURATION_ERROR: (t) => t('errors.serverError'),
+  
   // Server errors (unlikely but possible)
   PASSWORD_HASHING_FAILED: (t) => t('errors.serverError'),
   TOKEN_GENERATION_FAILED: (t) => t('errors.serverError'),

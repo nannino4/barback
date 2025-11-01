@@ -17,8 +17,10 @@ export const COMMON_ERROR_HANDLERS: Record<CommonErrorCode, ErrorCodeHandler> = 
   // Rate limiting
   RATE_LIMIT_EXCEEDED: (t) => t('errors.rateLimitExceeded'),
   
-  // Email service
+  // Email service errors (all mapped to same user-friendly message)
   EMAIL_SERVICE_UNAVAILABLE: (t) => t('errors.emailServiceUnavailable'),
+  EMAIL_SENDING_FAILED: (t) => t('errors.emailServiceUnavailable'),
+  EMAIL_CONFIGURATION_ERROR: (t) => t('errors.emailServiceUnavailable'),
   
   // Server errors
   INTERNAL_SERVER_ERROR: (t) => t('errors.serverError'),

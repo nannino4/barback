@@ -29,7 +29,8 @@
             "noAccount": "Non hai un account?",
             "signUp": "Registrati",
             "continueWith": "Oppure continua con email",
-            "googleLogin": "Continua con Google"
+            "googleLogin": "Continua con Google",
+            "backToLogin": "Torna al login"
         },
         "register": {
             "title": "Crea il tuo account",
@@ -151,13 +152,20 @@
             "googleAuthCancelled": "L'autenticazione Google è stata annullata o è fallita.",
             "invalidGoogleResponse": "Risposta di autenticazione non valida da Google.",
             "invalidAuthState": "Stato di autenticazione non valido. Riprova.",
-            "googleSignInSuccess": "Accesso con Google effettuato con successo!"
+            "googleSignInSuccess": "Accesso con Google effettuato con successo!",
+            "googleTokenExchangeFailed": "Impossibile completare l'accesso con Google. Riprova.",
+            "googleUserInfoFailed": "Impossibile recuperare le informazioni del tuo account Google. Riprova.",
+            "googleTokenInvalid": "La tua autenticazione Google è scaduta. Effettua nuovamente l'accesso.",
+            "googleEmailNotVerified": "L'email del tuo account Google deve essere verificata. Verifica prima la tua email con Google.",
+            "googleAccountLinkingConflict": "Esiste già un account con questa email che utilizza un metodo di accesso diverso. Utilizza il metodo di accesso originale."
         }
     },
     "errors": {
         "networkError": "Errore di rete. Controlla la connessione e riprova.",
-        "emailSendingFailed": "Invio email fallito. Riprova più tardi.",
-        "emailConfigError": "Il servizio email è temporaneamente non disponibile. Riprova più tardi.",
+        "networkTimeout": "Richiesta scaduta. Controlla la connessione e riprova.",
+        "networkCors": "Connessione bloccata dalle impostazioni di sicurezza. Contatta l'assistenza.",
+        "networkConnectionRefused": "Impossibile connettersi al server. Riprova più tardi.",
+        "networkDnsFailure": "Impossibile raggiungere il server. Controlla la connessione.",
         "emailServiceUnavailable": "Il servizio email è temporaneamente non disponibile. Riprova più tardi.",
         "rateLimitExceeded": "Troppe richieste. Attendi prima di riprovare.",
         "rateLimitExceededWithTime": "Troppe richieste. Attendi {{seconds}} secondi prima di riprovare.",

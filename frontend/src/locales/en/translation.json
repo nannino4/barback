@@ -29,7 +29,8 @@
             "noAccount": "Don't have an account?",
             "signUp": "Sign up",
             "continueWith": "Or continue with email",
-            "googleLogin": "Continue with Google"
+            "googleLogin": "Continue with Google",
+            "backToLogin": "Back to Sign In"
         },
         "register": {
             "title": "Create your account",
@@ -151,13 +152,20 @@
             "googleAuthCancelled": "Google authentication was cancelled or failed.",
             "invalidGoogleResponse": "Invalid authentication response from Google.",
             "invalidAuthState": "Invalid authentication state. Please try again.",
-            "googleSignInSuccess": "Successfully signed in with Google!"
+            "googleSignInSuccess": "Successfully signed in with Google!",
+            "googleTokenExchangeFailed": "Failed to complete Google sign-in. Please try again.",
+            "googleUserInfoFailed": "Failed to retrieve your Google account information. Please try again.",
+            "googleTokenInvalid": "Your Google authentication has expired. Please sign in again.",
+            "googleEmailNotVerified": "Your Google account email must be verified. Please verify your email with Google first.",
+            "googleAccountLinkingConflict": "An account with this email already exists using a different sign-in method. Please use the original sign-in method."
         }
     },
     "errors": {
         "networkError": "Network error. Please check your connection and try again.",
-        "emailSendingFailed": "Failed to send email. Please try again later.",
-        "emailConfigError": "Email service is temporarily unavailable. Please try again later.",
+        "networkTimeout": "Request timed out. Please check your connection and try again.",
+        "networkCors": "Connection blocked by security settings. Please contact support.",
+        "networkConnectionRefused": "Could not connect to the server. Please try again later.",
+        "networkDnsFailure": "Could not reach the server. Please check your connection.",
         "emailServiceUnavailable": "Email service is temporarily unavailable. Please try again later.",
         "rateLimitExceeded": "Too many requests. Please wait before trying again.",
         "rateLimitExceededWithTime": "Too many requests. Please wait {{seconds}} seconds before trying again.",

@@ -83,11 +83,11 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
             {registerError && (
               <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-2">
                 <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-destructive">
+                <div className="text-sm text-destructive whitespace-pre-line">
                   {isKnownError(registerError)
-                    ? getLocalizedErrorMessage(registerError, t)
+                    ? getLocalizedErrorMessage(registerError, t, 'form')
                     : t('errors.genericError')}
-                </p>
+                </div>
               </div>
             )}
 

@@ -64,11 +64,13 @@ export class ApiError extends Error
 export class NetworkError extends Error
 {
   public readonly statusCode = 0;
+  public readonly reason?: 'timeout' | 'cors' | 'connection-refused' | 'dns-failure';
 
-  constructor()
+  constructor(reason?: 'timeout' | 'cors' | 'connection-refused' | 'dns-failure')
   {
     super(''); // Empty message - will be localized by getLocalizedErrorMessage
     this.name = 'NetworkError';
+    this.reason = reason;
     
     if (Error.captureStackTrace)
     {

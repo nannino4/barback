@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import { Eye, EyeOff, Lock, CheckCircle, XCircle } from 'lucide-react';
+import { Eye, EyeOff, Lock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { InlineSpinner } from '@/components/ui/spinner';
@@ -38,6 +38,7 @@ export const ResetPasswordPage: React.FC = () =>
     
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string>('');
 
   const passwordRequirements: PasswordRequirement[] = [
     {
@@ -101,12 +102,12 @@ export const ResetPasswordPage: React.FC = () =>
           return;
         }
         
-        // Other errors - show localized message
-        toast.error(getLocalizedErrorMessage(error, t));
+        // Other errors - display declaratively
+        setErrorMessage(getLocalizedErrorMessage(error, t, 'form'));
       }
       else
       {
-        toast.error(t('auth.resetPassword.errorMessage'));
+        setErrorMessage(t('auth.resetPassword.errorMessage'));
       }
     },
   });
@@ -291,6 +292,16 @@ export const ResetPasswordPage: React.FC = () =>
                     t('auth.resetPassword.updateButton')
                   )}
                 </Button>
+
+                {/* Error Display */}
+                {errorMessage && (
+                  <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0 mt-0.5" />
+                    <div className="text-sm text-destructive whitespace-pre-line flex-1">
+                      {errorMessage}
+                    </div>
+                  </div>
+                )}
               </form>
             </Form>
 

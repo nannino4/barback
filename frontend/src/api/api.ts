@@ -64,7 +64,7 @@ class ApiClient
       if (error instanceof Error && error.name === 'AbortError')
       {
         logger.warn(`Request timeout after ${timeoutMs}ms:`, url);
-        throw new NetworkError(); // Treat timeout as network error
+        throw new NetworkError('timeout'); // Timeout error
       }
       throw error;
     }
@@ -174,6 +174,26 @@ class ApiClient
     if (error instanceof TypeError)
     {
       const errorMessage = error.message.toLowerCase();
+      
+      // Detect CORS errors
+      if (errorMessage.includes('cors'))
+      {
+        throw new NetworkError('cors');
+      }
+      
+      // Detect connection refused
+      if (errorMessage.includes('connection refused') || errorMessage.includes('econnrefused'))
+      {
+        throw new NetworkError('connection-refused');
+      }
+      
+      // Detect DNS failures
+      if (errorMessage.includes('dns') || errorMessage.includes('enotfound') || errorMessage.includes('getaddrinfo'))
+      {
+        throw new NetworkError('dns-failure');
+      }
+      
+      // Generic network error
       const isNetworkError = 
         errorMessage.includes('fetch') ||
         errorMessage.includes('network') ||

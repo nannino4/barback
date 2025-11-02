@@ -210,11 +210,14 @@
         "email": {
             "required": "Email è richiesta",
             "invalid": "Inserisci un indirizzo email valido",
-            "tooLong": "L'email deve essere inferiore a 255 caratteri"
+            "maxLength": "L'email deve essere inferiore a 255 caratteri"
         },
         "password": {
             "required": "Password è richiesta",
+            "mustBeString": "La password deve essere testo",
             "minLength": "La password deve contenere almeno 8 caratteri",
+            "maxLength": "La password non può superare i 20 caratteri",
+            "weak": "La password deve contenere almeno 8 caratteri con maiuscola, minuscola, numero e carattere speciale",
             "uppercase": "La password deve contenere almeno una lettera maiuscola",
             "lowercase": "La password deve contenere almeno una lettera minuscola",
             "number": "La password deve contenere almeno un numero",
@@ -222,14 +225,165 @@
             "confirmRequired": "Conferma la tua password",
             "noMatch": "Le password non corrispondono"
         },
-        "name": {
-            "firstNameRequired": "Nome è richiesto",
-            "lastNameRequired": "Cognome è richiesto",
-            "tooLong": "Il nome deve essere inferiore a 50 caratteri",
-            "invalidChars": "Il nome può contenere solo lettere, spazi, trattini e apostrofi"
+        "currentPassword": {
+            "required": "La password attuale è richiesta",
+            "mustBeString": "La password attuale deve essere testo"
         },
-        "phone": {
-            "invalidFormat": "Il numero di telefono deve essere in formato italiano (+393XXXXXXXXX)"
+        "newPassword": {
+            "required": "La nuova password è richiesta",
+            "maxLength": "La nuova password non può superare i 20 caratteri",
+            "weak": "La nuova password deve contenere almeno 8 caratteri con maiuscola, minuscola, numero e carattere speciale"
+        },
+        "firstName": {
+            "required": "Nome è richiesto",
+            "mustBeString": "Il nome deve essere testo",
+            "minLength": "Il nome deve contenere almeno 1 carattere",
+            "maxLength": "Il nome non può superare i 50 caratteri"
+        },
+        "lastName": {
+            "required": "Cognome è richiesto",
+            "mustBeString": "Il cognome deve essere testo",
+            "minLength": "Il cognome deve contenere almeno 1 carattere",
+            "maxLength": "Il cognome non può superare i 50 caratteri"
+        },
+        "phoneNumber": {
+            "required": "Numero di telefono è richiesto",
+            "invalid": "Inserisci un numero di cellulare italiano valido (+39 3XX XXX XXXX)"
+        },
+        "profilePictureUrl": {
+            "mustBeString": "L'URL dell'immagine del profilo deve essere testo"
+        },
+        "token": {
+            "required": "Token è richiesto",
+            "mustBeString": "Il token deve essere testo"
+        },
+        "refreshToken": {
+            "invalidJWT": "Formato del token di aggiornamento non valido"
+        },
+        "code": {
+            "required": "Codice di autorizzazione è richiesto",
+            "mustBeString": "Il codice di autorizzazione deve essere testo"
+        },
+        "state": {
+            "mustBeString": "Il parametro state deve essere testo"
+        },
+        "org": {
+            "name": {
+                "required": "Nome dell'organizzazione è richiesto",
+                "mustBeString": "Il nome dell'organizzazione deve essere testo"
+            },
+            "subscriptionId": {
+                "required": "ID abbonamento è richiesto",
+                "invalidObjectId": "Formato ID abbonamento non valido"
+            },
+            "settings": {
+                "required": "Impostazioni organizzazione sono richieste",
+                "mustBeObject": "Le impostazioni dell'organizzazione devono essere un oggetto",
+                "invalid": "Le impostazioni dell'organizzazione non sono valide"
+            },
+            "role": {
+                "invalid": "Ruolo organizzazione non valido"
+            },
+            "currency": {
+                "mustBeString": "La valuta deve essere testo",
+                "exactLength": "Il codice valuta deve essere esattamente di 3 caratteri",
+                "invalidFormat": "Il codice valuta deve essere di 3 lettere maiuscole (es. EUR, USD)"
+            }
+        },
+        "product": {
+            "name": {
+                "required": "Nome del prodotto è richiesto",
+                "mustBeString": "Il nome del prodotto deve essere testo"
+            },
+            "description": {
+                "required": "Descrizione del prodotto è richiesta",
+                "mustBeString": "La descrizione del prodotto deve essere testo"
+            },
+            "brand": {
+                "required": "Marca del prodotto è richiesta",
+                "mustBeString": "La marca del prodotto deve essere testo"
+            },
+            "defaultUnit": {
+                "required": "Unità predefinita è richiesta",
+                "mustBeString": "L'unità predefinita deve essere testo"
+            },
+            "defaultPurchasePrice": {
+                "mustBeNumber": "Il prezzo d'acquisto predefinito deve essere un numero",
+                "min": "Il prezzo d'acquisto predefinito non può essere negativo"
+            },
+            "currentQuantity": {
+                "mustBeNumber": "La quantità attuale deve essere un numero",
+                "min": "La quantità attuale non può essere negativa"
+            },
+            "categoryIds": {
+                "mustBeArray": "Gli ID delle categorie devono essere un array",
+                "invalidObjectId": "Formato ID categoria non valido"
+            },
+            "imageUrl": {
+                "invalidUrl": "Formato URL immagine non valido"
+            }
+        },
+        "category": {
+            "name": {
+                "required": "Nome della categoria è richiesto",
+                "mustBeString": "Il nome della categoria deve essere testo"
+            },
+            "description": {
+                "required": "Descrizione della categoria è richiesta",
+                "mustBeString": "La descrizione della categoria deve essere testo"
+            },
+            "parentId": {
+                "invalidObjectId": "Formato ID categoria padre non valido"
+            }
+        },
+        "inventory": {
+            "type": {
+                "invalid": "Tipo di registro inventario non valido"
+            },
+            "quantity": {
+                "mustBeNumber": "La quantità deve essere un numero"
+            },
+            "note": {
+                "required": "Nota è richiesta per le modifiche di stock",
+                "mustBeString": "La nota deve essere testo"
+            }
+        },
+        "invitation": {
+            "invitedEmail": {
+                "required": "Email invitato è richiesta",
+                "invalid": "Inserisci un indirizzo email valido"
+            },
+            "role": {
+                "required": "Ruolo è richiesto",
+                "invalid": "Ruolo selezionato non valido"
+            }
+        },
+        "subscription": {
+            "status": {
+                "required": "Stato abbonamento è richiesto",
+                "invalid": "Stato abbonamento non valido"
+            },
+            "autoRenew": {
+                "required": "Impostazione rinnovo automatico è richiesta",
+                "mustBeBoolean": "Il rinnovo automatico deve essere vero o falso"
+            },
+            "billingInterval": {
+                "invalid": "Intervallo di fatturazione non valido"
+            },
+            "isTrial": {
+                "mustBeBoolean": "Il flag trial deve essere vero o falso"
+            },
+            "paymentMethodId": {
+                "mustBeString": "L'ID del metodo di pagamento deve essere testo"
+            }
+        },
+        "admin": {
+            "isActive": {
+                "mustBeBoolean": "Lo stato attivo deve essere vero o falso"
+            },
+            "role": {
+                "invalid": "Ruolo utente non valido"
+            }
         }
     },
     "theme": {

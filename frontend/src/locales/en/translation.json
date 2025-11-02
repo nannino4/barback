@@ -209,11 +209,14 @@
         "email": {
             "required": "Email is required",
             "invalid": "Please enter a valid email address",
-            "tooLong": "Email must be less than 255 characters"
+            "maxLength": "Email must be less than 255 characters"
         },
         "password": {
             "required": "Password is required",
+            "mustBeString": "Password must be text",
             "minLength": "Password must be at least 8 characters",
+            "maxLength": "Password cannot exceed 20 characters",
+            "weak": "Password must contain at least 8 characters with uppercase, lowercase, number, and special character",
             "uppercase": "Password must contain at least one uppercase letter",
             "lowercase": "Password must contain at least one lowercase letter",
             "number": "Password must contain at least one number",
@@ -221,14 +224,165 @@
             "confirmRequired": "Please confirm your password",
             "noMatch": "Passwords do not match"
         },
-        "name": {
-            "firstNameRequired": "First name is required",
-            "lastNameRequired": "Last name is required",
-            "tooLong": "Name must be less than 50 characters",
-            "invalidChars": "Name can only contain letters, spaces, hyphens, and apostrophes"
+        "currentPassword": {
+            "required": "Current password is required",
+            "mustBeString": "Current password must be text"
         },
-        "phone": {
-            "invalidFormat": "Phone number must be in Italian format (+393XXXXXXXXX)"
+        "newPassword": {
+            "required": "New password is required",
+            "maxLength": "New password cannot exceed 20 characters",
+            "weak": "New password must contain at least 8 characters with uppercase, lowercase, number, and special character"
+        },
+        "firstName": {
+            "required": "First name is required",
+            "mustBeString": "First name must be text",
+            "minLength": "First name must be at least 1 character",
+            "maxLength": "First name cannot exceed 50 characters"
+        },
+        "lastName": {
+            "required": "Last name is required",
+            "mustBeString": "Last name must be text",
+            "minLength": "Last name must be at least 1 character",
+            "maxLength": "Last name cannot exceed 50 characters"
+        },
+        "phoneNumber": {
+            "required": "Phone number is required",
+            "invalid": "Please enter a valid Italian mobile number (+39 3XX XXX XXXX)"
+        },
+        "profilePictureUrl": {
+            "mustBeString": "Profile picture URL must be text"
+        },
+        "token": {
+            "required": "Token is required",
+            "mustBeString": "Token must be text"
+        },
+        "refreshToken": {
+            "invalidJWT": "Invalid refresh token format"
+        },
+        "code": {
+            "required": "Authorization code is required",
+            "mustBeString": "Authorization code must be text"
+        },
+        "state": {
+            "mustBeString": "State parameter must be text"
+        },
+        "org": {
+            "name": {
+                "required": "Organization name is required",
+                "mustBeString": "Organization name must be text"
+            },
+            "subscriptionId": {
+                "required": "Subscription ID is required",
+                "invalidObjectId": "Invalid subscription ID format"
+            },
+            "settings": {
+                "required": "Organization settings are required",
+                "mustBeObject": "Organization settings must be an object",
+                "invalid": "Organization settings are invalid"
+            },
+            "role": {
+                "invalid": "Invalid organization role"
+            },
+            "currency": {
+                "mustBeString": "Currency must be text",
+                "exactLength": "Currency code must be exactly 3 characters",
+                "invalidFormat": "Currency code must be 3 uppercase letters (e.g., EUR, USD)"
+            }
+        },
+        "product": {
+            "name": {
+                "required": "Product name is required",
+                "mustBeString": "Product name must be text"
+            },
+            "description": {
+                "required": "Product description is required",
+                "mustBeString": "Product description must be text"
+            },
+            "brand": {
+                "required": "Product brand is required",
+                "mustBeString": "Product brand must be text"
+            },
+            "defaultUnit": {
+                "required": "Default unit is required",
+                "mustBeString": "Default unit must be text"
+            },
+            "defaultPurchasePrice": {
+                "mustBeNumber": "Default purchase price must be a number",
+                "min": "Default purchase price cannot be negative"
+            },
+            "currentQuantity": {
+                "mustBeNumber": "Current quantity must be a number",
+                "min": "Current quantity cannot be negative"
+            },
+            "categoryIds": {
+                "mustBeArray": "Category IDs must be an array",
+                "invalidObjectId": "Invalid category ID format"
+            },
+            "imageUrl": {
+                "invalidUrl": "Invalid image URL format"
+            }
+        },
+        "category": {
+            "name": {
+                "required": "Category name is required",
+                "mustBeString": "Category name must be text"
+            },
+            "description": {
+                "required": "Category description is required",
+                "mustBeString": "Category description must be text"
+            },
+            "parentId": {
+                "invalidObjectId": "Invalid parent category ID format"
+            }
+        },
+        "inventory": {
+            "type": {
+                "invalid": "Invalid inventory log type"
+            },
+            "quantity": {
+                "mustBeNumber": "Quantity must be a number"
+            },
+            "note": {
+                "required": "Note is required for stock adjustments",
+                "mustBeString": "Note must be text"
+            }
+        },
+        "invitation": {
+            "invitedEmail": {
+                "required": "Invited email is required",
+                "invalid": "Please enter a valid email address"
+            },
+            "role": {
+                "required": "Role is required",
+                "invalid": "Invalid role selected"
+            }
+        },
+        "subscription": {
+            "status": {
+                "required": "Subscription status is required",
+                "invalid": "Invalid subscription status"
+            },
+            "autoRenew": {
+                "required": "Auto-renew setting is required",
+                "mustBeBoolean": "Auto-renew must be true or false"
+            },
+            "billingInterval": {
+                "invalid": "Invalid billing interval"
+            },
+            "isTrial": {
+                "mustBeBoolean": "Trial flag must be true or false"
+            },
+            "paymentMethodId": {
+                "mustBeString": "Payment method ID must be text"
+            }
+        },
+        "admin": {
+            "isActive": {
+                "mustBeBoolean": "Active status must be true or false"
+            },
+            "role": {
+                "invalid": "Invalid user role"
+            }
         }
     },
     "theme": {

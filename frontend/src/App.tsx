@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from '@/components/ThemeProvider'
-import { ErrorBoundaryWithI18n } from '@/components/ErrorBoundary'
+import { GlobalErrorBoundary } from '@/components/ErrorBoundary'
 import { AuthProvider } from '@/components/features/auth/AuthProvider'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { VerifiedRoute } from '@/components/features/auth/VerifiedRoute'
@@ -105,7 +105,7 @@ function AppContent()
 function App()
 {
   return (
-    <ErrorBoundaryWithI18n>
+    <GlobalErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <BrowserRouter>
@@ -115,7 +115,7 @@ function App()
           </BrowserRouter>
         </ThemeProvider>
       </QueryClientProvider>
-    </ErrorBoundaryWithI18n>
+    </GlobalErrorBoundary>
   )
 }
 

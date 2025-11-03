@@ -147,12 +147,12 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps)
  * Usage:
  * ```tsx
  * // Current: Single root boundary
- * <ErrorBoundaryWithI18n>
+ * <GlobalErrorBoundary>
  *   <App />
- * </ErrorBoundaryWithI18n>
+ * </GlobalErrorBoundary>
  * 
  * // Future: Feature-specific boundaries
- * <ErrorBoundaryWithI18n>
+ * <GlobalErrorBoundary>
  *   <Routes>
  *     <Route path="/inventory" element={
  *       <InventoryErrorBoundary>
@@ -160,10 +160,10 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps)
  *       </InventoryErrorBoundary>
  *     } />
  *   </Routes>
- * </ErrorBoundaryWithI18n>
+ * </GlobalErrorBoundary>
  * ```
  */
-export const ErrorBoundaryWithI18n: React.FC<{ children: React.ReactNode }> = ({ children }) =>
+export const GlobalErrorBoundary: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 {
   const [resetKey, setResetKey] = React.useState(0);
   

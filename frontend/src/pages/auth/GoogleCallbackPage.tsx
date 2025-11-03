@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
@@ -87,23 +87,27 @@ export const GoogleCallbackPage: React.FC = () =>
     }
 
     // Validate state parameter (CSRF protection)
-    const storedState = sessionStorage.getItem('google_oauth_state');
-    
-    // CRITICAL: If we stored a state, we MUST validate it
-    if (storedState)
+    // Backend MUST send state parameter - if missing, reject
+    if (!state)
     {
-      if (!state || state !== storedState)
-      {
-        sessionStorage.removeItem('google_oauth_state');
-        setCallbackStatus('error');
-        setErrorMessage(t('auth.errors.invalidAuthState'));
-        return;
-      }
+      setCallbackStatus('error');
+      setErrorMessage(t('auth.errors.invalidAuthState'));
+      return;
+    }
+
+    // Validate state against stored value
+    const storedState = sessionStorage.getItem('google_oauth_state');
+    if (!storedState || state !== storedState)
+    {
+      sessionStorage.removeItem('google_oauth_state');
+      setCallbackStatus('error');
+      setErrorMessage(t('auth.errors.invalidAuthState'));
+      return;
     }
 
     // Process the OAuth callback
     hasAttemptedRef.current = true;
-    handleGoogleCallbackMutation.mutate({ code, state: state || undefined });
+    handleGoogleCallbackMutation.mutate({ code, state });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]); // Only searchParams in dependencies
 

@@ -1,9 +1,5 @@
-import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { Spinner } from '@/components/ui/spinner';
-import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/stores/authStore';
-import { useI18n } from '@/hooks/useI18n';
 
 interface VerifiedRouteProps
 {
@@ -19,33 +15,16 @@ interface VerifiedRouteProps
  * 
  * Redirect behavior:
  * - Not authenticated -> /auth/login with redirect parameter
- * - Authenticated but not verified -> /auth/verify-email
+ * - Authenticated but not verified -> /auth/send-verification-email
  * - Authenticated and verified -> Render children
- * 
  */
 export const VerifiedRoute: React.FC<VerifiedRouteProps> = ({ children }) =>
 {
-  const { isAuthenticated, isLoading } = useAuth();
-  const { user } = useAuthStore();
+  const { isAuthenticated, user } = useAuthStore();
   const location = useLocation();
-  const { t } = useI18n();
-
-  // Show loading state while checking authentication
-  if (isLoading)
-  {
-    return (
-      <div className="min-h-screen bg-background">
-        <Spinner 
-          size="lg" 
-          text={t('common.loading')}
-          className="min-h-screen"
-        />
-      </div>
-    );
-  }
 
   // Redirect to login if not authenticated
-  if (!isAuthenticated || !user)
+  if (!isAuthenticated)
   {
     // Encode current path as redirect parameter
     const redirectUrl = `/auth/login?redirect=${encodeURIComponent(location.pathname)}`;
@@ -57,8 +36,9 @@ export const VerifiedRoute: React.FC<VerifiedRouteProps> = ({ children }) =>
     );
   }
 
+  // At this point user must exist due to store logic
   // Redirect to email verification if authenticated but not verified
-  if (!user.isEmailVerified)
+  if (!user!.isEmailVerified)
   {
     return (
       <Navigate

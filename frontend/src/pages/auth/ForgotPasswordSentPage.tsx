@@ -1,5 +1,5 @@
-import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { Mail, Clock, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,10 +13,10 @@ export const ForgotPasswordSentPage: React.FC = () =>
   const { t } = useI18n();
   const location = useLocation();
   const email = (location.state as { email?: string })?.email || '';
-  const [isResending, setIsResending] = React.useState(false);
-  const [resendCooldown, setResendCooldown] = React.useState(0);
+  const [isResending, setIsResending] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
-  React.useEffect(() =>
+  useEffect(() =>
   {
     let timer: NodeJS.Timeout;
     if (resendCooldown > 0)

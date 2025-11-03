@@ -13,3 +13,9 @@ export const SUCCESS_REDIRECT_DELAY = 3000; // 3 seconds
  * Prevents spam and reduces server load
  */
 export const EMAIL_RESEND_COOLDOWN_MS = 60 * 1000; // 60 seconds
+
+/**
+ * Cooldown duration between password reset requests (in milliseconds)
+ * Prevents spam and reduces server load
+ */
+export const PASSWORD_RESET_COOLDOWN_MS = 60 * 1000; // 60 seconds

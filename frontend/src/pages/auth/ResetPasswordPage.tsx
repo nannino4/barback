@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { resetPasswordSchema, type ResetPasswordData } from '@/validation/auth-form-schemas';
+import { resetPasswordSchema, type ResetPasswordData } from '@/types/auth-forms';
 import { authApi } from '@/api/auth-api';
 import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
 import { cn } from '@/lib/utils';
@@ -29,6 +29,8 @@ interface PasswordRequirement
     test: (password: string) => boolean;
 }
 
+type ResetStatus = 'validating' | 'form' | 'success' | 'error';
+
 export const ResetPasswordPage: React.FC = () =>
 {
   const { t } = useI18n();
@@ -36,9 +38,10 @@ export const ResetPasswordPage: React.FC = () =>
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
     
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState<string>('');
+  const [status, setStatus] = useState<ResetStatus>('validating');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   const passwordRequirements: PasswordRequirement[] = [
     {
@@ -76,9 +79,13 @@ export const ResetPasswordPage: React.FC = () =>
   // Token validation mutation
   const validateTokenMutation = useMutation({
     mutationFn: (validationToken: string) => authApi.validateResetToken(validationToken),
+    onSuccess: () =>
+    {
+      setStatus('form');
+    },
     onError: () =>
     {
-      void navigate('/auth/reset-password/error', { replace: true });
+      setStatus('error');
     },
   });
 
@@ -89,7 +96,7 @@ export const ResetPasswordPage: React.FC = () =>
     onSuccess: () =>
     {
       toast.success(t('auth.resetPassword.successMessage'));
-      void navigate('/auth/reset-password/success', { replace: true });
+      setStatus('success');
     },
     onError: (error: Error) =>
     {
@@ -98,7 +105,7 @@ export const ResetPasswordPage: React.FC = () =>
         // Invalid or expired token - redirect to error page
         if (error.error === 'INVALID_PASSWORD_RESET_TOKEN' || error.statusCode === 401)
         {
-          void navigate('/auth/reset-password/error', { replace: true });
+          setStatus('error');
           return;
         }
         
@@ -113,17 +120,17 @@ export const ResetPasswordPage: React.FC = () =>
   });
 
   // Validate token when component mounts
-  React.useEffect(() =>
+  useEffect(() =>
   {
     if (!token)
     {
-      void navigate('/auth/reset-password/error', { replace: true });
+      setStatus('error');
       return;
     }
 
     validateTokenMutation.mutate(token);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, navigate]);
+  }, [token]);
 
   const onSubmit = (data: ResetPasswordData) =>
   {
@@ -138,11 +145,109 @@ export const ResetPasswordPage: React.FC = () =>
     void form.handleSubmit(onSubmit)(e);
   };
 
-  if (!token)
+  // Validating state - show loading spinner
+  if (status === 'validating')
   {
-    return null; // Will redirect in useEffect
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+        <div className="text-center space-y-4">
+          <InlineSpinner className="h-8 w-8" />
+          <p className="text-muted-foreground">{t('auth.resetPassword.validating')}</p>
+        </div>
+      </div>
+    );
   }
 
+  // Error state - invalid or expired token
+  if (status === 'error')
+  {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+        <Card className="w-full max-w-md mx-auto">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
+              <AlertCircle className="h-6 w-6 text-destructive" />
+            </div>
+            <CardTitle className="text-2xl">
+              {t('auth.resetPasswordError.title')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <p className="text-center text-muted-foreground">
+              {t('auth.resetPasswordError.description')}
+            </p>
+            
+            <div className="space-y-3">
+              <p className="font-medium text-sm">
+                {t('auth.resetPasswordError.whatCanYouDo')}
+              </p>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-0.5">•</span>
+                  <span>{t('auth.resetPasswordError.requestNewLink')}</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-primary mt-0.5">•</span>
+                  <span>{t('auth.resetPasswordError.trySigningIn')}</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="space-y-3 pt-4">
+              <Button
+                className="w-full h-touch"
+                onClick={() => void navigate('/auth/forgot-password')}
+              >
+                {t('auth.resetPasswordError.requestNewLinkButton')}
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full h-touch"
+                onClick={() => void navigate('/auth/login')}
+              >
+                {t('auth.resetPasswordError.backToSignIn')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Success state - password reset successful
+  if (status === 'success')
+  {
+    return (
+      <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
+        <Card className="w-full max-w-md mx-auto">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-success/10">
+              <CheckCircle className="h-6 w-6 text-success" />
+            </div>
+            <CardTitle className="text-2xl">
+              {t('auth.resetPasswordSuccess.title')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-3 text-center text-sm text-muted-foreground">
+              <p>{t('auth.resetPasswordSuccess.description')}</p>
+              <p>{t('auth.resetPasswordSuccess.securityNotice')}</p>
+              <p>{t('auth.resetPasswordSuccess.emailNotice')}</p>
+            </div>
+
+            <Button
+              className="w-full h-touch"
+              onClick={() => void navigate('/auth/login')}
+            >
+              {t('auth.resetPasswordSuccess.signInButton')}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Form state - display password reset form
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
       <div className="w-full max-w-md">

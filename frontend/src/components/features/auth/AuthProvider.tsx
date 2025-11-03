@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { apiClient } from '@/api/api';
@@ -37,6 +37,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) =>
   const navigate = useNavigate();
   const { t } = useI18n();
   const logout = useAuthStore((state) => state.logout);
+  const sessionExpiredRef = useRef(false);
 
   useEffect(() =>
   {
@@ -46,6 +47,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) =>
     // Define session expired handler (called when refresh fails)
     const handleSessionExpired = () =>
     {
+      // Debounce: prevent double-triggering from multiple sources
+      if (sessionExpiredRef.current) return;
+      sessionExpiredRef.current = true;
+
       // Clear user from auth store
       logout();
 
@@ -68,16 +73,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) =>
       {
         void navigate('/auth/login', { replace: true });
       }
+
+      // Reset debounce flag after navigation completes
+      setTimeout(() =>
+      {
+        sessionExpiredRef.current = false;
+      }, 1000);
     };
 
-    // Set handler on both services (defense in depth)
+    // Set handler on both services
     // - Token Refresh Service: Calls handler when proactive refresh fails (invalid refresh token)
-    // - API Client: Calls handler when a 401 occurs (fallback for edge cases like manual token removal)
-    // 
-    // IMPORTANT: Both handlers can fire simultaneously (e.g., if refresh token expires AND
-    // a concurrent API call returns 401). This is acceptable - the handler is idempotent
-    // (logout clears tokens, navigate replaces state). Future enhancement could add
-    // deduplication via a flag if needed.
+    // - API Client: Calls handler when a 401 occurs (fallback for edge cases)
+    // The debounce flag prevents duplicate toasts and navigation conflicts
     tokenRefreshService.setSessionExpiredHandler(handleSessionExpired);
     apiClient.setSessionExpiredHandler(handleSessionExpired);
 

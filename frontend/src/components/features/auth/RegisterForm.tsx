@@ -1,8 +1,8 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom';
-import { Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { InlineSpinner } from '@/components/ui/spinner';
@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { registerSchema, type RegisterFormData } from '@/validation/auth-form-schemas';
+import { registerSchema, type RegisterFormData } from '@/types/auth-forms';
 import { useAuth } from '@/hooks/useAuth';
 import { useI18n } from '@/hooks/useI18n';
 import { getLocalizedErrorMessage, isKnownError } from '@/lib/errors';
@@ -26,12 +26,41 @@ interface RegisterFormProps
     className?: string;
 }
 
+interface PasswordRequirement
+{
+  key: string;
+  test: (password: string) => boolean;
+}
+
 export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
 {
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { register, isRegistering, registerError } = useAuth();
   const { t } = useI18n();
+
+  const passwordRequirements: PasswordRequirement[] = [
+    {
+      key: 'auth.register.requirementLength',
+      test: (password) => password.length >= 8,
+    },
+    {
+      key: 'auth.register.requirementUppercase',
+      test: (password) => /[A-Z]/.test(password),
+    },
+    {
+      key: 'auth.register.requirementLowercase',
+      test: (password) => /[a-z]/.test(password),
+    },
+    {
+      key: 'auth.register.requirementNumber',
+      test: (password) => /[0-9]/.test(password),
+    },
+    {
+      key: 'auth.register.requirementSpecial',
+      test: (password) => /[^A-Za-z0-9]/.test(password),
+    },
+  ];
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -49,7 +78,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
   // Watch password field to trigger confirmPassword validation when it changes
   const passwordValue = form.watch('password');
   
-  React.useEffect(() =>
+  useEffect(() =>
   {
     if (form.formState.touchedFields.confirmPassword)
     {
@@ -213,6 +242,39 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                     </div>
                   </FormControl>
                   <FormMessage />
+                  
+                  {/* Password Requirements */}
+                  {passwordValue && (
+                    <div className="space-y-2 mt-2">
+                      <p className="text-sm font-medium">
+                        {t('auth.register.requirements')}
+                      </p>
+                      <div className="space-y-1">
+                        {passwordRequirements.map((requirement) => (
+                          <div
+                            key={requirement.key}
+                            className="flex items-center space-x-2"
+                          >
+                            {requirement.test(passwordValue) ? (
+                              <CheckCircle className="h-4 w-4 text-success" />
+                            ) : (
+                              <XCircle className="h-4 w-4 text-muted-foreground" />
+                            )}
+                            <span
+                              className={cn(
+                                'text-xs',
+                                requirement.test(passwordValue)
+                                  ? 'text-success'
+                                  : 'text-muted-foreground',
+                              )}
+                            >
+                              {t(requirement.key)}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </FormItem>
               )}
             />

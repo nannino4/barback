@@ -1,8 +1,5 @@
-import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { Spinner } from '@/components/ui/spinner';
-import { useAuth } from '@/hooks/useAuth';
-import { useI18n } from '@/hooks/useI18n';
+import { useAuthStore } from '@/stores/authStore';
 
 interface ProtectedRouteProps
 {
@@ -10,28 +7,20 @@ interface ProtectedRouteProps
     redirectTo?: string;
 }
 
+/**
+ * ProtectedRoute - Protects routes that require authentication
+ * 
+ * Redirect behavior:
+ * - Not authenticated -> redirectTo (default: /auth/login) with redirect parameter
+ * - Authenticated -> Render children
+ */
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   redirectTo = '/auth/login',
 }) =>
 {
-  const { isAuthenticated, isLoading } = useAuth();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const location = useLocation();
-  const { t } = useI18n();
-
-  // Show loading state while checking authentication
-  if (isLoading)
-  {
-    return (
-      <div className="min-h-screen bg-background">
-        <Spinner 
-          size="lg" 
-          text={t('common.loading')}
-          className="min-h-screen"
-        />
-      </div>
-    );
-  }
 
   // Redirect to login if not authenticated
   if (!isAuthenticated)

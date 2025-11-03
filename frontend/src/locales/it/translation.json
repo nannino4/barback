@@ -47,13 +47,20 @@
             "continueWith": "Oppure continua con email",
             "googleSignup": "Registrati con Google",
             "showPassword": "Mostra password",
-            "hidePassword": "Nascondi password"
+            "hidePassword": "Nascondi password",
+            "requirements": "Requisiti della Password:",
+            "requirementLength": "Almeno 8 caratteri",
+            "requirementUppercase": "Una lettera maiuscola",
+            "requirementLowercase": "Una lettera minuscola",
+            "requirementNumber": "Un numero",
+            "requirementSpecial": "Un carattere speciale"
         },
         "forgotPassword": {
             "title": "Hai dimenticato la password?",
             "emailPlaceholder": "Inserisci la tua email",
             "sendLink": "Invia Link di Reset",
             "sendingLink": "Invio link...",
+            "cooldown": "Aspetta {{seconds}}s",
             "backToLogin": "Torna all'Accesso",
             "successMessage": "Email di reset password inviata nuovamente",
             "genericSuccessMessage": "Se esiste un account con quell'email, riceverai le istruzioni per il reset della password."
@@ -83,22 +90,26 @@
             "requirementSpecial": "Un carattere speciale",
             "updating": "Aggiornamento Password...",
             "updateButton": "Aggiorna Password",
+            "validating": "Validazione link di reset...",
             "successMessage": "Password aggiornata con successo",
             "errorMessage": "Impossibile reimpostare la password. Riprova.",
             "backToSignIn": "Torna al Login"
         },
         "resetPasswordSuccess": {
             "title": "Password Aggiornata!",
+            "description": "La tua password è stata reimpostata con successo.",
             "securityNotice": "Per la tua sicurezza, tutte le altre sessioni sono state disconnesse.",
             "emailNotice": "Riceverai a breve un'email di conferma.",
             "signInButton": "Accedi con Nuova Password"
         },
         "resetPasswordError": {
             "title": "Link di Reset Scaduto",
+            "description": "Questo link di reset password non è valido o è scaduto.",
             "whatCanYouDo": "Cosa puoi fare?",
             "requestNewLink": "Richiedi un nuovo link per il reset della password",
             "trySigningIn": "Prova ad accedere se ricordi la password",
             "contactSupport": "Contatta il supporto se continui ad avere problemi",
+            "requestNewLinkButton": "Richiedi Nuovo Link di Reset",
             "requestNewReset": "Richiedi Nuovo Link di Reset",
             "backToSignIn": "Torna all'Accesso",
             "needHelp": "Hai bisogno di aiuto?",

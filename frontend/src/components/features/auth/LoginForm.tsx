@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom';
@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { loginSchema, type LoginData } from '@/validation/auth-form-schemas';
+import { loginSchema, type LoginData } from '@/types/auth-forms';
 import { useAuth } from '@/hooks/useAuth';
 import { useI18n } from '@/hooks/useI18n';
 import { GoogleLoginButton } from '@/components/features/auth/GoogleLoginButton';
@@ -29,7 +29,7 @@ interface LoginFormProps
 
 export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
 {
-  const [showPassword, setShowPassword] = React.useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login, isLoggingIn, loginError } = useAuth();
   const { t } = useI18n();
 

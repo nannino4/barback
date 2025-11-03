@@ -3,7 +3,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/api/auth-api';
-import type { RegisterData, RegisterFormData, LoginData } from '@/types/auth';
+import type { RegisterData, LoginData } from '@/types/auth-forms';
+import type { RegisterFormData } from '@/types/auth-forms';
 import { useI18n } from '@/hooks/useI18n';
 
 export const useAuth = () =>
@@ -115,11 +116,11 @@ export const useAuth = () =>
     login: handleLogin,
     logout: handleLogout,
 
-    // Mutation states (use these for loading indicators and error display)
+    // Mutation states for loading indicators and error display
     isRegistering: registerMutation.isPending,
     isLoggingIn: loginMutation.isPending,
     
-    // Error states (use these to display errors declaratively)
+    // Error states for declarative error display
     registerError: registerMutation.error,
     loginError: loginMutation.error,
   };

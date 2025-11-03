@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { getValidationMessage } from '@/validation/validation-utils';
+import i18n from '@/lib/i18n';
 
 /**
  * Authentication Form Validation Schemas
@@ -25,11 +25,11 @@ import { getValidationMessage } from '@/validation/validation-utils';
  */
 const passwordSchema = z
   .string()
-  .min(8, getValidationMessage('validation.password.minLength'))
-  .regex(/[A-Z]/, getValidationMessage('validation.password.uppercase'))
-  .regex(/[a-z]/, getValidationMessage('validation.password.lowercase'))
-  .regex(/[0-9]/, getValidationMessage('validation.password.number'))
-  .regex(/[^A-Za-z0-9]/, getValidationMessage('validation.password.specialChar'));
+  .min(8, i18n.t('validation.password.minLength'))
+  .regex(/[A-Z]/, i18n.t('validation.password.uppercase'))
+  .regex(/[a-z]/, i18n.t('validation.password.lowercase'))
+  .regex(/[0-9]/, i18n.t('validation.password.number'))
+  .regex(/[^A-Za-z0-9]/, i18n.t('validation.password.specialChar'));
 
 // ============================================================================
 // Form Schemas
@@ -43,36 +43,38 @@ export const registerSchema = z
   .object({
     firstName: z
       .string()
-      .min(1, getValidationMessage('validation.name.firstNameRequired'))
-      .max(50, getValidationMessage('validation.name.tooLong'))
-    // Supports international characters including Italian accented letters
+      .min(1, i18n.t('validation.name.firstNameRequired'))
+      .max(50, i18n.t('validation.name.tooLong'))
+    // Supports international characters including Latin accented letters
     // Pattern: English letters + Latin accented chars + spaces, hyphens, apostrophes
-      .regex(/^[a-zA-ZÀ-ÿ\u0100-\u017F\s'-]*$/, getValidationMessage('validation.name.invalidChars')),
+      .regex(/^[a-zA-ZÀ-ÿ\u0100-\u017F\s'-]*$/, i18n.t('validation.name.invalidChars')),
     lastName: z
       .string()
-      .min(1, getValidationMessage('validation.name.lastNameRequired'))
-      .max(50, getValidationMessage('validation.name.tooLong'))
-    // Supports international characters including Italian accented letters
-      .regex(/^[a-zA-ZÀ-ÿ\u0100-\u017F\s'-]*$/, getValidationMessage('validation.name.invalidChars')),
+      .min(1, i18n.t('validation.name.lastNameRequired'))
+      .max(50, i18n.t('validation.name.tooLong'))
+    // Supports international characters including Latin accented letters
+      .regex(/^[a-zA-ZÀ-ÿ\u0100-\u017F\s'-]*$/, i18n.t('validation.name.invalidChars')),
     email: z
       .string()
-      .min(1, getValidationMessage('validation.email.required'))
-      .email(getValidationMessage('validation.email.invalid'))
-      .max(255, getValidationMessage('validation.email.tooLong')),
+      .min(1, i18n.t('validation.email.required'))
+      .email(i18n.t('validation.email.invalid'))
+      .max(255, i18n.t('validation.email.tooLong')),
     phoneNumber: z
       .string()
       .optional()
       .refine((phone) =>
       {
         if (!phone || phone.trim() === '') return true; // Optional field
-        // Italian mobile format: +39 3XX XXXXXXX
-        return /^\+393\d{8,9}$/.test(phone.replace(/\s/g, ''));
-      }, getValidationMessage('validation.phone.invalidFormat')),
+        // Accept any reasonable phone number format (international)
+        // Minimum 7 digits, allow +, spaces, hyphens, parentheses
+        const digitsOnly = phone.replace(/[\s\-()]/g, '');
+        return /^\+?\d{7,15}$/.test(digitsOnly);
+      }, i18n.t('validation.phone.invalidFormat')),
     password: passwordSchema,
-    confirmPassword: z.string().min(1, getValidationMessage('validation.password.confirmRequired')),
+    confirmPassword: z.string().min(1, i18n.t('validation.password.confirmRequired')),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: getValidationMessage('validation.password.noMatch'),
+    message: i18n.t('validation.password.noMatch'),
     path: ['confirmPassword'],
   });
 
@@ -83,9 +85,9 @@ export const registerSchema = z
 export const loginSchema = z.object({
   email: z
     .string()
-    .min(1, getValidationMessage('validation.email.required'))
-    .email(getValidationMessage('validation.email.invalid')),
-  password: z.string().min(1, getValidationMessage('validation.password.required')),
+    .min(1, i18n.t('validation.email.required'))
+    .email(i18n.t('validation.email.invalid')),
+  password: z.string().min(1, i18n.t('validation.password.required')),
 });
 
 /**
@@ -95,8 +97,8 @@ export const loginSchema = z.object({
 export const forgotPasswordSchema = z.object({
   email: z
     .string()
-    .min(1, getValidationMessage('validation.email.required'))
-    .email(getValidationMessage('validation.email.invalid')),
+    .min(1, i18n.t('validation.email.required'))
+    .email(i18n.t('validation.email.invalid')),
 });
 
 /**
@@ -106,18 +108,21 @@ export const forgotPasswordSchema = z.object({
 export const resetPasswordSchema = z
   .object({
     password: passwordSchema,
-    confirmPassword: z.string().min(1, getValidationMessage('validation.password.confirmRequired')),
+    confirmPassword: z.string().min(1, i18n.t('validation.password.confirmRequired')),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: getValidationMessage('validation.password.noMatch'),
+    message: i18n.t('validation.password.noMatch'),
     path: ['confirmPassword'],
   });
 
 // ============================================================================
-// TypeScript Types
+// TypeScript Types - Inferred from Schemas
 // ============================================================================
 
 export type RegisterFormData = z.infer<typeof registerSchema>;
 export type LoginData = z.infer<typeof loginSchema>;
 export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
+
+// API data type (RegisterFormData without confirmPassword)
+export type RegisterData = Omit<RegisterFormData, 'confirmPassword'>;

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate, Link } from 'react-router-dom';
@@ -16,11 +15,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { forgotPasswordSchema, type ForgotPasswordData } from '@/validation/auth-form-schemas';
+import { forgotPasswordSchema, type ForgotPasswordData } from '@/types/auth-forms';
 import { authApi } from '@/api/auth-api';
 import { useI18n } from '@/hooks/useI18n';
+import { useCooldown } from '@/hooks/useCooldown';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
+import { PASSWORD_RESET_COOLDOWN_MS } from '@/lib/constants';
 
 interface ForgotPasswordFormProps
 {
@@ -31,6 +32,10 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
 {
   const navigate = useNavigate();
   const { t } = useI18n();
+  const { seconds: cooldownSeconds, isActive: isCooldownActive, startCooldown } = useCooldown(
+    'password_reset_cooldown',
+    PASSWORD_RESET_COOLDOWN_MS,
+  );
 
   const form = useForm<ForgotPasswordData>({
     resolver: zodResolver(forgotPasswordSchema),
@@ -45,6 +50,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
     {
       const email = form.getValues('email');
       toast.success(t('auth.forgotPasswordSent.description'));
+      startCooldown();
       void navigate('/auth/forgot-password/sent', { 
         state: { email },
         replace: true,
@@ -56,6 +62,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
       // This prevents email enumeration attacks
       const email = form.getValues('email');
       toast.success(t('auth.forgotPasswordSent.instructions'));
+      startCooldown();
       void navigate('/auth/forgot-password/sent', { 
         state: { email },
         replace: true,
@@ -116,13 +123,15 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
             <Button
               type="submit"
               className="w-full h-touch"
-              disabled={forgotPasswordMutation.isPending}
+              disabled={forgotPasswordMutation.isPending || isCooldownActive}
             >
               {forgotPasswordMutation.isPending ? (
                 <>
                   <InlineSpinner className="mr-2" />
                   {t('auth.forgotPassword.sendingLink')}
                 </>
+              ) : isCooldownActive ? (
+                t('auth.forgotPassword.cooldown', { seconds: cooldownSeconds })
               ) : (
                 t('auth.forgotPassword.sendLink')
               )}

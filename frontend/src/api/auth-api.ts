@@ -3,10 +3,9 @@ import {
   AuthResponseSchema,
   GoogleAuthUrlResponseSchema,
   type AuthResponse,
-  type RegisterData,
-  type LoginData,
   type GoogleAuthUrlResponse,
 } from '@/types/auth';
+import type { RegisterData, LoginData } from '@/types/auth-forms';
 
 // ============================================================================
 // API Methods

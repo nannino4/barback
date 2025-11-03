@@ -1,18 +1,17 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User } from '@/types/auth';
+import type { User } from '@/types/user';
 import { AuthTokenManager } from '@/lib/auth-tokens';
 
 /**
  * Auth store state interface
- * Note: Error handling is done via toasts, not store state
+ * Note: Error and loading states are managed by React Query mutations in useAuth hook.
+ * This store only manages the authenticated user state and token storage.
  */
 interface AuthStore {
     user: User | null;
     isAuthenticated: boolean;
-    isLoading: boolean;
     setUser: (user: User | null) => void;
-    setLoading: (loading: boolean) => void;
     login: (user: User, accessToken: string, refreshToken: string) => void;
     logout: () => void;
 }
@@ -22,16 +21,12 @@ export const useAuthStore = create<AuthStore>()(
     (set) => ({
       user: null,
       isAuthenticated: false,
-      isLoading: false,
 
       setUser: (user) =>
         set({
           user,
           isAuthenticated: !!user,
         }),
-
-      setLoading: (isLoading) =>
-        set({ isLoading }),
 
       login: (user: User, accessToken: string, refreshToken: string) =>
       {
@@ -41,7 +36,6 @@ export const useAuthStore = create<AuthStore>()(
         set({
           user,
           isAuthenticated: true,
-          isLoading: false,
         });
       },
 
@@ -53,7 +47,6 @@ export const useAuthStore = create<AuthStore>()(
         set({
           user: null,
           isAuthenticated: false,
-          isLoading: false,
         });
       },
     }),
@@ -62,6 +55,9 @@ export const useAuthStore = create<AuthStore>()(
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
+        // Note: Loading states are intentionally NOT persisted.
+        // They are managed by React Query mutations and should
+        // always initialize to their default values on app reload.
       }),
     },
   ),

@@ -47,13 +47,20 @@
             "continueWith": "Or continue with email",
             "googleSignup": "Sign up with Google",
             "showPassword": "Show password",
-            "hidePassword": "Hide password"
+            "hidePassword": "Hide password",
+            "requirements": "Password Requirements:",
+            "requirementLength": "At least 8 characters",
+            "requirementUppercase": "One uppercase letter",
+            "requirementLowercase": "One lowercase letter",
+            "requirementNumber": "One number",
+            "requirementSpecial": "One special character"
         },
         "forgotPassword": {
             "title": "Forgot your password?",
             "emailPlaceholder": "Enter your email",
             "sendLink": "Send Reset Link",
             "sendingLink": "Sending link...",
+            "cooldown": "Wait {{seconds}}s",
             "backToLogin": "Back to Sign In",
             "successMessage": "Password reset email sent again",
             "genericSuccessMessage": "If an account exists with that email, you will receive password reset instructions."
@@ -83,22 +90,26 @@
             "requirementSpecial": "One special character",
             "updating": "Updating Password...",
             "updateButton": "Update Password",
+            "validating": "Validating reset link...",
             "successMessage": "Password updated successfully",
             "errorMessage": "Failed to reset password. Please try again.",
             "backToSignIn": "Back to Sign In"
         },
         "resetPasswordSuccess": {
             "title": "Password Updated!",
+            "description": "Your password has been successfully reset.",
             "securityNotice": "For your security, all other sessions have been logged out.",
             "emailNotice": "You will receive a confirmation email shortly.",
             "signInButton": "Sign In with New Password"
         },
         "resetPasswordError": {
             "title": "Reset Link Expired",
+            "description": "This password reset link is invalid or has expired.",
             "whatCanYouDo": "What can you do?",
             "requestNewLink": "Request a new password reset link",
             "trySigningIn": "Try signing in if you remember your password",
             "contactSupport": "Contact support if you continue having issues",
+            "requestNewLinkButton": "Request New Reset Link",
             "requestNewReset": "Request New Reset Link",
             "backToSignIn": "Back to Sign In",
             "needHelp": "Need help?",

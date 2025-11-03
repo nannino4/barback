@@ -5,6 +5,8 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import enTranslations from '@/locales/en/translation.json';
 import itTranslations from '@/locales/it/translation.json';
 
+// Use 'as const' to enable stricter type inference
+// This helps TypeScript understand the exact shape of our translations
 const resources = {
   en: {
     translation: enTranslations,
@@ -12,7 +14,7 @@ const resources = {
   it: {
     translation: itTranslations,
   },
-};
+} as const;
 
 void i18n
   .use(LanguageDetector)

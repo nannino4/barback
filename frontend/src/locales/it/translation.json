@@ -223,7 +223,17 @@
         "email": {
             "required": "Email è richiesta",
             "invalid": "Inserisci un indirizzo email valido",
-            "maxLength": "L'email deve essere inferiore a 255 caratteri"
+            "maxLength": "L'email deve essere inferiore a 255 caratteri",
+            "tooLong": "L'email deve essere inferiore a 255 caratteri"
+        },
+        "name": {
+            "firstNameRequired": "Il nome è richiesto",
+            "lastNameRequired": "Il cognome è richiesto",
+            "tooLong": "Il nome non può superare i 50 caratteri",
+            "invalidChars": "Il nome può contenere solo lettere, spazi, trattini e apostrofi"
+        },
+        "phone": {
+            "invalidFormat": "Inserisci un numero di telefono valido"
         },
         "password": {
             "required": "Password è richiesta",

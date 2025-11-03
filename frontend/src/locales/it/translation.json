@@ -30,10 +30,12 @@
             "signUp": "Registrati",
             "continueWith": "Oppure continua con email",
             "googleLogin": "Continua con Google",
-            "backToLogin": "Torna al login"
+            "backToLogin": "Torna al login",
+            "success": "Accesso effettuato con successo!"
         },
         "register": {
             "title": "Crea il tuo account",
+            "success": "Account creato con successo!",
             "firstNamePlaceholder": "Inserisci il tuo nome",
             "lastNamePlaceholder": "Inserisci il tuo cognome",
             "emailPlaceholder": "Inserisci la tua email",

@@ -30,10 +30,12 @@
             "signUp": "Sign up",
             "continueWith": "Or continue with email",
             "googleLogin": "Continue with Google",
-            "backToLogin": "Back to Sign In"
+            "backToLogin": "Back to Sign In",
+            "success": "Successfully signed in!"
         },
         "register": {
             "title": "Create your account",
+            "success": "Account created successfully!",
             "firstNamePlaceholder": "Enter your first name",
             "lastNamePlaceholder": "Enter your last name",
             "emailPlaceholder": "Enter your email",
@@ -220,7 +222,17 @@
         "email": {
             "required": "Email is required",
             "invalid": "Please enter a valid email address",
-            "maxLength": "Email must be less than 255 characters"
+            "maxLength": "Email must be less than 255 characters",
+            "tooLong": "Email must be less than 255 characters"
+        },
+        "name": {
+            "firstNameRequired": "First name is required",
+            "lastNameRequired": "Last name is required",
+            "tooLong": "Name cannot exceed 50 characters",
+            "invalidChars": "Name can only contain letters, spaces, hyphens, and apostrophes"
+        },
+        "phone": {
+            "invalidFormat": "Please enter a valid phone number"
         },
         "password": {
             "required": "Password is required",

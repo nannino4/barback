@@ -75,13 +75,23 @@ class ApiClient
   }
 
   /**
-   * Handle 401 Unauthorized responses
+   * Handle session expiration (401 with specific error codes)
    * 
-   * Clears tokens and triggers session expired handler.
-   * This is a fallback - with proactive token refresh, 401s should rarely occur.
+   * Only clears tokens and triggers handler for actual session expiry,
+   * not for other 401 errors like invalid credentials during login.
+   * 
+   * @param errorCode - The error code from the backend response
    */
-  private handleUnauthorized(): never
+  private handleSessionExpired(errorCode?: string): void
   {
+    // Only handle as session expiry for token-related errors
+    const isTokenError = errorCode === 'INVALID_ACCESS_TOKEN' || errorCode === 'INVALID_REFRESH_TOKEN';
+    
+    if (!isTokenError)
+    {
+      return; // Let normal error handling proceed
+    }
+    
     const hasTokens = AuthTokenManager.getAccessToken() !== null;
     
     AuthTokenManager.clearTokens();
@@ -92,12 +102,6 @@ class ApiClient
     {
       this.onSessionExpired();
     }
-    
-    throw new ApiError(
-      'errors.unauthorized',
-      401,
-      'INVALID_ACCESS_TOKEN',
-    );
   }
 
   /**
@@ -272,16 +276,18 @@ class ApiClient
         timeout || this.defaultTimeoutMs,
       );
             
-      // Handle 401 Unauthorized - session expired (fallback, shouldn't happen with proactive refresh)
-      if (response.status === 401)
-      {
-        this.handleUnauthorized();
-      }
-            
       // Handle error responses
       if (!response.ok)
       {
         const apiError = await this.parseErrorResponse(response);
+        
+        // Check if this is a session expiry error (401 with token-related error codes)
+        // This handles the edge case where tokens expire despite proactive refresh
+        if (response.status === 401)
+        {
+          this.handleSessionExpired(apiError.error);
+        }
+        
         throw apiError;
       }
 

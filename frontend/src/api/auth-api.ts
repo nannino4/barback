@@ -74,11 +74,11 @@ export const authApi = {
     }, GoogleAuthUrlResponseSchema);
   },
 
-  handleGoogleCallback: (code: string, state?: string): Promise<AuthResponse> =>
+  handleGoogleCallback: (code: string, state: string): Promise<AuthResponse> =>
   {
     return apiClient.request<AuthResponse>('/auth/oauth/google/callback', {
       method: 'POST',
-      body: JSON.stringify({ code, ...(state && { state }) }),
+      body: JSON.stringify({ code, state }),
     }, AuthResponseSchema);
   },
 };

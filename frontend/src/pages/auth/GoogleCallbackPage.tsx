@@ -24,7 +24,7 @@ export const GoogleCallbackPage: React.FC = () =>
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   const handleGoogleCallbackMutation = useMutation({
-    mutationFn: ({ code, state }: { code: string; state?: string }) =>
+    mutationFn: ({ code, state }: { code: string; state: string }) =>
       authApi.handleGoogleCallback(code, state),
     onSuccess: (response) =>
     {

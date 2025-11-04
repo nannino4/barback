@@ -4,6 +4,7 @@
  * Provides error handling, localization, and type guards
  */
 
+import type { TFunction } from 'i18next';
 import { ApiError, NetworkError, ValidationError } from './api-error';
 import { AUTH_ERROR_HANDLERS } from './auth-errors';
 import { COMMON_ERROR_HANDLERS, STATUS_CODE_HANDLERS } from './common-errors';
@@ -49,13 +50,13 @@ export const formatValidationErrors = (
  * 4. Fallback to generic error message
  * 
  * @param error - ApiError instance with error code and status
- * @param t - Translation function from useI18n()
+ * @param t - Translation function from useI18n() (fully typed with i18next)
  * @param context - Display context: 'form' for full error lists, 'toast' for single error
  * @returns Localized error message
  */
 export const getLocalizedErrorMessage = (
   error: ApiError | NetworkError | ValidationError,
-  t: (key: string) => string,
+  t: TFunction,
   context: 'form' | 'toast' = 'form',
 ): string =>
 {
@@ -97,10 +98,13 @@ export const getLocalizedErrorMessage = (
     if (error.validationErrors && error.validationErrors.length > 0)
     {
       // Translate each validation key, skip keys that don't translate
+      // Note: Backend validation keys might not be in our translation file,
+      // so we disable type checking for this dynamic translation case
       const translatedErrors = error.validationErrors
         .map((key) =>
         {
-          const translated = t(key);
+          // @ts-expect-error - Backend can send dynamic validation keys not in our type definition
+          const translated: string = t(key);
           // Only include translations that actually worked (changed from key)
           return translated !== key ? translated : null;
         })

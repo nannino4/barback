@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type { AuthErrorCode } from './error-codes';
 
 /**
@@ -6,7 +7,7 @@ import type { AuthErrorCode } from './error-codes';
  * Maps backend auth error codes to localized translation keys
  */
 
-type ErrorCodeHandler = (t: (key: string) => string) => string;
+type ErrorCodeHandler = (t: TFunction) => string;
 
 /**
  * Authentication-specific error code handlers

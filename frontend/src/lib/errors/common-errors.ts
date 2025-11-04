@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type { CommonErrorCode } from './error-codes';
 
 /**
@@ -7,7 +8,7 @@ import type { CommonErrorCode } from './error-codes';
  * Includes rate limiting, email service errors, etc.
  */
 
-type ErrorCodeHandler = (t: (key: string) => string) => string;
+type ErrorCodeHandler = (t: TFunction) => string;
 
 /**
  * Common error code handlers

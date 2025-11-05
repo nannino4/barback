@@ -36,7 +36,7 @@ export const UserMenu: React.FC = () =>
           {user.profilePictureUrl ? (
             <img
               src={user.profilePictureUrl}
-              alt={userFullName}
+              alt={userInitials}
               className="h-8 w-8 rounded-full object-cover"
             />
           ) : (

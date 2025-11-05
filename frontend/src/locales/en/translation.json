@@ -273,7 +273,8 @@
             "invalid": "Please enter a valid Italian mobile number (+39 3XX XXX XXXX)"
         },
         "profilePictureUrl": {
-            "mustBeString": "Profile picture URL must be text"
+            "mustBeString": "Profile picture URL must be text",
+            "invalidUrl": "Profile picture URL must be a valid URL"
         },
         "token": {
             "required": "Token is required",

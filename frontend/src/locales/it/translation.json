@@ -274,7 +274,8 @@
             "invalid": "Inserisci un numero di cellulare italiano valido (+39 3XX XXX XXXX)"
         },
         "profilePictureUrl": {
-            "mustBeString": "L'URL dell'immagine del profilo deve essere testo"
+            "mustBeString": "L'URL dell'immagine del profilo deve essere testo",
+            "invalidUrl": "L'URL dell'immagine del profilo deve essere un URL valido"
         },
         "token": {
             "required": "Token è richiesto",

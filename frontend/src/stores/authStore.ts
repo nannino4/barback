@@ -55,9 +55,6 @@ export const useAuthStore = create<AuthStore>()(
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
-        // Note: Loading states are intentionally NOT persisted.
-        // They are managed by React Query mutations and should
-        // always initialize to their default values on app reload.
       }),
     },
   ),

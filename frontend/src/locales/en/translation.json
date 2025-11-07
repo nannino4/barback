@@ -14,7 +14,8 @@
         "back": "Back",
         "next": "Next",
         "error": "Error",
-        "success": "Success"
+        "success": "Success",
+        "tryAgain": "Try Again"
     },
     "auth": {
         "login": {
@@ -485,6 +486,115 @@
                 "title": "Team Collaboration",
                 "description": "Invite your team members and manage roles with precision. Keep everyone in sync."
             }
+        }
+    },
+    "organizations": {
+        "title": "Select where you want to work today",
+        "myOrganizations": "My Venues",
+        "invitations": "Invitations",
+        "invitationsCount": "Invitations ({{count}})",
+        "noOrganizations": "No venues yet",
+        "noOrganizationsDescription": "Create your first venue to get started, or wait for an invitation from a team.",
+        "noInvitations": "No pending invitations",
+        "noInvitationsDescription": "You don't have any pending invitations at the moment.",
+        "createOrganization": "Create Venue",
+        "selectOrganization": "Select Venue",
+        "switchOrganization": "Switch Venue",
+        "manageOrganizations": "Manage Venues",
+        "createdBy": "Created by {{name}}",
+        "unknownOwner": "Unknown Owner",
+        "members": "{{count}} member",
+        "members_plural": "{{count}} members",
+        "products": "{{count}} product",
+        "products_plural": "{{count}} products",
+        "select": "Select",
+        "selected": "Selected",
+        "switchTo": "Switch to {{name}}",
+        "role": {
+            "label": "Role",
+            "owner": "Owner",
+            "manager": "Manager",
+            "staff": "Staff"
+        },
+        "create": {
+            "title": "Create New Venue",
+            "nameLabel": "Venue Name",
+            "namePlaceholder": "Enter venue name",
+            "checkingEligibility": "Checking eligibility...",
+            "creatingSubscription": "Creating subscription...",
+            "creatingOrganization": "Creating venue...",
+            "success": "Venue created successfully",
+            "error": "Failed to create venue",
+            "cancel": "Cancel",
+            "create": "Create",
+            "trialEligible": "You're eligible for a free 3-month trial!",
+            "trialNotEligible": "A subscription will be created for this venue.",
+            "subscriptionNote": "This venue will have its own subscription.",
+            "validationError": "Please check your input"
+        },
+        "switch": {
+            "success": "Switched to {{name}}",
+            "error": "Failed to switch organization"
+        },
+        "errors": {
+            "loadFailed": "Failed to load venues",
+            "loadFailedDescription": "Unable to load venues. Please try again.",
+            "createFailed": "Failed to create venue",
+            "notFound": "Venue not found",
+            "noAccess": "You don't have access to this venue"
+        }
+    },
+    "invitations": {
+        "title": "Invitations",
+        "invitedBy": "Invited by {{name}}",
+        "invitedTo": "Invited to {{orgName}}",
+        "created": "Invited on {{date}}",
+        "expires": "Expires {{date}}",
+        "expired": "Expired",
+        "expiredMessage": "This invitation has expired and can no longer be accepted.",
+        "acceptButton": "Accept",
+        "declineButton": "Decline",
+        "accepting": "Accepting...",
+        "declining": "Declining...",
+        "accepted": "Accepted",
+        "declined": "Declined",
+        "accept": {
+            "success": "Invitation accepted successfully",
+            "error": "Failed to accept invitation"
+        },
+        "decline": {
+            "success": "Invitation declined",
+            "error": "Failed to decline invitation",
+            "confirm": "Are you sure you want to decline this invitation?"
+        },
+        "errors": {
+            "loadFailed": "Failed to load invitations",
+            "loadFailedDescription": "Unable to load invitations. Please try again.",
+            "invalid": "Invalid invitation",
+            "expired": "This invitation has expired",
+            "alreadyProcessed": "This invitation has already been processed"
+        }
+    },
+    "subscription": {
+        "trial": {
+            "eligible": "You're eligible for a free trial",
+            "notEligible": "Trial not available",
+            "duration": "3 months free"
+        },
+        "status": {
+            "trialing": "Trial",
+            "active": "Active",
+            "past_due": "Past Due",
+            "canceled": "Canceled",
+            "unpaid": "Unpaid",
+            "incomplete": "Incomplete",
+            "incomplete_expired": "Expired",
+            "paused": "Paused"
+        },
+        "errors": {
+            "notFound": "Subscription not found",
+            "notActive": "Subscription is not active",
+            "createFailed": "Failed to create subscription"
         }
     }
 }

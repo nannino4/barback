@@ -85,12 +85,12 @@ The organization management system handles the creation, selection, and administ
 │                                 │
 │ ┌─────────────────────────┐     │
 │ │ 🆓 Start with Free Trial│     │ ← Trial option (first org)
-│ │ 14 days • Full features │     │   OR
+│ │ 3 months • Full features│     │   OR
 │ │ ✓ Unlimited products    │     │ 💎 Premium Subscription
 │ │ ✓ 5 team members        │     │   (existing users)
 │ │ ✓ Basic analytics       │     │
 │ │ ──────────────────────  │     │
-│ │ €0.00 for 14 days       │     │
+│ │ €0.00 for 3 months      │     │
 │ │ Then €29/month          │     │
 │ └─────────────────────────┘     │
 │                                 │
@@ -117,7 +117,7 @@ The organization management system handles the creation, selection, and administ
 │ └─────────────────────────┘     │
 │                                 │
 │ Selected Subscription:          │
-│ 🆓 Free Trial (14 days)         │ ← Subscription summary
+│ 🆓 Free Trial (3 months)        │ ← Subscription summary
 │                                 │
 │ ┌─────────────────────────┐     │
 │ │   Create Organization   │     │ ← Primary button
@@ -137,7 +137,7 @@ The organization management system handles the creation, selection, and administ
 │     plan="trial" 
 │     selected={true}
 │     features={trialFeatures}
-│     price="€0.00 for 14 days"
+│     price="€0.00 for 3 months"
 │   />
 ├── <PlanCard 
 │     plan="premium" 

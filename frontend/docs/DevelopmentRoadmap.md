@@ -31,7 +31,6 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [ ] Implement profile editing (name, phone, profile picture)
   - [ ] Add password change functionality
   - [ ] Create account deletion flow
-  - [ ] Add UserMenu navigation to settings
   - [ ] Move theme toggle and language selector to settings page (from navigation)
 
 ### **Sprint 5-6: Core Inventory Management**

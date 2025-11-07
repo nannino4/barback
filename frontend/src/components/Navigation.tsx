@@ -26,7 +26,7 @@ export const Navigation: React.FC = () =>
   };
 
   return (
-    <nav className="border-b border-border bg-background">
+    <nav className="sticky top-0 z-50 border-b border-border bg-background">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo and Home Link */}

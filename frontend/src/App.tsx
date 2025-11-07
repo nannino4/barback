@@ -6,9 +6,11 @@ import { GlobalErrorBoundary } from '@/components/ErrorBoundary'
 import { AuthProvider } from '@/components/features/auth/AuthProvider'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { VerifiedRoute } from '@/components/features/auth/VerifiedRoute'
+import { OrganizationRoute } from '@/components/features/organizations/OrganizationRoute'
 import { AuthRouter } from '@/components/features/auth/AuthRouter'
 import { HomePage } from '@/pages/HomePage'
 import { LandingPage } from '@/pages/LandingPage'
+import { OrganizationsPage } from '@/pages/OrganizationsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import DesignSystemPage from '@/pages/DesignSystemPage'
 import { ApiError } from '@/lib/errors'
@@ -73,12 +75,24 @@ function AppContent()
           {/* Design System Showcase */}
           <Route path="/design-system" element={<DesignSystemPage />} />
           
-          {/* Protected Dashboard - Requires authentication AND email verification */}
+          {/* Organizations Page - Requires email verification only */}
+          <Route
+            path="/organizations"
+            element={
+              <VerifiedRoute>
+                <OrganizationsPage />
+              </VerifiedRoute>
+            }
+          />
+          
+          {/* Protected Dashboard - Requires authentication, email verification, AND organization selection */}
           <Route
             path="/dashboard"
             element={
               <VerifiedRoute>
-                <HomePage />
+                <OrganizationRoute>
+                  <HomePage />
+                </OrganizationRoute>
               </VerifiedRoute>
             }
           />

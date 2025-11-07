@@ -14,7 +14,8 @@
         "back": "Indietro",
         "next": "Avanti",
         "error": "Errore",
-        "success": "Successo"
+        "success": "Successo",
+        "tryAgain": "Riprova"
     },
     "auth": {
         "login": {
@@ -486,6 +487,115 @@
                 "title": "Collaborazione di Team",
                 "description": "Invita i membri del tuo team e gestisci i ruoli con precisione. Mantieni tutti sincronizzati."
             }
+        }
+    },
+    "organizations": {
+        "title": "Seleziona dove vuoi lavorare oggi",
+        "myOrganizations": "I Miei Locali",
+        "invitations": "Inviti",
+        "invitationsCount": "Inviti ({{count}})",
+        "noOrganizations": "Ancora nessun locale",
+        "noOrganizationsDescription": "Crea il tuo primo locale per iniziare, o attendi un invito da un team.",
+        "noInvitations": "Nessun invito in sospeso",
+        "noInvitationsDescription": "Non hai inviti in sospeso al momento.",
+        "createOrganization": "Crea Locale",
+        "selectOrganization": "Seleziona Locale",
+        "switchOrganization": "Cambia Locale",
+        "manageOrganizations": "Gestisci Locali",
+        "createdBy": "Creata da {{name}}",
+        "unknownOwner": "Proprietario Sconosciuto",
+        "members": "{{count}} membro",
+        "members_plural": "{{count}} membri",
+        "products": "{{count}} prodotto",
+        "products_plural": "{{count}} prodotti",
+        "select": "Seleziona",
+        "selected": "Selezionata",
+        "switchTo": "Passa a {{name}}",
+        "role": {
+            "label": "Ruolo",
+            "owner": "Proprietario",
+            "manager": "Manager",
+            "staff": "Staff"
+        },
+        "create": {
+            "title": "Crea Nuovo Locale",
+            "nameLabel": "Nome Locale",
+            "namePlaceholder": "Inserisci il nome del locale",
+            "checkingEligibility": "Verifica idoneità...",
+            "creatingSubscription": "Creazione abbonamento...",
+            "creatingOrganization": "Creazione locale...",
+            "success": "Locale creato con successo",
+            "error": "Impossibile creare il locale",
+            "cancel": "Annulla",
+            "create": "Crea",
+            "trialEligible": "Sei idoneo per una prova gratuita di 3 mesi!",
+            "trialNotEligible": "Verrà creato un abbonamento per questo locale.",
+            "subscriptionNote": "Questo locale avrà il proprio abbonamento.",
+            "validationError": "Controlla i tuoi dati"
+        },
+        "switch": {
+            "success": "Passato a {{name}}",
+            "error": "Impossibile cambiare organizzazione"
+        },
+        "errors": {
+            "loadFailed": "Impossibile caricare i locali",
+            "loadFailedDescription": "Impossibile caricare i locali. Riprova.",
+            "createFailed": "Impossibile creare il locale",
+            "notFound": "Locale non trovato",
+            "noAccess": "Non hai accesso a questo locale"
+        }
+    },
+    "invitations": {
+        "title": "Inviti",
+        "invitedBy": "Invitato da {{name}}",
+        "invitedTo": "Invitato a {{orgName}}",
+        "created": "Invitato il {{date}}",
+        "expires": "Scade {{date}}",
+        "expired": "Scaduto",
+        "expiredMessage": "Questo invito è scaduto e non può più essere accettato.",
+        "acceptButton": "Accetta",
+        "declineButton": "Rifiuta",
+        "accepting": "Accettazione...",
+        "declining": "Rifiuto...",
+        "accepted": "Accettato",
+        "declined": "Rifiutato",
+        "accept": {
+            "success": "Invito accettato con successo",
+            "error": "Impossibile accettare l'invito"
+        },
+        "decline": {
+            "success": "Invito rifiutato",
+            "error": "Impossibile rifiutare l'invito",
+            "confirm": "Sei sicuro di voler rifiutare questo invito?"
+        },
+        "errors": {
+            "loadFailed": "Impossibile caricare gli inviti",
+            "loadFailedDescription": "Impossibile caricare gli inviti. Riprova.",
+            "invalid": "Invito non valido",
+            "expired": "Questo invito è scaduto",
+            "alreadyProcessed": "Questo invito è già stato elaborato"
+        }
+    },
+    "subscription": {
+        "trial": {
+            "eligible": "Sei idoneo per una prova gratuita",
+            "notEligible": "Prova non disponibile",
+            "duration": "3 mesi gratis"
+        },
+        "status": {
+            "trialing": "Prova",
+            "active": "Attivo",
+            "past_due": "Scaduto",
+            "canceled": "Annullato",
+            "unpaid": "Non Pagato",
+            "incomplete": "Incompleto",
+            "incomplete_expired": "Scaduto",
+            "paused": "In Pausa"
+        },
+        "errors": {
+            "notFound": "Abbonamento non trovato",
+            "notActive": "L'abbonamento non è attivo",
+            "createFailed": "Impossibile creare l'abbonamento"
         }
     }
 }

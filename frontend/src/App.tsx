@@ -8,7 +8,7 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { VerifiedRoute } from '@/components/features/auth/VerifiedRoute'
 import { OrganizationRoute } from '@/components/features/organizations/OrganizationRoute'
 import { AuthRouter } from '@/components/features/auth/AuthRouter'
-import { HomePage } from '@/pages/HomePage'
+import { Dashboard } from '@/pages/Dashboard'
 import { LandingPage } from '@/pages/LandingPage'
 import { OrganizationsPage } from '@/pages/OrganizationsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -91,7 +91,7 @@ function AppContent()
             element={
               <VerifiedRoute>
                 <OrganizationRoute>
-                  <HomePage />
+                  <Dashboard />
                 </OrganizationRoute>
               </VerifiedRoute>
             }

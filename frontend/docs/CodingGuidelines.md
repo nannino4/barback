@@ -158,11 +158,27 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
 <button className="focus-visible:ring-ring focus-visible:ring-[3px]">Click</button>
 ```
 
-## Loading State Patterns
+## Loading UI Patterns
+
+- **Meaningful text**: Always describe what is being loaded or processed (e.g., "Loading products", "Saving changes").
+
+### Use Skeleton
+Use skeleton placeholders that match the final layout and spacing.
+- Loading lists/grids of items (cards, tables)  
+- Initial page load with structured content  
+- When the layout structure is known
+
+Notes: skeletons communicate content shape and reduce layout shift. Prefer skeletons for perceived performance on content-heavy screens.
+
+### Use Spinner
+Use spinners for indeterminate or small, focused waits.
+- Button actions (use `InlineSpinner` for inline/compact)  
+- Indeterminate operations (OAuth redirects, external flows)  
+- Small inline operations (icon/button level)  
+- Full-page loading when layout is unknown (use `Spinner` with descriptive text)
 - **Always** use `InlineSpinner` for buttons and compact spaces
 - **Always** use `Spinner` with descriptive text for larger loading areas
 - **Consistent sizing**: `sm` for inline, `md` for sections, `lg` for full-page
-- **Meaningful text**: Describe what's being loaded or processed
 
 ## Navigation Patterns
 - **Internal Routes**: Always use `useNavigate()` hook from React Router

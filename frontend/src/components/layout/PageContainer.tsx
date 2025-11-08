@@ -32,7 +32,7 @@ export const PageContainer: React.FC<PageContainerProps> = ({
     <div
       className={cn(
         // Mobile-first padding: 16px (p-4) on mobile, 24px (p-6) on larger screens
-        'px-4 sm:px-6',
+        'p-4 sm:p-6',
         // Max width for optimal readability on large screens
         'max-w-7xl mx-auto',
         className,

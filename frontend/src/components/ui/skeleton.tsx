@@ -6,6 +6,9 @@ function Skeleton({ className, ...props }: SkeletonProps)
 {
   return (
     <div
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
       className={cn("animate-pulse rounded-md bg-muted", className)}
       {...props}
     />

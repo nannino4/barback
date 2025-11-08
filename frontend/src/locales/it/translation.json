@@ -6,6 +6,7 @@
         "firstName": "Nome",
         "lastName": "Cognome",
         "phoneNumber": "Numero di Telefono",
+        "optional": "(Opzionale)",
         "submit": "Invia",
         "cancel": "Annulla",
         "loading": "Caricamento...",
@@ -70,6 +71,8 @@
         },
         "forgotPasswordSent": {
             "title": "Controlla la Tua Email",
+            "description": "Abbiamo inviato un link per reimpostare la password al tuo indirizzo email.",
+            "instructions": "Se esiste un account con quell'email, riceverai le istruzioni per il reset della password.",
             "linkExpires": "Il link scadrà tra 15 minuti.",
             "checkSpam": "Non hai ricevuto l'email? Controlla la cartella spam.",
             "resendingEmail": "Reinvio Email...",
@@ -290,6 +293,7 @@
             "mustBeString": "Il codice di autorizzazione deve essere testo"
         },
         "state": {
+            "required": "Il parametro state è richiesto",
             "mustBeString": "Il parametro state deve essere testo"
         },
         "org": {

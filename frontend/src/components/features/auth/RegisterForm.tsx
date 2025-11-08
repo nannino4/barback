@@ -29,7 +29,11 @@ interface RegisterFormProps
 
 interface PasswordRequirement
 {
-  key: string;
+  key: 'auth.register.requirementLength' 
+    | 'auth.register.requirementUppercase' 
+    | 'auth.register.requirementLowercase' 
+    | 'auth.register.requirementNumber' 
+    | 'auth.register.requirementSpecial';
   test: (password: string) => boolean;
 }
 
@@ -192,7 +196,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                   <FormItem>
                     <FormLabel>
                       {t('common.phoneNumber')}
-                      <span className="text-muted-foreground ml-1">(Optional)</span>
+                      <span className="text-muted-foreground ml-1">{t('common.optional')}</span>
                     </FormLabel>
                     <FormControl>
                       <Input

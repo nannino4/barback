@@ -6,6 +6,7 @@
         "firstName": "First Name",
         "lastName": "Last Name",
         "phoneNumber": "Phone Number",
+        "optional": "(Optional)",
         "submit": "Submit",
         "cancel": "Cancel",
         "loading": "Loading...",
@@ -70,6 +71,8 @@
         },
         "forgotPasswordSent": {
             "title": "Check Your Email",
+            "description": "We've sent a password reset link to your email address.",
+            "instructions": "If an account exists with that email, you will receive password reset instructions.",
             "linkExpires": "The link will expire in 15 minutes.",
             "checkSpam": "Didn't receive the email? Check your spam folder.",
             "resendingEmail": "Resending Email...",
@@ -289,6 +292,7 @@
             "mustBeString": "Authorization code must be text"
         },
         "state": {
+            "required": "State parameter is required",
             "mustBeString": "State parameter must be text"
         },
         "org": {

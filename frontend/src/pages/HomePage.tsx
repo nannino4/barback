@@ -7,10 +7,10 @@ export function HomePage()
   return (
     <div className="space-y-6">
       <div className="text-center space-y-4">
-        <h1 className="font-heading text-4xl font-bold text-text-primary">
+        <h1 className="font-heading text-4xl font-bold text-foreground">
           {t('dashboard.welcome')}
         </h1>
-        <p className="text-lg text-text-secondary max-w-2xl mx-auto">
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           {t('dashboard.placeholder')}
         </p>
       </div>

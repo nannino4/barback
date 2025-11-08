@@ -183,3 +183,64 @@ All design tokens are defined in `src/index.css` using the `@theme` directive:
 2. **Use Tailwind classes** for rapid prototyping  
 3. **Install shadcn/ui components** as needed
 4. **Follow mobile-first** approach in all implementations
+
+## Layout Components
+
+### Overview
+Production-grade layout components that provide consistent spacing and structure throughout the app. These components eliminate the need to remember specific Tailwind classes and ensure visual consistency.
+
+## Feedback Components
+
+### Overview
+Consistent components for displaying empty states, errors, loading indicators, and status messages. These ensure a unified user experience across all pages.
+
+## Best Practices
+
+### Spacing Consistency
+**Do:**
+- Use layout components (PageContainer, Section, Stack, Grid)
+- Use the spacing prop values (xs, sm, md, lg, xl)
+- Let components handle responsive spacing
+
+**Don't:**
+- Use arbitrary spacing values (`mb-[23px]`)
+- Mix layout component spacing with manual Tailwind classes
+- Use different spacing scales in different parts of the app
+
+### Feedback States
+**Do:**
+- Always handle loading, error, and empty states
+- Use descriptive loading messages
+- Provide retry options for errors
+- Make empty states actionable when possible
+
+**Don't:**
+- Show raw error messages to users
+- Use generic "Loading..." everywhere
+- Leave users in unclear states (no feedback)
+- Nest loading states (show one clear indicator)
+
+### Component Composition
+**Do:**
+- Use Stack for vertical/horizontal spacing
+- Use Grid for card layouts
+- Use Section for page-level spacing
+- Combine components naturally
+
+**Don't:**
+- Wrap everything in unnecessary divs
+- Add spacing with multiple wrapping components
+- Override component spacing with manual classes
+
+### Mobile-First Approach
+**Do:**
+- Start with mobile layout
+- Use responsive grid columns
+- Test on mobile first
+- Use touch-friendly targets (44px minimum)
+
+**Don't:**
+- Design desktop-first then squeeze into mobile
+- Use fixed pixel widths
+- Ignore mobile spacing and padding
+- Make interactive elements too small

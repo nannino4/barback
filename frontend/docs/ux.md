@@ -12,11 +12,10 @@ Barback MVP Structure
 │   ├── Register/Login (Email + Google)
 │   ├── Email Verification (Required)
 │   └── Password Reset
-├── 💳 Subscription Management
-│   ├── Plan Selection (Free Trial/Paid)
-│   └── Payment Processing
 ├── 🏢 Organization Setup
 │   ├── Organization Creation (Owner only)
+│   ├──     Plan Selection (Free Trial/Paid)
+│   ├──     Payment Processing
 │   ├── Team Invitations (Owner/Manager)
 │   └── Role Management
 └── 📱 Core App

@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Building2, Mail, Plus, AlertCircle, RefreshCw } from 'lucide-react';
+import { Building2, Mail, Plus } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { OrganizationCard } from '@/components/features/organizations/OrganizationCard';
 import { OrganizationCardSkeleton } from '@/components/features/organizations/OrganizationCardSkeleton';
 import { InvitationCard } from '@/components/features/organizations/InvitationCard';
 import { CreateOrganizationDialog } from '@/components/features/organizations/CreateOrganizationDialog';
+import { EmptyState } from '@/components/feedback/EmptyState';
+import { ErrorState } from '@/components/feedback/ErrorState';
+import { Grid } from '@/components/layout/Grid';
 import { useI18n } from '@/hooks/useI18n';
 import { useOrganizations } from '@/hooks/useOrganizations';
 import { useInvitations } from '@/hooks/useInvitations';
@@ -99,12 +101,12 @@ export const OrganizationsPage: React.FC = () =>
 
         {/* Skeleton Cards */}
         <div className="flex-1 overflow-y-auto -mx-4 px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6">
+          <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
             <OrganizationCardSkeleton />
             <OrganizationCardSkeleton />
             <OrganizationCardSkeleton />
             <OrganizationCardSkeleton />
-          </div>
+          </Grid>
         </div>
       </div>
     );
@@ -122,37 +124,14 @@ export const OrganizationsPage: React.FC = () =>
         </div>
 
         {/* Error Card in Grid Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="border-destructive/50 bg-destructive/5">
-            <CardHeader>
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 mt-1">
-                  <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center">
-                    <AlertCircle className="w-5 h-5 text-destructive" />
-                  </div>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <CardTitle className="text-lg text-destructive">
-                    {t('organizations.errors.loadFailed')}
-                  </CardTitle>
-                  <CardDescription className="mt-1 text-destructive/80">
-                    {t('organizations.errors.loadFailedDescription')}
-                  </CardDescription>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Button 
-                onClick={() => window.location.reload()}
-                variant="outline"
-                className="w-full gap-2 border-destructive/30 hover:bg-destructive/10"
-              >
-                <RefreshCw className="w-4 h-4" />
-                {t('common.tryAgain')}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
+        <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
+          <ErrorState
+            title={t('organizations.errors.loadFailed')}
+            description={t('organizations.errors.loadFailedDescription')}
+            onRetry={() => window.location.reload()}
+            retryLabel={t('common.tryAgain')}
+          />
+        </Grid>
       </div>
     );
   }
@@ -208,31 +187,18 @@ export const OrganizationsPage: React.FC = () =>
           {/* Organizations Tab */}
           <TabsContent value="organizations" className="mt-0">
             {organizations.length === 0 ? (
-              <div className="border border-dashed rounded-lg p-8 sm:p-12 text-center">
-                <div className="flex flex-col items-center gap-4 max-w-md mx-auto">
-                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-                    <Building2 className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg mb-2">
-                      {t('organizations.noOrganizations')}
-                    </h3>
-                    <p className="text-muted-foreground text-sm">
-                      {t('organizations.noOrganizationsDescription')}
-                    </p>
-                  </div>
-                  <Button 
-                    onClick={() => setCreateDialogOpen(true)} 
-                    className="gap-2 mt-2"
-                    size="lg"
-                  >
-                    <Plus className="w-4 h-4" />
-                    {t('organizations.createOrganization')}
-                  </Button>
-                </div>
-              </div>
+              <EmptyState
+                icon={Building2}
+                title={t('organizations.noOrganizations')}
+                description={t('organizations.noOrganizationsDescription')}
+                action={{
+                  label: t('organizations.createOrganization'),
+                  onClick: () => setCreateDialogOpen(true),
+                }}
+                size="lg"
+              />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6">
+              <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }} className="pb-6">
                 {organizations.map((org) => (
                   <OrganizationCard
                     key={org.org.id}
@@ -241,63 +207,31 @@ export const OrganizationsPage: React.FC = () =>
                     isSelected={currentOrg?.org.id === org.org.id}
                   />
                 ))}
-              </div>
+              </Grid>
             )}
           </TabsContent>
 
           {/* Invitations Tab */}
           <TabsContent value="invitations" className="mt-0">
             {invitationsQuery.error ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Card className="border-destructive/50 bg-destructive/5">
-                  <CardHeader>
-                    <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0 mt-1">
-                        <div className="w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center">
-                          <AlertCircle className="w-5 h-5 text-destructive" />
-                        </div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <CardTitle className="text-lg text-destructive">
-                          {t('invitations.errors.loadFailed')}
-                        </CardTitle>
-                        <CardDescription className="mt-1 text-destructive/80">
-                          {t('invitations.errors.loadFailedDescription')}
-                        </CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <Button 
-                      onClick={() => void invitationsQuery.refetch()}
-                      variant="outline"
-                      className="w-full gap-2 border-destructive/30 hover:bg-destructive/10"
-                      disabled={invitationsQuery.isFetching}
-                    >
-                      <RefreshCw className={`w-4 h-4 ${invitationsQuery.isFetching ? 'animate-spin' : ''}`} />
-                      {invitationsQuery.isFetching ? t('common.loading') : t('common.tryAgain')}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </div>
+              <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
+                <ErrorState
+                  title={t('invitations.errors.loadFailed')}
+                  description={t('invitations.errors.loadFailedDescription')}
+                  onRetry={() => void invitationsQuery.refetch()}
+                  isRetrying={invitationsQuery.isFetching}
+                  retryLabel={t('common.tryAgain')}
+                />
+              </Grid>
             ) : pendingInvitations.length === 0 ? (
-              <div className="border border-dashed rounded-lg p-8 sm:p-12 text-center">
-                <div className="flex flex-col items-center gap-4 max-w-md mx-auto">
-                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-                    <Mail className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg mb-2">
-                      {t('organizations.noInvitations')}
-                    </h3>
-                    <p className="text-muted-foreground text-sm">
-                      {t('organizations.noInvitationsDescription')}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <EmptyState
+                icon={Mail}
+                title={t('organizations.noInvitations')}
+                description={t('organizations.noInvitationsDescription')}
+                size="lg"
+              />
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6">
+              <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }} className="pb-6">
                 {pendingInvitations.map((invitation) => (
                   <InvitationCard
                     key={invitation.id}
@@ -308,7 +242,7 @@ export const OrganizationsPage: React.FC = () =>
                     isDeclining={isDeclining && decliningId === invitation.id}
                   />
                 ))}
-              </div>
+              </Grid>
             )}
           </TabsContent>
         </div>

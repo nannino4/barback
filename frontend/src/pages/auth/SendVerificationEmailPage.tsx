@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react';
 import { InlineSpinner } from '@/components/ui/spinner';
+import { PageContainer } from '@/components/layout/PageContainer';
 import { authApi } from '@/api/auth-api';
 import { useAuthStore } from '@/stores/authStore';
 import { useI18n } from '@/hooks/useI18n';
@@ -112,110 +113,112 @@ export const SendVerificationEmailPage: React.FC = () =>
   };
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-200px)]">
-      <div className="w-full max-w-md">
-        <Card className="w-full max-w-md mx-auto">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">
-              {t('auth.sendVerificationEmail.title')}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                <Mail className="w-8 h-8 text-primary" />
+    <PageContainer>
+      <div className="flex items-center justify-center min-h-[calc(100vh-12rem)]">
+        <div className="w-full max-w-md">
+          <Card className="w-full max-w-md mx-auto">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl">
+                {t('auth.sendVerificationEmail.title')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                  <Mail className="w-8 h-8 text-primary" />
+                </div>
               </div>
-            </div>
 
-            {/* Status Messages */}
-            <div className="text-center space-y-4">
-              {sendStatus === 'idle' && (
-                <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
-                  <div className="flex items-start gap-2">
-                    <Mail className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div className="text-left">
-                      <p className="text-sm font-medium text-foreground">
-                        {t('auth.sendVerificationEmail.checkYourEmail')}
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {t('auth.sendVerificationEmail.alreadySentDuringRegistration', { email })}
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        {t('auth.sendVerificationEmail.checkSpamAndResend')}
-                      </p>
+              {/* Status Messages */}
+              <div className="text-center space-y-4">
+                {sendStatus === 'idle' && (
+                  <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <Mail className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                      <div className="text-left">
+                        <p className="text-sm font-medium text-foreground">
+                          {t('auth.sendVerificationEmail.checkYourEmail')}
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          {t('auth.sendVerificationEmail.alreadySentDuringRegistration', { email })}
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          {t('auth.sendVerificationEmail.checkSpamAndResend')}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-
-              {sendStatus === 'success' && (
-                <div className="p-3 bg-success/10 border border-success/20 rounded-lg">
-                  <div className="flex items-start gap-2">
-                    <CheckCircle className="w-5 h-5 text-success mt-0.5 flex-shrink-0" />
-                    <div className="text-left">
-                      <p className="text-sm font-medium text-success">
-                        {t('auth.sendVerificationEmail.emailSentTitle')}
-                      </p>
-                      <p className="text-sm text-foreground mt-1">
-                        {t('auth.sendVerificationEmail.sentTo')} <strong>{email}</strong>
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        {t('auth.sendVerificationEmail.clickLinkInstructions')}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {sendStatus === 'error' && errorMessage && (
-                <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-                  <div className="flex items-start gap-2">
-                    <AlertCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />
-                    <div className="text-left">
-                      <p className="text-sm font-medium text-destructive">
-                        {t('auth.sendVerificationEmail.sendFailedTitle')}
-                      </p>
-                      <p className="text-sm text-foreground mt-1">
-                        {errorMessage}
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-2">
-                        {t('auth.sendVerificationEmail.tryAgainInstructions')}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Send/Resend Button - Always visible */}
-            <div className="space-y-3 pt-2">
-              <Button
-                onClick={handleSendEmail}
-                variant={sendStatus === 'idle' ? 'default' : 'outline'}
-                className="w-full h-touch"
-                disabled={sendEmailMutation.isPending || isCooldownActive}
-              >
-                {sendEmailMutation.isPending ? (
-                  <>
-                    <InlineSpinner className="mr-2" />
-                    {t('auth.sendVerificationEmail.resendingEmail')}
-                  </>
-                ) : isCooldownActive ? (
-                  <>
-                    <RefreshCw className="mr-2 w-4 h-4" />
-                    {t('auth.sendVerificationEmail.resendInSeconds', { seconds: cooldownSeconds })}
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw className="mr-2 w-4 h-4" />
-                    {t('auth.sendVerificationEmail.resendEmail')}
-                  </>
                 )}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+
+                {sendStatus === 'success' && (
+                  <div className="p-3 bg-success/10 border border-success/20 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="w-5 h-5 text-success mt-0.5 flex-shrink-0" />
+                      <div className="text-left">
+                        <p className="text-sm font-medium text-success">
+                          {t('auth.sendVerificationEmail.emailSentTitle')}
+                        </p>
+                        <p className="text-sm text-foreground mt-1">
+                          {t('auth.sendVerificationEmail.sentTo')} <strong>{email}</strong>
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          {t('auth.sendVerificationEmail.clickLinkInstructions')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {sendStatus === 'error' && errorMessage && (
+                  <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <AlertCircle className="w-5 h-5 text-destructive mt-0.5 flex-shrink-0" />
+                      <div className="text-left">
+                        <p className="text-sm font-medium text-destructive">
+                          {t('auth.sendVerificationEmail.sendFailedTitle')}
+                        </p>
+                        <p className="text-sm text-foreground mt-1">
+                          {errorMessage}
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          {t('auth.sendVerificationEmail.tryAgainInstructions')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Send/Resend Button - Always visible */}
+              <div className="space-y-3 pt-2">
+                <Button
+                  onClick={handleSendEmail}
+                  variant={sendStatus === 'idle' ? 'default' : 'outline'}
+                  className="w-full h-touch"
+                  disabled={sendEmailMutation.isPending || isCooldownActive}
+                >
+                  {sendEmailMutation.isPending ? (
+                    <>
+                      <InlineSpinner className="mr-2" />
+                      {t('auth.sendVerificationEmail.resendingEmail')}
+                    </>
+                  ) : isCooldownActive ? (
+                    <>
+                      <RefreshCw className="mr-2 w-4 h-4" />
+                      {t('auth.sendVerificationEmail.resendInSeconds', { seconds: cooldownSeconds })}
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="mr-2 w-4 h-4" />
+                      {t('auth.sendVerificationEmail.resendEmail')}
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
+    </PageContainer>
   );
 };

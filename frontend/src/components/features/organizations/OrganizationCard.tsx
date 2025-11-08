@@ -2,6 +2,7 @@ import React from 'react';
 import { Building2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { InlineSpinner } from '@/components/ui/spinner';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
 import type { OrganizationMembership } from '@/types/organization';
@@ -99,7 +100,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
         )}>
           {isLoading ? (
             <span className="flex items-center gap-2">
-              <span className="inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              <InlineSpinner />
               {t('common.loading')}
             </span>
           ) : isSelected ? (

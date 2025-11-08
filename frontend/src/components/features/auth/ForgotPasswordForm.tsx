@@ -15,6 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Stack } from '@/components/layout/Stack';
 import { forgotPasswordSchema, type ForgotPasswordData } from '@/types/auth-forms';
 import { authApi } from '@/api/auth-api';
 import { useI18n } from '@/hooks/useI18n';
@@ -88,69 +89,71 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
           {t('auth.forgotPassword.title')}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent>
         <Form {...form}>
-          <form onSubmit={handleFormSubmit} className="space-y-4" noValidate>
-            {/* Email Field */}
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t('common.email')}
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        {...field}
-                        type="email"
-                        placeholder={t('auth.forgotPassword.emailPlaceholder')}
-                        disabled={forgotPasswordMutation.isPending}
-                        className="pl-10"
-                        autoComplete="email"
-                        autoFocus
-                      />
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <form onSubmit={handleFormSubmit} noValidate>
+            <Stack space="md">
+              {/* Email Field */}
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t('common.email')}
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder={t('auth.forgotPassword.emailPlaceholder')}
+                          disabled={forgotPasswordMutation.isPending}
+                          className="pl-10"
+                          autoComplete="email"
+                          autoFocus
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Submit Button */}
-            <Button
-              type="submit"
-              className="w-full h-touch"
-              disabled={forgotPasswordMutation.isPending || isCooldownActive}
-            >
-              {forgotPasswordMutation.isPending ? (
-                <>
-                  <InlineSpinner className="mr-2" />
-                  {t('auth.forgotPassword.sendingLink')}
-                </>
-              ) : isCooldownActive ? (
-                t('auth.forgotPassword.cooldown', { seconds: cooldownSeconds })
-              ) : (
-                t('auth.forgotPassword.sendLink')
-              )}
-            </Button>
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                className="w-full h-touch"
+                disabled={forgotPasswordMutation.isPending || isCooldownActive}
+              >
+                {forgotPasswordMutation.isPending ? (
+                  <>
+                    <InlineSpinner className="mr-2" />
+                    {t('auth.forgotPassword.sendingLink')}
+                  </>
+                ) : isCooldownActive ? (
+                  t('auth.forgotPassword.cooldown', { seconds: cooldownSeconds })
+                ) : (
+                  t('auth.forgotPassword.sendLink')
+                )}
+              </Button>
+
+              {/* Footer Link */}
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">
+                  {t('auth.register.hasAccount')}{' '}
+                  <Link
+                    to="/auth/login"
+                    className="text-primary hover:text-primary/80 font-medium transition-colors"
+                  >
+                    {t('auth.forgotPassword.backToLogin')}
+                  </Link>
+                </p>
+              </div>
+            </Stack>
           </form>
         </Form>
-
-        {/* Footer Link */}
-        <div className="text-center pt-4">
-          <p className="text-sm text-muted-foreground">
-            {t('auth.register.hasAccount')}{' '}
-            <Link
-              to="/auth/login"
-              className="text-primary hover:text-primary/80 font-medium transition-colors"
-            >
-              {t('auth.forgotPassword.backToLogin')}
-            </Link>
-          </p>
-        </div>
       </CardContent>
     </Card>
   );

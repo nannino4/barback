@@ -15,6 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Stack } from '@/components/layout/Stack';
 import { registerSchema, type RegisterFormData } from '@/types/auth-forms';
 import { useAuth } from '@/hooks/useAuth';
 import { useI18n } from '@/hooks/useI18n';
@@ -98,29 +99,28 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
           {t('auth.register.title')}
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent>
         <Form {...form}>
           <form 
             onSubmit={(e) =>
             {
               e.preventDefault();
               void form.handleSubmit(onSubmit)(e);
-            }} 
-            className="space-y-4"
+            }}
           >
-            {/* Error Message Display */}
-            {registerError && (
-              <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-2">
-                <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-                <div className="text-sm text-destructive whitespace-pre-line">
-                  {isKnownError(registerError)
-                    ? getLocalizedErrorMessage(registerError, t, 'form')
-                    : t('errors.genericError')}
+            <Stack space="md">
+              {/* Error Message Display */}
+              {registerError && (
+                <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-2">
+                  <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                  <div className="text-sm text-destructive whitespace-pre-line">
+                    {isKnownError(registerError)
+                      ? getLocalizedErrorMessage(registerError, t, 'form')
+                      : t('errors.genericError')}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="firstName"
@@ -141,6 +141,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="lastName"
@@ -161,188 +162,188 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                   </FormItem>
                 )}
               />
-            </div>
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t('common.email')}
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder={t('auth.register.emailPlaceholder')}
-                      autoComplete="email"
-                      className="h-touch"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t('common.phoneNumber')}
-                    <span className="text-muted-foreground ml-1">(Optional)</span>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="tel"
-                      placeholder="+393XXXXXXXXX"
-                      autoComplete="tel"
-                      className="h-touch"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t('common.password')}
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t('common.email')}
+                    </FormLabel>
+                    <FormControl>
                       <Input
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder={t('auth.register.passwordPlaceholder')}
-                        autoComplete="new-password"
-                        className="h-touch pr-12"
+                        type="email"
+                        placeholder={t('auth.register.emailPlaceholder')}
+                        autoComplete="email"
+                        className="h-touch"
                         {...field}
                       />
-                      <button
-                        type="button"
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
-                        {showPassword ? (
-                          <EyeOff className="h-5 w-5" />
-                        ) : (
-                          <Eye className="h-5 w-5" />
-                        )}
-                        <span className="sr-only">
-                          {showPassword ? t('auth.register.hidePassword') : t('auth.register.showPassword')}
-                        </span>
-                      </button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                  
-                  {/* Password Requirements */}
-                  {passwordValue && (
-                    <div className="space-y-2 mt-2">
-                      <p className="text-sm font-medium">
-                        {t('auth.register.requirements')}
-                      </p>
-                      <div className="space-y-1">
-                        {passwordRequirements.map((requirement) => (
-                          <div
-                            key={requirement.key}
-                            className="flex items-center space-x-2"
-                          >
-                            {requirement.test(passwordValue) ? (
-                              <CheckCircle className="h-4 w-4 text-success" />
-                            ) : (
-                              <XCircle className="h-4 w-4 text-muted-foreground" />
-                            )}
-                            <span
-                              className={cn(
-                                'text-xs',
-                                requirement.test(passwordValue)
-                                  ? 'text-success'
-                                  : 'text-muted-foreground',
-                              )}
-                            >
-                              {t(requirement.key)}
-                            </span>
-                          </div>
-                        ))}
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t('common.phoneNumber')}
+                      <span className="text-muted-foreground ml-1">(Optional)</span>
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="tel"
+                        placeholder="+393XXXXXXXXX"
+                        autoComplete="tel"
+                        className="h-touch"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t('common.password')}
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? 'text' : 'password'}
+                          placeholder={t('auth.register.passwordPlaceholder')}
+                          autoComplete="new-password"
+                          className="h-touch pr-12"
+                          {...field}
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
+                          onClick={() => setShowPassword(!showPassword)}
+                        >
+                          {showPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                          ) : (
+                            <Eye className="h-5 w-5" />
+                          )}
+                          <span className="sr-only">
+                            {showPassword ? t('auth.register.hidePassword') : t('auth.register.showPassword')}
+                          </span>
+                        </button>
                       </div>
-                    </div>
-                  )}
-                </FormItem>
-              )}
-            />
+                    </FormControl>
+                    <FormMessage />
+                    
+                    {/* Password Requirements */}
+                    {passwordValue && (
+                      <div className="space-y-2 mt-2">
+                        <p className="text-sm font-medium">
+                          {t('auth.register.requirements')}
+                        </p>
+                        <div className="space-y-1">
+                          {passwordRequirements.map((requirement) => (
+                            <div
+                              key={requirement.key}
+                              className="flex items-center space-x-2"
+                            >
+                              {requirement.test(passwordValue) ? (
+                                <CheckCircle className="h-4 w-4 text-success" />
+                              ) : (
+                                <XCircle className="h-4 w-4 text-muted-foreground" />
+                              )}
+                              <span
+                                className={cn(
+                                  'text-xs',
+                                  requirement.test(passwordValue)
+                                    ? 'text-success'
+                                    : 'text-muted-foreground',
+                                )}
+                              >
+                                {t(requirement.key)}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>
-                    {t('common.confirmPassword')}
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        placeholder={t('auth.register.confirmPasswordPlaceholder')}
-                        autoComplete="new-password"
-                        className="h-touch pr-12"
-                        {...field}
-                      />
-                      <button
-                        type="button"
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      >
-                        {showConfirmPassword ? (
-                          <EyeOff className="h-5 w-5" />
-                        ) : (
-                          <Eye className="h-5 w-5" />
-                        )}
-                        <span className="sr-only">
-                          {showConfirmPassword ? t('auth.register.hidePassword') : t('auth.register.showPassword')}
-                        </span>
-                      </button>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {t('common.confirmPassword')}
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={showConfirmPassword ? 'text' : 'password'}
+                          placeholder={t('auth.register.confirmPasswordPlaceholder')}
+                          autoComplete="new-password"
+                          className="h-touch pr-12"
+                          {...field}
+                        />
+                        <button
+                          type="button"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors touch-manipulation"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        >
+                          {showConfirmPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                          ) : (
+                            <Eye className="h-5 w-5" />
+                          )}
+                          <span className="sr-only">
+                            {showConfirmPassword ? t('auth.register.hidePassword') : t('auth.register.showPassword')}
+                          </span>
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <Button
-              type="submit"
-              className="w-full h-touch"
-              disabled={isRegistering}
-            >
-              {isRegistering ? (
-                <>
-                  <InlineSpinner className="mr-2" />
-                  {t('auth.register.creatingAccount')}
-                </>
-              ) : (
-                t('auth.register.createAccount')
-              )}
-            </Button>
-
-            <div className="text-center">
-              <span className="text-sm text-muted-foreground">
-                {t('auth.register.hasAccount')}{' '}
-              </span>
-              <Link
-                to="/auth/login"
-                className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+              <Button
+                type="submit"
+                className="w-full h-touch"
+                disabled={isRegistering}
               >
-                {t('auth.register.signIn')}
-              </Link>
-            </div>
+                {isRegistering ? (
+                  <>
+                    <InlineSpinner className="mr-2" />
+                    {t('auth.register.creatingAccount')}
+                  </>
+                ) : (
+                  t('auth.register.createAccount')
+                )}
+              </Button>
+
+              <div className="text-center">
+                <span className="text-sm text-muted-foreground">
+                  {t('auth.register.hasAccount')}{' '}
+                </span>
+                <Link
+                  to="/auth/login"
+                  className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+                >
+                  {t('auth.register.signIn')}
+                </Link>
+              </div>
+            </Stack>
           </form>
         </Form>
       </CardContent>

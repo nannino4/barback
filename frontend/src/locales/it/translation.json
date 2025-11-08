@@ -426,7 +426,9 @@
         "login": "Accedi",
         "logout": "Logout",
         "home": "Home",
-        "dashboard": "Dashboard"
+        "dashboard": "Dashboard",
+        "inventory": "Inventario",
+        "orders": "Ordini"
     },
     "landing": {
         "hero": {
@@ -470,6 +472,14 @@
     "dashboard": {
         "welcome": "Benvenuto nella Tua Dashboard",
         "placeholder": "La tua dashboard è in preparazione. Altre funzionalità in arrivo!"
+    },
+    "inventory": {
+        "title": "Inventario",
+        "placeholder": "Funzionalità di gestione inventario in arrivo!"
+    },
+    "orders": {
+        "title": "Ordini",
+        "placeholder": "Funzionalità di gestione ordini in arrivo!"
     },
     "home": {
         "welcome": "Benvenuto in Barback",

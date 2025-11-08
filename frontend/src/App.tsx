@@ -9,6 +9,8 @@ import { VerifiedRoute } from '@/components/features/auth/VerifiedRoute'
 import { OrganizationRoute } from '@/components/features/organizations/OrganizationRoute'
 import { AuthRouter } from '@/components/features/auth/AuthRouter'
 import { Dashboard } from '@/pages/Dashboard'
+import { InventoryPage } from '@/pages/InventoryPage'
+import { OrdersPage } from '@/pages/OrdersPage'
 import { LandingPage } from '@/pages/LandingPage'
 import { OrganizationsPage } from '@/pages/OrganizationsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -92,6 +94,30 @@ function AppContent()
               <VerifiedRoute>
                 <OrganizationRoute>
                   <Dashboard />
+                </OrganizationRoute>
+              </VerifiedRoute>
+            }
+          />
+          
+          {/* Protected Inventory Page */}
+          <Route
+            path="/inventory"
+            element={
+              <VerifiedRoute>
+                <OrganizationRoute>
+                  <InventoryPage />
+                </OrganizationRoute>
+              </VerifiedRoute>
+            }
+          />
+          
+          {/* Protected Orders Page */}
+          <Route
+            path="/orders"
+            element={
+              <VerifiedRoute>
+                <OrganizationRoute>
+                  <OrdersPage />
                 </OrganizationRoute>
               </VerifiedRoute>
             }

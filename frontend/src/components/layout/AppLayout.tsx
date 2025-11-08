@@ -1,18 +1,27 @@
 import { Outlet } from 'react-router-dom';
-import { Navigation } from '@/components/Navigation';
+import { TopNav } from '@/components/TopNav';
+import { BottomNav } from '@/components/BottomNav';
 
 /**
  * AppLayout - Main application layout for all pages
- * Provides consistent navigation and container structure across the entire app
+ * 
+ * Provides:
+ * - Consistent top navigation bar (sticky)
+ * - Bottom navigation bar (mobile-only, auth-only)
+ * - Main content outlet
+ * - Padding for bottom nav on mobile (pb-16 to prevent content overlap)
+ * 
+ * Note: Individual pages should use PageContainer for consistent padding/max-width
  */
 export function AppLayout()
 {
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
-      <main className="container mx-auto px-4 py-6">
+      <TopNav />
+      <main className="pb-16 md:pb-0">
         <Outlet />
       </main>
+      <BottomNav />
     </div>
   );
 }

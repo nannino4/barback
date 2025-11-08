@@ -611,5 +611,35 @@
             "notActive": "L'abbonamento non è attivo",
             "createFailed": "Impossibile creare l'abbonamento"
         }
+    },
+    "account": {
+        "title": "Account",
+        "description": "Visualizza e gestisci le informazioni del tuo account",
+        "personalInformation": "Informazioni Personali",
+        "fullName": "Nome Completo",
+        "email": "Indirizzo Email",
+        "emailVerified": "✓ Verificata",
+        "phoneNumber": "Numero di Telefono",
+        "memberSince": "Membro Dal",
+        "futureFeatures": "Modifica account e gestione password in arrivo"
+    },
+    "preferences": {
+        "title": "Preferenze",
+        "theme": {
+            "title": "Tema",
+            "light": "Chiaro",
+            "dark": "Scuro",
+            "system": "Sistema"
+        },
+        "language": {
+            "title": "Lingua",
+            "english": "English",
+            "italian": "Italiano"
+        }
+    },
+    "menu": {
+        "currentVenue": "Locale Corrente",
+        "account": "Account",
+        "preferences": "Preferenze"
     }
 }

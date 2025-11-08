@@ -2,8 +2,6 @@ import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Home, Palette, LayoutDashboard, Package, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/ThemeToggle';
-import { LanguageSelector } from '@/components/LanguageSelector';
 import { UserMenu } from '@/components/UserMenu';
 import { useI18n } from '@/hooks/useI18n';
 import { useAuthStore } from '@/stores/authStore';
@@ -16,7 +14,7 @@ import { cn } from '@/lib/utils';
  * - Sticky top navigation
  * - Logo and brand link
  * - Desktop navigation items (Dashboard, Inventory, Orders) - visible on md+ screens
- * - Theme toggle, language selector, user menu
+ * - User menu (includes theme/language preferences)
  * - Responsive design
  */
 export const TopNav: React.FC = () =>
@@ -100,7 +98,7 @@ export const TopNav: React.FC = () =>
             {/* Design System Link */}
             <Link
               to="/design-system"
-              className="hidden lg:flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <Palette className="h-4 w-4" />
               <span>Design System</span>
@@ -109,9 +107,6 @@ export const TopNav: React.FC = () =>
 
           {/* Right Side Actions */}
           <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <LanguageSelector />
-            
             {user ? (
               <UserMenu />
             ) : (

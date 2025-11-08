@@ -610,5 +610,35 @@
             "notActive": "Subscription is not active",
             "createFailed": "Failed to create subscription"
         }
+    },
+    "account": {
+        "title": "Account",
+        "description": "View and manage your account information",
+        "personalInformation": "Personal Information",
+        "fullName": "Full Name",
+        "email": "Email Address",
+        "emailVerified": "✓ Verified",
+        "phoneNumber": "Phone Number",
+        "memberSince": "Member Since",
+        "futureFeatures": "Account editing and password management coming soon"
+    },
+    "preferences": {
+        "title": "Preferences",
+        "theme": {
+            "title": "Theme",
+            "light": "Light",
+            "dark": "Dark",
+            "system": "System"
+        },
+        "language": {
+            "title": "Language",
+            "english": "English",
+            "italian": "Italiano"
+        }
+    },
+    "menu": {
+        "currentVenue": "Current Venue",
+        "account": "Account",
+        "preferences": "Preferences"
     }
 }

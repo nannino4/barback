@@ -13,6 +13,7 @@ import { InventoryPage } from '@/pages/InventoryPage'
 import { OrdersPage } from '@/pages/OrdersPage'
 import { LandingPage } from '@/pages/LandingPage'
 import { OrganizationsPage } from '@/pages/OrganizationsPage'
+import { AccountPage } from '@/pages/AccountPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import DesignSystemPage from '@/pages/DesignSystemPage'
 import { ApiError } from '@/lib/errors'
@@ -83,6 +84,16 @@ function AppContent()
             element={
               <VerifiedRoute>
                 <OrganizationsPage />
+              </VerifiedRoute>
+            }
+          />
+          
+          {/* Account Page - Requires email verification only */}
+          <Route
+            path="/account"
+            element={
+              <VerifiedRoute>
+                <AccountPage />
               </VerifiedRoute>
             }
           />

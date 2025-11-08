@@ -1,5 +1,16 @@
-import React from 'react';
-import { LogOut, Building2, ChevronRight, Settings } from 'lucide-react';
+import { useState } from 'react';
+import { 
+  LogOut, 
+  Building2, 
+  ChevronRight, 
+  User as UserIcon,
+  Settings,
+  Check,
+  Monitor,
+  Sun,
+  Moon,
+  Languages,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,16 +25,43 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { useAuth } from '@/hooks/useAuth';
 import { useI18n } from '@/hooks/useI18n';
 import { useOrganizations } from '@/hooks/useOrganizations';
+import { useThemeStore } from '@/stores/themeStore';
+import { useLanguageStore } from '@/stores/languageStore';
+import { cn } from '@/lib/utils';
 
+/**
+ * UserMenu - Responsive user menu component
+ * 
+ * Desktop (md+): Dropdown menu with compact organization/preferences submenus
+ * Mobile: Full-page slide-out sheet with expanded sections
+ * 
+ * Menu Structure:
+ * - User Info Header
+ * - Current Venue (navigates to /organizations)
+ * - Account (navigates to /account)
+ * - Preferences (submenu for theme + language)
+ * - Logout
+ */
 export const UserMenu: React.FC = () =>
 {
   const { user, logout } = useAuth();
-  const { t } = useI18n();
+  const { t, changeLanguage, currentLanguage } = useI18n();
   const navigate = useNavigate();
-  const { currentOrg, organizations, switchOrganization } = useOrganizations();
+  const { currentOrg } = useOrganizations();
+  const { theme, setTheme } = useThemeStore();
+  const { setLanguage } = useLanguageStore();
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [preferencesOpen, setPreferencesOpen] = useState(false);
 
   if (!user)
   {
@@ -33,134 +71,420 @@ export const UserMenu: React.FC = () =>
   const userInitials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
   const userFullName = `${user.firstName} ${user.lastName}`;
 
-  const getRoleLabel = (role: string) =>
+  const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') =>
   {
-    const roleKey = role.toLowerCase() as 'owner' | 'manager' | 'staff';
-    return t(`organizations.role.${roleKey}`);
+    setTheme(newTheme);
   };
 
-  const handleOrgSwitch = (org: typeof organizations[0]) =>
+  const handleLanguageChange = (languageCode: 'en' | 'it') =>
   {
-    switchOrganization(org);
+    setLanguage(languageCode);
+    changeLanguage(languageCode);
   };
 
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-2"
-        >
-          {user.profilePictureUrl ? (
-            <img
-              src={user.profilePictureUrl}
-              alt={userInitials}
-              className="h-8 w-8 rounded-full object-cover"
-            />
-          ) : (
-            <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-              <span className="text-sm font-semibold text-primary-foreground">
-                {userInitials}
-              </span>
-            </div>
-          )}
-          <span className="text-sm font-medium hidden sm:inline-block">
-            {user.firstName}
+  const handleNavigate = (path: string) =>
+  {
+    setSheetOpen(false);
+    void navigate(path);
+  };
+
+  const handleLogout = () =>
+  {
+    setSheetOpen(false);
+    logout();
+  };
+
+  // Render user avatar button (shared between mobile and desktop)
+  const renderUserAvatar = () => (
+    <Button
+      variant="ghost"
+      size="sm"
+      className="gap-2"
+    >
+      {user.profilePictureUrl ? (
+        <img
+          src={user.profilePictureUrl}
+          alt={userInitials}
+          className="h-8 w-8 rounded-full object-cover"
+        />
+      ) : (
+        <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+          <span className="text-sm font-semibold text-primary-foreground">
+            {userInitials}
           </span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-72">
-        <DropdownMenuLabel>
-          <div className="flex flex-col space-y-1 font-normal">
-            <p className="text-sm font-medium leading-none">{userFullName}</p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {user.email}
-            </p>
-          </div>
-        </DropdownMenuLabel>
+        </div>
+      )}
+      <span className="text-sm font-medium hidden sm:inline-block">
+        {user.firstName}
+      </span>
+    </Button>
+  );
 
-        <DropdownMenuSeparator />
-
-        {/* Current Organization */}
-        {currentOrg ? (
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex items-center gap-2 py-1">
-              <Building2 className="h-4 w-4 text-muted-foreground" />
-              <div className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground">
-                  {t('organizations.selectOrganization')}
-                </p>
-                <p className="text-sm font-medium truncate">
-                  {currentOrg.org.name}
+  // Desktop view - Dropdown menu (md+)
+  return (
+    <>
+      {/* Desktop Menu (hidden on mobile) */}
+      <div className="hidden md:block">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            {renderUserAvatar()}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-72">
+            {/* User Info Header */}
+            <DropdownMenuLabel>
+              <div className="flex flex-col space-y-1 font-normal">
+                <p className="text-sm font-medium leading-none">{userFullName}</p>
+                <p className="text-xs leading-none text-muted-foreground">
+                  {user.email}
                 </p>
               </div>
-            </div>
-          </DropdownMenuLabel>
-        ) : (
-          <DropdownMenuLabel className="font-normal">
-            <div className="flex items-center gap-2 py-1">
-              <Building2 className="h-4 w-4 text-muted-foreground" />
-              <p className="text-xs text-muted-foreground">
-                {t('organizations.noOrganizations')}
-              </p>
-            </div>
-          </DropdownMenuLabel>
-        )}
+            </DropdownMenuLabel>
 
-        <DropdownMenuSeparator />
+            <DropdownMenuSeparator />
 
-        <DropdownMenuGroup>
-          {/* Organization Switcher */}
-          {organizations.length > 0 && (
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
+            {/* Current Organization Info - Clickable */}
+            {currentOrg ? (
+              <DropdownMenuItem
+                onClick={() => void navigate('/organizations')}
+                className="cursor-pointer"
+              >
                 <Building2 className="mr-2 h-4 w-4" />
-                <span>{t('organizations.switchOrganization', 'Switch Organization')}</span>
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent className="w-64">
-                {organizations.map((org) => (
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs text-muted-foreground">
+                    {t('menu.currentVenue')}
+                  </p>
+                  <p className="text-sm font-medium truncate">
+                    {currentOrg.org.name}
+                  </p>
+                </div>
+                <ChevronRight className="ml-2 h-4 w-4" />
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem
+                onClick={() => void navigate('/organizations')}
+                className="cursor-pointer"
+              >
+                <Building2 className="mr-2 h-4 w-4" />
+                <span className="text-sm text-muted-foreground">
+                  {t('organizations.noOrganizations')}
+                </span>
+                <ChevronRight className="ml-auto h-4 w-4" />
+              </DropdownMenuItem>
+            )}
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuGroup>
+              {/* Account */}
+              <DropdownMenuItem
+                onClick={() => void navigate('/account')}
+                className="cursor-pointer"
+              >
+                <UserIcon className="mr-2 h-4 w-4" />
+                <span>{t('menu.account')}</span>
+              </DropdownMenuItem>
+
+              {/* Preferences Submenu */}
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>{t('menu.preferences')}</span>
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="w-56">
+                  {/* Theme Selection */}
+                  <DropdownMenuLabel>{t('preferences.theme.title')}</DropdownMenuLabel>
                   <DropdownMenuItem
-                    key={org.org.id}
-                    onClick={() => handleOrgSwitch(org)}
+                    onClick={() => handleThemeChange('light')}
                     className="cursor-pointer flex items-center justify-between"
-                    disabled={currentOrg?.org.id === org.org.id}
                   >
-                    <div className="flex flex-col gap-1 flex-1 min-w-0">
-                      <span className="text-sm truncate">{org.org.name}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {getRoleLabel(org.role)}
-                      </span>
+                    <div className="flex items-center gap-2">
+                      <Sun className="h-4 w-4" />
+                      <span>{t('preferences.theme.light')}</span>
                     </div>
-                    {currentOrg?.org.id === org.org.id && (
-                      <ChevronRight className="ml-2 h-4 w-4" />
-                    )}
+                    {theme === 'light' && <Check className="h-4 w-4" />}
                   </DropdownMenuItem>
-                ))}
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-          )}
+                  <DropdownMenuItem
+                    onClick={() => handleThemeChange('dark')}
+                    className="cursor-pointer flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Moon className="h-4 w-4" />
+                      <span>{t('preferences.theme.dark')}</span>
+                    </div>
+                    {theme === 'dark' && <Check className="h-4 w-4" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleThemeChange('system')}
+                    className="cursor-pointer flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Monitor className="h-4 w-4" />
+                      <span>{t('preferences.theme.system')}</span>
+                    </div>
+                    {theme === 'system' && <Check className="h-4 w-4" />}
+                  </DropdownMenuItem>
 
-          {/* Manage Organizations */}
-          <DropdownMenuItem
-            onClick={() => void navigate('/organizations')}
-            className="cursor-pointer"
-          >
-            <Settings className="mr-2 h-4 w-4" />
-            <span>{t('organizations.manageOrganizations', 'Manage Organizations')}</span>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
+                  <DropdownMenuSeparator />
 
-        <DropdownMenuSeparator />
+                  {/* Language Selection */}
+                  <DropdownMenuLabel>{t('preferences.language.title')}</DropdownMenuLabel>
+                  <DropdownMenuItem
+                    onClick={() => handleLanguageChange('en')}
+                    className="cursor-pointer flex items-center justify-between"
+                  >
+                    <span>{t('preferences.language.english')}</span>
+                    {currentLanguage === 'en' && <Check className="h-4 w-4" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => handleLanguageChange('it')}
+                    className="cursor-pointer flex items-center justify-between"
+                  >
+                    <span>{t('preferences.language.italian')}</span>
+                    {currentLanguage === 'it' && <Check className="h-4 w-4" />}
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            </DropdownMenuGroup>
 
-        <DropdownMenuItem
-          onClick={logout}
-          className="cursor-pointer text-destructive focus:text-destructive"
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>{t('nav.logout')}</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+            <DropdownMenuSeparator />
+
+            {/* Logout */}
+            <DropdownMenuItem
+              onClick={logout}
+              className="cursor-pointer text-destructive focus:text-destructive"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>{t('nav.logout')}</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      {/* Mobile Menu (hidden on desktop) */}
+      <div className="block md:hidden">
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+          <SheetTrigger asChild>
+            {renderUserAvatar()}
+          </SheetTrigger>
+          <SheetContent side="right" className="w-full sm:max-w-md">
+            <SheetHeader>
+              <SheetTitle className="sr-only">User Menu</SheetTitle>
+            </SheetHeader>
+
+            <div className="flex flex-col h-full pt-6">
+              {/* User Info Header */}
+              <div className="flex items-center gap-4 pb-6 border-b border-border">
+                {user.profilePictureUrl ? (
+                  <img
+                    src={user.profilePictureUrl}
+                    alt={userInitials}
+                    className="h-16 w-16 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="h-16 w-16 rounded-full bg-primary flex items-center justify-center">
+                    <span className="text-xl font-semibold text-primary-foreground">
+                      {userInitials}
+                    </span>
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-lg font-semibold truncate">{userFullName}</p>
+                  <p className="text-sm text-muted-foreground truncate">{user.email}</p>
+                </div>
+              </div>
+
+              {/* Current Organization */}
+              <div className="py-4 border-b border-border">
+                {currentOrg ? (
+                  <div className="flex items-center gap-3 px-2 py-2">
+                    <Building2 className="h-5 w-5 text-muted-foreground" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs text-muted-foreground">
+                        {t('menu.currentVenue')}
+                      </p>
+                      <p className="text-sm font-medium truncate">
+                        {currentOrg.org.name}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3 px-2 py-2">
+                    <Building2 className="h-5 w-5 text-muted-foreground" />
+                    <p className="text-sm text-muted-foreground">
+                      {t('organizations.noOrganizations')}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Menu Items */}
+              <nav className="flex-1 py-4 space-y-1">
+                {/* Current Venue */}
+                <button
+                  type="button"
+                  onClick={() => handleNavigate('/organizations')}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 rounded-lg",
+                    "hover:bg-muted transition-colors text-left",
+                  )}
+                >
+                  <Building2 className="h-5 w-5" />
+                  <span className="flex-1 font-medium">{t('menu.currentVenue')}</span>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                </button>
+
+                {/* Account */}
+                <button
+                  type="button"
+                  onClick={() => handleNavigate('/account')}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 rounded-lg",
+                    "hover:bg-muted transition-colors text-left",
+                  )}
+                >
+                  <UserIcon className="h-5 w-5" />
+                  <span className="flex-1 font-medium">{t('menu.account')}</span>
+                </button>
+
+                {/* Preferences */}
+                <button
+                  type="button"
+                  onClick={() => setPreferencesOpen(true)}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 rounded-lg",
+                    "hover:bg-muted transition-colors text-left",
+                  )}
+                >
+                  <Settings className="h-5 w-5" />
+                  <span className="flex-1 font-medium">{t('menu.preferences')}</span>
+                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                </button>
+              </nav>
+
+              {/* Logout Button */}
+              <div className="pt-4 border-t border-border">
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-4 py-3 rounded-lg",
+                    "hover:bg-destructive/10 transition-colors text-left",
+                    "text-destructive",
+                  )}
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span className="flex-1 font-medium">{t('nav.logout')}</span>
+                </button>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        {/* Nested Preferences Sheet (Mobile Only) */}
+        <Sheet open={preferencesOpen} onOpenChange={setPreferencesOpen}>
+          <SheetContent side="right" className="w-full md:hidden">
+            <SheetHeader>
+              <SheetTitle>{t('menu.preferences')}</SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col h-full py-6">
+              <div className="space-y-6">
+                {/* Theme Selection */}
+                <div>
+                  <p className="text-sm font-medium mb-3">
+                    {t('preferences.theme.title')}
+                  </p>
+                  <div className="space-y-2">
+                    <button
+                      type="button"
+                      onClick={() => handleThemeChange('light')}
+                      className={cn(
+                        "w-full flex items-center justify-between px-4 py-3 rounded-lg",
+                        "hover:bg-muted transition-colors text-left",
+                        theme === 'light' && "bg-muted",
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Sun className="h-5 w-5" />
+                        <span>{t('preferences.theme.light')}</span>
+                      </div>
+                      {theme === 'light' && <Check className="h-5 w-5 text-primary" />}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleThemeChange('dark')}
+                      className={cn(
+                        "w-full flex items-center justify-between px-4 py-3 rounded-lg",
+                        "hover:bg-muted transition-colors text-left",
+                        theme === 'dark' && "bg-muted",
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Moon className="h-5 w-5" />
+                        <span>{t('preferences.theme.dark')}</span>
+                      </div>
+                      {theme === 'dark' && <Check className="h-5 w-5 text-primary" />}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleThemeChange('system')}
+                      className={cn(
+                        "w-full flex items-center justify-between px-4 py-3 rounded-lg",
+                        "hover:bg-muted transition-colors text-left",
+                        theme === 'system' && "bg-muted",
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Monitor className="h-5 w-5" />
+                        <span>{t('preferences.theme.system')}</span>
+                      </div>
+                      {theme === 'system' && <Check className="h-5 w-5 text-primary" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Language Selection */}
+                <div>
+                  <p className="text-sm font-medium mb-3">
+                    {t('preferences.language.title')}
+                  </p>
+                  <div className="space-y-2">
+                    <button
+                      type="button"
+                      onClick={() => handleLanguageChange('en')}
+                      className={cn(
+                        "w-full flex items-center justify-between px-4 py-3 rounded-lg",
+                        "hover:bg-muted transition-colors text-left",
+                        currentLanguage === 'en' && "bg-muted",
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Languages className="h-5 w-5" />
+                        <span>{t('preferences.language.english')}</span>
+                      </div>
+                      {currentLanguage === 'en' && <Check className="h-5 w-5 text-primary" />}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleLanguageChange('it')}
+                      className={cn(
+                        "w-full flex items-center justify-between px-4 py-3 rounded-lg",
+                        "hover:bg-muted transition-colors text-left",
+                        currentLanguage === 'it' && "bg-muted",
+                      )}
+                    >
+                      <div className="flex items-center gap-3">
+                        <Languages className="h-5 w-5" />
+                        <span>{t('preferences.language.italian')}</span>
+                      </div>
+                      {currentLanguage === 'it' && <Check className="h-5 w-5 text-primary" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </>
   );
 };

@@ -1,0 +1,42 @@
+import { z } from 'zod';
+
+// ============================================================================
+// Zod Schemas - Single Source of Truth
+// ============================================================================
+
+/**
+ * Payment method card details schema
+ */
+export const PaymentMethodCardSchema = z.object({
+  brand: z.string(), // visa, mastercard, amex, etc.
+  last4: z.string().length(4),
+  expMonth: z.number().int().min(1).max(12),
+  expYear: z.number().int(),
+});
+
+/**
+ * Payment method schema
+ */
+export const PaymentMethodSchema = z.object({
+  id: z.string(), // Stripe payment method ID
+  type: z.string(), // 'card', etc.
+  card: PaymentMethodCardSchema,
+  isDefault: z.boolean(),
+  createdAt: z.string().datetime(),
+});
+
+/**
+ * Add payment method request schema
+ */
+export const AddPaymentMethodRequestSchema = z.object({
+  paymentMethodId: z.string(), // From Stripe.js
+  setAsDefault: z.boolean().optional().default(false),
+});
+
+// ============================================================================
+// TypeScript Types - Derived from Zod Schemas
+// ============================================================================
+
+export type PaymentMethodCard = z.infer<typeof PaymentMethodCardSchema>;
+export type PaymentMethod = z.infer<typeof PaymentMethodSchema>;
+export type AddPaymentMethodRequest = z.infer<typeof AddPaymentMethodRequestSchema>;

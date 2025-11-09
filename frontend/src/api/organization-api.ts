@@ -6,6 +6,7 @@ import {
   type OrganizationMembership,
   type Organization,
   type CreateOrganizationRequest,
+  type UpdateOrganizationRequest,
   type OrgRole,
 } from '@/types/organization';
 
@@ -62,6 +63,76 @@ export const organizationApi = {
         method: 'GET',
       },
       OrganizationSchema,
+    );
+  },
+
+  /**
+   * Get organization members
+   * @param orgId Organization ID
+   * @returns List of organization memberships
+   */
+  getOrganizationMembers: (orgId: string): Promise<OrganizationMembership[]> =>
+  {
+    return apiClient.request<OrganizationMembership[]>(
+      `/orgs/${orgId}/members`,
+      {
+        method: 'GET',
+      },
+      z.array(OrganizationMembershipSchema),
+    );
+  },
+
+  /**
+   * Update organization details
+   * @param orgId Organization ID
+   * @param data Updated organization data
+   * @returns Updated organization
+   */
+  updateOrganization: (
+    orgId: string,
+    data: UpdateOrganizationRequest,
+  ): Promise<Organization> =>
+  {
+    return apiClient.request<Organization>(
+      `/orgs/${orgId}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(data),
+      },
+      OrganizationSchema,
+    );
+  },
+
+  /**
+   * Delete organization (owner only)
+   * @param orgId Organization ID
+   * @returns void
+   */
+  deleteOrganization: (orgId: string): Promise<void> =>
+  {
+    return apiClient.request<void>(
+      `/orgs/${orgId}`,
+      {
+        method: 'DELETE',
+      },
+      z.void(),
+    );
+  },
+
+  /**
+   * Remove member from organization (owner only)
+   * @param orgId Organization ID
+   * @param userId User ID to remove
+   * @returns void
+   */
+  removeMember: (orgId: string, userId: string): Promise<void> =>
+  {
+    return apiClient.request<void>(
+      `/orgs/${orgId}/members/${userId}`,
+      {
+        method: 'DELETE',
+      },
+      z.void(),
     );
   },
 };

@@ -16,7 +16,8 @@
         "next": "Avanti",
         "error": "Errore",
         "success": "Successo",
-        "tryAgain": "Riprova"
+        "tryAgain": "Riprova",
+        "you": "tu"
     },
     "auth": {
         "login": {
@@ -527,9 +528,15 @@
         "switchTo": "Passa a {{name}}",
         "role": {
             "label": "Ruolo",
+            "all": "Tutti i Ruoli",
             "owner": "Proprietario",
             "manager": "Manager",
             "staff": "Staff"
+        },
+        "filters": {
+            "searchPlaceholder": "Cerca locali...",
+            "roleFilter": "Filtra per ruolo",
+            "clearFilters": "Cancella filtri"
         },
         "create": {
             "title": "Crea Nuovo Locale",
@@ -560,7 +567,9 @@
         }
     },
     "invitations": {
-        "title": "Inviti",
+        "title": "I Miei Inviti",
+        "myInvitations": "I Miei Inviti",
+        "pendingInvitations": "Inviti In Sospeso",
         "invitedBy": "Invitato da {{name}}",
         "invitedTo": "Invitato a {{orgName}}",
         "created": "Invitato il {{date}}",
@@ -573,6 +582,7 @@
         "declining": "Rifiuto...",
         "accepted": "Accettato",
         "declined": "Rifiutato",
+        "backToOrganizations": "Torna ai Locali",
         "accept": {
             "success": "Invito accettato con successo",
             "error": "Impossibile accettare l'invito"
@@ -582,12 +592,147 @@
             "error": "Impossibile rifiutare l'invito",
             "confirm": "Sei sicuro di voler rifiutare questo invito?"
         },
+        "send": {
+            "title": "Invia Invito",
+            "emailLabel": "Indirizzo Email",
+            "emailPlaceholder": "utente@esempio.com",
+            "roleLabel": "Ruolo",
+            "sending": "Invio invito...",
+            "sendButton": "Invia Invito",
+            "success": "Invito inviato con successo",
+            "error": "Impossibile inviare l'invito"
+        },
+        "revoke": {
+            "button": "Revoca",
+            "revoking": "Revoca...",
+            "confirm": "Sei sicuro di voler revocare questo invito?",
+            "success": "Invito revocato con successo",
+            "error": "Impossibile revocare l'invito"
+        },
         "errors": {
             "loadFailed": "Impossibile caricare gli inviti",
             "loadFailedDescription": "Impossibile caricare gli inviti. Riprova.",
             "invalid": "Invito non valido",
             "expired": "Questo invito è scaduto",
-            "alreadyProcessed": "Questo invito è già stato elaborato"
+            "alreadyProcessed": "Questo invito è già stato elaborato",
+            "alreadyMember": "L'utente è già membro",
+            "alreadyInvited": "L'utente è già stato invitato"
+        }
+    },
+    "members": {
+        "title": "Membri",
+        "count": "{{count}} membro",
+        "count_plural": "{{count}} membri",
+        "noMembers": "Nessun membro trovato",
+        "viewAll": "Visualizza Tutti i Membri",
+        "remove": {
+            "button": "Rimuovi",
+            "removing": "Rimozione...",
+            "confirm": "Sei sicuro di voler rimuovere {{name}} da questa organizzazione?",
+            "confirmDescription": "Perderanno l'accesso a tutte le risorse dell'organizzazione.",
+            "success": "Membro rimosso con successo",
+            "error": "Impossibile rimuovere il membro",
+            "cannotRemoveSelf": "Non puoi rimuovere te stesso"
+        }
+    },
+    "orgManagement": {
+        "title": "Gestione Locale",
+        "tabs": {
+            "overview": "Panoramica",
+            "members": "Membri",
+            "invitations": "Inviti",
+            "subscription": "Abbonamento"
+        },
+        "overview": {
+            "title": "Panoramica Locale",
+            "organizationDetails": "Dettagli Locale",
+            "name": "Nome",
+            "owner": "Proprietario",
+            "createdOn": "Creato Il",
+            "settings": "Impostazioni",
+            "defaultCurrency": "Valuta Predefinita",
+            "quickStats": "Statistiche Rapide",
+            "totalMembers": "Membri Totali",
+            "pendingInvitations": "Inviti In Sospeso",
+            "edit": {
+                "button": "Modifica Locale",
+                "title": "Modifica Locale",
+                "nameLabel": "Nome Locale",
+                "namePlaceholder": "Inserisci il nome del locale",
+                "currencyLabel": "Valuta Predefinita",
+                "saving": "Salvataggio...",
+                "saveButton": "Salva Modifiche",
+                "success": "Locale aggiornato con successo",
+                "error": "Impossibile aggiornare il locale"
+            }
+        },
+        "subscription": {
+            "title": "Abbonamento e Fatturazione",
+            "status": "Stato",
+            "plan": "Piano",
+            "billingInterval": "Intervallo di Fatturazione",
+            "monthly": "Mensile",
+            "yearly": "Annuale",
+            "nextBilling": "Prossima Data di Fatturazione",
+            "trialEnds": "Fine Prova",
+            "autoRenew": "Rinnovo Automatico",
+            "autoRenewEnabled": "Abilitato",
+            "autoRenewDisabled": "Disabilitato",
+            "paymentMethod": "Metodo di Pagamento",
+            "noPaymentMethod": "Nessun metodo di pagamento registrato",
+            "addPaymentMethod": "Aggiungi Metodo di Pagamento",
+            "paymentFailed": {
+                "title": "Pagamento Fallito",
+                "description": "Il tuo pagamento recente è fallito. Aggiorna il tuo metodo di pagamento o riprova.",
+                "retryButton": "Riprova Pagamento",
+                "updateButton": "Aggiorna Metodo di Pagamento"
+            }
+        }
+    },
+    "payment": {
+        "title": "Metodi di Pagamento",
+        "methods": "Metodi di Pagamento",
+        "noMethods": "Nessun metodo di pagamento registrato",
+        "noMethodsDescription": "Aggiungi un metodo di pagamento per gestire il tuo abbonamento.",
+        "addMethod": "Aggiungi Metodo di Pagamento",
+        "defaultLabel": "Predefinito",
+        "setDefaultButton": "Imposta come Predefinito",
+        "removeButton": "Rimuovi",
+        "cardBrand": {
+            "visa": "Visa",
+            "mastercard": "Mastercard",
+            "amex": "American Express",
+            "discover": "Discover",
+            "diners": "Diners Club",
+            "jcb": "JCB",
+            "unionpay": "UnionPay",
+            "unknown": "Carta"
+        },
+        "cardEnding": "•••• {{last4}}",
+        "expiresOn": "Scade {{month}}/{{year}}",
+        "expired": "Scaduto",
+        "add": {
+            "title": "Aggiungi Metodo di Pagamento",
+            "cardNumber": "Numero Carta",
+            "cardExpiry": "Data di Scadenza",
+            "cardCvc": "CVC",
+            "setAsDefault": "Imposta come metodo di pagamento predefinito",
+            "adding": "Aggiunta metodo di pagamento...",
+            "addButton": "Aggiungi Carta",
+            "success": "Metodo di pagamento aggiunto con successo",
+            "error": "Impossibile aggiungere il metodo di pagamento",
+            "stripeError": "Errore di elaborazione del pagamento. Controlla i dettagli della tua carta."
+        },
+        "remove": {
+            "confirm": "Sei sicuro di voler rimuovere questo metodo di pagamento?",
+            "confirmDefault": "Questo è il tuo metodo di pagamento predefinito. Imposta un altro come predefinito prima di rimuoverlo.",
+            "removing": "Rimozione...",
+            "success": "Metodo di pagamento rimosso con successo",
+            "error": "Impossibile rimuovere il metodo di pagamento"
+        },
+        "setDefault": {
+            "success": "Metodo di pagamento predefinito aggiornato",
+            "error": "Impossibile aggiornare il metodo di pagamento predefinito"
         }
     },
     "subscription": {

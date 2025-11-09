@@ -62,6 +62,14 @@ export const CreateOrganizationRequestSchema = z.object({
   settings: OrgSettingsSchema.optional(),
 });
 
+/**
+ * Update organization request schema - for PUT /api/orgs/:id
+ */
+export const UpdateOrganizationRequestSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  settings: OrgSettingsSchema.partial().optional(),
+});
+
 // ============================================================================
 // TypeScript Types - Derived from Zod Schemas
 // ============================================================================
@@ -72,3 +80,4 @@ export type OrganizationPublic = z.infer<typeof OrganizationPublicSchema>;
 export type Organization = z.infer<typeof OrganizationSchema>;
 export type OrganizationMembership = z.infer<typeof OrganizationMembershipSchema>;
 export type CreateOrganizationRequest = z.infer<typeof CreateOrganizationRequestSchema>;
+export type UpdateOrganizationRequest = z.infer<typeof UpdateOrganizationRequestSchema>;

@@ -140,6 +140,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
 };
 ```
 
+### Layout Components
+**Use layout components for spacing and structure instead of custom div elements with Tailwind spacing classes.** The project provides reusable layout components (`Stack`, `Grid`, `PageContainer`, `Section`, `Divider`) that enforce consistent spacing and responsive behavior.
+
+**Key principles:**
+- **Prefer `Stack`** for vertical or horizontal spacing instead of `div` with `space-y-*` or `space-x-*`
+- **Prefer `Grid`** for responsive grid layouts instead of custom `grid` classes
+- **Use semantic components** (`PageContainer`, `Section`) for page structure
+- **Avoid manual spacing** when a layout component exists for that purpose
+- **Exception**: Complex flexbox layouts may still use `div` with flex classes when Stack is insufficient
+
 ## Focus State Patterns
 - **Ring-only**: Use `focus-visible:ring-*` for focus indication, never change borders
 - **Use color variables**: `ring-ring`, `ring-destructive`, `ring-success` (not manual opacity)

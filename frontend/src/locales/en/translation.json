@@ -16,7 +16,8 @@
         "next": "Next",
         "error": "Error",
         "success": "Success",
-        "tryAgain": "Try Again"
+        "tryAgain": "Try Again",
+        "you": "you"
     },
     "auth": {
         "login": {
@@ -526,9 +527,15 @@
         "switchTo": "Switch to {{name}}",
         "role": {
             "label": "Role",
+            "all": "All Roles",
             "owner": "Owner",
             "manager": "Manager",
             "staff": "Staff"
+        },
+        "filters": {
+            "searchPlaceholder": "Search venues...",
+            "roleFilter": "Filter by role",
+            "clearFilters": "Clear filters"
         },
         "create": {
             "title": "Create New Venue",
@@ -559,7 +566,9 @@
         }
     },
     "invitations": {
-        "title": "Invitations",
+        "title": "My Invitations",
+        "myInvitations": "My Invitations",
+        "pendingInvitations": "Pending Invitations",
         "invitedBy": "Invited by {{name}}",
         "invitedTo": "Invited to {{orgName}}",
         "created": "Invited on {{date}}",
@@ -572,6 +581,7 @@
         "declining": "Declining...",
         "accepted": "Accepted",
         "declined": "Declined",
+        "backToOrganizations": "Back to Organizations",
         "accept": {
             "success": "Invitation accepted successfully",
             "error": "Failed to accept invitation"
@@ -581,12 +591,147 @@
             "error": "Failed to decline invitation",
             "confirm": "Are you sure you want to decline this invitation?"
         },
+        "send": {
+            "title": "Send Invitation",
+            "emailLabel": "Email Address",
+            "emailPlaceholder": "user@example.com",
+            "roleLabel": "Role",
+            "sending": "Sending invitation...",
+            "sendButton": "Send Invitation",
+            "success": "Invitation sent successfully",
+            "error": "Failed to send invitation"
+        },
+        "revoke": {
+            "button": "Revoke",
+            "revoking": "Revoking...",
+            "confirm": "Are you sure you want to revoke this invitation?",
+            "success": "Invitation revoked successfully",
+            "error": "Failed to revoke invitation"
+        },
         "errors": {
             "loadFailed": "Failed to load invitations",
             "loadFailedDescription": "Unable to load invitations. Please try again.",
             "invalid": "Invalid invitation",
             "expired": "This invitation has expired",
-            "alreadyProcessed": "This invitation has already been processed"
+            "alreadyProcessed": "This invitation has already been processed",
+            "alreadyMember": "User is already a member",
+            "alreadyInvited": "User has already been invited"
+        }
+    },
+    "members": {
+        "title": "Members",
+        "count": "{{count}} member",
+        "count_plural": "{{count}} members",
+        "noMembers": "No members found",
+        "viewAll": "View All Members",
+        "remove": {
+            "button": "Remove",
+            "removing": "Removing...",
+            "confirm": "Are you sure you want to remove {{name}} from this organization?",
+            "confirmDescription": "They will lose access to all organization resources.",
+            "success": "Member removed successfully",
+            "error": "Failed to remove member",
+            "cannotRemoveSelf": "You cannot remove yourself"
+        }
+    },
+    "orgManagement": {
+        "title": "Organization Management",
+        "tabs": {
+            "overview": "Overview",
+            "members": "Members",
+            "invitations": "Invitations",
+            "subscription": "Subscription"
+        },
+        "overview": {
+            "title": "Organization Overview",
+            "organizationDetails": "Organization Details",
+            "name": "Name",
+            "owner": "Owner",
+            "createdOn": "Created On",
+            "settings": "Settings",
+            "defaultCurrency": "Default Currency",
+            "quickStats": "Quick Stats",
+            "totalMembers": "Total Members",
+            "pendingInvitations": "Pending Invitations",
+            "edit": {
+                "button": "Edit Organization",
+                "title": "Edit Organization",
+                "nameLabel": "Organization Name",
+                "namePlaceholder": "Enter organization name",
+                "currencyLabel": "Default Currency",
+                "saving": "Saving...",
+                "saveButton": "Save Changes",
+                "success": "Organization updated successfully",
+                "error": "Failed to update organization"
+            }
+        },
+        "subscription": {
+            "title": "Subscription & Billing",
+            "status": "Status",
+            "plan": "Plan",
+            "billingInterval": "Billing Interval",
+            "monthly": "Monthly",
+            "yearly": "Yearly",
+            "nextBilling": "Next Billing Date",
+            "trialEnds": "Trial Ends",
+            "autoRenew": "Auto-Renew",
+            "autoRenewEnabled": "Enabled",
+            "autoRenewDisabled": "Disabled",
+            "paymentMethod": "Payment Method",
+            "noPaymentMethod": "No payment method on file",
+            "addPaymentMethod": "Add Payment Method",
+            "paymentFailed": {
+                "title": "Payment Failed",
+                "description": "Your recent payment failed. Please update your payment method or try again.",
+                "retryButton": "Retry Payment",
+                "updateButton": "Update Payment Method"
+            }
+        }
+    },
+    "payment": {
+        "title": "Payment Methods",
+        "methods": "Payment Methods",
+        "noMethods": "No payment methods on file",
+        "noMethodsDescription": "Add a payment method to manage your subscription.",
+        "addMethod": "Add Payment Method",
+        "defaultLabel": "Default",
+        "setDefaultButton": "Set as Default",
+        "removeButton": "Remove",
+        "cardBrand": {
+            "visa": "Visa",
+            "mastercard": "Mastercard",
+            "amex": "American Express",
+            "discover": "Discover",
+            "diners": "Diners Club",
+            "jcb": "JCB",
+            "unionpay": "UnionPay",
+            "unknown": "Card"
+        },
+        "cardEnding": "•••• {{last4}}",
+        "expiresOn": "Expires {{month}}/{{year}}",
+        "expired": "Expired",
+        "add": {
+            "title": "Add Payment Method",
+            "cardNumber": "Card Number",
+            "cardExpiry": "Expiry Date",
+            "cardCvc": "CVC",
+            "setAsDefault": "Set as default payment method",
+            "adding": "Adding payment method...",
+            "addButton": "Add Card",
+            "success": "Payment method added successfully",
+            "error": "Failed to add payment method",
+            "stripeError": "Payment processing error. Please check your card details."
+        },
+        "remove": {
+            "confirm": "Are you sure you want to remove this payment method?",
+            "confirmDefault": "This is your default payment method. Set another as default before removing.",
+            "removing": "Removing...",
+            "success": "Payment method removed successfully",
+            "error": "Failed to remove payment method"
+        },
+        "setDefault": {
+            "success": "Default payment method updated",
+            "error": "Failed to update default payment method"
         }
     },
     "subscription": {

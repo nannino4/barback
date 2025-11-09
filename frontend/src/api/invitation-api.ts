@@ -3,6 +3,7 @@ import { z } from 'zod';
 import {
   InvitationSchema,
   type Invitation,
+  type CreateInvitationRequest,
 } from '@/types/invitation';
 
 // ============================================================================
@@ -53,6 +54,60 @@ export const invitationApi = {
       `/invites/${invitationId}/decline`,
       {
         method: 'POST',
+      },
+      InvitationSchema,
+    );
+  },
+
+  /**
+   * Get pending invitations for an organization (owner/manager)
+   * @param orgId Organization ID
+   * @returns List of pending invitations
+   */
+  getOrganizationInvitations: (orgId: string): Promise<Invitation[]> =>
+  {
+    return apiClient.request<Invitation[]>(
+      `/orgs/${orgId}/invitations`,
+      {
+        method: 'GET',
+      },
+      z.array(InvitationSchema),
+    );
+  },
+
+  /**
+   * Send invitation to join organization (owner/manager)
+   * @param orgId Organization ID
+   * @param data Invitation data (email, role)
+   * @returns Created invitation
+   */
+  sendInvitation: (
+    orgId: string,
+    data: CreateInvitationRequest,
+  ): Promise<Invitation> =>
+  {
+    return apiClient.request<Invitation>(
+      `/orgs/${orgId}/invitations`,
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      },
+      InvitationSchema,
+    );
+  },
+
+  /**
+   * Revoke pending invitation (owner/manager)
+   * @param orgId Organization ID
+   * @param invitationId Invitation ID
+   * @returns Updated invitation
+   */
+  revokeInvitation: (orgId: string, invitationId: string): Promise<Invitation> =>
+  {
+    return apiClient.request<Invitation>(
+      `/orgs/${orgId}/invitations/${invitationId}`,
+      {
+        method: 'DELETE',
       },
       InvitationSchema,
     );

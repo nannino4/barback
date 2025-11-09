@@ -2,6 +2,7 @@ import { Check } from 'lucide-react';
 import { DropdownMenuItem, DropdownMenuLabel } from '@/components/ui/dropdown-menu';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
+import { Stack } from '../layout';
 
 interface LanguageSelectorProps {
   currentLanguage: string;
@@ -49,11 +50,11 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 
   // Mobile variant
   return (
-    <div className="space-y-4 px-4">
+    <Stack space="md" className="px-4">
       <h3 className="text-sm font-medium text-muted-foreground">
         {t('preferences.language.title')}
       </h3>
-      <div className="space-y-2">
+      <Stack space="sm">
         {languages.map(({ value, label }) => (
           <button
             key={value}
@@ -69,7 +70,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
             {currentLanguage === value && <Check className="h-5 w-5 text-primary" />}
           </button>
         ))}
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   );
 };

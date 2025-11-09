@@ -1,5 +1,6 @@
 import type { User } from '@/types/user';
 import { UserAvatar } from './UserAvatar';
+import { Stack } from '../layout';
 
 interface UserInfoProps {
   user: User;
@@ -19,23 +20,23 @@ export const UserInfo: React.FC<UserInfoProps> = ({ user, variant }) =>
   if (variant === 'desktop')
   {
     return (
-      <div className="flex flex-col space-y-1 font-normal">
+      <Stack space="xs" className="font-normal">
         <p className="text-sm font-medium leading-none">{userFullName}</p>
         <p className="text-xs leading-none text-muted-foreground">
           {user.email}
         </p>
-      </div>
+      </Stack>
     );
   }
 
   // Mobile variant
   return (
-    <div className="flex items-center gap-4 pb-6 border-b border-border">
+    <Stack direction="horizontal" space="md" align="center">
       <UserAvatar user={user} size="lg" />
-      <div className="flex-1 min-w-0">
+      <Stack space="xs" className="flex-1 min-w-0">
         <p className="text-lg font-semibold truncate">{userFullName}</p>
         <p className="text-sm text-muted-foreground truncate">{user.email}</p>
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   );
 };

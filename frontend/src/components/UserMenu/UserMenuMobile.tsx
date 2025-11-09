@@ -20,7 +20,7 @@ import { UserInfo } from './UserInfo';
 import { OrganizationMenuItem } from './OrganizationMenuItem';
 import { ThemeSelector } from './ThemeSelector';
 import { LanguageSelector } from './LanguageSelector';
-import { Stack } from '../layout';
+import { Stack, Divider } from '../layout';
 
 /**
  * UserMenuMobile - Mobile sheet menu implementation
@@ -91,6 +91,8 @@ export const UserMenuMobile: React.FC = () =>
             {/* User Info Header */}
             <UserInfo user={user} variant="mobile" />
 
+            <Divider />
+
             {/* Current Organization */}
             <OrganizationMenuItem
               currentOrg={currentOrg}
@@ -98,8 +100,10 @@ export const UserMenuMobile: React.FC = () =>
               variant="mobile"
             />
 
+            <Divider />
+
             {/* Menu Items */}
-            <nav className="flex-1 py-4 space-y-1">
+            <Stack space="xs" className="flex-1 py-4">
               {/* Account */}
               <button
                 type="button"
@@ -128,10 +132,12 @@ export const UserMenuMobile: React.FC = () =>
                 <span className="flex-1 font-medium">{t('menu.preferences')}</span>
                 <ChevronRight className="h-5 w-5 text-muted-foreground" />
               </button>
-            </nav>
+            </Stack>
+
+            <Divider />
 
             {/* Logout Button */}
-            <div className="pt-4 border-t border-border">
+            <Stack className="pt-4">
               <button
                 type="button"
                 onClick={handleLogout}
@@ -144,13 +150,13 @@ export const UserMenuMobile: React.FC = () =>
                 <LogOut className="h-5 w-5" />
                 <span className="flex-1 font-medium">{t('nav.logout')}</span>
               </button>
-            </div>
+            </Stack>
           </Stack>
         )}
 
         {/* Preferences View */}
         {mobileView === 'preferences' && (
-          <Stack direction="vertical" className="pt-16">
+          <Stack direction="vertical" space="lg" className="pt-16">
             {/* Back Button */}
             <button
               type="button"
@@ -161,21 +167,19 @@ export const UserMenuMobile: React.FC = () =>
               <span>{t('common.back')}</span>
             </button>
 
-            <div className="space-y-6">
-              {/* Theme Selection */}
-              <ThemeSelector
-                currentTheme={theme}
-                onThemeChange={setTheme}
-                variant="mobile"
-              />
+            {/* Theme Selection */}
+            <ThemeSelector
+              currentTheme={theme}
+              onThemeChange={setTheme}
+              variant="mobile"
+            />
 
-              {/* Language Selection */}
-              <LanguageSelector
-                currentLanguage={currentLanguage}
-                onLanguageChange={changeLanguage}
-                variant="mobile"
-              />
-            </div>
+            {/* Language Selection */}
+            <LanguageSelector
+              currentLanguage={currentLanguage}
+              onLanguageChange={changeLanguage}
+              variant="mobile"
+            />
           </Stack>
         )}
       </SheetContent>

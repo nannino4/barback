@@ -2,6 +2,7 @@ import { Check, Monitor, Sun, Moon } from 'lucide-react';
 import { DropdownMenuItem, DropdownMenuLabel } from '@/components/ui/dropdown-menu';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
+import { Stack } from '../layout';
 
 interface ThemeSelectorProps {
   currentTheme: 'light' | 'dark' | 'system';
@@ -40,10 +41,10 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
             onClick={() => onThemeChange(value)}
             className="cursor-pointer flex items-center justify-between"
           >
-            <div className="flex items-center gap-2">
+            <Stack direction="horizontal" space="sm" align="center">
               <Icon className="h-4 w-4" />
               <span>{label}</span>
-            </div>
+            </Stack>
             {currentTheme === value && <Check className="h-4 w-4" />}
           </DropdownMenuItem>
         ))}
@@ -53,11 +54,11 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
 
   // Mobile variant
   return (
-    <div className="space-y-4 px-4">
+    <Stack space="md" className="px-4">
       <h3 className="text-sm font-medium text-muted-foreground">
         {t('preferences.theme.title')}
       </h3>
-      <div className="space-y-2">
+      <Stack space="sm">
         {themes.map(({ value, icon: Icon, label }) => (
           <button
             key={value}
@@ -74,7 +75,7 @@ export const ThemeSelector: React.FC<ThemeSelectorProps> = ({
             {currentTheme === value && <Check className="h-5 w-5 text-primary" />}
           </button>
         ))}
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   );
 };

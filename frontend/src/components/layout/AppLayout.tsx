@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
-import { TopNav } from '@/components/TopNav';
-import { BottomNav } from '@/components/BottomNav';
+import { TopNav } from '@/components/layout/TopNav';
+import { BottomNav } from '@/components/layout/BottomNav';
 
 /**
  * AppLayout - Main application layout for all pages

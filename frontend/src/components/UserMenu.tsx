@@ -293,12 +293,16 @@ export const UserMenu: React.FC = () =>
                 </div>
               </div>
 
-              {/* Current Organization */}
-              <div className="py-4 border-b border-border">
+              {/* Current Organization - Clickable */}
+              <button
+                type="button"
+                onClick={() => handleNavigate('/organizations')}
+                className="w-full py-4 border-b border-border hover:bg-muted/50 transition-colors"
+              >
                 {currentOrg ? (
                   <div className="flex items-center gap-3 px-2 py-2">
                     <Building2 className="h-5 w-5 text-muted-foreground" />
-                    <div className="flex-1 min-w-0">
+                    <div className="flex-1 min-w-0 text-left">
                       <p className="text-xs text-muted-foreground">
                         {t('menu.currentVenue')}
                       </p>
@@ -306,33 +310,21 @@ export const UserMenu: React.FC = () =>
                         {currentOrg.org.name}
                       </p>
                     </div>
+                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
                   </div>
                 ) : (
                   <div className="flex items-center gap-3 px-2 py-2">
                     <Building2 className="h-5 w-5 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground flex-1 text-left">
                       {t('organizations.noOrganizations')}
                     </p>
+                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
                   </div>
                 )}
-              </div>
+              </button>
 
               {/* Menu Items */}
               <nav className="flex-1 py-4 space-y-1">
-                {/* Current Venue */}
-                <button
-                  type="button"
-                  onClick={() => handleNavigate('/organizations')}
-                  className={cn(
-                    "w-full flex items-center gap-3 px-4 py-3 rounded-lg",
-                    "hover:bg-muted transition-colors text-left",
-                  )}
-                >
-                  <Building2 className="h-5 w-5" />
-                  <span className="flex-1 font-medium">{t('menu.currentVenue')}</span>
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                </button>
-
                 {/* Account */}
                 <button
                   type="button"

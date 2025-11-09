@@ -97,12 +97,15 @@ export const useOrganizations = () =>
       setOrganizations(organizationsQuery.data);
       
       // Auto-select if only one org and no current selection
+      // Note: We intentionally don't include currentOrg in deps to avoid infinite loops.
+      // This effect should only run when the query data changes from the API.
       if (organizationsQuery.data.length === 1 && !currentOrg)
       {
         setCurrentOrg(organizationsQuery.data[0]);
       }
     }
-  }, [organizationsQuery.data, setOrganizations, setCurrentOrg, currentOrg]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [organizationsQuery.data, setOrganizations, setCurrentOrg]);
 
   /**
    * Switch to a different organization

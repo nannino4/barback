@@ -639,6 +639,13 @@
     "menu": {
         "currentVenue": "Current Venue",
         "account": "Account",
-        "preferences": "Preferences"
+        "preferences": "Preferences",
+        "openUserMenu": "Open user menu",
+        "viewOrganizations": "View organizations",
+        "viewAccount": "View account settings",
+        "openPreferences": "Open preferences",
+        "userMenu": "User Menu",
+        "userMenuDescription": "Access your account settings, organization management, and preferences",
+        "preferencesDescription": "Customize your theme and language preferences"
     }
 }

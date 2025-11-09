@@ -640,6 +640,13 @@
     "menu": {
         "currentVenue": "Locale Corrente",
         "account": "Account",
-        "preferences": "Preferenze"
+        "preferences": "Preferenze",
+        "openUserMenu": "Apri menu utente",
+        "viewOrganizations": "Visualizza locali",
+        "viewAccount": "Visualizza impostazioni account",
+        "openPreferences": "Apri preferenze",
+        "userMenu": "Menu Utente",
+        "userMenuDescription": "Accedi alle impostazioni dell'account, alla gestione dei locali e alle preferenze",
+        "preferencesDescription": "Personalizza il tema e le preferenze della lingua"
     }
 }

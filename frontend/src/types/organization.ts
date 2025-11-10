@@ -70,6 +70,15 @@ export const UpdateOrganizationRequestSchema = z.object({
   settings: OrgSettingsSchema.partial().optional(),
 });
 
+/**
+ * Edit organization form schema - for client-side form validation
+ * Used in EditOrganizationDialog component
+ */
+export const EditOrganizationFormSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
+  defaultCurrency: z.string().length(3, 'Currency code must be 3 characters').toUpperCase(),
+});
+
 // ============================================================================
 // TypeScript Types - Derived from Zod Schemas
 // ============================================================================
@@ -81,3 +90,4 @@ export type Organization = z.infer<typeof OrganizationSchema>;
 export type OrganizationMembership = z.infer<typeof OrganizationMembershipSchema>;
 export type CreateOrganizationRequest = z.infer<typeof CreateOrganizationRequestSchema>;
 export type UpdateOrganizationRequest = z.infer<typeof UpdateOrganizationRequestSchema>;
+export type EditOrganizationFormData = z.infer<typeof EditOrganizationFormSchema>;

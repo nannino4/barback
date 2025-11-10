@@ -6,10 +6,15 @@ import { BottomNav } from '@/components/layout/BottomNav';
  * AppLayout - Main application layout for all pages
  * 
  * Provides:
- * - Consistent top navigation bar (sticky)
- * - Bottom navigation bar (mobile-only, auth-only)
+ * - Consistent top navigation bar (sticky to top)
+ * - Bottom navigation bar (fixed to bottom, mobile-only, auth-only)
  * - Main content outlet
- * - Padding for bottom nav on mobile (pb-16 to prevent content overlap)
+ * - Bottom padding on mobile to prevent overlap with fixed bottom nav
+ * 
+ * Layout Structure:
+ * - TopNav: Sticky positioned (stays at top while scrolling, doesn't overlap content)
+ * - Main: Fills space below TopNav with bottom padding for mobile nav
+ * - BottomNav: Fixed at bottom (mobile only, overlays content)
  * 
  * Note: Individual pages should use PageContainer for consistent padding/max-width
  */
@@ -17,10 +22,15 @@ export function AppLayout()
 {
   return (
     <div className="min-h-screen bg-background">
+      {/* Sticky Top Navigation - Takes up space in flow */}
       <TopNav />
+      
+      {/* Main Content Area - Only needs bottom padding for fixed mobile nav */}
       <main className="pb-16 md:pb-0">
         <Outlet />
       </main>
+      
+      {/* Fixed Bottom Navigation (Mobile Only) - Overlays content */}
       <BottomNav />
     </div>
   );

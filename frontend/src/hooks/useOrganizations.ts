@@ -10,6 +10,7 @@ import type {
   OrganizationMembership,
   OrgRole,
   CreateOrganizationRequest,
+  EditOrganizationFormData,
 } from '@/types/organization';
 import type { CreateSubscriptionRequest } from '@/types/subscription';
 
@@ -88,6 +89,38 @@ export const useOrganizations = () =>
   });
 
   /**
+   * Mutation to update an organization
+   */
+  const updateOrganizationMutation = useMutation({
+    mutationFn: ({ 
+      orgId, 
+      data,
+    }: {
+      orgId: string;
+      data: EditOrganizationFormData;
+    }) =>
+      organizationApi.updateOrganization(orgId, {
+        name: data.name,
+        settings: {
+          defaultCurrency: data.defaultCurrency,
+        },
+      }),
+    onSuccess: (_, variables) =>
+    {
+      // Invalidate queries to refetch data
+      void queryClient.invalidateQueries({
+        queryKey: ['organization', variables.orgId],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: ['organizations'],
+      });
+      
+      toast.success(t('orgManagement.overview.edit.success'));
+    },
+    // No onError - errors are displayed declaratively in the component
+  });
+
+  /**
    * Update organizations in store when query succeeds
    */
   useEffect(() =>
@@ -131,11 +164,14 @@ export const useOrganizations = () =>
     
     // Actions
     createOrganization: createOrganizationMutation.mutate,
+    updateOrganization: updateOrganizationMutation.mutate,
     switchOrganization,
     useOrganizationsByRole,
     
     // Mutation states
     isCreating: createOrganizationMutation.isPending,
     createError: createOrganizationMutation.error,
+    isUpdating: updateOrganizationMutation.isPending,
+    updateError: updateOrganizationMutation.error,
   };
 };

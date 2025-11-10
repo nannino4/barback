@@ -6,13 +6,15 @@ import { GlobalErrorBoundary } from '@/components/ErrorBoundary'
 import { AuthProvider } from '@/components/features/auth/AuthProvider'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { VerifiedRoute } from '@/components/features/auth/VerifiedRoute'
-import { OrganizationRoute } from '@/components/features/organizations/OrganizationRoute'
+import { HasCurrentOrgRoute } from '@/components/features/organizations/HasCurrentOrgRoute'
 import { AuthRouter } from '@/components/features/auth/AuthRouter'
 import { Dashboard } from '@/pages/Dashboard'
 import { InventoryPage } from '@/pages/InventoryPage'
 import { OrdersPage } from '@/pages/OrdersPage'
 import { LandingPage } from '@/pages/LandingPage'
-import { OrganizationsPage } from '@/pages/OrganizationsPage'
+import { OrganizationSelectPage } from '@/pages/OrganizationSelectPage'
+import { MyInvitationsPage } from '@/pages/MyInvitationsPage'
+import { OrganizationManagePage } from '@/pages/OrganizationManagePage'
 import { AccountPage } from '@/pages/AccountPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import DesignSystemPage from '@/pages/DesignSystemPage'
@@ -75,67 +77,29 @@ function AppContent()
           {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           
+          {/* Auth routes */}
+          <Route path="/auth/*" element={<AuthRouter />} />
+          
           {/* Design System Showcase */}
           <Route path="/design-system" element={<DesignSystemPage />} />
           
-          {/* Organizations Page - Requires email verification only */}
-          <Route
-            path="/organizations"
-            element={
-              <VerifiedRoute>
-                <OrganizationsPage />
-              </VerifiedRoute>
-            }
-          />
+          {/* Organization Selection Route - Requires authentication AND email verification */}
+          <Route element={<VerifiedRoute />}>
+            <Route path="/organizations" element={<OrganizationSelectPage />} />
+          </Route>
           
-          {/* Account Page - Requires email verification only */}
-          <Route
-            path="/account"
-            element={
-              <VerifiedRoute>
-                <AccountPage />
-              </VerifiedRoute>
-            }
-          />
           
-          {/* Protected Dashboard - Requires authentication, email verification, AND organization selection */}
-          <Route
-            path="/dashboard"
-            element={
-              <VerifiedRoute>
-                <OrganizationRoute>
-                  <Dashboard />
-                </OrganizationRoute>
-              </VerifiedRoute>
-            }
-          />
-          
-          {/* Protected Inventory Page */}
-          <Route
-            path="/inventory"
-            element={
-              <VerifiedRoute>
-                <OrganizationRoute>
-                  <InventoryPage />
-                </OrganizationRoute>
-              </VerifiedRoute>
-            }
-          />
-          
-          {/* Protected Orders Page */}
-          <Route
-            path="/orders"
-            element={
-              <VerifiedRoute>
-                <OrganizationRoute>
-                  <OrdersPage />
-                </OrganizationRoute>
-              </VerifiedRoute>
-            }
-          />
-          
-          {/* Auth routes */}
-          <Route path="/auth/*" element={<AuthRouter />} />
+          {/* Protected Routes - Requires authentication, email verification, AND organization selection */}
+          <Route element={<VerifiedRoute />}>
+            <Route element={<HasCurrentOrgRoute />}>
+              <Route path="/invitations" element={<MyInvitationsPage />} />
+              <Route path="/org/:orgId/manage" element={<OrganizationManagePage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/inventory" element={<InventoryPage />} />
+              <Route path="/orders" element={<OrdersPage />} />
+              <Route path="/account" element={<AccountPage />} />
+            </Route>
+          </Route>
 
           {/* 404 Not Found - Catch-all route */}
           <Route path="*" element={<NotFoundPage />} />

@@ -8,6 +8,8 @@ import { useI18n } from '@/hooks/useI18n';
 import { useQuery } from '@tanstack/react-query';
 import { organizationApi } from '@/api/organization-api';
 import { invitationApi } from '@/api/invitation-api';
+import { queryKeys } from '@/lib/queryKeys';
+import { CACHE_TIMES } from '@/lib/cacheTimes';
 import type { Organization } from '@/types/organization';
 
 interface OrganizationOverviewTabProps
@@ -37,18 +39,18 @@ export const OrganizationOverviewTab: React.FC<OrganizationOverviewTabProps> = (
    * Fetch organization members for count
    */
   const membersQuery = useQuery({
-    queryKey: ['organization', orgId, 'members'],
+    queryKey: queryKeys.organizations.members(orgId),
     queryFn: () => organizationApi.getOrganizationMembers(orgId),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: CACHE_TIMES.ORGANIZATION_MEMBERS,
   });
 
   /**
    * Fetch pending invitations for count
    */
   const invitationsQuery = useQuery({
-    queryKey: ['organization', orgId, 'invitations'],
+    queryKey: queryKeys.organizations.invitations(orgId),
     queryFn: () => invitationApi.getOrganizationInvitations(orgId),
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: CACHE_TIMES.INVITATIONS,
   });
 
   const memberCount = membersQuery.data?.length ?? 0;

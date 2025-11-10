@@ -16,6 +16,8 @@ import { useI18n } from '@/hooks/useI18n';
 import { useOrganizations } from '@/hooks/useOrganizations';
 import { subscriptionApi } from '@/api/subscription-api';
 import { isKnownError, getLocalizedErrorMessage } from '@/lib/errors';
+import { queryKeys } from '@/lib/queryKeys';
+import { CACHE_TIMES } from '@/lib/cacheTimes';
 import { cn } from '@/lib/utils';
 import type { CreateOrganizationRequest } from '@/types/organization';
 
@@ -39,10 +41,10 @@ export const CreateOrganizationDialog: React.FC<CreateOrganizationDialogProps> =
 
   // Query to check trial eligibility
   const trialEligibilityQuery = useQuery({
-    queryKey: ['trial-eligibility'],
+    queryKey: queryKeys.subscriptions.trialEligibility,
     queryFn: () => subscriptionApi.checkTrialEligibility(),
     enabled: open, // Only run when dialog is open
-    staleTime: Infinity, // Cache for the entire session
+    staleTime: CACHE_TIMES.TRIAL_ELIGIBILITY,
   });
 
   // Reset form when dialog opens/closes

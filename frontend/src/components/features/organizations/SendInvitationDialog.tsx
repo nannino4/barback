@@ -21,6 +21,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { invitationApi } from '@/api/invitation-api';
 import toast from 'react-hot-toast';
 import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
+import { queryKeys } from '@/lib/queryKeys';
 import type { OrgRole } from '@/types/organization';
 
 interface SendInvitationDialogProps
@@ -61,7 +62,7 @@ export const SendInvitationDialog: React.FC<SendInvitationDialogProps> = ({
     onSuccess: () =>
     {
       // Invalidate queries
-      void queryClient.invalidateQueries({ queryKey: ['organization', orgId, 'invitations'] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.invitations(orgId) });
       
       // Show success toast
       toast.success(t('invitations.send.success'));

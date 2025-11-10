@@ -11,6 +11,8 @@ import { OrganizationCardSkeleton } from '@/components/features/organizations/Or
 import { useI18n } from '@/hooks/useI18n';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { invitationApi } from '@/api/invitation-api';
+import { queryKeys } from '@/lib/queryKeys';
+import { CACHE_TIMES } from '@/lib/cacheTimes';
 
 interface OrganizationInvitationsTabProps
 {
@@ -46,9 +48,9 @@ export const OrganizationInvitationsTab: React.FC<OrganizationInvitationsTabProp
    * Fetch organization invitations
    */
   const invitationsQuery = useQuery({
-    queryKey: ['organization', orgId, 'invitations'],
+    queryKey: queryKeys.organizations.invitations(orgId),
     queryFn: () => invitationApi.getOrganizationInvitations(orgId),
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: CACHE_TIMES.INVITATIONS,
   });
 
   /**
@@ -60,10 +62,10 @@ export const OrganizationInvitationsTab: React.FC<OrganizationInvitationsTabProp
     {
       // Invalidate queries to refetch data
       void queryClient.invalidateQueries({
-        queryKey: ['organization', orgId, 'invitations'],
+        queryKey: queryKeys.organizations.invitations(orgId),
       });
       void queryClient.invalidateQueries({
-        queryKey: ['organization', orgId],
+        queryKey: queryKeys.organizations.detail(orgId),
       });
 
       toast.success(t('invitations.revoke.success'));

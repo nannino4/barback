@@ -8,6 +8,8 @@ import { useQuery } from '@tanstack/react-query';
 import { organizationApi } from '@/api/organization-api';
 import { subscriptionApi } from '@/api/subscription-api';
 import { Skeleton } from '@/components/ui/skeleton';
+import { queryKeys } from '@/lib/queryKeys';
+import { CACHE_TIMES } from '@/lib/cacheTimes';
 import { cn } from '@/lib/utils';
 import type { SubscriptionStatus } from '@/types/subscription';
 
@@ -38,19 +40,19 @@ export const OrganizationSubscriptionTab: React.FC<OrganizationSubscriptionTabPr
    * Fetch organization details to get subscription ID
    */
   const organizationQuery = useQuery({
-    queryKey: ['organization', orgId],
+    queryKey: queryKeys.organizations.detail(orgId),
     queryFn: () => organizationApi.getOrganizationById(orgId),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: CACHE_TIMES.ORGANIZATIONS,
   });
 
   /**
    * Fetch all subscriptions (to find this org's subscription)
    */
   const subscriptionsQuery = useQuery({
-    queryKey: ['subscriptions'],
+    queryKey: queryKeys.subscriptions.all,
     queryFn: () => subscriptionApi.getSubscriptions(),
     enabled: !!organizationQuery.data,
-    staleTime: 2 * 60 * 1000, // 2 minutes
+    staleTime: CACHE_TIMES.SUBSCRIPTIONS,
   });
 
   /**

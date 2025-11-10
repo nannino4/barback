@@ -10,6 +10,8 @@ import { useI18n } from '@/hooks/useI18n';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { organizationApi } from '@/api/organization-api';
 import { useAuthStore } from '@/stores/authStore';
+import { queryKeys } from '@/lib/queryKeys';
+import { CACHE_TIMES } from '@/lib/cacheTimes';
 
 interface OrganizationMembersTabProps
 {
@@ -44,9 +46,9 @@ export const OrganizationMembersTab: React.FC<OrganizationMembersTabProps> = ({
    * Fetch organization members
    */
   const membersQuery = useQuery({
-    queryKey: ['organization', orgId, 'members'],
+    queryKey: queryKeys.organizations.members(orgId),
     queryFn: () => organizationApi.getOrganizationMembers(orgId),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: CACHE_TIMES.ORGANIZATION_MEMBERS,
   });
 
   /**
@@ -58,10 +60,10 @@ export const OrganizationMembersTab: React.FC<OrganizationMembersTabProps> = ({
     {
       // Invalidate queries to refetch data
       void queryClient.invalidateQueries({
-        queryKey: ['organization', orgId, 'members'],
+        queryKey: queryKeys.organizations.members(orgId),
       });
       void queryClient.invalidateQueries({
-        queryKey: ['organization', orgId],
+        queryKey: queryKeys.organizations.detail(orgId),
       });
 
       toast.success(t('members.remove.success'));

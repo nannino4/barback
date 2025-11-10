@@ -14,6 +14,8 @@ import { useQuery } from '@tanstack/react-query';
 import { organizationApi } from '@/api/organization-api';
 import { RoleBadge } from '@/components/features/organizations/RoleBadge';
 import { useOrganizationStore } from '@/stores/organizationStore';
+import { queryKeys } from '@/lib/queryKeys';
+import { CACHE_TIMES } from '@/lib/cacheTimes';
 
 // Tab components will be created next
 // import { OrganizationOverviewTab } from '@/components/features/organizations/tabs/OrganizationOverviewTab';
@@ -52,10 +54,10 @@ export const OrganizationManagePage: React.FC = () =>
    * Fetch organization details
    */
   const organizationQuery = useQuery({
-    queryKey: ['organization', orgId],
+    queryKey: queryKeys.organizations.detail(orgId!),
     queryFn: () => organizationApi.getOrganizationById(orgId!),
     enabled: !!orgId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: CACHE_TIMES.ORGANIZATIONS,
   });
 
   /**

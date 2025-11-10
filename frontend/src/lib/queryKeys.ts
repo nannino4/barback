@@ -1,0 +1,60 @@
+import type { OrgRole } from '@/types/organization';
+
+/**
+ * Centralized TanStack Query keys for consistent cache management
+ * 
+ * Benefits:
+ * - Type-safe query keys
+ * - Single source of truth
+ * - Easy to refactor
+ * - Prevents typos
+ * - Better autocomplete
+ * 
+ * Usage:
+ * ```tsx
+ * useQuery({
+ *   queryKey: queryKeys.organizations.all,
+ *   queryFn: () => organizationApi.getOrganizations(),
+ * })
+ * ```
+ */
+export const queryKeys = {
+  /**
+   * Organization-related queries
+   */
+  organizations: {
+    /** All organizations for the current user */
+    all: ['organizations'] as const,
+    
+    /** Organizations filtered by role */
+    byRole: (role: OrgRole) => ['organizations', role] as const,
+    
+    /** Single organization by ID */
+    detail: (orgId: string) => ['organization', orgId] as const,
+    
+    /** Organization members */
+    members: (orgId: string) => ['organization', orgId, 'members'] as const,
+    
+    /** Organization invitations (pending) */
+    invitations: (orgId: string) => ['organization', orgId, 'invitations'] as const,
+  },
+
+  /**
+   * Invitation-related queries
+   */
+  invitations: {
+    /** All pending invitations for current user */
+    pending: ['invitations'] as const,
+  },
+
+  /**
+   * Subscription-related queries
+   */
+  subscriptions: {
+    /** All subscriptions for current user */
+    all: ['subscriptions'] as const,
+    
+    /** Trial eligibility check */
+    trialEligibility: ['trial-eligibility'] as const,
+  },
+} as const;

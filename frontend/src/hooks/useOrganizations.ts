@@ -6,6 +6,8 @@ import { useOrganizationStore } from '@/stores/organizationStore';
 import { organizationApi } from '@/api/organization-api';
 import { subscriptionApi } from '@/api/subscription-api';
 import { useI18n } from '@/hooks/useI18n';
+import { queryKeys } from '@/lib/queryKeys';
+import { CACHE_TIMES } from '@/lib/cacheTimes';
 import type {
   OrganizationMembership,
   OrgRole,
@@ -34,9 +36,9 @@ export const useOrganizations = () =>
    * Query to fetch all organizations the user is a member of
    */
   const organizationsQuery = useQuery({
-    queryKey: ['organizations'],
+    queryKey: queryKeys.organizations.all,
     queryFn: () => organizationApi.getOrganizations(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: CACHE_TIMES.ORGANIZATIONS,
   });
 
   /**
@@ -45,9 +47,9 @@ export const useOrganizations = () =>
   const useOrganizationsByRole = (role: OrgRole) =>
   {
     return useQuery({
-      queryKey: ['organizations', role],
+      queryKey: queryKeys.organizations.byRole(role),
       queryFn: () => organizationApi.getOrganizations(role),
-      staleTime: 5 * 60 * 1000,
+      staleTime: CACHE_TIMES.ORGANIZATIONS,
     });
   };
 
@@ -78,7 +80,7 @@ export const useOrganizations = () =>
     onSuccess: () =>
     {
       // Invalidate and refetch organizations
-      void queryClient.invalidateQueries({ queryKey: ['organizations'] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.all });
       
       toast.success(t('organizations.create.success'));
       
@@ -109,10 +111,10 @@ export const useOrganizations = () =>
     {
       // Invalidate queries to refetch data
       void queryClient.invalidateQueries({
-        queryKey: ['organization', variables.orgId],
+        queryKey: queryKeys.organizations.detail(variables.orgId),
       });
       void queryClient.invalidateQueries({
-        queryKey: ['organizations'],
+        queryKey: queryKeys.organizations.all,
       });
       
       toast.success(t('orgManagement.overview.edit.success'));

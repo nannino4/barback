@@ -4,6 +4,8 @@ import toast from 'react-hot-toast';
 import { useOrganizationStore } from '@/stores/organizationStore';
 import { invitationApi } from '@/api/invitation-api';
 import { useI18n } from '@/hooks/useI18n';
+import { queryKeys } from '@/lib/queryKeys';
+import { CACHE_TIMES } from '@/lib/cacheTimes';
 import type { Invitation } from '@/types/invitation';
 
 /**
@@ -23,9 +25,9 @@ export const useInvitations = () =>
    * Query to fetch pending invitations for the current user
    */
   const invitationsQuery = useQuery({
-    queryKey: ['invitations'],
+    queryKey: queryKeys.invitations.pending,
     queryFn: () => invitationApi.getPendingInvitations(),
-    staleTime: 2 * 60 * 1000, // 2 minutes (shorter than organizations since invites are time-sensitive)
+    staleTime: CACHE_TIMES.INVITATIONS,
   });
 
   /**
@@ -41,8 +43,8 @@ export const useInvitations = () =>
       );
       
       // Invalidate queries to refresh organization list
-      void queryClient.invalidateQueries({ queryKey: ['organizations'] });
-      void queryClient.invalidateQueries({ queryKey: ['invitations'] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.invitations.pending });
       
       toast.success(t('invitations.accept.success'));
     },
@@ -62,7 +64,7 @@ export const useInvitations = () =>
       );
       
       // Invalidate queries
-      void queryClient.invalidateQueries({ queryKey: ['invitations'] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.invitations.pending });
       
       toast.success(t('invitations.decline.success'));
     },

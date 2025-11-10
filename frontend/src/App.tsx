@@ -92,11 +92,17 @@ function AppContent()
           {/* Protected Routes - Requires authentication, email verification, AND organization selection */}
           <Route element={<VerifiedRoute />}>
             <Route element={<HasCurrentOrgRoute />}>
+
+              { /* Organization Management Routes */ }
               <Route path="/invitations" element={<MyInvitationsPage />} />
               <Route path="/org/:orgId/manage" element={<OrganizationManagePage />} />
+
+              { /* Bottom Navigation */ }
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/inventory" element={<InventoryPage />} />
               <Route path="/orders" element={<OrdersPage />} />
+
+              { /* User menu */ }
               <Route path="/account" element={<AccountPage />} />
             </Route>
           </Route>

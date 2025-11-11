@@ -1,16 +1,17 @@
-import { Navigate, useLocation, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import { Building2 } from 'lucide-react';
 import { useOrganizationStore } from '@/stores/organizationStore';
+import { PageContainer, Stack } from '@/components/layout';
+import { Button } from '@/components/ui/button';
+import { useI18n } from '@/hooks/useI18n';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * HasCurrentOrgRoute - Protects routes that require an organization context
  * 
  * This component enforces that the user has selected a working organization:
- * - If no organization is selected → Redirect to /organizations with redirectTo param
+ * - If no organization is selected → Display feedback with CTA to organizations page
  * - If organization is selected → Render child routes via Outlet
- * 
- * Redirect behavior:
- * - Preserves current path as redirect parameter
- * - After org selection, user is redirected back to original destination
  * 
  * Usage:
  * ```tsx
@@ -24,19 +25,40 @@ import { useOrganizationStore } from '@/stores/organizationStore';
 export const HasCurrentOrgRoute: React.FC = () =>
 {
   const { currentOrg } = useOrganizationStore();
-  const location = useLocation();
+  const { t } = useI18n();
+  const navigate = useNavigate();
 
-  // Redirect to organizations page if no organization is selected
+  // Display feedback if no organization is selected
   if (!currentOrg)
   {
-    // Encode current path as redirect parameter
-    const redirectUrl = `/organizations?redirectTo=${encodeURIComponent(location.pathname + location.search)}`;
-    
     return (
-      <Navigate
-        to={redirectUrl}
-        replace
-      />
+      <PageContainer>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Stack space="lg" className="items-center text-center max-w-md">
+            <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+              <Building2 className="w-8 h-8 text-muted-foreground" />
+            </div>
+            
+            <Stack space="sm" className="items-center">
+              <h1 className="text-2xl font-semibold">
+                {t('organizations.noOrgSelected.title')}
+              </h1>
+              <p className="text-muted-foreground">
+                {t('organizations.noOrgSelected.description')}
+              </p>
+            </Stack>
+            
+            <Button
+              onClick={() => void navigate('/organizations')}
+              size="lg"
+              className="gap-2"
+            >
+              <Building2 className="w-4 h-4" />
+              {t('organizations.noOrgSelected.goToOrganizations')}
+            </Button>
+          </Stack>
+        </div>
+      </PageContainer>
     );
   }
 

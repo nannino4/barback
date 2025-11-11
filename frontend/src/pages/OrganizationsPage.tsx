@@ -1,33 +1,31 @@
 import React, { useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { Building2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Toggle } from '@/components/ui/toggle';
 import { PageContainer, Stack, Grid } from '@/components/layout';
 import { OrganizationCard } from '@/components/features/organizations/OrganizationCard';
-import { OrganizationFilters } from '@/components/features/organizations/OrganizationFilters';
 import { OrganizationCardSkeleton } from '@/components/features/organizations/OrganizationCardSkeleton';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
+import { Input } from '@/components/ui/input';
+import { Search, X } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 import { useOrganizations } from '@/hooks/useOrganizations';
 import type { OrgRole, OrganizationMembership } from '@/types/organization';
 
 /**
- * OrganizationSelectPage - Select and switch between organizations
+ * OrganizationsPage - View and manage all organizations user is a member of
  * 
  * Features:
  * - Display all organizations user is a member of
- * - Filter by role (Owner, Manager, Staff, All)
+ * - Filter by role using toggle-style filters (All, Owner, Manager, Staff)
  * - Search by organization name
- * - Select organization to work with
+ * - Select organization to work with (without redirect)
  * - Create new organization button
- * - Handles redirect after selection
  */
-export const OrganizationSelectPage: React.FC = () =>
+export const OrganizationsPage: React.FC = () =>
 {
   const { t } = useI18n();
-  const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get('redirectTo');
 
   const { 
     currentOrg, 
@@ -66,11 +64,24 @@ export const OrganizationSelectPage: React.FC = () =>
   }, [organizations, roleFilter, searchQuery]);
 
   /**
-   * Handle organization selection
+   * Handle organization selection (no redirect)
    */
   const handleSelectOrganization = (orgMembership: OrganizationMembership) =>
   {
-    switchOrganization(orgMembership, redirectTo || undefined);
+    switchOrganization(orgMembership);
+  };
+
+  /**
+   * Get role label for display
+   */
+  const getRoleLabel = (role: OrgRole | 'all'): string =>
+  {
+    if (role === 'all')
+    {
+      return t('organizations.role.all');
+    }
+    const roleKey = role.toLowerCase() as 'owner' | 'manager' | 'staff';
+    return t(`organizations.role.${roleKey}`);
   };
 
   const loadingComponent = (
@@ -108,32 +119,87 @@ export const OrganizationSelectPage: React.FC = () =>
         {/* Page Title */}
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-            {t('organizations.title')}
+            {t('organizations.myVenues')}
           </h1>
-          <p className="text-muted-foreground mt-2">
-            {t('organizations.selectDescription')}
-          </p>
+          {!currentOrg && (
+            <p className="text-muted-foreground mt-2">
+              {t('organizations.selectDescription')}
+            </p>
+          )}
         </div>
 
         {/* Header: Filters + Create Button */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div className="flex-1">
-            <OrganizationFilters
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              roleFilter={roleFilter}
-              onRoleFilterChange={setRoleFilter}
-            />
+        <div className="flex flex-col gap-4">
+          {/* Search and Quick Filters */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            {/* Search Input */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder={t('organizations.filters.searchPlaceholder')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 pr-9"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Clear search"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            <Button
+              onClick={() => {/* send to create org page or open dialog */}}
+              size="sm"
+              className="gap-2 w-full sm:w-auto"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">{t('organizations.createOrganization')}</span>
+              <span className="sm:hidden">Create</span>
+            </Button>
           </div>
-          <Button
-            onClick={() => {/* send to create org page or open dialog */}}
-            size="sm"
-            className="gap-2 w-full sm:w-auto"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('organizations.createOrganization')}</span>
-            <span className="sm:hidden">Create</span>
-          </Button>
+
+          {/* Chip-style Role Filters */}
+          <div className="flex flex-wrap gap-2">
+
+            {/* All Roles Filter */}
+            <Toggle
+              pressed={roleFilter === 'all'}
+              onPressedChange={(pressed) => pressed && setRoleFilter('all')}
+            >
+              {getRoleLabel('all')}
+            </Toggle>
+
+            {/* Owner Filter */}
+            <Toggle
+              pressed={roleFilter === 'OWNER'}
+              onPressedChange={(pressed) => setRoleFilter(pressed ? 'OWNER' : 'all')}
+            >
+              {getRoleLabel('OWNER')}
+            </Toggle>
+
+            {/* Manager Filter */}
+            <Toggle
+              pressed={roleFilter === 'MANAGER'}
+              onPressedChange={(pressed) => setRoleFilter(pressed ? 'MANAGER' : 'all')}
+            >
+              {getRoleLabel('MANAGER')}
+            </Toggle>
+
+            {/* Staff Filter */}
+            <Toggle
+              pressed={roleFilter === 'STAFF'}
+              onPressedChange={(pressed) => setRoleFilter(pressed ? 'STAFF' : 'all')}
+            >
+              {getRoleLabel('STAFF')}
+            </Toggle>
+          </div>
         </div>
 
 

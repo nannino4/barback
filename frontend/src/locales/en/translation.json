@@ -508,6 +508,8 @@
         "title": "Select where you want to work today",
         "selectDescription": "Choose an organization to access your products, orders, and inventory.",
         "myOrganizations": "My Venues",
+        "myVenues": "My Venues",
+        "ownedVenues": "Owned Venues",
         "invitations": "Invitations",
         "invitationsCount": "Invitations ({{count}})",
         "noOrganizations": "No venues yet",
@@ -531,6 +533,11 @@
         "selected": "Selected",
         "manage": "Manage",
         "switchTo": "Switch to {{name}}",
+        "noOrgSelected": {
+            "title": "No venue selected",
+            "description": "Please select a venue to access inventory, orders, and more.",
+            "goToOrganizations": "Select a Venue"
+        },
         "role": {
             "label": "Role",
             "all": "All Roles",

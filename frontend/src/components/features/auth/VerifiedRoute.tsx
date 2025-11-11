@@ -25,7 +25,7 @@ interface VerifiedRouteProps
  * 
  * // New pattern (with nested routes)
  * <Route element={<VerifiedRoute />}>
- *   <Route path="/organizations" element={<OrganizationSelectPage />} />
+ *   <Route path="/organizations" element={<OrganizationsPage />} />
  *   <Route path="/invitations" element={<MyInvitationsPage />} />
  * </Route>
  * ```

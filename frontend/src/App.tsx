@@ -12,7 +12,7 @@ import { Dashboard } from '@/pages/Dashboard'
 import { InventoryPage } from '@/pages/InventoryPage'
 import { OrdersPage } from '@/pages/OrdersPage'
 import { LandingPage } from '@/pages/LandingPage'
-import { OrganizationSelectPage } from '@/pages/OrganizationSelectPage'
+import { OrganizationsPage } from '@/pages/OrganizationsPage'
 import { MyInvitationsPage } from '@/pages/MyInvitationsPage'
 import { OrganizationManagePage } from '@/pages/OrganizationManagePage'
 import { AccountPage } from '@/pages/AccountPage'
@@ -85,7 +85,7 @@ function AppContent()
           
           {/* Organization Selection Route - Requires authentication AND email verification */}
           <Route element={<VerifiedRoute />}>
-            <Route path="/organizations" element={<OrganizationSelectPage />} />
+            <Route path="/organizations" element={<OrganizationsPage />} />
           </Route>
           
           

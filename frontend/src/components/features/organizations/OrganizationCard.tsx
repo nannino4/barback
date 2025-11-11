@@ -1,7 +1,7 @@
 import React from 'react';
-import { Building2, Settings } from 'lucide-react';
+import { Building2, Settings, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { InlineSpinner } from '@/components/ui/spinner';
 import { Icon } from '@/components/ui/icon';
@@ -52,29 +52,26 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
       variant={isSelected ? 'primary' : 'default'}
       className={cn(isLoading && 'opacity-60')}
     >
-      <CardContent>
+      <CardHeader>
         <Stack 
           direction="horizontal" 
           justify="between" 
           align="center"
-          className="min-h-11 mb-4"
+          className="min-h-11"
         >
           <OrgRoleBadge role={organization.role} />
           {canManage && (
             <Button
-              variant="secondary"
+              variant="muted"
               onClick={handleManageClick}
             >
-              <Icon
-                size="md"
-                variant='muted'
-              >
-                <Settings />
-              </Icon>
+              <Settings />
               {t('organizations.manage')}
             </Button>
           )}
         </Stack>
+      </CardHeader>
+      <CardContent>
         <Stack direction="horizontal" space="md" align="center">
           <Icon
             size="lg"
@@ -97,23 +94,26 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
       </CardContent>
 
       <CardFooter>
-        {!isSelected && (
-          <Button
-            variant="secondary"
-            className="w-full"
-            disabled={isLoading}
-            onClick={handleSelectClick}
-          >
-            {isLoading ? (
-              <>
-                <InlineSpinner />
-                {t('common.loading')}
-              </>
-            ) : (
-              t('organizations.select')
-            )}
-          </Button>
-        )}
+        <Button
+          variant='secondary'
+          className="w-full"
+          disabled={isLoading || isSelected}
+          onClick={handleSelectClick}
+        >
+          {isLoading ? (
+            <>
+              <InlineSpinner />
+              {t('common.loading')}
+            </>
+          ) : isSelected ? (
+            <>
+              <Check />
+              {t('organizations.selected')}
+            </>
+          ) : (
+            t('organizations.select')
+          )}
+        </Button>
       </CardFooter>
     </Card>
   );

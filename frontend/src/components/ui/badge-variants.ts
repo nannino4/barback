@@ -8,7 +8,7 @@ export const badgeVariants = cva(
         default: "border-transparent bg-primary text-primary-foreground shadow hover:bg-primary/80",
         secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
         destructive: "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
-        outline: "text-foreground",
+        outline: "border-border text-foreground",
         "org-role-owner": "border-transparent bg-[image:var(--gradient-premium)] text-primary-foreground shadow-sm",
         "org-role-manager": "border-transparent bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
         "org-role-staff": "border-border bg-transparent text-primary",

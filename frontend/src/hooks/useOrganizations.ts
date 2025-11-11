@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useOrganizationStore } from '@/stores/organizationStore';
 import { organizationApi } from '@/api/organization-api';
@@ -22,7 +21,6 @@ import type { CreateSubscriptionRequest } from '@/types/subscription';
  */
 export const useOrganizations = () =>
 {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { t } = useI18n();
   const {
@@ -84,8 +82,7 @@ export const useOrganizations = () =>
       
       toast.success(t('organizations.create.success'));
       
-      // Organization will be selected and user redirected by the component
-      // The component has access to redirectTo query param
+      // Organization will be selected by the component after creation
     },
     // No onError - errors are displayed declaratively in the component
   });
@@ -145,13 +142,10 @@ export const useOrganizations = () =>
   /**
    * Switch to a different organization
    */
-  const switchOrganization = (org: OrganizationMembership, redirectTo?: string) =>
+  const switchOrganization = (org: OrganizationMembership) =>
   {
     setCurrentOrg(org);
     toast.success(t('organizations.switch.success', { name: org.org.name }));
-    
-    // Navigate to dashboard or specified redirect
-    void navigate(redirectTo || '/dashboard');
   };
 
   return {

@@ -509,6 +509,8 @@
         "title": "Seleziona dove vuoi lavorare oggi",
         "selectDescription": "Scegli un'organizzazione per accedere ai tuoi prodotti, ordini e inventario.",
         "myOrganizations": "I Miei Locali",
+        "myVenues": "I Miei Locali",
+        "ownedVenues": "Locali di Proprietà",
         "invitations": "Inviti",
         "invitationsCount": "Inviti ({{count}})",
         "noOrganizations": "Ancora nessun locale",
@@ -532,6 +534,11 @@
         "selected": "Selezionata",
         "manage": "Gestisci",
         "switchTo": "Passa a {{name}}",
+        "noOrgSelected": {
+            "title": "Nessun locale selezionato",
+            "description": "Seleziona un locale per accedere all'inventario, ordini e altro.",
+            "goToOrganizations": "Seleziona un Locale"
+        },
         "role": {
             "label": "Ruolo",
             "all": "Tutti i Ruoli",

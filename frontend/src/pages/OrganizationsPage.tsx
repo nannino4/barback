@@ -157,11 +157,10 @@ export const OrganizationsPage: React.FC = () =>
             <Button
               onClick={() => {/* send to create org page or open dialog */}}
               size="sm"
-              className="gap-2 w-full sm:w-auto"
+              className="w-full sm:w-auto"
             >
               <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('organizations.createOrganization')}</span>
-              <span className="sm:hidden">Create</span>
+              <span>{t('organizations.createOrganization')}</span>
             </Button>
           </div>
 

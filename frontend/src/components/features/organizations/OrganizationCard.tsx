@@ -1,9 +1,15 @@
 import React from 'react';
-import { Building2 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Building2, Settings } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { InlineSpinner } from '@/components/ui/spinner';
+import { Icon } from '@/components/ui/icon';
+import { Stack } from '@/components/layout';
+import { UserInfo } from '@/components/user';
+import { OrgRoleBadge } from './OrgRoleBadge';
 import { useI18n } from '@/hooks/useI18n';
+import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
 import type { OrganizationMembership } from '@/types/organization';
 
@@ -23,98 +29,94 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
 }) =>
 {
   const { t } = useI18n();
-  
-  const getRoleBadgeVariant = (role: string) =>
+  const navigate = useNavigate();
+  const currentUser = useAuthStore((state) => state.user);
+
+  const canManage = currentUser?.id === organization.org.owner.id;
+
+  const handleManageClick = () =>
   {
-    switch (role)
+    void navigate(`/org/${organization.org.id}/manage`);
+  };
+
+  const handleSelectClick = () =>
+  {
+    if (!isSelected && !isLoading)
     {
-    case 'OWNER':
-      return 'default'; // Will use inverted colors
-    case 'MANAGER':
-      return 'secondary';
-    case 'STAFF':
-      return 'outline';
-    default:
-      return 'outline';
+      onSelect(organization);
     }
   };
 
-  const getRoleLabel = (role: string) =>
-  {
-    const roleKey = role.toLowerCase() as 'owner' | 'manager' | 'staff';
-    return t(`organizations.role.${roleKey}`);
-  };
-
-  // Owner is always present in organization public data (populated by backend)
-  const ownerName = `${organization.org.owner.firstName} ${organization.org.owner.lastName}`;
-
   return (
     <Card
-      className={cn(
-        'transition-all hover:shadow-lg cursor-pointer group',
-        isSelected && 'border-primary shadow-md ring-2 ring-primary/20',
-        !isSelected && 'hover:border-primary/50',
-        isLoading && 'opacity-60 cursor-not-allowed',
-      )}
-      onClick={() => !isSelected && !isLoading && onSelect(organization)}
+      variant={isSelected ? 'primary' : 'default'}
+      className={cn(isLoading && 'opacity-60')}
     >
       <CardHeader>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-3 flex-1 min-w-0">
-            <div className="flex-shrink-0 mt-1">
-              <div className={cn(
-                "w-10 h-10 rounded-lg flex items-center justify-center transition-colors",
-                isSelected 
-                  ? "bg-primary text-primary-foreground" 
-                  : "bg-primary/10 text-primary group-hover:bg-primary/20",
-              )}>
-                <Building2 className="w-5 h-5" />
-              </div>
-            </div>
-            <div className="flex-1 min-w-0">
-              <CardTitle className="text-lg truncate">
-                {organization.org.name}
-              </CardTitle>
-              <CardDescription className="mt-1">
-                {t('organizations.createdBy', { name: ownerName })}
-              </CardDescription>
-            </div>
-          </div>
-          <Badge
-            variant={getRoleBadgeVariant(organization.role)}
-            className={cn(
-              'flex-shrink-0',
-              organization.role === 'OWNER' && 'bg-primary text-primary-foreground',
-            )}
-          >
-            {getRoleLabel(organization.role)}
-          </Badge>
-        </div>
+        <Stack 
+          direction="horizontal" 
+          justify="between" 
+          align="center"
+          className="min-h-11"
+        >
+          <OrgRoleBadge role={organization.role} />
+          {canManage && (
+            <Button
+              variant="secondary"
+              onClick={handleManageClick}
+            >
+              <Icon
+                size="md"
+                variant='muted'
+              >
+                <Settings />
+              </Icon>
+              {t('organizations.manage')}
+            </Button>
+          )}
+        </Stack>
       </CardHeader>
       <CardContent>
-        <div className={cn(
-          "flex items-center justify-center py-2 px-4 rounded-md text-sm font-medium transition-colors",
-          isSelected 
-            ? "bg-primary/10 text-primary" 
-            : "bg-muted text-muted-foreground group-hover:bg-primary/5 group-hover:text-primary",
-        )}>
-          {isLoading ? (
-            <span className="flex items-center gap-2">
-              <InlineSpinner />
-              {t('common.loading')}
-            </span>
-          ) : isSelected ? (
-            <span className="flex items-center gap-2">
-              <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-              </svg>
-              {t('organizations.selected')}
-            </span>
-          ) : (
-            t('organizations.select')
-          )}
-        </div>
+        <Stack direction="horizontal" space="md" align="center">
+          <Icon
+            size="lg"
+            variant='muted'
+          >
+            <Building2 />
+          </Icon>
+          <Stack space='sm'>
+            <CardTitle className="font-heading text-xl md:text-2xl truncate">
+              {organization.org.name}
+            </CardTitle>
+            <CardDescription>
+              <UserInfo 
+                user={organization.org.owner} 
+                size="sm"
+              />
+            </CardDescription>
+          </Stack>
+        </Stack>
       </CardContent>
+
+      <CardFooter>
+        {!isSelected && (
+          <Button
+            variant="secondary"
+            className="w-full"
+            disabled={isLoading}
+            onClick={handleSelectClick}
+          >
+            {isLoading ? (
+              <>
+                <InlineSpinner />
+                {t('common.loading')}
+              </>
+            ) : (
+              t('organizations.select')
+            )}
+          </Button>
+        )}
+      </CardFooter>
     </Card>
   );
 };

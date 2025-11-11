@@ -3,7 +3,7 @@ import { User, Mail } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Stack } from '@/components/layout';
-import { RoleBadge } from './RoleBadge';
+import { OrgRoleBadge } from '@/components/features/organizations/OrgRoleBadge';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
 import type { OrganizationMembership } from '@/types/organization';
@@ -81,7 +81,7 @@ export const MemberCard: React.FC<MemberCardProps> = ({
                 </div>
               </Stack>
 
-              <RoleBadge role={member.role} />
+              <OrgRoleBadge role={member.role} />
             </Stack>
           </div>
 

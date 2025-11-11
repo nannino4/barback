@@ -12,7 +12,7 @@ import { ErrorState } from '@/components/feedback/ErrorState';
 import { useI18n } from '@/hooks/useI18n';
 import { useQuery } from '@tanstack/react-query';
 import { organizationApi } from '@/api/organization-api';
-import { RoleBadge } from '@/components/features/organizations/RoleBadge';
+import { OrgRoleBadge } from '@/components/features/organizations/OrgRoleBadge';
 import { useOrganizationStore } from '@/stores/organizationStore';
 import { queryKeys } from '@/lib/queryKeys';
 import { CACHE_TIMES } from '@/lib/cacheTimes';
@@ -188,7 +188,7 @@ export const OrganizationManagePage: React.FC = () =>
               </h1>
               {userRole && (
                 <div className="mt-2">
-                  <RoleBadge role={userRole} />
+                  <OrgRoleBadge role={userRole} />
                 </div>
               )}
             </div>

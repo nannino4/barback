@@ -25,13 +25,13 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 #### **Sprint Goals**
 - [ ] Implement organization creation and management
 - [ ] Build user invitation system
-- [ ] Create organization switching functionality
+- [X] Create organization switching functionality
 - [ ] **User Settings & Profile Management**:
   - [ ] Build user profile settings page
   - [ ] Implement profile editing (name, phone, profile picture)
   - [ ] Add password change functionality
   - [ ] Create account deletion flow
-  - [ ] Move theme toggle and language selector to settings page (from navigation)
+  - [X] Move theme toggle and language selector to settings page (from navigation)
 
 ### **Sprint 5-6: Core Inventory Management**
 

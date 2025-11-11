@@ -122,9 +122,9 @@
   
   --gradient-premium: linear-gradient(
     135deg,
-    oklch(0.78 0.18 93) 0%,
-    oklch(0.82 0.20 85) 50%,
-    oklch(0.78 0.18 93) 100%
+    oklch(0.75 0.18 90) 0%,
+    oklch(0.82 0.22 80) 50%,
+    oklch(0.75 0.18 90) 100%
   );
 }
 
@@ -208,9 +208,9 @@
   /* Premium shimmer gradient for CTAs */
   --gradient-premium: linear-gradient(
     135deg,
-    oklch(0.62 0.20 85) 0%,
-    oklch(0.66 0.22 80) 50%,
-    oklch(0.62 0.20 85) 100%
+    oklch(0.60 0.22 88) 0%,
+    oklch(0.68 0.25 78) 50%,
+    oklch(0.60 0.22 88) 100%
   );
 }
 

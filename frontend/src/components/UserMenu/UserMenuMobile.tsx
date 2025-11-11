@@ -15,8 +15,7 @@ import { useI18n } from '@/hooks/useI18n';
 import { useOrganizations } from '@/hooks/useOrganizations';
 import { useThemeStore } from '@/stores/themeStore';
 import { cn } from '@/lib/utils';
-import { UserAvatar } from './UserAvatar';
-import { UserInfo } from './UserInfo';
+import { UserAvatar, UserInfo } from '@/components/user';
 import { OrganizationMenuItem } from './OrganizationMenuItem';
 import { ThemeSelector } from './ThemeSelector';
 import { LanguageSelector } from './LanguageSelector';
@@ -69,7 +68,7 @@ export const UserMenuMobile: React.FC = () =>
           className="gap-2"
           aria-label={t('menu.openUserMenu')}
         >
-          <UserAvatar user={user} size="sm" />
+          <UserAvatar user={user} size="md" />
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-full sm:max-w-md">
@@ -89,7 +88,7 @@ export const UserMenuMobile: React.FC = () =>
         {mobileView === 'main' && (
           <Stack direction="vertical" className="pt-6">
             {/* User Info Header */}
-            <UserInfo user={user} variant="mobile" />
+            <UserInfo user={user} size="md" />
 
             <Divider />
 

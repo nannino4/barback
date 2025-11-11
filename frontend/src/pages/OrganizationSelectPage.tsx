@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Building2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PageContainer, Stack, Grid } from '@/components/layout';
-import { OrganizationSelectCard } from '@/components/features/organizations/OrganizationSelectCard';
+import { OrganizationCard } from '@/components/features/organizations/OrganizationCard';
 import { OrganizationFilters } from '@/components/features/organizations/OrganizationFilters';
 import { OrganizationCardSkeleton } from '@/components/features/organizations/OrganizationCardSkeleton';
 import { CreateOrganizationDialog } from '@/components/features/organizations/CreateOrganizationDialog';
@@ -151,7 +151,7 @@ export const OrganizationSelectPage: React.FC = () =>
    * Main Content
    */
   return (
-    <PageContainer className="py-6">
+    <PageContainer>
       <Stack space="lg">
         {/* Page Title */}
         <div>
@@ -210,7 +210,7 @@ export const OrganizationSelectPage: React.FC = () =>
         ) : (
           <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
             {filteredOrganizations.map((orgWithRole) => (
-              <OrganizationSelectCard
+              <OrganizationCard
                 key={orgWithRole.org.id}
                 organization={orgWithRole}
                 onSelect={handleSelectOrganization}

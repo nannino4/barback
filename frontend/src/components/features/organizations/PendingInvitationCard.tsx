@@ -3,7 +3,7 @@ import { Mail, Calendar, Clock, AlertCircle } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Stack } from '@/components/layout';
-import { RoleBadge } from './RoleBadge';
+import { OrgRoleBadge } from '@/components/features/organizations/OrgRoleBadge';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
 import type { Invitation } from '@/types/invitation';
@@ -58,7 +58,7 @@ export const PendingInvitationCard: React.FC<PendingInvitationCardProps> = ({
               <Mail className="w-5 h-5 text-muted-foreground flex-shrink-0" />
               <span className="font-semibold truncate">{invitation.invitedEmail}</span>
             </div>
-            <RoleBadge role={invitation.role} showIcon={false} className="flex-shrink-0" />
+            <OrgRoleBadge role={invitation.role} />
           </div>
 
           {/* Inviter Info */}

@@ -17,8 +17,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useI18n } from '@/hooks/useI18n';
 import { useOrganizations } from '@/hooks/useOrganizations';
 import { useThemeStore } from '@/stores/themeStore';
-import { UserAvatar } from './UserAvatar';
-import { UserInfo } from './UserInfo';
+import { UserAvatar, UserInfo } from '@/components/user';
 import { OrganizationMenuItem } from './OrganizationMenuItem';
 import { ThemeSelector } from './ThemeSelector';
 import { LanguageSelector } from './LanguageSelector';
@@ -52,13 +51,13 @@ export const UserMenuDesktop: React.FC = () =>
           className="gap-2"
           aria-label={t('menu.openUserMenu')}
         >
-          <UserAvatar user={user} size="sm" />
+          <UserAvatar user={user} size="md" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-72">
         {/* User Info Header */}
         <DropdownMenuLabel>
-          <UserInfo user={user} variant="desktop" />
+          <UserInfo user={user} size="md" />
         </DropdownMenuLabel>
 
         <DropdownMenuSeparator />

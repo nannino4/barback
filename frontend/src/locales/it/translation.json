@@ -35,7 +35,11 @@
             "continueWith": "Oppure continua con email",
             "googleLogin": "Continua con Google",
             "backToLogin": "Torna al login",
-            "success": "Accesso effettuato con successo!"
+            "success": "Accesso effettuato con successo!",
+            "alreadyLoggedIn": "Hai già effettuato l'accesso",
+            "alreadyLoggedInDescription": "Sei attualmente autenticato. Puoi andare alla tua dashboard o disconnetterti per accedere con un account diverso.",
+            "goToDashboard": "Vai alla Dashboard",
+            "signOut": "Disconnetti"
         },
         "register": {
             "title": "Crea il tuo account",

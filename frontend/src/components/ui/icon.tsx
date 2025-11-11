@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 interface IconProps extends React.HTMLAttributes<HTMLDivElement>
 {
   size?: 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'primary' | 'muted';
+  variant?: 'default' | 'primary' | 'muted' | 'transparent';
   children: React.ReactNode;
 }
 
@@ -42,6 +42,7 @@ export const Icon: React.FC<IconProps> = ({
     default: 'bg-primary/10 text-primary group-hover:bg-primary/20',
     primary: 'bg-primary text-primary-foreground',
     muted: 'bg-muted text-muted-foreground',
+    transparent: '',
   };
 
   return (

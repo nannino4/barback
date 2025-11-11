@@ -35,7 +35,11 @@
             "continueWith": "Or continue with email",
             "googleLogin": "Continue with Google",
             "backToLogin": "Back to Sign In",
-            "success": "Successfully signed in!"
+            "success": "Successfully signed in!",
+            "alreadyLoggedIn": "You're already logged in",
+            "alreadyLoggedInDescription": "You're currently logged in. You can go to your dashboard or sign out to log in with a different account.",
+            "goToDashboard": "Go to Dashboard",
+            "signOut": "Sign Out"
         },
         "register": {
             "title": "Create your account",

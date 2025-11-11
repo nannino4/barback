@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'react-router-dom';
-import { Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, AlertCircle, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { InlineSpinner } from '@/components/ui/spinner';
@@ -22,6 +22,7 @@ import { useI18n } from '@/hooks/useI18n';
 import { GoogleLoginButton } from '@/components/features/auth/GoogleLoginButton';
 import { getLocalizedErrorMessage, isKnownError } from '@/lib/errors';
 import { cn } from '@/lib/utils';
+import { Icon } from '@/components/ui/icon';
 
 interface LoginFormProps
 {
@@ -31,8 +32,9 @@ interface LoginFormProps
 export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
 {
   const [showPassword, setShowPassword] = useState(false);
-  const { login, isLoggingIn, loginError } = useAuth();
+  const { login, logout, isLoggingIn, loginError, isAuthenticated } = useAuth();
   const { t } = useI18n();
+  const navigate = useNavigate();
 
   const form = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -52,6 +54,76 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
     e.preventDefault();
     void form.handleSubmit(onSubmit)(e);
   };
+
+  const handleGoToDashboard = () =>
+  {
+    void navigate('/dashboard');
+  };
+
+  const handleLogout = () =>
+  {
+    logout();
+  };
+
+  // If user is already authenticated, show "already logged in" message
+  if (isAuthenticated)
+  {
+    return (
+      <Card className={cn('w-full max-w-md mx-auto', className)}>
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl">
+            {t('auth.login.title')}
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <Stack space="lg">
+            {/* Already Logged In Info Message */}
+            <Card
+              variant='info'
+            >
+              <Stack 
+                direction='horizontal'>
+                <Icon 
+                  variant='transparent'
+                  size='sm'
+                >
+                  <Info className="text-info" />
+                </Icon>
+                <Stack>
+                  <p className="text-sm font-medium text-info mb-1">
+                    {t('auth.login.alreadyLoggedIn')}
+                  </p>
+                  <p className="text-sm text-info/80">
+                    {t('auth.login.alreadyLoggedInDescription')}
+                  </p>
+                </Stack>
+              </Stack>
+            </Card>
+
+            {/* Action Buttons */}
+            <Stack>
+              <Button
+                onClick={handleGoToDashboard}
+                className="w-full h-touch"
+                variant="default"
+              >
+                {t('auth.login.goToDashboard')}
+              </Button>
+
+              <Button
+                onClick={handleLogout}
+                className="w-full h-touch"
+                variant="outline"
+              >
+                {t('auth.login.signOut')}
+              </Button>
+            </Stack>
+          </Stack>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className={cn('w-full max-w-md mx-auto', className)}>

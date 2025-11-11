@@ -4,6 +4,7 @@ import { LayoutDashboard, Package, ShoppingCart } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
+import { useOrganizationStore } from '@/stores/organizationStore';
 
 interface NavItem
 {
@@ -27,9 +28,15 @@ export const BottomNav: React.FC = () =>
   const { t } = useI18n();
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
+  const currentOrg = useOrganizationStore((state) => state.currentOrg);
 
   // Don't render if user is not authenticated
   if (!user)
+  {
+    return null;
+  }
+
+  if (!currentOrg)
   {
     return null;
   }

@@ -22,7 +22,7 @@
     },
     "auth": {
         "login": {
-            "title": "Welcome back",
+            "title": "Login",
             "emailPlaceholder": "Enter your email",
             "passwordPlaceholder": "Enter your password",
             "showPassword": "Show password",

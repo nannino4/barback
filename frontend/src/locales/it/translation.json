@@ -22,7 +22,7 @@
     },
     "auth": {
         "login": {
-            "title": "Bentornato",
+            "title": "Accedi",
             "emailPlaceholder": "Inserisci la tua email",
             "passwordPlaceholder": "Inserisci la tua password",
             "showPassword": "Mostra password",

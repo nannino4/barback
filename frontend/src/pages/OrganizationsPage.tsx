@@ -118,7 +118,7 @@ export const OrganizationsPage: React.FC = () =>
       <Stack space="lg">
         {/* Page Title */}
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-semibold">
             {t('organizations.myVenues')}
           </h1>
           {!currentOrg && (

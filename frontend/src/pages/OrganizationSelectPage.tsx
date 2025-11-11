@@ -6,7 +6,6 @@ import { PageContainer, Stack, Grid } from '@/components/layout';
 import { OrganizationCard } from '@/components/features/organizations/OrganizationCard';
 import { OrganizationFilters } from '@/components/features/organizations/OrganizationFilters';
 import { OrganizationCardSkeleton } from '@/components/features/organizations/OrganizationCardSkeleton';
-import { CreateOrganizationDialog } from '@/components/features/organizations/CreateOrganizationDialog';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { useI18n } from '@/hooks/useI18n';
@@ -38,7 +37,6 @@ export const OrganizationSelectPage: React.FC = () =>
     error,
   } = useOrganizations();
 
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<OrgRole | 'all'>('all');
 
@@ -75,77 +73,31 @@ export const OrganizationSelectPage: React.FC = () =>
     switchOrganization(orgMembership, redirectTo || undefined);
   };
 
-  /**
-   * Loading State
-   */
-  if (isLoading)
-  {
-    return (
-      <PageContainer className="py-6">
-        <Stack space="lg">
-          {/* Page Title */}
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              {t('organizations.title')}
-            </h1>
-            <p className="text-muted-foreground mt-2">
-              {t('organizations.selectDescription')}
-            </p>
-          </div>
+  const loadingComponent = (
+    <Stack space="lg">
+      {/* Loading Skeletons */}
+      <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
+        <OrganizationCardSkeleton />
+        <OrganizationCardSkeleton />
+        <OrganizationCardSkeleton />
+        <OrganizationCardSkeleton />
+      </Grid>
+    </Stack>
+  );
 
-          {/* Header Actions */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex-1">
-              {/* Skeleton for filters */}
-              <div className="h-10 bg-muted rounded-md animate-pulse" />
-            </div>
-            <Button disabled size="sm" className="gap-2 w-full sm:w-auto">
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('organizations.createOrganization')}</span>
-              <span className="sm:hidden">Create</span>
-            </Button>
-          </div>
-
-          {/* Loading Skeletons */}
-          <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
-            <OrganizationCardSkeleton />
-            <OrganizationCardSkeleton />
-            <OrganizationCardSkeleton />
-            <OrganizationCardSkeleton />
-          </Grid>
-        </Stack>
-      </PageContainer>
-    );
-  }
-
-  /**
-   * Error State
-   */
-  if (error)
-  {
-    return (
-      <PageContainer className="py-6">
-        <Stack space="lg">
-          {/* Page Title */}
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              {t('organizations.title')}
-            </h1>
-          </div>
-
-          {/* Error Display */}
-          <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
-            <ErrorState
-              title={t('organizations.errors.loadFailed')}
-              description={t('organizations.errors.loadFailedDescription')}
-              onRetry={() => window.location.reload()}
-              retryLabel={t('common.tryAgain')}
-            />
-          </Grid>
-        </Stack>
-      </PageContainer>
-    );
-  }
+  const errorComponent = (
+    <Stack space="lg">
+      {/* Error Display */}
+      <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
+        <ErrorState
+          title={t('organizations.errors.loadFailed')}
+          description={t('organizations.errors.loadFailedDescription')}
+          onRetry={() => window.location.reload()}
+          retryLabel={t('common.tryAgain')}
+        />
+      </Grid>
+    </Stack>
+  );
 
   /**
    * Main Content
@@ -174,7 +126,7 @@ export const OrganizationSelectPage: React.FC = () =>
             />
           </div>
           <Button
-            onClick={() => setCreateDialogOpen(true)}
+            onClick={() => {/* send to create org page or open dialog */}}
             size="sm"
             className="gap-2 w-full sm:w-auto"
           >
@@ -184,47 +136,48 @@ export const OrganizationSelectPage: React.FC = () =>
           </Button>
         </div>
 
-        {/* Organizations List or Empty State */}
-        {filteredOrganizations.length === 0 ? (
-          organizations.length === 0 ? (
-            // No organizations at all
-            <EmptyState
-              icon={Building2}
-              title={t('organizations.noOrganizations')}
-              description={t('organizations.noOrganizationsDescription')}
-              action={{
-                label: t('organizations.createOrganization'),
-                onClick: () => setCreateDialogOpen(true),
-              }}
-              size="lg"
-            />
-          ) : (
-            // No results from filters
-            <EmptyState
-              icon={Building2}
-              title={t('organizations.noResults')}
-              description={t('organizations.noResultsDescription')}
-              size="md"
-            />
-          )
-        ) : (
-          <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
-            {filteredOrganizations.map((orgWithRole) => (
-              <OrganizationCard
-                key={orgWithRole.org.id}
-                organization={orgWithRole}
-                onSelect={handleSelectOrganization}
-                isSelected={currentOrg?.org.id === orgWithRole.org.id}
-              />
-            ))}
-          </Grid>
-        )}
 
-        {/* Create Organization Dialog */}
-        <CreateOrganizationDialog
-          open={createDialogOpen}
-          onOpenChange={setCreateDialogOpen}
-        />
+        {/* Organizations List */}
+        { isLoading ? (
+          loadingComponent
+        ) : error ? errorComponent : (
+          // Organization List or Empty States
+          filteredOrganizations.length === 0 ? (
+            organizations.length === 0 ? (
+              // No organizations at all
+              <EmptyState
+                icon={Building2}
+                title={t('organizations.noOrganizations')}
+                description={t('organizations.noOrganizationsDescription')}
+                action={{
+                  label: t('organizations.createOrganization'),
+                  onClick: () => {/* send to create org page or open dialog */},
+                }}
+                size="lg"
+              />
+            ) : (
+              // No results from filters
+              <EmptyState
+                icon={Building2}
+                title={t('organizations.noResults')}
+                description={t('organizations.noResultsDescription')}
+                size="md"
+              />
+            )
+          ) : (
+            // Organization List
+            <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
+              {filteredOrganizations.map((orgWithRole) => (
+                <OrganizationCard
+                  key={orgWithRole.org.id}
+                  organization={orgWithRole}
+                  onSelect={handleSelectOrganization}
+                  isSelected={currentOrg?.org.id === orgWithRole.org.id}
+                />
+              ))}
+            </Grid>
+          )
+        )}
       </Stack>
     </PageContainer>
   );

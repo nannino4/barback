@@ -23,7 +23,7 @@ function Card({ className, variant = "default", ...props }: CardProps)
     <div
       data-slot="card"
       className={cn(
-        "flex flex-col gap-6 rounded-xl px-4 py-4 shadow-sm",
+        "flex flex-col gap-6 rounded-xl p-3 shadow-sm",
         variantClasses[variant],
         className,
       )}

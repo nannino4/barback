@@ -52,6 +52,18 @@ export const CreateSubscriptionRequestSchema = z.object({
   isTrial: z.boolean().optional().default(false),
 });
 
+/**
+ * Subscription setup response schema - for POST /api/subscriptions
+ * Returns Stripe subscription ID and clientSecret for Payment Element
+ * 
+ * Note: Local subscription is NOT created yet - it will be created by webhook
+ * after payment confirmation
+ */
+export const SubscriptionSetupSchema = z.object({
+  stripeSubscriptionId: z.string(),
+  clientSecret: z.string(),
+});
+
 // ============================================================================
 // TypeScript Types - Derived from Zod Schemas
 // ============================================================================
@@ -61,3 +73,4 @@ export type BillingInterval = z.infer<typeof BillingIntervalSchema>;
 export type Subscription = z.infer<typeof SubscriptionSchema>;
 export type TrialEligibilityResponse = z.infer<typeof TrialEligibilityResponseSchema>;
 export type CreateSubscriptionRequest = z.infer<typeof CreateSubscriptionRequestSchema>;
+export type SubscriptionSetup = z.infer<typeof SubscriptionSetupSchema>;

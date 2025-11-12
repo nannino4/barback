@@ -15,6 +15,7 @@
         "close": "Close",
         "back": "Back",
         "next": "Next",
+        "continue": "Continue",
         "error": "Error",
         "success": "Success",
         "tryAgain": "Try Again",
@@ -556,18 +557,22 @@
         },
         "create": {
             "title": "Create New Venue",
+            "description": "Set up a new venue with its own subscription and inventory",
             "nameLabel": "Venue Name",
             "namePlaceholder": "Enter venue name",
             "checkingEligibility": "Checking eligibility...",
             "creatingSubscription": "Creating subscription...",
             "creatingOrganization": "Creating venue...",
+            "detailsTitle": "Venue Details",
+            "detailsDescription": "Enter your venue name and select a billing plan",
+            "paymentDescription": "Complete payment to create {{name}}",
             "success": "Venue created successfully",
             "error": "Failed to create venue",
             "cancel": "Cancel",
             "create": "Create",
             "trialEligible": "You're eligible for a free 3-month trial!",
             "trialNotEligible": "A subscription will be created for this venue.",
-            "subscriptionNote": "This venue will have its own subscription.",
+            "subscriptionNote": "Your subscription will start after payment is confirmed. You can cancel anytime.",
             "validationError": "Please check your input"
         },
         "switch": {
@@ -771,7 +776,8 @@
         "trial": {
             "eligible": "You're eligible for a free trial",
             "notEligible": "Trial not available",
-            "duration": "3 months free"
+            "duration": "3 months free",
+            "description": "Start with a 3-month free trial. No payment required now."
         },
         "status": {
             "trialing": "Trial",
@@ -783,6 +789,13 @@
             "incomplete_expired": "Expired",
             "paused": "Paused"
         },
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "selectPlan": "Select a plan",
+        "startTrial": "Start Free Trial",
+        "paymentDetails": "Payment Details",
+        "processingPayment": "Processing payment...",
+        "confirmPayment": "Confirm Payment",
         "errors": {
             "notFound": "Subscription not found",
             "notActive": "Subscription is not active",

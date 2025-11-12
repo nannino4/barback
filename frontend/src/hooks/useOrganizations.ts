@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { useOrganizationStore } from '@/stores/organizationStore';
 import { organizationApi } from '@/api/organization-api';
-import { subscriptionApi } from '@/api/subscription-api';
 import { useI18n } from '@/hooks/useI18n';
 import { queryKeys } from '@/lib/queryKeys';
 import { CACHE_TIMES } from '@/lib/cacheTimes';
@@ -13,7 +12,6 @@ import type {
   CreateOrganizationRequest,
   EditOrganizationFormData,
 } from '@/types/organization';
-import type { CreateSubscriptionRequest } from '@/types/subscription';
 
 /**
  * Hook for managing organizations
@@ -53,36 +51,17 @@ export const useOrganizations = () =>
 
   /**
    * Mutation to create a new organization
-   * Includes subscription creation logic
+   * Note: Subscription must already exist before calling this
    */
   const createOrganizationMutation = useMutation({
-    mutationFn: async ({ 
-      orgData, 
-      subscriptionData,
-    }: {
-      orgData: Omit<CreateOrganizationRequest, 'subscriptionId'>;
-      subscriptionData: CreateSubscriptionRequest;
-    }) =>
-    {
-      // Step 1: Create subscription
-      const subscription = await subscriptionApi.createSubscription(subscriptionData);
-      
-      // Step 2: Create organization with subscription ID
-      const organization = await organizationApi.createOrganization({
-        ...orgData,
-        subscriptionId: subscription.id,
-      });
-      
-      return { organization, subscription };
-    },
+    mutationFn: (data: CreateOrganizationRequest) =>
+      organizationApi.createOrganization(data),
     onSuccess: () =>
     {
       // Invalidate and refetch organizations
       void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.all });
       
       toast.success(t('organizations.create.success'));
-      
-      // Organization will be selected by the component after creation
     },
     // No onError - errors are displayed declaratively in the component
   });

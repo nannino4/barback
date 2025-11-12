@@ -13,8 +13,7 @@ import { InventoryPage } from '@/pages/InventoryPage'
 import { OrdersPage } from '@/pages/OrdersPage'
 import { LandingPage } from '@/pages/LandingPage'
 import { OrganizationsPage } from '@/pages/OrganizationsPage'
-import { MyInvitationsPage } from '@/pages/MyInvitationsPage'
-import { OrganizationManagePage } from '@/pages/OrganizationManagePage'
+import { CreateOrganizationPage } from '@/pages/CreateOrganizationPage'
 import { AccountPage } from '@/pages/AccountPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import DesignSystemPage from '@/pages/DesignSystemPage'
@@ -86,6 +85,7 @@ function AppContent()
           {/* Organization Selection Route - Requires authentication AND email verification */}
           <Route element={<VerifiedRoute />}>
             <Route path="/organizations" element={<OrganizationsPage />} />
+            <Route path="/organizations/create" element={<CreateOrganizationPage />} />
           </Route>
           
           
@@ -94,8 +94,8 @@ function AppContent()
             <Route element={<HasCurrentOrgRoute />}>
 
               { /* Organization Management Routes */ }
-              <Route path="/invitations" element={<MyInvitationsPage />} />
-              <Route path="/org/:orgId/manage" element={<OrganizationManagePage />} />
+              <Route path="/invitations" element={null} />
+              <Route path="/org/:orgId/manage" element={null} />
 
               { /* Bottom Navigation */ }
               <Route path="/dashboard" element={<Dashboard />} />

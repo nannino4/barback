@@ -15,6 +15,7 @@
         "close": "Chiudi",
         "back": "Indietro",
         "next": "Avanti",
+        "continue": "Continua",
         "error": "Errore",
         "success": "Successo",
         "tryAgain": "Riprova",
@@ -557,18 +558,22 @@
         },
         "create": {
             "title": "Crea Nuovo Locale",
+            "description": "Configura un nuovo locale con il proprio abbonamento e inventario",
             "nameLabel": "Nome Locale",
             "namePlaceholder": "Inserisci il nome del locale",
             "checkingEligibility": "Verifica idoneità...",
             "creatingSubscription": "Creazione abbonamento...",
             "creatingOrganization": "Creazione locale...",
+            "detailsTitle": "Dettagli Locale",
+            "detailsDescription": "Inserisci il nome del locale e seleziona un piano tariffario",
+            "paymentDescription": "Completa il pagamento per creare {{name}}",
             "success": "Locale creato con successo",
             "error": "Impossibile creare il locale",
             "cancel": "Annulla",
             "create": "Crea",
             "trialEligible": "Sei idoneo per una prova gratuita di 3 mesi!",
             "trialNotEligible": "Verrà creato un abbonamento per questo locale.",
-            "subscriptionNote": "Questo locale avrà il proprio abbonamento.",
+            "subscriptionNote": "Il tuo abbonamento inizierà dopo la conferma del pagamento. Puoi annullare in qualsiasi momento.",
             "validationError": "Controlla i tuoi dati"
         },
         "switch": {
@@ -770,7 +775,8 @@
         "trial": {
             "eligible": "Sei idoneo per una prova gratuita",
             "notEligible": "Prova non disponibile",
-            "duration": "3 mesi gratis"
+            "duration": "3 mesi gratis",
+            "description": "Inizia con una prova gratuita di 3 mesi. Non è richiesto alcun pagamento ora."
         },
         "status": {
             "trialing": "Prova",
@@ -782,6 +788,13 @@
             "incomplete_expired": "Scaduto",
             "paused": "In Pausa"
         },
+        "monthly": "Mensile",
+        "yearly": "Annuale",
+        "selectPlan": "Seleziona un piano",
+        "startTrial": "Inizia Prova Gratuita",
+        "paymentDetails": "Dettagli di Pagamento",
+        "processingPayment": "Elaborazione pagamento...",
+        "confirmPayment": "Conferma Pagamento",
         "errors": {
             "notFound": "Abbonamento non trovato",
             "notActive": "L'abbonamento non è attivo",

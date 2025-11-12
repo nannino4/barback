@@ -3,9 +3,11 @@ import { z } from 'zod';
 import {
   SubscriptionSchema,
   TrialEligibilityResponseSchema,
+  SubscriptionSetupSchema,
   type Subscription,
   type TrialEligibilityResponse,
   type CreateSubscriptionRequest,
+  type SubscriptionSetup,
 } from '@/types/subscription';
 
 // ============================================================================
@@ -29,24 +31,28 @@ export const subscriptionApi = {
   },
 
   /**
-   * Create a new subscription (trial or paid)
+   * Setup subscription for payment collection
+   * Creates a Stripe subscription and returns clientSecret for Payment Element
+   * Does NOT save to local database yet - subscription will be created by webhook after payment
+   * 
    * @param data Subscription creation data (billingInterval, isTrial)
-   * @returns The created subscription
+   * @returns Stripe subscription ID and clientSecret for Payment Element
    */
-  createSubscription: (data: CreateSubscriptionRequest): Promise<Subscription> =>
+  setupSubscriptionPayment: (data: CreateSubscriptionRequest): Promise<SubscriptionSetup> =>
   {
-    return apiClient.request<Subscription>(
+    return apiClient.request<SubscriptionSetup>(
       '/subscriptions',
       {
         method: 'POST',
         body: JSON.stringify(data),
       },
-      SubscriptionSchema,
+      SubscriptionSetupSchema,
     );
   },
 
   /**
    * Get all subscriptions for the current user
+   * Only returns subscriptions that have been confirmed and saved to local database
    * @returns List of user's subscriptions
    */
   getSubscriptions: (): Promise<Subscription[]> =>

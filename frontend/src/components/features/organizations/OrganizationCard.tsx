@@ -62,7 +62,8 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           <OrgRoleBadge role={organization.role} />
           {canManage && (
             <Button
-              variant="muted"
+              variant="ghost"
+              className='text-muted-foreground'
               onClick={handleManageClick}
             >
               <Settings />

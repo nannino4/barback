@@ -57,10 +57,10 @@ export const CreateOrganizationPaymentForm: React.FC<CreateOrganizationPaymentFo
    * Mutation to create organization after payment confirmation
    */
   const createOrganizationMutation = useMutation({
-    mutationFn: (subscriptionId: string) =>
-      organizationApi.createOrganization({
+    mutationFn: (stripeSubscriptionId: string) =>
+      organizationApi.createOrganizationWithStripeSubscription({
         name: organizationName,
-        subscriptionId,
+        stripeSubscriptionId,
       }),
     onSuccess: (organization) =>
     {

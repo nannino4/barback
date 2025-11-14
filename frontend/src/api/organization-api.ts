@@ -6,6 +6,7 @@ import {
   type OrganizationMembership,
   type Organization,
   type CreateOrganizationRequest,
+  type CreateOrganizationWithStripeSubscriptionRequest,
   type UpdateOrganizationRequest,
   type OrgRole,
 } from '@/types/organization';
@@ -34,7 +35,7 @@ export const organizationApi = {
   },
 
   /**
-   * Create a new organization
+   * Create a new organization with MongoDB subscription ID
    * @param data Organization creation data (name, subscriptionId, optional settings)
    * @returns The created organization
    */
@@ -42,6 +43,26 @@ export const organizationApi = {
   {
     return apiClient.request<Organization>(
       '/orgs',
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+      },
+      OrganizationSchema,
+    );
+  },
+
+  /**
+   * Create a new organization with Stripe subscription ID
+   * Recommended for payment flow integration
+   * @param data Organization creation data (name, stripeSubscriptionId, optional settings)
+   * @returns The created organization
+   */
+  createOrganizationWithStripeSubscription: (
+    data: CreateOrganizationWithStripeSubscriptionRequest,
+  ): Promise<Organization> =>
+  {
+    return apiClient.request<Organization>(
+      '/orgs/with-stripe-subscription',
       {
         method: 'POST',
         body: JSON.stringify(data),

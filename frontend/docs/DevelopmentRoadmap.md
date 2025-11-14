@@ -23,11 +23,33 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 ### **Sprint 3-4: Organization & User Management**
 
 #### **Sprint Goals**
-- [ ] Implement organization creation and management
-- [ ] Build user invitation system
+- [ ] Implement organization creation
+  - [X] organization creation form
+  - [ ] integrate with stripe
+    - [X] working draft integration with stripe payment elements
+    - [ ] consolidate payment methods
+      - [ ] card payments
+      - [ ] google pay
+      - [ ] apple pay
+    - [ ] consolidate stripe elements appearance
+    - [ ] consolidate plans/pricing
+- [ ] Implement organization management
+  - [ ] members
+    - [ ] design member card component
+    - [ ] view current members
+    - [ ] invite members via email
+    - [ ] role management (manager, staff)
+  - [ ] settings (name, currency)
+  - [ ] subscription management with billing info
+- [ ] Implement invitation management
+  - [ ] design ui/ux for button to invitation page
+  - [ ] implement invitation page
+    - [ ] design invitation card component
+    - [ ] view pending and expired/revoked invitations
+    - [ ] accept/decline invitations
 - [X] Create organization switching functionality
-- [ ] **User Settings & Profile Management**:
-  - [ ] Build user profile settings page
+- [ ] User Settings & Profile Management:
+  - [ ] Build user profile page
   - [ ] Implement profile editing (name, phone, profile picture)
   - [ ] Add password change functionality
   - [ ] Create account deletion flow

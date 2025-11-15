@@ -22,7 +22,7 @@ import { useI18n } from '@/hooks/useI18n';
 import { useCooldown } from '@/hooks/useCooldown';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
-import { PASSWORD_RESET_COOLDOWN_MS } from '@/lib/constants';
+import { PASSWORD_RESET_COOLDOWN_MS } from '@/constants/constants';
 
 interface ForgotPasswordFormProps
 {

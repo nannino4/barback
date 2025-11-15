@@ -11,7 +11,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useI18n } from '@/hooks/useI18n';
 import { useCooldown } from '@/hooks/useCooldown';
 import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
-import { SUCCESS_REDIRECT_DELAY } from '@/lib/constants';
+import { SUCCESS_REDIRECT_DELAY } from '@/constants/constants';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
 

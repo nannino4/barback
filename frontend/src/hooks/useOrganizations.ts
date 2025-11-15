@@ -5,7 +5,7 @@ import { useOrganizationStore } from '@/stores/organizationStore';
 import { organizationApi } from '@/api/organization-api';
 import { useI18n } from '@/hooks/useI18n';
 import { queryKeys } from '@/lib/queryKeys';
-import { CACHE_TIMES } from '@/lib/cacheTimes';
+import { CACHE_TIMES } from '@/constants/cacheTimes';
 import type {
   OrganizationMembership,
   OrgRole,

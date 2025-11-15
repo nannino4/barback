@@ -12,7 +12,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { useI18n } from '@/hooks/useI18n';
 import { useCooldown } from '@/hooks/useCooldown';
 import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
-import { EMAIL_RESEND_COOLDOWN_MS } from '@/lib/constants';
+import { EMAIL_RESEND_COOLDOWN_MS } from '@/constants/constants';
 
 type SendStatus = 'idle' | 'success' | 'error';
 

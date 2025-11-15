@@ -15,8 +15,11 @@ describe('buildStripeAppearance', () =>
     } as unknown as CSSStyleDeclaration);
 
     const appearance = buildStripeAppearance('dark');
-    expect(appearance.variables?.colorPrimary).toBe('#f7d560');
-    expect(appearance.rules?.['.Input']?.border).toContain('#');
+    expect(appearance.variables?.colorPrimary).toBe('#dfb200');
+    expect(appearance.variables?.colorBackground).toBe('#0e1216');
+    expect(appearance.rules?.['.Input--invalid']?.boxShadow).toContain('rgba');
+    expect(appearance.inputs).toBe('spaced');
+    expect(appearance.labels).toBe('floating');
   });
 
   it('converts CSS variable colors to hex strings when available', () =>
@@ -33,14 +36,26 @@ describe('buildStripeAppearance', () =>
           return '#050505';
         case '--color-background':
           return '#ffffff';
+        case '--color-card':
+          return '#fcfcfc';
+        case '--color-input':
+          return '#fafafa';
         case '--color-foreground':
           return '#0f0f10';
         case '--color-muted-foreground':
           return 'oklch(0.66 0.01 60)';
         case '--color-destructive':
           return '#ff4d4f';
-        case '--color-card':
-          return '#fcfcfc';
+        case '--color-destructive-foreground':
+          return '#ffffff';
+        case '--color-success':
+          return '#1abc9c';
+        case '--color-success-foreground':
+          return '#010101';
+        case '--color-warning':
+          return '#fdd835';
+        case '--color-warning-foreground':
+          return '#0f0f10';
         case '--color-border':
           return '#cfd0d1';
         default:
@@ -51,7 +66,14 @@ describe('buildStripeAppearance', () =>
 
     const appearance = buildStripeAppearance('light');
     expect(appearance.variables?.colorPrimary).toMatch(/^#/);
-    expect(appearance.variables?.colorDanger).toMatch(/^#/);
-    expect(appearance.rules?.['.Input:focus']?.boxShadow).toContain('rgba');
+    expect(appearance.variables?.colorDangerText).toMatch(/^#/);
+    expect(appearance.variables?.colorTextPlaceholder).toContain('rgba');
+    expect(appearance.rules?.['.Tab:focus-visible']?.boxShadow).toContain('rgba');
+  });
+
+  it('respects disableAnimations flag when provided', () =>
+  {
+    const appearance = buildStripeAppearance('light', { disableAnimations: true });
+    expect(appearance.disableAnimations).toBe(true);
   });
 });

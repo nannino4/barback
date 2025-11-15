@@ -31,12 +31,6 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
         - [X] frontend should validate org name is valid with api from backend
       - [X] step 2: plan selection
       - [X] step 3: payment
-      - [ ] fix ui issues
-        - [ ] wizard (steps indicator, spacing). could we use shadcn/ui steps component?
-        - [ ] plan selection
-          - [ ] plan cards don't have spacing in mobile view
-          - [ ] some label keys missing
-          - [ ] better show savings percent dynamically instead of hardcoding it in translation files. also show original price crossed out
   - [X] integrate with stripe
     - **stripe docs**
       - subscription
@@ -93,6 +87,9 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [ ] routes consolidation
   - [ ] update toasters color and position
   - [ ] consolidate type names for requests/responses to/from backend
+  - [ ] autofocus first input on modals and forms
+  - [ ] `enter` key goes to next input or submits form
+  - [ ] consolidate loading states (skeletons, spinners)
 
 ### **Sprint 5-6: Core Inventory Management**
 

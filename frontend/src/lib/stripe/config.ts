@@ -1,6 +1,7 @@
 import type {
   Appearance,
   StripeElementLocale,
+  StripeElementsOptions,
   StripeExpressCheckoutElementOptions,
   StripePaymentElementOptions,
 } from '@stripe/stripe-js';
@@ -13,10 +14,16 @@ type PaletteKey =
   | 'primary'
   | 'primaryText'
   | 'background'
+  | 'card'
+  | 'input'
   | 'text'
   | 'textMuted'
   | 'danger'
-  | 'card'
+  | 'dangerText'
+  | 'success'
+  | 'successText'
+  | 'warning'
+  | 'warningText'
   | 'border'
   | 'ring';
 
@@ -27,36 +34,54 @@ const CSS_VARIABLES: Record<PaletteKey, string> = {
   primary: '--color-primary',
   primaryText: '--color-primary-foreground',
   background: '--color-background',
+  card: '--color-card',
+  input: '--color-input',
   text: '--color-foreground',
   textMuted: '--color-muted-foreground',
   danger: '--color-destructive',
-  card: '--color-card',
+  dangerText: '--color-destructive-foreground',
+  success: '--color-success',
+  successText: '--color-success-foreground',
+  warning: '--color-warning',
+  warningText: '--color-warning-foreground',
   border: '--color-border',
   ring: '--color-ring',
 };
 
 const FALLBACK_PALETTES: Record<ResolvedTheme, StripePalette> = {
   light: {
-    primary: '#b8860b',
-    primaryText: '#ffffff',
-    background: '#f8f7f3',
-    text: '#1a1a1a',
-    textMuted: '#6b6b6b',
-    danger: '#c7463d',
-    card: '#ffffff',
-    border: '#d0d0d0',
-    ring: '#b8860b',
+    primary: '#bc7600',
+    primaryText: '#fffdfa',
+    background: '#f7f0eb',
+    card: '#fffdfa',
+    input: '#fffaf5',
+    text: '#12171a',
+    textMuted: '#5e6468',
+    danger: '#d40c1a',
+    dangerText: '#fffdfa',
+    success: '#00702e',
+    successText: '#fffdfa',
+    warning: '#b15600',
+    warningText: '#12171a',
+    border: '#c3bcb7',
+    ring: '#bc7600',
   },
   dark: {
-    primary: '#f7d560',
-    primaryText: '#171717',
-    background: '#0f1117',
-    text: '#f8f7f3',
-    textMuted: '#c5c5c5',
-    danger: '#ff7b6b',
-    card: '#161822',
-    border: '#2c2f3a',
-    ring: '#f7d560',
+    primary: '#dfb200',
+    primaryText: '#080c0f',
+    background: '#080c0f',
+    card: '#12171a',
+    input: '#0e1216',
+    text: '#faf4ef',
+    textMuted: '#97918c',
+    danger: '#ea0009',
+    dangerText: '#faf4ef',
+    success: '#00c271',
+    successText: '#080c0f',
+    warning: '#ff9100',
+    warningText: '#080c0f',
+    border: '#363b3f',
+    ring: '#dfb200',
   },
 };
 
@@ -105,21 +130,51 @@ const buildPalette = (theme: ResolvedTheme): StripePalette =>
   return Object.fromEntries(entries) as StripePalette;
 };
 
-export const buildStripeAppearance = (theme: ResolvedTheme = 'light'): Appearance =>
+type BuildAppearanceOptions = {
+  disableAnimations?: boolean;
+};
+
+export const stripeFonts: NonNullable<StripeElementsOptions['fonts']> = [
+  {
+    cssSrc:
+      'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap',
+  },
+];
+
+export const buildStripeAppearance = (
+  theme: ResolvedTheme = 'light',
+  options: BuildAppearanceOptions = {},
+): Appearance =>
 {
   const palette = buildPalette(theme);
   const ringShadow = withAlpha(palette.ring, 0.35, 'rgba(212, 175, 55, 0.35)');
+  const dangerRingShadow = withAlpha(palette.danger, 0.35, 'rgba(240, 90, 90, 0.35)');
+  const placeholderColor = withAlpha(palette.textMuted, 0.6, 'rgba(150, 150, 150, 0.6)');
+  const selectionColor = withAlpha(palette.primary, 0.25, 'rgba(191, 141, 0, 0.25)');
+  const { disableAnimations = false } = options;
 
   return {
     theme: 'flat',
+    inputs: 'spaced',
+    labels: 'floating',
+    disableAnimations,
     variables: {
       colorPrimary: palette.primary,
       colorPrimaryText: palette.primaryText,
-      colorBackground: palette.background,
+      colorBackground: palette.input,
       colorText: palette.text,
-      colorTextPlaceholder: palette.textMuted,
+      colorTextSecondary: palette.textMuted,
+      colorTextPlaceholder: placeholderColor,
+      colorIcon: palette.textMuted,
       colorDanger: palette.danger,
-      borderRadius: '0.75rem',
+      colorDangerText: palette.dangerText,
+      colorSuccess: palette.success,
+      colorSuccessText: palette.successText,
+      colorWarning: palette.warning,
+      colorWarningText: palette.warningText,
+      borderRadius: '12px',
+      fontSizeBase: '16px',
+      spacingUnit: '10px',
       fontFamily:
         "Inter, 'Playfair Display', 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI'",
     },
@@ -131,9 +186,24 @@ export const buildStripeAppearance = (theme: ResolvedTheme = 'light'): Appearanc
         color: palette.text,
         backgroundColor: palette.card,
       },
+      '.Input::placeholder': {
+        color: placeholderColor,
+      },
+      '.Input::selection': {
+        backgroundColor: selectionColor,
+        color: palette.primaryText,
+      },
       '.Input:focus': {
         borderColor: palette.ring,
         boxShadow: `0 0 0 3px ${ringShadow}`,
+      },
+      '.Input:disabled': {
+        opacity: '0.6',
+        cursor: 'not-allowed',
+      },
+      '.Input--invalid': {
+        borderColor: palette.danger,
+        boxShadow: `0 0 0 3px ${dangerRingShadow}`,
       },
       '.Tab': {
         border: `1px solid ${palette.border}`,
@@ -142,20 +212,58 @@ export const buildStripeAppearance = (theme: ResolvedTheme = 'light'): Appearanc
         color: palette.text,
       },
       '.Tab--selected': {
-        color: palette.text,
+        color: palette.primaryText,
         borderColor: palette.primary,
         boxShadow: `0 0 0 1px ${palette.primary}`,
+      },
+      '.Tab:focus-visible': {
+        boxShadow: `0 0 0 2px ${ringShadow}`,
+        borderColor: palette.ring,
+      },
+      '.Tab:disabled': {
+        color: palette.textMuted,
+        borderColor: palette.border,
+        opacity: '0.6',
       },
       '.Block': {
         backgroundColor: palette.card,
         boxShadow: 'none',
       },
+      '.BlockDivider': {
+        borderColor: palette.border,
+      },
+      '.BlockAction': {
+        color: palette.primary,
+      },
+      '.BlockAction:hover': {
+        color: palette.primaryText,
+        backgroundColor: selectionColor,
+      },
       '.Label': {
         color: palette.textMuted,
         fontWeight: '500',
       },
+      '.Label--invalid': {
+        color: palette.danger,
+      },
       '.Error': {
         color: palette.danger,
+      },
+      '.RadioIcon': {
+        width: '20px',
+        height: '20px',
+      },
+      '.RadioIconOuter': {
+        stroke: palette.border,
+      },
+      '.RadioIconOuter--checked': {
+        stroke: palette.primary,
+      },
+      '.RadioIconInner': {
+        fill: palette.primary,
+      },
+      '.RadioIconInner--checked': {
+        fill: palette.primary,
       },
     },
   };

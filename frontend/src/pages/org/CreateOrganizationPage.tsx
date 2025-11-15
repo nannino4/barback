@@ -15,7 +15,7 @@ import { CreateOrganizationFormSchema } from '@/types/organization';
 import type { CreateOrganizationFormData } from '@/types/organization';
 import type { BillingInterval } from '@/types/subscription';
 import { OrgNameStep, PlanSelectionStep, PaymentStep } from '@/components/features/organizations/wizard';
-import { buildStripeAppearance, getStripeLocale } from '@/lib/stripe/config';
+import { buildStripeAppearance, getStripeLocale, stripeFonts } from '@/lib/stripe/config';
 import { ResolvedThemeContext } from '@/contexts/ThemeContext';
 
 // Initialize Stripe - cast env var to string to satisfy TypeScript
@@ -232,6 +232,7 @@ export const CreateOrganizationPage: React.FC = () =>
               clientSecret: paymentSetup.clientSecret,
               appearance: stripeAppearance,
               locale: getStripeLocale(currentLanguage),
+              fonts: stripeFonts,
             }}
           >
             <PaymentStep

@@ -585,6 +585,10 @@
                 "description": "Select the billing interval that works best for you",
                 "monthly": "Monthly",
                 "yearly": "Yearly",
+                "interval": {
+                    "monthlyShort": "mo",
+                    "yearlyShort": "yr"
+                },
                 "monthlyPrice": "€29.99/mo",
                 "yearlyPrice": "€299/yr",
                 "yearlySavings": "Save 17%",

@@ -8,6 +8,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageContainer, Stack } from '@/components/layout';
 import { Spinner } from '@/components/ui/spinner';
+import { WizardSteps } from '@/components/ui/wizard-steps';
 import { useI18n } from '@/hooks/useI18n';
 import { subscriptionApi } from '@/api/subscription-api';
 import { CreateOrganizationFormSchema } from '@/types/organization';
@@ -174,46 +175,25 @@ export const CreateOrganizationPage: React.FC = () =>
         </div>
 
         {/* Progress Indicator */}
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              {[WizardStep.NAME, WizardStep.PLAN, WizardStep.PAYMENT].map((step) => (
-                <div
-                  key={step}
-                  className="flex items-center flex-1"
-                >
-                  <div
-                    className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-                      currentStep >= step
-                        ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-muted bg-background text-muted-foreground'
-                    }`}
-                  >
-                    {step + 1}
-                  </div>
-                  {step < WizardStep.PAYMENT && (
-                    <div
-                      className={`flex-1 h-0.5 mx-2 ${
-                        currentStep > step ? 'bg-primary' : 'bg-muted'
-                      }`}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between mt-2">
-              <span className="text-sm text-muted-foreground">
-                {t('organizations.create.wizard.stepName.name')}
-              </span>
-              <span className="text-sm text-muted-foreground">
-                {t('organizations.create.wizard.stepName.plan')}
-              </span>
-              <span className="text-sm text-muted-foreground">
-                {t('organizations.create.wizard.stepName.payment')}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+        <WizardSteps
+          steps={[
+            {
+              label: t('organizations.create.wizard.stepName.name'),
+              isComplete: currentStep > WizardStep.NAME,
+              isCurrent: currentStep === WizardStep.NAME,
+            },
+            {
+              label: t('organizations.create.wizard.stepName.plan'),
+              isComplete: currentStep > WizardStep.PLAN,
+              isCurrent: currentStep === WizardStep.PLAN,
+            },
+            {
+              label: t('organizations.create.wizard.stepName.payment'),
+              isComplete: false,
+              isCurrent: currentStep === WizardStep.PAYMENT,
+            },
+          ]}
+        />
 
         {/* Wizard Steps */}
         <FormProvider {...form}>

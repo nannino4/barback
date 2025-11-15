@@ -12,7 +12,6 @@ export interface PricingPlan
   currency: string;
   billingPeriodLabelKey: IntervalLabelKey;
   highlight?: boolean;
-  savingsPercentage?: number;
 }
 
 export const PRICING_PLANS: PricingPlan[] = [
@@ -30,7 +29,6 @@ export const PRICING_PLANS: PricingPlan[] = [
     currency: 'EUR',
     billingPeriodLabelKey: 'organizations.create.planStep.interval.yearlyShort',
     highlight: true,
-    savingsPercentage: 17,
   },
 ];
 

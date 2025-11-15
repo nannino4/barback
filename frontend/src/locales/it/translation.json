@@ -586,6 +586,10 @@
                 "description": "Seleziona l'intervallo di fatturazione più adatto a te",
                 "monthly": "Mensile",
                 "yearly": "Annuale",
+                "interval": {
+                    "monthlyShort": "mese",
+                    "yearlyShort": "anno"
+                },
                 "monthlyPrice": "€29,99/mese",
                 "yearlyPrice": "€299/anno",
                 "yearlySavings": "Risparmia 17%",

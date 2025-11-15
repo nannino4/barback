@@ -4,9 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Stack } from '@/components/layout';
 import { useI18n } from '@/hooks/useI18n';
-import { cn } from '@/lib/utils';
 import { formatCurrency } from '@/lib/formatters/formatCurrency';
 import { PLAN_FEATURE_KEYS, PRICING_PLANS } from '@/constants/pricing';
+import { PlanCard } from './PlanCard';
 import type { BillingInterval } from '@/types/subscription';
 
 interface PlanSelectionStepProps
@@ -33,6 +33,15 @@ export const PlanSelectionStep: React.FC<PlanSelectionStepProps> = ({
 {
   const { t, currentLanguage } = useI18n();
 
+  // Calculate monthly equivalent price for yearly plan
+  const monthlyPlan = PRICING_PLANS.find((plan) => plan.interval === 'MONTHLY');
+  const yearlyPlan = PRICING_PLANS.find((plan) => plan.interval === 'YEARLY');
+
+  const monthlyPriceValue = monthlyPlan?.price || 0;
+  const yearlyPriceValue = yearlyPlan?.price || 0;
+  const monthlyEquivalentForYearly = yearlyPriceValue / 12;
+  const savingsPercent = Math.round(((monthlyPriceValue - monthlyEquivalentForYearly) / monthlyPriceValue) * 100);
+
   const planCards = useMemo(() =>
   {
     return PRICING_PLANS.map((plan) =>
@@ -40,13 +49,29 @@ export const PlanSelectionStep: React.FC<PlanSelectionStepProps> = ({
       const formattedPrice = formatCurrency(plan.price, currentLanguage, plan.currency);
       const billingLabel = t(plan.billingPeriodLabelKey as never) as string;
 
+      // Calculate additional display data
+      let pricePerPeriod = formattedPrice;
+      let originalPrice: string | undefined;
+      let calculatedSavings: number | undefined;
+
+      if (plan.interval === 'YEARLY')
+      {
+        // Show monthly equivalent for yearly plan
+        pricePerPeriod = formatCurrency(monthlyEquivalentForYearly, currentLanguage, plan.currency);
+        originalPrice = formatCurrency(monthlyPriceValue, currentLanguage, plan.currency);
+        calculatedSavings = savingsPercent;
+      }
+
       return {
         ...plan,
         formattedPrice,
         billingLabel,
+        pricePerPeriod,
+        originalPrice,
+        calculatedSavings,
       };
     });
-  }, [currentLanguage, t]);
+  }, [currentLanguage, t, monthlyEquivalentForYearly, monthlyPriceValue, savingsPercent]);
 
   const features = useMemo(
     () => PLAN_FEATURE_KEYS.map((key) => t(key as never) as string),
@@ -86,69 +111,56 @@ export const PlanSelectionStep: React.FC<PlanSelectionStepProps> = ({
       )}
 
       {/* Plan Selection */}
-      <Stack direction="horizontal" space="md" className="flex-wrap">
+      <Stack space="md">
         {planCards.map((plan) =>
         {
           const isSelected = selectedInterval === plan.interval;
 
+          // Build full price text for yearly plan
+          const fullPriceText = plan.interval === 'YEARLY' && plan.formattedPrice && plan.pricePerPeriod
+            ? [
+              plan.formattedPrice,
+              '/',
+              t(plan.billingPeriodLabelKey as never) as string,
+              ' ',
+              t('common.or'),
+              ' ',
+              plan.pricePerPeriod,
+              '/',
+              t('organizations.create.planStep.interval.monthlyShort'),
+            ].join('')
+            : undefined;
+
           return (
-            <Card
+            <PlanCard
               key={plan.id}
-              tabIndex={0}
-              role="button"
-              className={cn(
-                'flex-1 min-w-[260px] cursor-pointer transition-all hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40',
-                'relative border border-border bg-card',
-                isSelected && 'border-primary/50 shadow-lg ring-2 ring-primary/20',
-              )}
-              onClick={() => onSelectInterval(plan.interval)}
-              onKeyDown={(event) =>
-              {
-                if (event.key === 'Enter' || event.key === ' ')
-                {
-                  event.preventDefault();
-                  onSelectInterval(plan.interval);
-                }
-              }}
-            >
-              {plan.highlight && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
-                  {t('organizations.create.planStep.bestValue')}
-                </div>
-              )}
-              <CardContent className="pt-8">
-                <Stack space="md">
-                  <div>
-                    <h3 className="text-lg font-semibold">
-                      {plan.interval === 'MONTHLY'
-                        ? t('organizations.create.planStep.monthly')
-                        : t('organizations.create.planStep.yearly')}
-                    </h3>
-                    <div className="mt-3 flex items-baseline gap-2">
-                      <p className="text-3xl font-bold">
-                        {plan.formattedPrice}
-                      </p>
-                      <span className="text-sm text-muted-foreground">
-                        /{plan.billingLabel}
-                      </span>
-                    </div>
-                    {plan.savingsPercentage && (
-                      <p className="text-sm text-success font-medium mt-1">
-                        {t('organizations.create.planStep.savings' as never, {
-                          percent: plan.savingsPercentage,
-                        }) as string}
-                      </p>
-                    )}
-                  </div>
-                  {isSelected && (
-                    <div className="flex items-center gap-2 text-primary">
-                      <Check className="h-5 w-5" />
-                      <span className="text-sm font-medium">{t('common.selected')}</span>
-                    </div>
-                  )}
-                </Stack>
-              </CardContent>
-            </Card>
+              interval={plan.interval}
+              title={plan.interval === 'MONTHLY'
+                ? t('organizations.create.planStep.monthly')
+                : t('organizations.create.planStep.yearly')}
+              pricePerPeriod={plan.interval === 'YEARLY' ? plan.pricePerPeriod : plan.formattedPrice}
+              periodLabel={plan.interval === 'YEARLY'
+                ? t('organizations.create.planStep.interval.monthlyShort')
+                : t(plan.billingPeriodLabelKey as never)}
+              originalPrice={plan.originalPrice}
+              originalPeriodLabel={plan.originalPrice
+                ? t('organizations.create.planStep.interval.monthlyShort')
+                : undefined}
+              savingsPercent={plan.calculatedSavings}
+              savingsText={plan.calculatedSavings
+                ? t('organizations.create.planStep.savings' as never, {
+                  percent: plan.calculatedSavings,
+                }) as string
+                : undefined}
+              fullPriceText={fullPriceText}
+              isHighlighted={plan.highlight}
+              highlightBadgeText={plan.highlight
+                ? t('organizations.create.planStep.bestValue')
+                : undefined}
+              isSelected={isSelected}
+              onSelect={() => onSelectInterval(plan.interval)}
+              selectedText={t('common.selected')}
+            />
           );
         })}
       </Stack>

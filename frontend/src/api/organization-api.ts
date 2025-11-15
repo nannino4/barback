@@ -156,4 +156,21 @@ export const organizationApi = {
       z.void(),
     );
   },
+
+  /**
+   * Validate organization name availability
+   * @param name Organization name to validate
+   * @returns Object with available boolean indicating if name is available
+   */
+  validateOrgName: (name: string): Promise<{ available: boolean }> =>
+  {
+    return apiClient.request<{ available: boolean }>(
+      '/orgs/validate-name',
+      {
+        method: 'POST',
+        body: JSON.stringify({ name }),
+      },
+      z.object({ available: z.boolean() }),
+    );
+  },
 };

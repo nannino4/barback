@@ -64,6 +64,11 @@ export const SubscriptionSetupSchema = z.object({
   clientSecret: z.string(),
 });
 
+export const StripeSubscriptionStatusSchema = z.object({
+  stripeSubscriptionId: z.string(),
+  status: SubscriptionStatusSchema,
+});
+
 // ============================================================================
 // TypeScript Types - Derived from Zod Schemas
 // ============================================================================
@@ -74,3 +79,4 @@ export type Subscription = z.infer<typeof SubscriptionSchema>;
 export type TrialEligibilityResponse = z.infer<typeof TrialEligibilityResponseSchema>;
 export type CreateSubscriptionRequest = z.infer<typeof CreateSubscriptionRequestSchema>;
 export type SubscriptionSetup = z.infer<typeof SubscriptionSetupSchema>;
+export type StripeSubscriptionStatus = z.infer<typeof StripeSubscriptionStatusSchema>;

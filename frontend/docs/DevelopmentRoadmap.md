@@ -23,16 +23,47 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 ### **Sprint 3-4: Organization & User Management**
 
 #### **Sprint Goals**
-- [ ] Implement organization creation
-  - [X] organization creation form
-  - [ ] integrate with stripe
+- [X] Implement organization creation
+  - [X] organization creation page
+    - [X] first draft
+    - [X] creation wizard with different steps:
+      - [X] step 1: organization name
+        - [X] frontend should validate org name is valid with api from backend
+      - [X] step 2: plan selection
+      - [X] step 3: payment
+      - [ ] fix ui issues
+        - [ ] wizard (steps indicator, spacing). could we use shadcn/ui steps component?
+        - [ ] plan selection
+          - [ ] plan cards don't have spacing in mobile view
+          - [ ] some label keys missing
+          - [ ] better show savings percent dynamically instead of hardcoding it in translation files. also show original price crossed out
+  - [X] integrate with stripe
+    - **stripe docs**
+      - subscription
+        - https://docs.stripe.com/payments/advanced/build-subscriptions?platform=web&ui=elements&lang=node
+      - payment element
+        - https://docs.stripe.com/payments/payment-element
+        - https://docs.stripe.com/payments/payment-element/best-practices
+      - express checkout element
+        - https://docs.stripe.com/elements/express-checkout-element
+        - https://docs.stripe.com/elements/express-checkout-element/migration
+      - appearance
+        - https://docs.stripe.com/elements/appearance-api
     - [X] working draft integration with stripe payment elements
+    - [X] migrate to express checkout element
+      - [X] test over https (using ngrok)
     - [ ] consolidate payment methods
       - [ ] card payments
       - [ ] google pay
       - [ ] apple pay
     - [ ] consolidate stripe elements appearance
-    - [ ] consolidate plans/pricing
+      - [ ] color vars don't seem to work properly. `[Stripe.js] elements-inner-loader-ui.html: invalid variable value "var(--color-primary)" provided to "colorPrimary"; "colorPrimary" accepts a valid HEX, rgb(), or hsl() CSS color.`
+    - [ ] improve organization creation flow after payment
+      - [X] consider polling for subscription status instead of waiting fixed time
+        - [ ] check subscription status by sending stripeSubscriptionId. implement backend endpoints as needed
+        - [ ] define max time to wait before showing error. handle case on backend where subscription is not active after max time. maybe cancel subscription automatically?
+      - [ ] handle payment failures
+    - [X] consolidate plans/pricing
 - [ ] Implement organization management
   - [ ] members
     - [ ] design member card component
@@ -54,6 +85,13 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [ ] Add password change functionality
   - [ ] Create account deletion flow
   - [X] Move theme toggle and language selector to settings page (from navigation)
+- **fixes needed**
+  - [ ] Date formatting doesn't respect user's locale from i18n
+  - [ ] refresh token service restarts every page load
+- **good to have**
+  - [ ] routes consolidation
+  - [ ] update toasters color and position
+  - [ ] consolidate type names for requests/responses to/from backend
 
 ### **Sprint 5-6: Core Inventory Management**
 

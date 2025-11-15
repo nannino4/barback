@@ -19,7 +19,9 @@
         "error": "Error",
         "success": "Success",
         "tryAgain": "Try Again",
-        "you": "you"
+        "you": "you",
+        "selected": "Selected",
+        "or": "or"
     },
     "auth": {
         "login": {
@@ -558,6 +560,65 @@
         "create": {
             "title": "Create New Venue",
             "description": "Set up a new venue with its own subscription and inventory",
+            "wizard": {
+                "step": "Step {{current}} of {{total}}",
+                "stepName": {
+                    "name": "Venue Name",
+                    "plan": "Select Plan",
+                    "payment": "Payment"
+                }
+            },
+            "nameStep": {
+                "title": "Name Your Venue",
+                "description": "Choose a unique name for your venue",
+                "nameLabel": "Venue Name",
+                "namePlaceholder": "Enter venue name",
+                "checkingAvailability": "Checking availability...",
+                "nameAvailable": "Name is available",
+                "nameUnavailable": "Name is already taken",
+                "validationRequired": "Name is required",
+                "validationMinLength": "Name must be at least 2 characters",
+                "validationMaxLength": "Name must not exceed 100 characters"
+            },
+            "planStep": {
+                "title": "Choose Your Plan",
+                "description": "Select the billing interval that works best for you",
+                "monthly": "Monthly",
+                "yearly": "Yearly",
+                "monthlyPrice": "€29.99/mo",
+                "yearlyPrice": "€299/yr",
+                "yearlySavings": "Save 17%",
+                "savings": "Save {{percent}}%",
+                "features": {
+                    "title": "All Plans Include",
+                    "unlimitedProducts": "Unlimited products",
+                    "unlimitedMembers": "Unlimited team members",
+                    "inventoryTracking": "Real-time inventory tracking",
+                    "lowStockAlerts": "Low stock alerts",
+                    "reports": "Analytics & reports",
+                    "mobileApp": "Mobile app access",
+                    "support": "Email support"
+                },
+                "bestValue": "Best Value"
+            },
+            "paymentStep": {
+                "title": "Complete Payment",
+                "description": "Securely complete your payment to create {{name}}",
+                "trialNote": "Your free 3-month trial starts today. You won't be charged until the trial ends.",
+                "subscriptionNote": "Your subscription starts immediately. Cancel anytime from account settings.",
+                "processingPayment": "Processing payment...",
+                "creatingOrganization": "Creating venue...",
+                "paymentFailed": "Payment failed. Please try again.",
+                "expressCheckoutUnavailable": "Express checkout unavailable. Please try a different payment method.",
+                "subscriptionTimeout": "We couldn't confirm your payment in time. Please refresh and try again or contact support.",
+                "status": {
+                    "confirmingWallet": "Confirming wallet payment...",
+                    "confirmingCard": "Confirming card payment...",
+                    "waitingForStripe": "Waiting for Stripe to activate your subscription ({{attempt}}/{{max}})...",
+                    "creatingOrganization": "Finalizing your venue...",
+                    "retryingOrganization": "Finalizing your venue (attempt {{attempt}}/{{max}})..."
+                }
+            },
             "nameLabel": "Venue Name",
             "namePlaceholder": "Enter venue name",
             "checkingEligibility": "Checking eligibility...",
@@ -569,7 +630,7 @@
             "success": "Venue created successfully",
             "error": "Failed to create venue",
             "cancel": "Cancel",
-            "create": "Create",
+            "create": "Create Venue",
             "trialEligible": "You're eligible for a free 3-month trial!",
             "trialNotEligible": "A subscription will be created for this venue.",
             "subscriptionNote": "Your subscription will start after payment is confirmed. You can cancel anytime.",
@@ -718,6 +779,7 @@
             "paymentMethod": "Payment Method",
             "noPaymentMethod": "No payment method on file",
             "addPaymentMethod": "Add Payment Method",
+            "features": "All Plans Include",
             "paymentFailed": {
                 "title": "Payment Failed",
                 "description": "Your recent payment failed. Please update your payment method or try again.",

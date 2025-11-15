@@ -4,10 +4,12 @@ import {
   SubscriptionSchema,
   TrialEligibilityResponseSchema,
   SubscriptionSetupSchema,
+  StripeSubscriptionStatusSchema,
   type Subscription,
   type TrialEligibilityResponse,
   type CreateSubscriptionRequest,
   type SubscriptionSetup,
+  type StripeSubscriptionStatus,
 } from '@/types/subscription';
 
 // ============================================================================
@@ -63,6 +65,20 @@ export const subscriptionApi = {
         method: 'GET',
       },
       z.array(SubscriptionSchema),
+    );
+  },
+
+  /**
+   * Poll subscription status by Stripe subscription ID
+   */
+  getStripeSubscriptionStatus: (stripeSubscriptionId: string): Promise<StripeSubscriptionStatus> =>
+  {
+    return apiClient.request<StripeSubscriptionStatus>(
+      `/subscriptions/stripe/${stripeSubscriptionId}`,
+      {
+        method: 'GET',
+      },
+      StripeSubscriptionStatusSchema,
     );
   },
 };

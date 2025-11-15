@@ -1,22 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
-import { Check } from 'lucide-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
+import { Card, CardContent } from '@/components/ui/card';
 import { PageContainer, Stack } from '@/components/layout';
 import { Spinner } from '@/components/ui/spinner';
 import { useI18n } from '@/hooks/useI18n';
@@ -24,37 +13,48 @@ import { subscriptionApi } from '@/api/subscription-api';
 import { CreateOrganizationFormSchema } from '@/types/organization';
 import type { CreateOrganizationFormData } from '@/types/organization';
 import type { BillingInterval } from '@/types/subscription';
-import { CreateOrganizationPaymentForm } from '@/components/features/organizations/CreateOrganizationPaymentForm';
+import { OrgNameStep, PlanSelectionStep, PaymentStep } from '@/components/features/organizations/wizard';
+import { stripeAppearance, getStripeLocale } from '@/lib/stripe/config';
 
 // Initialize Stripe - cast env var to string to satisfy TypeScript
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string);
 
 /**
- * CreateOrganizationPage - Create new organization with subscription
+ * Wizard steps
+ */
+const WizardStep = {
+  NAME: 0,
+  PLAN: 1,
+  PAYMENT: 2,
+} as const;
+
+type WizardStepType = typeof WizardStep[keyof typeof WizardStep];
+
+/**
+ * CreateOrganizationPage - Multi-step wizard for creating organization with subscription
  * 
- * Implements Stripe's recommended subscription flow:
+ * Flow:
  * 1. Check trial eligibility
- * 2. Collect organization details + billing interval
- * 3. Setup subscription payment (creates Stripe subscription, returns clientSecret)
- * 4. Show Payment Element for both trial AND paid (Stripe best practice)
- * 5. User confirms payment
- * 6. Webhook creates local subscription record
- * 7. Create organization with confirmed subscription
+ * 2. Step 1: Collect & validate organization name
+ * 3. Step 2: Select billing interval (monthly/yearly)
+ * 4. Step 3: Complete payment with Stripe
+ * 5. Create organization after payment confirmed
  * 
- * Key improvements:
- * - Trial and paid both collect payment upfront (seamless conversion)
- * - No local subscription until webhook confirms (prevents incomplete records)
+ * Improvements:
+ * - Real-time name validation with debouncing
+ * - Clear step progression with back navigation
+ * - Trial and paid both collect payment upfront (Stripe best practice)
  * - Proper error handling and loading states
  * - Mobile-responsive design
  */
 export const CreateOrganizationPage: React.FC = () =>
 {
-  const { t } = useI18n();
+  const { t, currentLanguage } = useI18n();
   const navigate = useNavigate();
   
-  // Form state
+  // Wizard state
+  const [currentStep, setCurrentStep] = useState<WizardStepType>(WizardStep.NAME);
   const [billingInterval, setBillingInterval] = useState<BillingInterval>('MONTHLY');
-  const [organizationName, setOrganizationName] = useState('');
   
   // Payment state - null means we haven't setup payment yet
   const [paymentSetup, setPaymentSetup] = useState<{
@@ -95,28 +95,39 @@ export const CreateOrganizationPage: React.FC = () =>
         stripeSubscriptionId: data.stripeSubscriptionId,
         isTrial,
       });
+      setCurrentStep(WizardStep.PAYMENT);
     },
   });
 
   /**
-   * Handle form submission
-   * Sets up subscription payment and shows Payment Element
+   * Step navigation handlers
    */
-  const handleFormSubmit = async (data: CreateOrganizationFormData) =>
+  const handleNextFromName = () =>
   {
-    setOrganizationName(data.name);
-    
+    setCurrentStep(WizardStep.PLAN);
+  };
+
+  const handleNextFromPlan = async () =>
+  {
     // Setup payment for trial or paid subscription
     const isTrial = eligibility?.eligible || false;
     await setupPaymentMutation.mutateAsync(isTrial);
   };
 
-  /**
-   * Handle back button from payment form
-   */
-  const handleBackToForm = () =>
+  const handleBackFromPlan = () =>
+  {
+    setCurrentStep(WizardStep.NAME);
+  };
+
+  const handleBackFromPayment = () =>
   {
     setPaymentSetup(null);
+    setCurrentStep(WizardStep.PLAN);
+  };
+
+  const handleCancel = () =>
+  {
+    void navigate('/organizations');
   };
 
   /**
@@ -159,123 +170,91 @@ export const CreateOrganizationPage: React.FC = () =>
           </p>
         </div>
 
-        {/* Trial Badge */}
-        {eligibility?.eligible && !paymentSetup && (
-          <Card className="border-primary/20 bg-primary/5">
-            <CardContent className="pt-6">
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <Check className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <p className="font-medium text-primary">
-                    {t('subscription.trial.eligible')}
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {t('subscription.trial.description')}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Step 1: Organization Details Form */}
-        {!paymentSetup && (
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('organizations.create.detailsTitle')}</CardTitle>
-              <CardDescription>
-                {t('organizations.create.detailsDescription')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Form {...form}>
-                <form onSubmit={(e) => void form.handleSubmit(handleFormSubmit)(e)}>
-                  <Stack space="lg">
-                    {/* Organization Name */}
-                    <FormField
-                      control={form.control}
-                      name="name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>{t('organizations.create.nameLabel')}</FormLabel>
-                          <FormControl>
-                            <Input
-                              placeholder={t('organizations.create.namePlaceholder')}
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+        {/* Progress Indicator */}
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              {[WizardStep.NAME, WizardStep.PLAN, WizardStep.PAYMENT].map((step) => (
+                <div
+                  key={step}
+                  className="flex items-center flex-1"
+                >
+                  <div
+                    className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+                      currentStep >= step
+                        ? 'border-primary bg-primary text-primary-foreground'
+                        : 'border-muted bg-background text-muted-foreground'
+                    }`}
+                  >
+                    {step + 1}
+                  </div>
+                  {step < WizardStep.PAYMENT && (
+                    <div
+                      className={`flex-1 h-0.5 mx-2 ${
+                        currentStep > step ? 'bg-primary' : 'bg-muted'
+                      }`}
                     />
+                  )}
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-between mt-2">
+              <span className="text-sm text-muted-foreground">
+                {t('organizations.create.wizard.stepName.name')}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {t('organizations.create.wizard.stepName.plan')}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {t('organizations.create.wizard.stepName.payment')}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
-                    {/* Billing Interval Selection */}
-                    <div>
-                      <FormLabel>{t('subscription.selectPlan')}</FormLabel>
-                      <Stack direction="horizontal" space="sm" className="mt-2">
-                        <Button
-                          type="button"
-                          variant={billingInterval === 'MONTHLY' ? 'default' : 'outline'}
-                          onClick={() => setBillingInterval('MONTHLY')}
-                          className="flex-1"
-                        >
-                          <Stack space="xs" className="items-center">
-                            <span className="font-semibold">{t('subscription.monthly')}</span>
-                            <span className="text-xs opacity-80">€29.99/mo</span>
-                          </Stack>
-                        </Button>
-                        <Button
-                          type="button"
-                          variant={billingInterval === 'YEARLY' ? 'default' : 'outline'}
-                          onClick={() => setBillingInterval('YEARLY')}
-                          className="flex-1"
-                        >
-                          <Stack space="xs" className="items-center">
-                            <span className="font-semibold">{t('subscription.yearly')}</span>
-                            <span className="text-xs opacity-80">
-                              €299/yr
-                              <span className="ml-1 text-success">(-17%)</span>
-                            </span>
-                          </Stack>
-                        </Button>
-                      </Stack>
-                    </div>
+        {/* Wizard Steps */}
+        <FormProvider {...form}>
+          {currentStep === WizardStep.NAME && (
+            <Card>
+              <CardContent className="pt-6">
+                <OrgNameStep
+                  onNext={handleNextFromName}
+                  onCancel={handleCancel}
+                />
+              </CardContent>
+            </Card>
+          )}
 
-                    {/* Submit Button */}
-                    <Button
-                      type="submit"
-                      size="lg"
-                      disabled={setupPaymentMutation.isPending}
-                    >
-                      {setupPaymentMutation.isPending
-                        ? t('organizations.create.checkingEligibility')
-                        : t('common.continue')}
-                    </Button>
-                  </Stack>
-                </form>
-              </Form>
-            </CardContent>
-          </Card>
-        )}
+          {currentStep === WizardStep.PLAN && (
+            <Card>
+              <CardContent className="pt-6">
+                <PlanSelectionStep
+                  selectedInterval={billingInterval}
+                  onSelectInterval={setBillingInterval}
+                  isTrial={eligibility?.eligible || false}
+                  onNext={() => void handleNextFromPlan()}
+                  onBack={handleBackFromPlan}
+                />
+              </CardContent>
+            </Card>
+          )}
+        </FormProvider>
 
-        {/* Step 2: Payment Form with Stripe Elements */}
+        {/* Payment Step with Stripe Elements */}
         {paymentSetup && (
           <Elements
             stripe={stripePromise}
             options={{
               clientSecret: paymentSetup.clientSecret,
-              appearance: {
-                theme: 'stripe',
-              },
+              appearance: stripeAppearance,
+              locale: getStripeLocale(currentLanguage),
             }}
           >
-            <CreateOrganizationPaymentForm
+            <PaymentStep
               stripeSubscriptionId={paymentSetup.stripeSubscriptionId}
-              organizationName={organizationName}
+              organizationName={form.getValues('name')}
               isTrial={paymentSetup.isTrial}
-              onBack={handleBackToForm}
+              onBack={handleBackFromPayment}
               onSuccess={handleSuccess}
             />
           </Elements>

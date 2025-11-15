@@ -14,4 +14,11 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
     },
+    server: {
+        allowedHosts: [
+            'localhost',
+            'barback.it',
+            'reconstructionary-marylou-solubly.ngrok-free.dev',
+        ]
+    }
 })

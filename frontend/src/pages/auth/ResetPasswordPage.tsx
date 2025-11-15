@@ -23,9 +23,16 @@ import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 import { useI18n } from '@/hooks/useI18n';
 
+type PasswordRequirementKey =
+  | 'auth.resetPassword.requirementLength'
+  | 'auth.resetPassword.requirementUppercase'
+  | 'auth.resetPassword.requirementLowercase'
+  | 'auth.resetPassword.requirementNumber'
+  | 'auth.resetPassword.requirementSpecial';
+
 interface PasswordRequirement
 {
-    key: string;
+    key: PasswordRequirementKey;
     test: (password: string) => boolean;
 }
 
@@ -43,7 +50,7 @@ export const ResetPasswordPage: React.FC = () =>
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  const passwordRequirements: PasswordRequirement[] = [
+  const passwordRequirements: ReadonlyArray<PasswordRequirement> = [
     {
       key: 'auth.resetPassword.requirementLength',
       test: (password) => password.length >= 8,

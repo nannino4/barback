@@ -19,7 +19,9 @@
         "error": "Errore",
         "success": "Successo",
         "tryAgain": "Riprova",
-        "you": "tu"
+        "you": "tu",
+        "selected": "Selezionato",
+        "or": "oppure"
     },
     "auth": {
         "login": {
@@ -558,23 +560,82 @@
         },
         "create": {
             "title": "Crea Nuovo Locale",
-            "description": "Configura un nuovo locale con il proprio abbonamento e inventario",
+            "description": "Configura un nuovo locale con la propria sottoscrizione e inventario",
+            "wizard": {
+                "step": "Passo {{current}} di {{total}}",
+                "stepName": {
+                    "name": "Nome Locale",
+                    "plan": "Scegli Piano",
+                    "payment": "Pagamento"
+                }
+            },
+            "nameStep": {
+                "title": "Dai un Nome al Tuo Locale",
+                "description": "Scegli un nome unico per il tuo locale",
+                "nameLabel": "Nome Locale",
+                "namePlaceholder": "Inserisci nome locale",
+                "checkingAvailability": "Controllo disponibilità...",
+                "nameAvailable": "Nome disponibile",
+                "nameUnavailable": "Nome già in uso",
+                "validationRequired": "Nome richiesto",
+                "validationMinLength": "Il nome deve contenere almeno 2 caratteri",
+                "validationMaxLength": "Il nome non può superare i 100 caratteri"
+            },
+            "planStep": {
+                "title": "Scegli il Tuo Piano",
+                "description": "Seleziona l'intervallo di fatturazione più adatto a te",
+                "monthly": "Mensile",
+                "yearly": "Annuale",
+                "monthlyPrice": "€29,99/mese",
+                "yearlyPrice": "€299/anno",
+                "yearlySavings": "Risparmia 17%",
+                "savings": "Risparmia {{percent}}%",
+                "features": {
+                    "title": "Tutti i Piani Includono",
+                    "unlimitedProducts": "Prodotti illimitati",
+                    "unlimitedMembers": "Membri del team illimitati",
+                    "inventoryTracking": "Tracciamento inventario in tempo reale",
+                    "lowStockAlerts": "Avvisi scorte basse",
+                    "reports": "Analisi e report",
+                    "mobileApp": "Accesso app mobile",
+                    "support": "Supporto via email"
+                },
+                "bestValue": "Miglior Offerta"
+            },
+            "paymentStep": {
+                "title": "Completa il Pagamento",
+                "description": "Completa in sicurezza il pagamento per creare {{name}}",
+                "trialNote": "La tua prova gratuita di 3 mesi inizia oggi. Non ti verrà addebitato nulla fino alla fine della prova.",
+                "subscriptionNote": "La tua sottoscrizione inizia immediatamente. Puoi annullare in qualsiasi momento dalle impostazioni account.",
+                "processingPayment": "Elaborazione pagamento...",
+                "creatingOrganization": "Creazione locale...",
+                "paymentFailed": "Pagamento fallito. Riprova.",
+                "expressCheckoutUnavailable": "Checkout express non disponibile. Prova un altro metodo di pagamento.",
+                "subscriptionTimeout": "Non siamo riusciti a confermare il pagamento in tempo. Aggiorna e riprova oppure contatta il supporto.",
+                "status": {
+                    "confirmingWallet": "Conferma del pagamento con wallet...",
+                    "confirmingCard": "Conferma del pagamento con carta...",
+                    "waitingForStripe": "In attesa che Stripe attivi la tua sottoscrizione ({{attempt}}/{{max}})...",
+                    "creatingOrganization": "Finalizzazione del tuo locale...",
+                    "retryingOrganization": "Finalizzazione del tuo locale (tentativo {{attempt}}/{{max}})..."
+                }
+            },
             "nameLabel": "Nome Locale",
-            "namePlaceholder": "Inserisci il nome del locale",
-            "checkingEligibility": "Verifica idoneità...",
-            "creatingSubscription": "Creazione abbonamento...",
+            "namePlaceholder": "Inserisci nome locale",
+            "checkingEligibility": "Controllo idoneità...",
+            "creatingSubscription": "Creazione sottoscrizione...",
             "creatingOrganization": "Creazione locale...",
             "detailsTitle": "Dettagli Locale",
-            "detailsDescription": "Inserisci il nome del locale e seleziona un piano tariffario",
+            "detailsDescription": "Inserisci il nome del locale e seleziona un piano di fatturazione",
             "paymentDescription": "Completa il pagamento per creare {{name}}",
             "success": "Locale creato con successo",
             "error": "Impossibile creare il locale",
             "cancel": "Annulla",
-            "create": "Crea",
+            "create": "Crea Locale",
             "trialEligible": "Sei idoneo per una prova gratuita di 3 mesi!",
-            "trialNotEligible": "Verrà creato un abbonamento per questo locale.",
-            "subscriptionNote": "Il tuo abbonamento inizierà dopo la conferma del pagamento. Puoi annullare in qualsiasi momento.",
-            "validationError": "Controlla i tuoi dati"
+            "trialNotEligible": "Verrà creata una sottoscrizione per questo locale.",
+            "subscriptionNote": "La tua sottoscrizione inizierà dopo la conferma del pagamento. Puoi annullare in qualsiasi momento.",
+            "validationError": "Controlla il tuo input"
         },
         "switch": {
             "success": "Passato a {{name}}",
@@ -717,6 +778,7 @@
             "paymentMethod": "Metodo di Pagamento",
             "noPaymentMethod": "Nessun metodo di pagamento registrato",
             "addPaymentMethod": "Aggiungi Metodo di Pagamento",
+            "features": "Tutti i Piani Includono",
             "paymentFailed": {
                 "title": "Pagamento Fallito",
                 "description": "Il tuo pagamento recente è fallito. Aggiorna il tuo metodo di pagamento o riprova.",

@@ -611,6 +611,12 @@
                 "paymentFailed": "Payment failed. Please try again.",
                 "expressCheckoutUnavailable": "Express checkout unavailable. Please try a different payment method.",
                 "subscriptionTimeout": "We couldn't confirm your payment in time. Please refresh and try again or contact support.",
+                "subscriptionUnsupported": "We couldn't verify this payment automatically. Please refresh and try again or contact support.",
+                "errors": {
+                    "card": "Your card was declined. Double-check the details or try a different card.",
+                    "validation": "Some payment details are missing or invalid. Please review and try again.",
+                    "unexpected": "We couldn't complete the payment. Please try again or contact support."
+                },
                 "status": {
                     "confirmingWallet": "Confirming wallet payment...",
                     "confirmingCard": "Confirming card payment...",

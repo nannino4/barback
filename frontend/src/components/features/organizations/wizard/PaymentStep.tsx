@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useStripe, useElements, ExpressCheckoutElement, PaymentElement } from '@stripe/react-stripe-js';
-import type { StripeExpressCheckoutElementConfirmEvent } from '@stripe/stripe-js';
+import type { StripeError, StripeExpressCheckoutElementConfirmEvent } from '@stripe/stripe-js';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -78,12 +78,32 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
   const [expressCheckoutReady, setExpressCheckoutReady] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
+  const getStripePaymentErrorMessage = (error?: StripeError): string =>
+  {
+    if (!error)
+    {
+      return t('organizations.create.paymentStep.errors.unexpected');
+    }
+
+    if (error.type === 'card_error')
+    {
+      return error.message ?? t('organizations.create.paymentStep.errors.card');
+    }
+
+    if (error.type === 'validation_error')
+    {
+      return error.message ?? t('organizations.create.paymentStep.errors.validation');
+    }
+
+    return error.message ?? t('organizations.create.paymentStep.errors.unexpected');
+  };
+
   /**
    * Mutation to create organization after payment confirmation
    */
   const createOrganizationMutation = useMutation({
     mutationFn: (subscriptionId: string) =>
-      organizationApi.createOrganizationWithStripeSubscription({
+      organizationApi.createOrganization({
         name: organizationName,
         stripeSubscriptionId: subscriptionId,
       }),
@@ -205,6 +225,11 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
       throw new Error(t('organizations.create.paymentStep.subscriptionTimeout' as never));
     }
 
+    if (readiness === 'unsupported')
+    {
+      throw new Error(t('organizations.create.paymentStep.subscriptionUnsupported' as never));
+    }
+
     await attemptOrganizationCreation();
   };
 
@@ -234,15 +259,17 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
 
       if (error)
       {
+        const friendlyMessage = getStripePaymentErrorMessage(error);
+
         if (event.paymentFailed)
         {
           event.paymentFailed({
             reason: 'fail',
-            message: error.message,
+            message: friendlyMessage,
           });
         }
 
-        setErrorMessage(error.message || t('organizations.create.paymentStep.paymentFailed'));
+        setErrorMessage(friendlyMessage);
         setIsProcessing(false);
         setStatusMessage(null);
         return;
@@ -284,7 +311,7 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
       
       if (error)
       {
-        setErrorMessage(error.message || t('organizations.create.paymentStep.paymentFailed'));
+        setErrorMessage(getStripePaymentErrorMessage(error));
         setIsProcessing(false);
         setStatusMessage(null);
         return;

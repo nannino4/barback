@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState, use } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,7 +14,8 @@ import { CreateOrganizationFormSchema } from '@/types/organization';
 import type { CreateOrganizationFormData } from '@/types/organization';
 import type { BillingInterval } from '@/types/subscription';
 import { OrgNameStep, PlanSelectionStep, PaymentStep } from '@/components/features/organizations/wizard';
-import { stripeAppearance, getStripeLocale } from '@/lib/stripe/config';
+import { buildStripeAppearance, getStripeLocale } from '@/lib/stripe/config';
+import { ResolvedThemeContext } from '@/contexts/ThemeContext';
 
 // Initialize Stripe - cast env var to string to satisfy TypeScript
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string);
@@ -50,6 +51,8 @@ type WizardStepType = typeof WizardStep[keyof typeof WizardStep];
 export const CreateOrganizationPage: React.FC = () =>
 {
   const { t, currentLanguage } = useI18n();
+  const resolvedTheme = use(ResolvedThemeContext);
+  const stripeAppearance = useMemo(() => buildStripeAppearance(resolvedTheme), [resolvedTheme]);
   const navigate = useNavigate();
   
   // Wizard state
@@ -243,6 +246,7 @@ export const CreateOrganizationPage: React.FC = () =>
         {/* Payment Step with Stripe Elements */}
         {paymentSetup && (
           <Elements
+            key={`stripe-elements-${resolvedTheme}`}
             stripe={stripePromise}
             options={{
               clientSecret: paymentSetup.clientSecret,

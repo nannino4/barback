@@ -612,6 +612,12 @@
                 "paymentFailed": "Pagamento fallito. Riprova.",
                 "expressCheckoutUnavailable": "Checkout express non disponibile. Prova un altro metodo di pagamento.",
                 "subscriptionTimeout": "Non siamo riusciti a confermare il pagamento in tempo. Aggiorna e riprova oppure contatta il supporto.",
+                "subscriptionUnsupported": "Non siamo riusciti a verificare automaticamente il pagamento. Aggiorna e riprova oppure contatta il supporto.",
+                "errors": {
+                    "card": "La tua carta è stata rifiutata. Controlla i dati o prova con un'altra carta.",
+                    "validation": "Alcuni dati di pagamento sono mancanti o non validi. Verifica e riprova.",
+                    "unexpected": "Non siamo riusciti a completare il pagamento. Riprova o contatta il supporto."
+                },
                 "status": {
                     "confirmingWallet": "Conferma del pagamento con wallet...",
                     "confirmingCard": "Conferma del pagamento con carta...",

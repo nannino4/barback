@@ -52,15 +52,16 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
     - [X] working draft integration with stripe payment elements
     - [X] migrate to express checkout element
       - [X] test over https (using ngrok)
-    - [ ] consolidate payment methods
-      - [ ] card payments
-      - [ ] google pay
-      - [ ] apple pay
-    - [ ] consolidate stripe elements appearance
-      - [ ] color vars don't seem to work properly. `[Stripe.js] elements-inner-loader-ui.html: invalid variable value "var(--color-primary)" provided to "colorPrimary"; "colorPrimary" accepts a valid HEX, rgb(), or hsl() CSS color.`
+    - [X] consolidate payment methods
+      - [X] card payments
+      - [X] google pay
+      - [X] apple pay
+    - [X] consolidate stripe elements appearance
+      - [X] color vars don't seem to work properly. `[Stripe.js] elements-inner-loader-ui.html: invalid variable value "var(--color-primary)" provided to "colorPrimary"; "colorPrimary" accepts a valid HEX, rgb(), or hsl() CSS color.`
     - [ ] improve organization creation flow after payment
       - [X] consider polling for subscription status instead of waiting fixed time
-        - [ ] check subscription status by sending stripeSubscriptionId. implement backend endpoints as needed
+        - [X] check subscription status by sending stripeSubscriptionId
+          - [X] implement endpoint on backend to get subscription status by stripeSubscriptionId
         - [ ] define max time to wait before showing error. handle case on backend where subscription is not active after max time. maybe cancel subscription automatically?
       - [ ] handle payment failures
     - [X] consolidate plans/pricing

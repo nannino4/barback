@@ -55,17 +55,9 @@ export const OrganizationMembershipSchema = z.object({
 
 /**
  * Create organization request schema - for POST /api/orgs
+ * Uses Stripe subscription ID for organization creation
  */
 export const CreateOrganizationRequestSchema = z.object({
-  name: z.string().min(1).max(100),
-  subscriptionId: z.string(),
-  settings: OrgSettingsSchema.optional(),
-});
-
-/**
- * Create organization with Stripe subscription request schema - for POST /api/orgs/with-stripe-subscription
- */
-export const CreateOrganizationWithStripeSubscriptionRequestSchema = z.object({
   name: z.string().min(1).max(100),
   stripeSubscriptionId: z.string(),
   settings: OrgSettingsSchema.optional(),
@@ -107,7 +99,6 @@ export type OrganizationPublic = z.infer<typeof OrganizationPublicSchema>;
 export type Organization = z.infer<typeof OrganizationSchema>;
 export type OrganizationMembership = z.infer<typeof OrganizationMembershipSchema>;
 export type CreateOrganizationRequest = z.infer<typeof CreateOrganizationRequestSchema>;
-export type CreateOrganizationWithStripeSubscriptionRequest = z.infer<typeof CreateOrganizationWithStripeSubscriptionRequestSchema>;
 export type UpdateOrganizationRequest = z.infer<typeof UpdateOrganizationRequestSchema>;
 export type EditOrganizationFormData = z.infer<typeof EditOrganizationFormSchema>;
 export type CreateOrganizationFormData = z.infer<typeof CreateOrganizationFormSchema>;

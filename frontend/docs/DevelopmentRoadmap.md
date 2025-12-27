@@ -59,22 +59,88 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
       - [X] redirect to organization page showing subscription status
       - [ ] on failure state, surface actions on organization page to retry/change payment method or cancel organization
     - [X] consolidate plans/pricing
-- [ ] Implement organization page
-  - [ ] members
-    - [ ] design member card component
-    - [ ] view current members
-    - [ ] invite members via email
-    - [ ] role management (manager, staff)
-  - [ ] settings (name, currency)
-    - [ ] subscription management with billing info
-      - [ ] manage payment methods per organization (add/remove/default)
-- [ ] Implement invitation management
-  - [ ] design ui/ux for button to invitation page
-  - [ ] implement invitation page
-    - [ ] design invitation card component
-    - [ ] view pending and expired/revoked invitations
-    - [ ] accept/decline invitations
-- [X] Create organization switching functionality
+- [ ] Implement Organizations Hub Page (`/orgs`)
+  - [ ] Refactor `OrganizationsPage` with sections layout
+    - [ ] **Pending Invitations Section** (top, requires attention)
+      - [ ] Horizontal scrollable row of compact invitation cards
+      - [ ] Card shows: org name, owner, user's future role
+      - [ ] Card actions: Accept / Decline buttons
+      - [ ] "Show all (N)" button → expands to multiple rows (not horizontally scrollable)
+      - [ ] "Show less" button → collapses back to horizontal row
+      - [ ] Section hidden when no pending invitations
+    - [ ] **My Venues Section**
+      - [ ] Keep existing filters (search, role toggle)
+      - [ ] Organization cards grid with selection
+      - [ ] "Create Venue" button
+  - [ ] Add invitations badge count to UserMenu
+  - [ ] Empty states for both sections
+- [ ] Implement Organization Detail Page (`/orgs/:orgId`) - Role-Aware
+  - [ ] **All members can view:**
+    - [ ] Organization name
+    - [ ] Owner info
+    - [ ] Members list with roles
+    - [ ] Subscription status (only if not active/trialing)
+  - [ ] **Owner/Manager can:**
+    - [ ] View pending invitations sent by org
+    - [ ] Send new invitations (existing `SendInvitationDialog`)
+    - [ ] Revoke pending invitations (with confirmation)
+    - [ ] Edit member roles (inline dropdown)
+    - [ ] Remove members (× icon with confirmation dialog)
+  - [ ] **Owner only can:**
+    - [ ] Edit organization name (inline edit with validation)
+      - [ ] **Backend needed**: Add PUT endpoint for org name update
+    - [ ] Edit currency (inline dropdown)
+    - [ ] View full subscription details
+      - [ ] Status badge
+      - [ ] Renewal text: "Subscription will renew/end on [date]"
+      - [ ] Next billing date
+      - [ ] Current period start
+      - [ ] Creation date
+    - [ ] Manage payment method (Sheet/Dialog with Stripe)
+    - [ ] Cancel subscription (confirmation dialog)
+- [ ] Implement Navigation & Quick Switch
+  - [ ] Refactor `UserMenu` dropdown
+    - [ ] Add "My Venues" item → links to `/orgs`
+    - [ ] Add invitations badge to "My Venues" item when pending
+    - [ ] Refactor "Current Venue" item for quick switch
+  - [ ] Implement Quick Org Switch
+    - [ ] Desktop: dropdown extension/popover from "Current Venue"
+      - [ ] Show current org highlighted
+      - [ ] List other orgs (max 5)
+      - [ ] "View all" link to `/orgs`
+    - [ ] Mobile: Bottom Sheet component
+      - [ ] `OrganizationSwitcherSheet` component
+      - [ ] Triggered from UserMenu "Current Venue" item
+      - [ ] Same content as desktop popover
+      - [ ] Swipe down to dismiss
+- [ ] Implement Invitation Management
+  - [ ] Create `useInvitations` hook
+    - [ ] Query for pending invitations (`GET /api/invites`)
+    - [ ] Accept mutation (`POST /api/invites/:id/accept`)
+    - [ ] Decline mutation (`POST /api/invites/:id/decline`)
+    - [ ] Sync with `organizationStore.pendingInvitations`
+  - [ ] Refactor `InvitationCard` for received invitations
+    - [ ] Org name, role badge, inviter info
+    - [ ] Sent date, expiry date/countdown
+    - [ ] Accept/Decline buttons
+    - [ ] Expired state styling
+  - [ ] Create `InvitationList` component with empty state
+- [ ] Create Skeleton Components
+  - [ ] `MemberCardSkeleton`
+  - [ ] `InvitationCardSkeleton`
+  - [ ] `PendingInvitationCardSkeleton`
+  - [ ] `SubscriptionCardSkeleton`
+- [ ] Create/Refactor Organization Components
+  - [ ] `MemberCard` - refactor with inline role dropdown
+  - [ ] `MemberList` - new, with owner/manager actions
+  - [ ] `PendingInvitationList` - new, org's outgoing invitations
+  - [ ] `SubscriptionCard` - new, detailed subscription info
+  - [ ] `InlineEditField` - reusable inline edit component
+  - [ ] `ConfirmationDialog` - reusable confirmation dialog
+  - [ ] `OrganizationSwitcherSheet` - mobile bottom sheet
+  - [ ] `OrganizationSwitcherPopover` - desktop popover
+  - [ ] `InvitationsBadge` - notification badge component
+- [X] Create organization switching functionality (basic)
 - [ ] User Settings & Profile Management:
   - [ ] Build user profile page
   - [ ] Implement profile editing (name, phone, profile picture)

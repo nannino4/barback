@@ -88,7 +88,6 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
     - [ ] Remove members (× icon with confirmation dialog)
   - [ ] **Owner only can:**
     - [ ] Edit organization name (inline edit with validation)
-      - [ ] **Backend needed**: Add PUT endpoint for org name update
     - [ ] Edit currency (inline dropdown)
     - [ ] View full subscription details
       - [ ] Status badge

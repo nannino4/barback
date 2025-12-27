@@ -19,6 +19,7 @@ import { OrgRole } from './schemas/user-org-relation.schema';
 import { UserOrgRelationService } from './user-org-relation.service';
 import { OutUserOrgRelationDto } from './dto/out.user-org-relation';
 import { OutOrgDto } from './dto/out.org.dto';
+import { OutSubscriptionDto } from '../subscription/dto/out.subscription.dto';
 import { UpdateOrganizationDto } from './dto/in.update-org.dto';
 import { UpdateMemberRoleDto } from './dto/in.update-member-role.dto';
 import { CreateOrgDto } from './dto/in.create-org.dto';
@@ -26,7 +27,6 @@ import { ValidateOrgNameDto } from './dto/in.validate-org-name.dto';
 import { ObjectIdValidationPipe } from '../pipes/object-id-validation.pipe';
 import { plainToInstance } from 'class-transformer';
 import { OrgRolesGuard } from './guards/org-roles.guard';
-import { OrgSubscriptionGuard } from './guards/org-subscription.guard';
 import { OrgRoles } from './decorators/org-roles.decorator';
 import { UserService } from '../user/user.service';
 import { SubscriptionService } from '../subscription/subscription.service';
@@ -75,11 +75,18 @@ export class OrgController
             );
             throw new SubscriptionOwnershipException(createData.stripeSubscriptionId);
         }
-        
-        if (subscription.status !== SubscriptionStatus.ACTIVE && subscription.status !== SubscriptionStatus.TRIALING)
+
+        // Allow org creation while subscription is pending in Stripe (INCOMPLETE) but block clearly failed states
+        const allowedStatuses = new Set<SubscriptionStatus>([
+            SubscriptionStatus.ACTIVE,
+            SubscriptionStatus.TRIALING,
+            SubscriptionStatus.INCOMPLETE,
+        ]);
+
+        if (!allowedStatuses.has(subscription.status))
         {
             this.logger.error(
-                `Subscription is not active: ${createData.stripeSubscriptionId}`,
+                `Subscription is not in a creatable state (${subscription.status}): ${createData.stripeSubscriptionId}`,
                 'OrgController#createOrganization'
             );
             throw new SubscriptionNotActiveException(createData.stripeSubscriptionId);
@@ -121,7 +128,7 @@ export class OrgController
     }
 
     @Get(':id')
-    @UseGuards(OrgRolesGuard, OrgSubscriptionGuard)
+    @UseGuards(OrgRolesGuard)
     @OrgRoles(OrgRole.OWNER, OrgRole.MANAGER, OrgRole.STAFF)
     async getOrganization(
         @CurrentUser() user: User,
@@ -142,7 +149,7 @@ export class OrgController
     }
 
     @Get(':id/members')
-    @UseGuards(OrgRolesGuard, OrgSubscriptionGuard)
+    @UseGuards(OrgRolesGuard)
     @OrgRoles(OrgRole.OWNER, OrgRole.MANAGER, OrgRole.STAFF)
     async getOrgMembers(
         @CurrentUser() user: User,
@@ -178,8 +185,33 @@ export class OrgController
         return result;
     }
 
+    @Get(':id/subscription')
+    @UseGuards(OrgRolesGuard)
+    @OrgRoles(OrgRole.OWNER)
+    async getOrgSubscription(
+        @CurrentUser() user: User,
+        @Param('id', ObjectIdValidationPipe) orgId: Types.ObjectId,
+    ): Promise<OutSubscriptionDto>
+    {
+        this.logger.debug(`Getting subscription for organization: ${orgId} by user: ${user.email}`, 'OrgController#getOrgSubscription');
+        
+        // Get organization (guards already checked access)
+        const org = await this.orgService.findById(orgId);
+        if (!org) 
+        {
+            this.logger.warn(`Organization not found: ${orgId}`, 'OrgController#getOrgSubscription');
+            throw new OrganizationNotFoundException(orgId.toString());
+        }
+        
+        // Get the subscription by ID from org
+        const subscription = await this.subscriptionService.findById(org.subscriptionId);
+        
+        this.logger.debug(`Returning subscription for organization: ${orgId}`, 'OrgController#getOrgSubscription');
+        return plainToInstance(OutSubscriptionDto, subscription.toObject(), { excludeExtraneousValues: true });
+    }
+
     @Put(':id')
-    @UseGuards(OrgRolesGuard, OrgSubscriptionGuard)
+    @UseGuards(OrgRolesGuard)
     @OrgRoles(OrgRole.OWNER)
     async updateOrg(
         @CurrentUser() user: User,
@@ -194,7 +226,7 @@ export class OrgController
     }
 
     @Put(':id/members/:userId/role')
-    @UseGuards(OrgRolesGuard, OrgSubscriptionGuard)
+    @UseGuards(OrgRolesGuard)
     @OrgRoles(OrgRole.OWNER, OrgRole.MANAGER)
     async updateMemberRole(
         @CurrentUser() user: User,

@@ -13,6 +13,12 @@ export enum SubscriptionStatus
     PAUSED = 'PAUSED',
 }
 
+export enum BillingInterval
+{
+    MONTHLY = 'MONTHLY',
+    YEARLY = 'YEARLY',
+}
+
 @Schema({ timestamps: true, collection: 'subscriptions' })
 export class Subscription extends Document 
 {
@@ -27,6 +33,15 @@ export class Subscription extends Document
 
     @Prop({ type: Boolean, default: true })
     autoRenew!: boolean;
+
+    @Prop({ type: String, enum: BillingInterval, default: BillingInterval.MONTHLY })
+    billingInterval!: BillingInterval;
+
+    @Prop({ type: Date })
+    nextBillingDate!: Date;
+
+    @Prop({ type: Number })
+    amount!: number;
 
     // createdAt and updatedAt are handled by timestamps: true
 }

@@ -127,7 +127,11 @@ Create a new organization with a Stripe subscription ID.
 
 **Implementation Notes**:
 - User becomes the organization owner automatically
-- Subscription must be active or trialing status
+- Subscription can be in `INCOMPLETE`, `ACTIVE`, or `TRIALING` status
+  - `INCOMPLETE`: Subscription just created, payment being processed
+  - `ACTIVE`: Payment confirmed, subscription active
+  - `TRIALING`: Trial subscription confirmed
+- Organization is created immediately after payment confirmation, allowing users to see their org while subscription processes
 - Organization names must be unique per owner (different owners can have organizations with the same name)
 - Each organization requires its own subscription
 - All database operations are wrapped in error handling

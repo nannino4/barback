@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { SubscriptionStatus } from '../schemas/subscription.schema';
+import { SubscriptionStatus, BillingInterval } from '../schemas/subscription.schema';
 
 export class OutSubscriptionDto 
 {
@@ -11,6 +11,15 @@ export class OutSubscriptionDto
 
     @Expose()
     autoRenew!: boolean;
+
+    @Expose()
+    billingInterval!: BillingInterval;
+
+    @Expose()
+    nextBillingDate!: Date;
+
+    @Expose()
+    amount!: number;
 
     @Expose()
     createdAt!: Date;

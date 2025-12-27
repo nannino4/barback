@@ -57,7 +57,7 @@ export class StripeService
         try 
         {
             this.stripe = new Stripe(stripeSecretKey, {
-                apiVersion: '2025-05-28.basil',
+                apiVersion: '2025-12-15.clover',
             });
         }
         catch (error)
@@ -119,7 +119,8 @@ export class StripeService
      * 
      * Trial subscriptions:
      * - Have $0 first invoice but still collect payment method
-     * - Automatically convert to paid after trial_end
+     * - Use trial_period_days for simpler configuration
+     * - Automatically convert to paid after trial period ends
      * - Follow Stripe best practice for seamless conversion
      * 
      * @param customerId Stripe customer ID
@@ -129,7 +130,7 @@ export class StripeService
     async createSubscription(
         customerId: string,
         billingInterval: BillingInterval = BillingInterval.MONTHLY,
-        options?: { isTrial?: boolean; trialEndEpochSeconds?: number }
+        options?: { isTrial?: boolean; trialPeriodDays?: number }
     ): Promise<Stripe.Subscription>
     {
         const isTrial = options?.isTrial === true;
@@ -155,27 +156,18 @@ export class StripeService
 
             if (isTrial)
             {
-                // Validate provided trial end or default to 90 days
-                let trialEnd = options?.trialEndEpochSeconds;
-                if (trialEnd)
+                // Use trial_period_days for simpler configuration (default 90 days)
+                const trialDays = options?.trialPeriodDays ?? 90;
+                if (trialDays <= 0)
                 {
-                    const now = Math.floor(Date.now() / 1000);
-                    if (trialEnd <= now)
-                    {
-                        this.logger.error(
-                            `Provided trial end (${trialEnd}) is in the past`,
-                            undefined,
-                            'StripeService#createSubscription'
-                        );
-                        throw new StripeSubscriptionException('trial configuration', 'Provided trial end timestamp is in the past');
-                    }
+                    this.logger.error(
+                        `Invalid trial period days (${trialDays})`,
+                        undefined,
+                        'StripeService#createSubscription'
+                    );
+                    throw new StripeSubscriptionException('trial configuration', 'Trial period days must be a positive number');
                 }
-                else
-                {
-                    // Default 90 days trial window
-                    trialEnd = Math.floor((Date.now() + (90 * 24 * 60 * 60 * 1000)) / 1000);
-                }
-                subscriptionParams.trial_end = trialEnd;
+                subscriptionParams.trial_period_days = trialDays;
             }
 
             const subscription = await this.stripe.subscriptions.create(subscriptionParams);

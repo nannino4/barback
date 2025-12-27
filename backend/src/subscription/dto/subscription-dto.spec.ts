@@ -2,6 +2,7 @@ import { plainToInstance } from 'class-transformer';
 import { OutPaymentMethodDto } from './out.payment-method.dto';
 import { OutSubscriptionDto } from './out.subscription.dto';
 import { OutSuccessMessageDto } from './out.success-message.dto';
+import { SubscriptionStatus, BillingInterval } from '../schemas/subscription.schema';
 
 describe('Subscription DTOs', () => 
 {
@@ -168,28 +169,86 @@ describe('Subscription DTOs', () =>
 
     describe('OutSubscriptionDto Integration', () => 
     {
-        it('should handle subscription transformation', () => 
+        it('should expose all required subscription fields', () => 
         {
             const subscription = {
+                _id: 'sub_123',
                 id: 'sub_123',
-                userId: 'user_456',
-                planId: 'basic',
-                status: 'active',
-                currentPeriodStart: new Date('2025-01-01'),
-                currentPeriodEnd: new Date('2025-02-01'),
-                stripeSubscriptionId: 'stripe_sub_789', // Should be excluded if not exposed
-                internalNotes: 'Created via API', // Should be excluded if not exposed
+                userId: 'user_456', // Should be excluded
+                status: SubscriptionStatus.ACTIVE,
+                autoRenew: true,
+                billingInterval: BillingInterval.MONTHLY,
+                nextBillingDate: new Date('2025-02-01'),
+                amount: 1000,
+                createdAt: new Date('2025-01-01'),
+                updatedAt: new Date('2025-01-15'),
+                stripeSubscriptionId: 'stripe_sub_789', // Should be excluded
+                internalNotes: 'Created via API', // Should be excluded
             };
 
-            // Note: This test assumes OutSubscriptionDto exists and has proper @Expose decorators
-            // The actual implementation may vary based on the DTO structure
             const transformed = plainToInstance(OutSubscriptionDto, subscription, {
                 excludeExtraneousValues: true,
-            });
+            }) as OutSubscriptionDto;
 
-            // Basic assertions that would work regardless of exact DTO structure
-            expect(transformed).toBeDefined();
-            expect(typeof transformed).toBe('object');
+            // Should include exposed fields
+            expect(transformed.id).toBe('sub_123');
+            expect(transformed.status).toBe(SubscriptionStatus.ACTIVE);
+            expect(transformed.autoRenew).toBe(true);
+            expect(transformed.billingInterval).toBe(BillingInterval.MONTHLY);
+            expect(transformed.nextBillingDate).toEqual(new Date('2025-02-01'));
+            expect(transformed.amount).toBe(1000);
+            expect(transformed.createdAt).toEqual(new Date('2025-01-01'));
+            expect(transformed.updatedAt).toEqual(new Date('2025-01-15'));
+            
+            // Should exclude sensitive/internal fields
+            expect((transformed as any).userId).toBeUndefined();
+            expect((transformed as any).stripeSubscriptionId).toBeUndefined();
+            expect((transformed as any).internalNotes).toBeUndefined();
+        });
+
+        it('should handle yearly billing interval', () => 
+        {
+            const subscription = {
+                _id: 'sub_yearly_123',
+                id: 'sub_yearly_123',
+                status: SubscriptionStatus.TRIALING,
+                autoRenew: true,
+                billingInterval: BillingInterval.YEARLY,
+                nextBillingDate: new Date('2026-01-01'),
+                amount: 10000,
+                createdAt: new Date('2025-01-01'),
+                updatedAt: new Date('2025-01-01'),
+            };
+
+            const transformed = plainToInstance(OutSubscriptionDto, subscription, {
+                excludeExtraneousValues: true,
+            }) as OutSubscriptionDto;
+
+            expect(transformed.billingInterval).toBe(BillingInterval.YEARLY);
+            expect(transformed.amount).toBe(10000);
+        });
+
+        it('should handle null nextBillingDate and amount', () => 
+        {
+            const subscription = {
+                _id: 'sub_canceled_123',
+                id: 'sub_canceled_123',
+                status: SubscriptionStatus.CANCELED,
+                autoRenew: false,
+                billingInterval: BillingInterval.MONTHLY,
+                nextBillingDate: null,
+                amount: null,
+                createdAt: new Date('2025-01-01'),
+                updatedAt: new Date('2025-01-15'),
+            };
+
+            const transformed = plainToInstance(OutSubscriptionDto, subscription, {
+                excludeExtraneousValues: true,
+            }) as OutSubscriptionDto;
+
+            expect(transformed.status).toBe(SubscriptionStatus.CANCELED);
+            expect(transformed.nextBillingDate).toBeNull();
+            expect(transformed.amount).toBeNull();
         });
     });
 });

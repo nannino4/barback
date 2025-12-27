@@ -7,12 +7,23 @@ import { SubscriptionStatus } from './schemas/subscription.schema';
 import Stripe from 'stripe';
 import { CustomLogger } from '../common/logger/custom.logger';
 import { Types } from 'mongoose';
+import { User } from 'src/user/schemas/user.schema';
 
 @Controller('webhooks')
 export class WebhookController 
 {
     private readonly webhookSecret: string;
 
+    /**
+     * Handles Stripe webhook events for subscription lifecycle management
+     * 
+     * Key events:
+     * - `customer.subscription.created`: Creates local subscription with INCOMPLETE status
+     *   This happens immediately when Stripe subscription is created, before payment succeeds
+     * - `customer.subscription.updated`: Syncs status changes (INCOMPLETE → ACTIVE/TRIALING)
+     * - `customer.subscription.deleted`: Marks subscription as CANCELED
+     * - `invoice.payment_failed`: Logs payment failures
+     */
     constructor(
         private readonly subscriptionService: SubscriptionService,
         private readonly stripeService: StripeService,
@@ -56,93 +67,61 @@ export class WebhookController
         this.logger.debug(`Handling webhook event: ${event.type}`, 'WebhookController#handleStripeWebhook');
         switch (event.type) 
         {
+        case 'customer.subscription.created':
+        {
+            // Creates local subscription when Stripe subscription is created
+            // Initial status is typically INCOMPLETE (payment not yet processed)
+            // Organization can be created immediately after this - no need to wait for ACTIVE
+            this.logger.debug(`Processing customer.subscription.created event with id: ${event.id}`, 'WebhookController#handleStripeWebhook');
+            const subscriptionData = event.data.object as Stripe.Subscription;
+            const subscriptionResult = await this.getStripeSubscriptionAndUser(
+                subscriptionData,
+                'WebhookController#handleStripeWebhook'
+            );
+
+            if (!subscriptionResult) 
+            {
+                break;
+            }
+
+            const { stripeSubscription, user } = subscriptionResult;
+
+            await this.subscriptionService.createFromStripeSubscription(
+                stripeSubscription,
+                user._id as Types.ObjectId
+            );
+            
+            this.logger.debug(
+                `Local subscription created for Stripe subscription ${stripeSubscription.id}`,
+                'WebhookController#handleStripeWebhook'
+            );
+            break;
+        }
         case 'customer.subscription.updated':
         {
-            const subscription = event.data.object as Stripe.Subscription;
-            await this.subscriptionService.syncSubscriptionFromStripe(subscription);
+            // Syncs subscription status changes from Stripe
+            // INCOMPLETE → ACTIVE: Payment succeeded
+            // INCOMPLETE → TRIALING: Trial subscription confirmed
+            // Also updates billing details (interval, next billing date, amount)
+            this.logger.debug(`Processing customer.subscription.updated event with id: ${event.id}`, 'WebhookController#handleStripeWebhook');
+            
+            const stripeSubscription = event.data.object as Stripe.Subscription;
+            await this.subscriptionService.syncSubscriptionFromStripe(stripeSubscription);
+            this.logger.debug(
+                `Local subscription synced from Stripe subscription ${stripeSubscription.id} with status ${stripeSubscription.status}`,
+                'WebhookController#handleStripeWebhook'
+            );
             break;
         }
         case 'customer.subscription.deleted':
         {
-            const subscription = event.data.object as Stripe.Subscription;
-            await this.subscriptionService.updateStatus(subscription.id, SubscriptionStatus.CANCELED);
-            break;
-        }
-        case 'invoice.payment_succeeded':
-        {
-            this.logger.debug(`Processing invoice.payment_succeeded event with id: ${event.id}`, 'WebhookController#handleStripeWebhook');
-            const invoice = event.data.object as Stripe.Invoice;
-            const subscriptionData = invoice.parent?.subscription_details?.subscription;
-            // Subscription ID can be a string or Subscription object
-            const subscriptionId = typeof subscriptionData === 'string' 
-                ? subscriptionData 
-                : subscriptionData?.id;
-            
-            if (subscriptionId) 
-            {
-                this.logger.debug(
-                    `Payment succeeded for subscription: ${subscriptionId}`,
-                    'WebhookController#handleStripeWebhook'
-                );
-                
-                try 
-                {
-                    // Fetch full subscription details from Stripe
-                    const stripeSubscription = await this.stripeService.retrieveSubscription(subscriptionId);
-                    
-                    // Get customer ID from subscription
-                    const customerData = stripeSubscription.customer;
-                    const customerId = typeof customerData === 'string'
-                        ? customerData
-                        : customerData?.id;
-                    
-                    if (!customerId) 
-                    {
-                        this.logger.error(
-                            `No customer ID found in subscription ${subscriptionId}`,
-                            undefined,
-                            'WebhookController#handleStripeWebhook'
-                        );
-                        break;
-                    }
-                    
-                    // Find user by Stripe customer ID
-                    const user = await this.userService.findByStripeCustomerId(customerId);
-                    
-                    if (!user) 
-                    {
-                        this.logger.error(
-                            `User not found for Stripe customer ${customerId}`,
-                            undefined,
-                            'WebhookController#handleStripeWebhook'
-                        );
-                        break;
-                    }
-                    
-                    // Create local subscription record
-                    await this.subscriptionService.createFromStripeSubscription(
-                        stripeSubscription,
-                        user._id as Types.ObjectId
-                    );
-                    
-                    this.logger.debug(
-                        `Local subscription created for Stripe subscription ${subscriptionId}`,
-                        'WebhookController#handleStripeWebhook'
-                    );
-                } 
-                catch (error) 
-                {
-                    this.logger.error(
-                        `Failed to create local subscription for ${subscriptionId}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-                        error instanceof Error ? error.stack : undefined,
-                        'WebhookController#handleStripeWebhook'
-                    );
-                }
-            }
+            const stripeSubscription = event.data.object as Stripe.Subscription;
+            await this.subscriptionService.updateStatus(stripeSubscription.id, SubscriptionStatus.CANCELED);
             break;
         }
         case 'invoice.payment_failed':
         {
+            // just log payment failure
             const invoice = event.data.object as Stripe.Invoice;
             if ((invoice as any).subscription) 
             {
@@ -155,5 +134,51 @@ export class WebhookController
         }
 
         return { received: true };
+    }
+
+    private async getStripeSubscriptionAndUser(
+        subscriptionData: string | Stripe.Subscription | null | undefined,
+        logContext: string
+    ): Promise<{ stripeSubscription: Stripe.Subscription; user: User } | null> 
+    {
+        const subscriptionId = typeof subscriptionData === 'string'
+            ? subscriptionData
+            : subscriptionData?.id;
+
+        if (!subscriptionId) 
+        {
+            this.logger.error('No subscription ID found in event data', undefined, logContext);
+            return null;
+        }
+
+        const stripeSubscription = await this.stripeService.retrieveSubscription(subscriptionId);
+        const customerData = stripeSubscription.customer;
+        const customerId = typeof customerData === 'string'
+            ? customerData
+            : customerData?.id;
+
+        if (!customerId) 
+        {
+            this.logger.error(
+                `No customer ID found in subscription ${subscriptionId}`,
+                undefined,
+                logContext
+            );
+            return null;
+        }
+
+        const user = await this.userService.findByStripeCustomerId(customerId);
+
+        if (!user) 
+        {
+            this.logger.error(
+                `User not found for Stripe customer ${customerId}`,
+                undefined,
+                logContext
+            );
+            return null;
+        }
+
+        return { stripeSubscription, user };
     }
 }

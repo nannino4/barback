@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as request from 'supertest';
 import * as bcrypt from 'bcrypt';
+import Stripe from 'stripe';
 import { SubscriptionController } from './subscription.controller';
 import { SubscriptionService } from './subscription.service';
 import { UserService } from '../user/user.service';
@@ -17,6 +18,51 @@ import { StripeService } from '../common/services/stripe.service';
 import { EmailService } from '../email/email.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { EmailVerifiedGuard } from '../auth/guards/email-verified.guard';
+
+/**
+ * Helper to create a mock Stripe subscription object with required billing details
+ */
+function createMockStripeSubscription(
+    id: string,
+    status: Stripe.Subscription.Status,
+    options?: {
+        interval?: 'month' | 'year';
+        amount?: number;
+        currentPeriodEnd?: number;
+    }
+): Partial<Stripe.Subscription>
+{
+    const interval = options?.interval ?? 'month';
+    const amount = options?.amount ?? 1000;
+    const currentPeriodEnd = options?.currentPeriodEnd ?? Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60;
+
+    return {
+        id,
+        status,
+        items: {
+            object: 'list',
+            data: [
+                {
+                    id: `si_${id}`,
+                    object: 'subscription_item',
+                    current_period_end: currentPeriodEnd,
+                    current_period_start: Math.floor(Date.now() / 1000),
+                    price: {
+                        id: `price_${id}`,
+                        object: 'price',
+                        unit_amount: amount,
+                        recurring: {
+                            interval,
+                            interval_count: 1,
+                        },
+                    } as Stripe.Price,
+                } as Stripe.SubscriptionItem,
+            ],
+            has_more: false,
+            url: `/v1/subscription_items?subscription=${id}`,
+        } as Stripe.ApiList<Stripe.SubscriptionItem>,
+    };
+}
 
 describe('SubscriptionController - Integration Tests', () =>
 {
@@ -172,10 +218,7 @@ describe('SubscriptionController - Integration Tests', () =>
             // Arrange - Create subscription for test user
             const stripeSubscriptionId = 'sub_test123';
             await subscriptionService.createFromStripeSubscription(
-                {
-                    id: stripeSubscriptionId,
-                    status: 'active',
-                } as any,
+                createMockStripeSubscription(stripeSubscriptionId, 'active') as Stripe.Subscription,
                 testUserId
             );
 
@@ -184,7 +227,7 @@ describe('SubscriptionController - Integration Tests', () =>
                 .get(`/api/subscriptions/stripe/${stripeSubscriptionId}`)
                 .expect(200);
 
-            // Assert
+            // Assert - OutStripeSubscriptionStatusDto only exposes stripeSubscriptionId and status
             expect(response.body).toHaveProperty('stripeSubscriptionId', stripeSubscriptionId);
             expect(response.body).toHaveProperty('status', SubscriptionStatus.ACTIVE);
             expect(mockLogger.debug).toHaveBeenCalledWith(
@@ -207,10 +250,7 @@ describe('SubscriptionController - Integration Tests', () =>
 
             const stripeSubscriptionId = 'sub_other123';
             await subscriptionService.createFromStripeSubscription(
-                {
-                    id: stripeSubscriptionId,
-                    status: 'active',
-                } as any,
+                createMockStripeSubscription(stripeSubscriptionId, 'active') as Stripe.Subscription,
                 otherUserId
             );
 
@@ -251,10 +291,7 @@ describe('SubscriptionController - Integration Tests', () =>
             // Arrange
             const stripeSubscriptionId = 'sub_test123';
             await subscriptionService.createFromStripeSubscription(
-                {
-                    id: stripeSubscriptionId,
-                    status: 'active',
-                } as any,
+                createMockStripeSubscription(stripeSubscriptionId, 'active') as Stripe.Subscription,
                 testUserId
             );
 
@@ -286,10 +323,7 @@ describe('SubscriptionController - Integration Tests', () =>
 
             const stripeSubscriptionId = 'sub_test123';
             await subscriptionService.createFromStripeSubscription(
-                {
-                    id: stripeSubscriptionId,
-                    status: 'active',
-                } as any,
+                createMockStripeSubscription(stripeSubscriptionId, 'active') as Stripe.Subscription,
                 unverifiedUserId
             );
 
@@ -322,10 +356,7 @@ describe('SubscriptionController - Integration Tests', () =>
             // Arrange & Act & Assert for TRIALING
             const trialingSubId = 'sub_trialing';
             await subscriptionService.createFromStripeSubscription(
-                {
-                    id: trialingSubId,
-                    status: 'trialing',
-                } as any,
+                createMockStripeSubscription(trialingSubId, 'trialing') as Stripe.Subscription,
                 testUserId
             );
 
@@ -338,10 +369,7 @@ describe('SubscriptionController - Integration Tests', () =>
             // Arrange & Act & Assert for CANCELED
             const canceledSubId = 'sub_canceled';
             await subscriptionService.createFromStripeSubscription(
-                {
-                    id: canceledSubId,
-                    status: 'canceled',
-                } as any,
+                createMockStripeSubscription(canceledSubId, 'canceled') as Stripe.Subscription,
                 testUserId
             );
 
@@ -354,10 +382,7 @@ describe('SubscriptionController - Integration Tests', () =>
             // Arrange & Act & Assert for PAST_DUE
             const pastDueSubId = 'sub_past_due';
             await subscriptionService.createFromStripeSubscription(
-                {
-                    id: pastDueSubId,
-                    status: 'past_due',
-                } as any,
+                createMockStripeSubscription(pastDueSubId, 'past_due') as Stripe.Subscription,
                 testUserId
             );
 

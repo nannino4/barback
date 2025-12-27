@@ -12,17 +12,26 @@ The Subscription Management module handles user subscriptions for organization o
    - **Note**: Subscription is NOT saved to local database yet
 3. **Collect Payment Details**: Use Stripe Payment Element with `clientSecret` (for both trial and paid)
 4. **Confirm Payment**: User confirms payment method via Stripe
-5. **Webhook Confirmation**: Stripe webhook (`invoice.payment_succeeded`) confirms payment
-   - **At this point**: Subscription is saved to local database
-6. **Create Organization**: Use active/trialing subscription to create organization
-7. **Auto-Conversion**: Trial converts to paid subscription automatically after 90 days
+5. **Webhook Creates Local Subscription**: Stripe webhook (`customer.subscription.created`) creates local subscription record
+   - **Initial status**: `INCOMPLETE` (Stripe's initial status for new subscriptions)
+   - **Note**: Local subscription is created immediately when Stripe subscription is created, not after payment succeeds
+6. **Create Organization Immediately**: Frontend creates organization right after payment confirmation
+   - Uses retry logic to handle race condition with webhook
+   - Organization can be created with `INCOMPLETE`, `ACTIVE`, or `TRIALING` subscription status
+   - User is redirected to organization page to see subscription status
+7. **Subscription Status Updates**: Webhook (`customer.subscription.updated`) syncs status changes
+   - `INCOMPLETE` → `ACTIVE` (when payment succeeds)
+   - `INCOMPLETE` → `TRIALING` (when trial subscription is confirmed)
+8. **Auto-Conversion**: Trial converts to paid subscription automatically after 90 days
 
 ## Architecture Notes
 
-- **Subscriptions are created locally ONLY after webhook confirmation**
-- This prevents incomplete subscriptions from accumulating in the database
-- No cleanup needed if payment fails - subscription simply doesn't exist locally
-- Stripe is the single source of truth for subscription creation
+- **Local subscriptions are created by webhook when Stripe subscription is created** (`customer.subscription.created`)
+- Initial status is `INCOMPLETE` (Stripe's default for new subscriptions with payment collection)
+- **Organizations can be created immediately** after frontend payment confirmation, without waiting for subscription to become `ACTIVE`
+- Allowed subscription statuses for org creation: `INCOMPLETE`, `ACTIVE`, `TRIALING`
+- Subscription status is synced via webhooks as it progresses through Stripe's lifecycle
+- Stripe is the single source of truth for subscription status
 
 ## Subscription Endpoints
 

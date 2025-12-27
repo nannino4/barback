@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import Stripe from 'stripe';
-import { Subscription, SubscriptionStatus } from './schemas/subscription.schema';
+import { Subscription, SubscriptionStatus, BillingInterval } from './schemas/subscription.schema';
 import { UserService } from '../user/user.service';
-import { StripeService, BillingInterval } from '../common/services/stripe.service';
+import { StripeService, BillingInterval as StripeBillingInterval } from '../common/services/stripe.service';
 import { CustomLogger } from '../common/logger/custom.logger';
 import { DatabaseOperationException } from '../common/exceptions/database.exceptions';
 import { 
@@ -34,8 +34,9 @@ export class SubscriptionService
      * Creates a Stripe subscription with payment_behavior='default_incomplete' and returns
      * the clientSecret for Payment Element. Does NOT save to local database yet.
      * 
-     * The subscription will be saved locally only after webhook confirms payment success.
-     * This prevents accumulation of incomplete subscriptions in our database.
+     * The local subscription will be created by the `customer.subscription.created` webhook
+     * with initial status INCOMPLETE. Organization can be created immediately after payment
+     * confirmation, without waiting for subscription to become ACTIVE.
      * 
      * For BOTH trial and paid subscriptions, we collect payment details upfront.
      * This follows Stripe best practices for seamless trial-to-paid conversion.
@@ -47,7 +48,7 @@ export class SubscriptionService
      */
     async setupSubscriptionPayment(
         userId: Types.ObjectId,
-        billingInterval: BillingInterval = BillingInterval.MONTHLY,
+        billingInterval: StripeBillingInterval = StripeBillingInterval.MONTHLY,
         isTrial: boolean
     ): Promise<{ stripeSubscriptionId: string; clientSecret: string }>
     {
@@ -137,7 +138,7 @@ export class SubscriptionService
         );
 
         // Return Stripe subscription ID and client secret
-        // Local DB record will be created by webhook when payment is confirmed
+        // Local DB record will be created by webhook when stripe subscription creation event is received
         return { 
             stripeSubscriptionId: stripeSubscription.id,
             clientSecret,
@@ -146,11 +147,15 @@ export class SubscriptionService
 
     /**
      * Create local subscription record from Stripe subscription
-     * Called by webhook handlers when subscription becomes active/trialing
+     * Called by webhook handler on `customer.subscription.created` event
+     * 
+     * Initial status is typically INCOMPLETE (Stripe's default for subscriptions
+     * with payment collection). Status will be updated by subsequent webhook events
+     * as the subscription progresses through Stripe's lifecycle.
      * 
      * @param stripeSubscription Stripe subscription object  
      * @param userId User ID (from webhook context)
-     * @returns Created subscription
+     * @returns Created subscription with initial INCOMPLETE status
      */
     async createFromStripeSubscription(
         stripeSubscription: Stripe.Subscription,
@@ -175,23 +180,29 @@ export class SubscriptionService
                     `Subscription already exists for Stripe subscription ${stripeSubscription.id}, updating status`,
                     'SubscriptionService#createFromStripeSubscription'
                 );
-                return await this.updateStatus(stripeSubscription.id, this.mapStripeStatusToLocal(stripeSubscription.status));
+                return await this.updateFromStripeSubscription(stripeSubscription);
             }
+
+            // Extract billing details from Stripe subscription
+            const billingDetails = this.extractBillingDetails(stripeSubscription);
 
             const subscription = new this.subscriptionModel({
                 userId: userId,
                 stripeSubscriptionId: stripeSubscription.id,
                 status: this.mapStripeStatusToLocal(stripeSubscription.status),
                 autoRenew: true,
+                billingInterval: billingDetails.billingInterval,
+                nextBillingDate: billingDetails.nextBillingDate,
+                amount: billingDetails.amount,
             });
 
             await subscription.save();
-            
+
             this.logger.debug(
                 `Local subscription created successfully for Stripe subscription: ${stripeSubscription.id}`,
                 'SubscriptionService#createFromStripeSubscription'
             );
-            
+
             return subscription;
         }
         catch (error)
@@ -362,8 +373,7 @@ export class SubscriptionService
     {
         this.logger.debug(`Syncing subscription from Stripe: ${stripeSubscription.id}`, 'SubscriptionService#syncSubscriptionFromStripe');
 
-        const status = this.mapStripeStatusToLocal(stripeSubscription.status);
-        await this.updateStatus(stripeSubscription.id, status);
+        await this.updateFromStripeSubscription(stripeSubscription);
     }
 
     private mapStripeStatusToLocal(stripeStatus: Stripe.Subscription.Status): SubscriptionStatus 
@@ -397,7 +407,92 @@ export class SubscriptionService
         }
     }
 
+    /**
+     * Extract billing details from a Stripe subscription
+     */
+    private extractBillingDetails(stripeSubscription: Stripe.Subscription): {
+        billingInterval: BillingInterval;
+        nextBillingDate: Date | null;
+        amount: number | null;
+    }
+    {
+        // Get billing interval from the first item's price
+        let billingInterval = BillingInterval.MONTHLY;
+        let amount: number | null = null;
+        let nextBillingDate: Date | null = null;
+        
+        const firstItem = stripeSubscription.items?.data?.[0];
+        if (firstItem?.price)
+        {
+            // Map Stripe interval to our enum
+            if (firstItem.price.recurring?.interval === 'year')
+            {
+                billingInterval = BillingInterval.YEARLY;
+            }
+            // Get amount in cents
+            amount = firstItem.price.unit_amount ?? null;
+        }
 
+        // Get next billing date from subscription item's current_period_end
+        if (firstItem?.current_period_end)
+        {
+            nextBillingDate = new Date(firstItem.current_period_end * 1000);
+        }
+
+        return { billingInterval, nextBillingDate, amount };
+    }
+
+    /**
+     * Update local subscription record from Stripe subscription data
+     * Updates status and billing details
+     */
+    async updateFromStripeSubscription(stripeSubscription: Stripe.Subscription): Promise<Subscription>
+    {
+        this.logger.debug(
+            `Updating local subscription from Stripe subscription: ${stripeSubscription.id}`,
+            'SubscriptionService#updateFromStripeSubscription'
+        );
+
+        const billingDetails = this.extractBillingDetails(stripeSubscription);
+        const status = this.mapStripeStatusToLocal(stripeSubscription.status);
+
+        try
+        {
+            const subscription = await this.subscriptionModel
+                .findOneAndUpdate(
+                    { stripeSubscriptionId: stripeSubscription.id },
+                    {
+                        status: status,
+                        billingInterval: billingDetails.billingInterval,
+                        nextBillingDate: billingDetails.nextBillingDate,
+                        amount: billingDetails.amount,
+                    },
+                    { new: true }
+                )
+                .exec();
+
+            if (!subscription)
+            {
+                throw new SubscriptionNotFoundException(stripeSubscription.id);
+            }
+
+            return subscription;
+        }
+        catch (error)
+        {
+            if (error instanceof SubscriptionNotFoundException)
+            {
+                throw error;
+            }
+            const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
+            this.logger.error(
+                `Database error during subscription update from Stripe: ${stripeSubscription.id}`,
+                error instanceof Error ? error.stack : undefined,
+                'SubscriptionService#updateFromStripeSubscription'
+            );
+            throw new DatabaseOperationException('subscription update from Stripe', errorMessage);
+        }
+    }
 
     async isEligibleForTrial(userId: Types.ObjectId): Promise<boolean> 
     {

@@ -148,7 +148,7 @@ Unified guard now restricts authenticated operations until email is verified. Ex
 
 **📋 Deployment Checklist:**
 - [ ] Set up actual Stripe account and get production API keys
-- [ ] Create Stripe products and pricing plans
+- [X] Create Stripe products and pricing plans
 - [ ] Configure webhook endpoints in Stripe dashboard
 - [ ] Test subscription flow end-to-end
 - [ ] Deploy to production environment
@@ -269,7 +269,7 @@ Unified guard now restricts authenticated operations until email is verified. Ex
 - [ ] Verify MongoDB version 4.0+ for single replica set transactions
 - [ ] Configure connection pool settings for optimal transaction performance
 
-### Next steps**:
+### Extras**:
   - [X] **Rate Limiting** (COMPLETED)
     - [X] Install `@nestjs/throttler` package
     - [X] Configure `ThrottlerModule` in app.module

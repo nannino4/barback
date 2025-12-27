@@ -113,54 +113,21 @@ export class OrgService
         this.logger.debug(`Attempting to update organization ID: ${orgId}`, 'OrgService#update');
         
         // Get the current organization to check ownership for name validation
-        let currentOrg: Org | null;
-        try 
+        const currentOrg = await this.findById(orgId);
+        if (!currentOrg)
         {
-            currentOrg = await this.orgModel.findById(orgId).exec();
-            if (!currentOrg)
-            {
-                this.logger.warn(`Organization with ID "${orgId}" not found for update`, 'OrgService#update');
-                throw new OrganizationNotFoundException(orgId.toString());
-            }
-        }
-        catch (error)
-        {
-            if (error instanceof OrganizationNotFoundException)
-            {
-                throw error;
-            }
-            const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            const errorStack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Database error during organization lookup for update: ${orgId}`, errorStack, 'OrgService#update');
-            throw new DatabaseOperationException('organization lookup for update', errorMessage);
+            this.logger.warn(`Organization with ID "${orgId}" not found for update operation`, 'OrgService#update');
+            throw new OrganizationNotFoundException(orgId.toString());
         }
         
         // Check for duplicate organization names if name is being updated
         if (updateData.name && updateData.name !== currentOrg.name)
         {
-            try 
+            const isNameAvailable = await this.isNameAvailable(updateData.name, currentOrg.ownerId);
+            if (!isNameAvailable)
             {
-                const existingOrg = await this.orgModel.findOne({ 
-                    name: updateData.name, 
-                    ownerId: currentOrg.ownerId,
-                    _id: { $ne: orgId }, 
-                }).exec();
-                if (existingOrg)
-                {
-                    this.logger.warn(`Organization with name "${updateData.name}" already exists for owner: ${currentOrg.ownerId}`, 'OrgService#update');
-                    throw new OrganizationNameExistsException(updateData.name);
-                }
-            }
-            catch (error)
-            {
-                if (error instanceof OrganizationNameExistsException)
-                {
-                    throw error;
-                }
-                const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-                const errorStack = error instanceof Error ? error.stack : undefined;
-                this.logger.error(`Database error during organization name validation: ${updateData.name}`, errorStack, 'OrgService#update');
-                throw new DatabaseOperationException('organization name validation', errorMessage);
+                this.logger.warn(`Organization name conflict for owner ${currentOrg.ownerId}: ${updateData.name}`, 'OrgService#update');
+                throw new OrganizationNameExistsException(updateData.name);
             }
         }
         

@@ -36,7 +36,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
 
   const handleManageClick = () =>
   {
-    void navigate(`/org/${organization.org.id}/manage`);
+    void navigate(`/orgs/${organization.org.id}`);
   };
 
   const handleSelectClick = () =>

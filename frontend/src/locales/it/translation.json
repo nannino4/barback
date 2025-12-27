@@ -21,7 +21,10 @@
         "tryAgain": "Riprova",
         "you": "tu",
         "selected": "Selezionato",
-        "or": "oppure"
+        "or": "oppure",
+        "refresh": "Aggiorna",
+        "yes": "Sì",
+        "no": "No"
     },
     "auth": {
         "login": {
@@ -732,6 +735,7 @@
     },
     "orgManagement": {
         "title": "Gestione Locale",
+        "description": "Gestisci le impostazioni del locale, l'abbonamento e il team",
         "tabs": {
             "overview": "Panoramica",
             "members": "Membri",
@@ -764,11 +768,34 @@
                 "error": "Impossibile aggiornare il locale"
             }
         },
+        "members": {
+            "title": "Membri del Team",
+            "description": "Visualizza e gestisci i membri del tuo team",
+            "noMembers": "Nessun membro del team"
+        },
+        "settings": {
+            "title": "Impostazioni",
+            "description": "Impostazioni e configurazione del locale",
+            "currency": "Valuta Predefinita",
+            "createdAt": "Creato",
+            "edit": "Modifica Impostazioni"
+        },
         "subscription": {
-            "title": "Abbonamento e Fatturazione",
+            "title": "Abbonamento",
             "description": "Gestisci il tuo abbonamento e le impostazioni di fatturazione",
+            "manage": "Gestisci Abbonamento",
+            "autoRenew": "Rinnovo automatico",
+            "createdAt": "Iniziato",
             "statusTitle": "Stato Abbonamento",
             "statusDescription": "Informazioni sull'abbonamento corrente",
+            "statusMessages": {
+                "active": "Il tuo abbonamento è attivo. Hai accesso completo a tutte le funzionalità.",
+                "trialing": "Sei attualmente in prova gratuita. Il tuo metodo di pagamento verrà addebitato al termine della prova.",
+                "incomplete": "La configurazione del tuo abbonamento è incompleta. Completa il pagamento per attivarlo.",
+                "pastDue": "Il tuo pagamento è scaduto. Aggiorna il tuo metodo di pagamento per evitare interruzioni del servizio.",
+                "canceled": "Il tuo abbonamento è stato cancellato. Potresti perdere l'accesso ad alcune funzionalità.",
+                "unpaid": "Il tuo abbonamento non è pagato. Aggiorna il tuo metodo di pagamento."
+            },
             "currentStatus": "Stato Corrente",
             "createdOn": "Abbonamento Iniziato",
             "paymentFailedMessage": "Pagamento fallito. Aggiorna il tuo metodo di pagamento o riprova.",

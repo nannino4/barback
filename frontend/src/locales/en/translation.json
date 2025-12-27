@@ -21,7 +21,10 @@
         "tryAgain": "Try Again",
         "you": "you",
         "selected": "Selected",
-        "or": "or"
+        "or": "or",
+        "refresh": "Refresh",
+        "yes": "Yes",
+        "no": "No"
     },
     "auth": {
         "login": {
@@ -733,6 +736,7 @@
     },
     "orgManagement": {
         "title": "Organization Management",
+        "description": "Manage your venue settings, subscription, and team",
         "tabs": {
             "overview": "Overview",
             "members": "Members",
@@ -765,11 +769,34 @@
                 "error": "Failed to update organization"
             }
         },
+        "members": {
+            "title": "Team Members",
+            "description": "View and manage your team members",
+            "noMembers": "No team members yet"
+        },
+        "settings": {
+            "title": "Settings",
+            "description": "Organization settings and configuration",
+            "currency": "Default Currency",
+            "createdAt": "Created",
+            "edit": "Edit Settings"
+        },
         "subscription": {
-            "title": "Subscription & Billing",
+            "title": "Subscription",
             "description": "Manage your subscription and billing settings",
+            "manage": "Manage Subscription",
+            "autoRenew": "Auto-renewal",
+            "createdAt": "Started",
             "statusTitle": "Subscription Status",
             "statusDescription": "Current subscription information",
+            "statusMessages": {
+                "active": "Your subscription is active. You have full access to all features.",
+                "trialing": "You're currently on a free trial. Your payment method will be charged when the trial ends.",
+                "incomplete": "Your subscription setup is incomplete. Please complete payment to activate.",
+                "pastDue": "Your payment is past due. Please update your payment method to avoid service interruption.",
+                "canceled": "Your subscription has been canceled. You may lose access to some features.",
+                "unpaid": "Your subscription is unpaid. Please update your payment method."
+            },
             "currentStatus": "Current Status",
             "createdOn": "Subscription Started",
             "paymentFailedMessage": "Payment failed. Please update your payment method or try again.",

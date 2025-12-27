@@ -78,7 +78,7 @@ export const OrganizationsPage: React.FC = () =>
    */
   const handleCreateOrganization = () =>
   {
-    void navigate('/organizations/create');
+    void navigate('/orgs/create');
   };
 
   /**

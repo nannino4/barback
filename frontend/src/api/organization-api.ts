@@ -9,6 +9,7 @@ import {
   type UpdateOrganizationRequest,
   type OrgRole,
 } from '@/types/organization';
+import { SubscriptionSchema, type Subscription } from '@/types/subscription';
 
 // ============================================================================
 // API Methods
@@ -81,6 +82,22 @@ export const organizationApi = {
         method: 'GET',
       },
       z.array(OrganizationMembershipSchema),
+    );
+  },
+
+  /**
+   * Get organization subscription
+   * @param orgId Organization ID
+   * @returns The organization's subscription
+   */
+  getOrganizationSubscription: (orgId: string): Promise<Subscription> =>
+  {
+    return apiClient.request<Subscription>(
+      `/orgs/${orgId}/subscription`,
+      {
+        method: 'GET',
+      },
+      SubscriptionSchema,
     );
   },
 

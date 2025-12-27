@@ -9,10 +9,8 @@ import { Stack } from '@/components/layout';
 import { InlineSpinner } from '@/components/ui/spinner';
 import { useI18n } from '@/hooks/useI18n';
 import { organizationApi } from '@/api/organization-api';
-import { subscriptionApi } from '@/api/subscription-api';
 import { paymentElementOptions, expressCheckoutOptions } from '@/lib/stripe/config';
 import { getLocalizedErrorMessage, ApiError } from '@/lib/errors';
-import type { SubscriptionStatus } from '@/types/subscription';
 
 /**
  * PaymentStep - Third step of organization creation wizard
@@ -29,8 +27,11 @@ import type { SubscriptionStatus } from '@/types/subscription';
  * 1. Parent creates Stripe subscription and gets clientSecret
  * 2. This component shows Express Checkout Element (or Payment Element fallback)
  * 3. User selects payment method and completes payment
- * 4. Stripe webhook confirms → creates local subscription record
- * 5. Create organization with confirmed subscription
+ * 4. Stripe webhook (`customer.subscription.created`) creates local subscription with INCOMPLETE status
+ * 5. Create organization immediately (with retry logic to handle webhook race condition)
+ *    - Organization creation accepts INCOMPLETE, ACTIVE, or TRIALING subscription status
+ * 6. Redirect to organization page where user can see subscription status
+ * 7. Webhook (`customer.subscription.updated`) later updates status to ACTIVE/TRIALING
  * 
  * @param stripeSubscriptionId - Stripe subscription ID to attach to organization
  * @param organizationName - Name for the organization to be created
@@ -47,9 +48,6 @@ interface PaymentStepProps
   onSuccess: (orgId: string) => void;
 }
 
-const READY_SUBSCRIPTION_STATUSES: ReadonlyArray<SubscriptionStatus> = ['ACTIVE', 'TRIALING'];
-const SUBSCRIPTION_POLL_INTERVAL_MS = 3000;
-const SUBSCRIPTION_MAX_POLLS = 10;
 const CREATE_ORG_MAX_ATTEMPTS = 5;
 const CREATE_ORG_RETRY_DELAY_MS = 2000;
 
@@ -139,54 +137,6 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
     setIsProcessing(false);
   };
 
-  const waitForSubscriptionActivation = async (): Promise<'ready' | 'timeout' | 'unsupported'> =>
-  {
-    for (let attempt = 1; attempt <= SUBSCRIPTION_MAX_POLLS; attempt += 1)
-    {
-      setStatusMessage(
-        t('organizations.create.paymentStep.status.waitingForStripe' as never, {
-          attempt,
-          max: SUBSCRIPTION_MAX_POLLS,
-        }) as string,
-      );
-
-      try
-      {
-        const statusResponse = await subscriptionApi.getStripeSubscriptionStatus(stripeSubscriptionId);
-        if (READY_SUBSCRIPTION_STATUSES.includes(statusResponse.status))
-        {
-          setStatusMessage(null);
-          return 'ready';
-        }
-      }
-      catch (error)
-      {
-        if (ApiError.isApiError(error))
-        {
-          if (error.error === 'SUBSCRIPTION_NOT_FOUND')
-          {
-            await wait(SUBSCRIPTION_POLL_INTERVAL_MS);
-            continue;
-          }
-
-          if (error.error === 'Not Found')
-          {
-            setStatusMessage(null);
-            return 'unsupported';
-          }
-        }
-
-        setStatusMessage(null);
-        return 'unsupported';
-      }
-
-      await wait(SUBSCRIPTION_POLL_INTERVAL_MS);
-    }
-
-    setStatusMessage(null);
-    return 'timeout';
-  };
-
   const attemptOrganizationCreation = async (): Promise<void> =>
   {
     for (let attempt = 1; attempt <= CREATE_ORG_MAX_ATTEMPTS; attempt += 1)
@@ -218,18 +168,6 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
 
   const finalizeOrganizationCreation = async (): Promise<void> =>
   {
-    const readiness = await waitForSubscriptionActivation();
-
-    if (readiness === 'timeout')
-    {
-      throw new Error(t('organizations.create.paymentStep.subscriptionTimeout' as never));
-    }
-
-    if (readiness === 'unsupported')
-    {
-      throw new Error(t('organizations.create.paymentStep.subscriptionUnsupported' as never));
-    }
-
     await attemptOrganizationCreation();
   };
 
@@ -252,7 +190,7 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: window.location.origin + '/organizations',
+          return_url: window.location.origin + '/orgs',
         },
         redirect: 'if_required',
       });
@@ -304,7 +242,7 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
       const { error } = await stripe.confirmPayment({
         elements,
         confirmParams: {
-          return_url: window.location.origin + '/organizations',
+          return_url: window.location.origin + '/orgs',
         },
         redirect: 'if_required',
       });

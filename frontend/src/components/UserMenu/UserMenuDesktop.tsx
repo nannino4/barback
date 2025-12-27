@@ -65,7 +65,7 @@ export const UserMenuDesktop: React.FC = () =>
         {/* Current Organization */}
         <OrganizationMenuItem
           currentOrg={currentOrg}
-          onClick={() => handleNavigate('/organizations')}
+          onClick={() => handleNavigate('/orgs')}
           variant="dropdown"
         />
 

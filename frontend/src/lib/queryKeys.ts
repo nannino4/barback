@@ -35,6 +35,9 @@ export const queryKeys = {
     /** Organization members */
     members: (orgId: string) => ['organization', orgId, 'members'] as const,
     
+    /** Organization subscription */
+    subscription: (orgId: string) => ['organization', orgId, 'subscription'] as const,
+    
     /** Organization invitations (pending) */
     invitations: (orgId: string) => ['organization', orgId, 'invitations'] as const,
   },

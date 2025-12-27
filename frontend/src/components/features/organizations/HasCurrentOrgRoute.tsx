@@ -49,7 +49,7 @@ export const HasCurrentOrgRoute: React.FC = () =>
             </Stack>
             
             <Button
-              onClick={() => void navigate('/organizations')}
+              onClick={() => void navigate('/orgs')}
               size="lg"
               className="gap-2"
             >

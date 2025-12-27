@@ -33,6 +33,9 @@ export const SubscriptionSchema = z.object({
   id: z.string(),
   status: SubscriptionStatusSchema,
   autoRenew: z.boolean(),
+  billingInterval: BillingIntervalSchema,
+  nextBillingDate: z.string().datetime(),
+  amount: z.number(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });

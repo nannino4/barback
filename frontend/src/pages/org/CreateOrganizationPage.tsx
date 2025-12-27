@@ -131,15 +131,16 @@ export const CreateOrganizationPage: React.FC = () =>
 
   const handleCancel = () =>
   {
-    void navigate('/organizations');
+    void navigate('/orgs');
   };
 
   /**
    * Handle successful organization creation
+   * Redirects to the org management page to show subscription status
    */
-  const handleSuccess = () =>
+  const handleSuccess = (orgId: string) =>
   {
-    void navigate('/organizations');
+    void navigate(`/orgs/${orgId}`);
   };
 
   /**

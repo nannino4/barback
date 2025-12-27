@@ -48,25 +48,26 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
       - [X] test over https (using ngrok)
     - [X] consolidate payment methods
       - [X] card payments
+        - [ ] remove link payment method?
       - [X] google pay
       - [X] apple pay
     - [X] consolidate stripe elements appearance
       - [X] color vars don't seem to work properly. `[Stripe.js] elements-inner-loader-ui.html: invalid variable value "var(--color-primary)" provided to "colorPrimary"; "colorPrimary" accepts a valid HEX, rgb(), or hsl() CSS color.`
-    - [ ] improve organization creation flow after payment
-      - [X] consider polling for subscription status instead of waiting fixed time
-        - [X] check subscription status by sending stripeSubscriptionId
-          - [X] implement endpoint on backend to get subscription status by stripeSubscriptionId
-        - [ ] define max time to wait before showing error. handle case on backend where subscription is not active after max time. maybe cancel subscription automatically?
-      - [ ] handle payment failures
+    - [X] improve organization creation flow after payment
+      - [X] local subscription created by webhook with initial INCOMPLETE status
+      - [X] organization created immediately after payment confirmation
+      - [X] redirect to organization page showing subscription status
+      - [ ] on failure state, surface actions on organization page to retry/change payment method or cancel organization
     - [X] consolidate plans/pricing
-- [ ] Implement organization management
+- [ ] Implement organization page
   - [ ] members
     - [ ] design member card component
     - [ ] view current members
     - [ ] invite members via email
     - [ ] role management (manager, staff)
   - [ ] settings (name, currency)
-  - [ ] subscription management with billing info
+    - [ ] subscription management with billing info
+      - [ ] manage payment methods per organization (add/remove/default)
 - [ ] Implement invitation management
   - [ ] design ui/ux for button to invitation page
   - [ ] implement invitation page
@@ -85,7 +86,7 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [ ] refresh token service restarts every page load
 - **good to have**
   - [ ] routes consolidation
-  - [ ] update toasters color and position
+  - [ ] update toasters style and position
   - [ ] consolidate type names for requests/responses to/from backend
   - [ ] autofocus first input on modals and forms
   - [ ] `enter` key goes to next input or submits form

@@ -1,9 +1,10 @@
-import { Expose } from 'class-transformer';
+import { Expose, Transform } from 'class-transformer';
 import { SubscriptionStatus, BillingInterval } from '../schemas/subscription.schema';
 
 export class OutSubscriptionDto 
 {
     @Expose()
+    @Transform(({ obj }) => obj._id?.toString() || obj.id)
     id!: string;
 
     @Expose()

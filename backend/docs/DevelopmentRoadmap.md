@@ -2,23 +2,6 @@
 
 This document outlines the development tasks for the Minimum Viable Product (MVP) of the Barback application.
 
-## 🎯 Current Status Summary
-
-**✅ Completed Modules:**
-- **User Management**: Full CRUD, authentication, profile management
-- **Admin Management**: User administration, role management 
-- **Email/Password Authentication**: Email verification, password reset, secure token management
-- **Subscription Management**: Stripe integration, automatic trial-to-paid conversion, payment methods, webhooks
-- **Organization Management**: Complete organization system with invitation management, member roles, email notifications
-- **Category Management**: Product categorization system with hierarchical structure
-- **Product Management**: Core inventory items with category linking and stock tracking
-- **Inventory Management**: Stock adjustments and reporting system
-
-**🔄 Next Priority:**
-- **Alerts & Notifications**: Low stock alerts and time-based reminders
-
-**📊 Overall Progress**: ~95% of MVP features completed
-
 ## MVP Stage
 
 ### Workspace Setup
@@ -192,6 +175,15 @@ Unified guard now restricts authenticated operations until email is verified. Ex
   - [X] Add `GET /api/orgs/:id` endpoint to fetch single organization by ID
   - [X] Includes proper authorization (any member can view)
   - [X] Returns complete organization details with settings
+- [X] **Organization Member Management** (Required for Org Management UI):
+  - [X] `POST /api/orgs/{id}/leave` - Leave organization (non-owner members)
+    - Prevent owner from leaving (must transfer ownership first)
+    - Remove user from organization membership
+    - Return success confirmation
+  - [X] `DELETE /api/orgs/{id}/members/{userId}` - Remove member from organization
+    - Owner/manager only
+    - Prevent removing the owner
+    - Prevent removing self (use leave endpoint instead)
 
 #### Category Management
 - [X] **Data Layer Setup**:
@@ -255,6 +247,10 @@ Unified guard now restricts authenticated operations until email is verified. Ex
   - [ ] Create analytics service for consumption reports by time period, category, and product
 - [ ] **API Endpoints**:
   - [ ] `GET /api/orgs/:orgId/analytics/consumption?category=mycategory&productId=myproductid` - Product consumption by time period, category and product
+
+#### Error Handling
+- [ ] Always use custon excpetions
+- [ ] Use error codes and error messages that the frontend can use to display localized user-friendly messages
 
 #### Database Transactions & Data Consistency
 - [X] **High Priority Transactions** (Critical for data integrity):

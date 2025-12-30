@@ -458,4 +458,109 @@ describe('UserOrgRelationService - Service Tests (Unit-style)', () =>
             expect(typeof result.orgRole).toBe('string');
         });
     });
+
+    describe('remove', () =>
+    {
+        beforeEach(async () =>
+        {
+            // Create test users
+            const userModel = connection.model('User');
+            await userModel.insertMany([
+                {
+                    _id: mockUserId1,
+                    email: 'user1@test.com',
+                    firstName: 'User',
+                    lastName: 'One',
+                    hashedPassword: 'hashed',
+                    isEmailVerified: true,
+                },
+                {
+                    _id: mockUserId2,
+                    email: 'user2@test.com',
+                    firstName: 'User',
+                    lastName: 'Two',
+                    hashedPassword: 'hashed',
+                    isEmailVerified: true,
+                },
+            ]);
+
+            // Create test organizations
+            const orgModel = connection.model('Org');
+            await orgModel.insertMany([
+                {
+                    _id: mockOrgId1,
+                    name: 'Org One',
+                    ownerId: mockUserId1,
+                    subscriptionId: mockSubscriptionId1,
+                    settings: { defaultCurrency: 'EUR' },
+                },
+            ]);
+
+            // Create test relationships
+            const relationModel = connection.model('UserOrgRelation');
+            await relationModel.insertMany([
+                {
+                    userId: mockUserId1,
+                    orgId: mockOrgId1,
+                    orgRole: OrgRole.OWNER,
+                },
+                {
+                    userId: mockUserId2,
+                    orgId: mockOrgId1,
+                    orgRole: OrgRole.MANAGER,
+                },
+            ]);
+        });
+
+        it('should successfully remove user-org relationship', async () =>
+        {
+            // Act
+            await service.remove(mockUserId2, mockOrgId1);
+
+            // Assert - Verify relationship was deleted
+            const relationModel = connection.model('UserOrgRelation');
+            const deletedRelation = await relationModel.findOne({
+                userId: mockUserId2,
+                orgId: mockOrgId1,
+            });
+            expect(deletedRelation).toBeNull();
+        });
+
+        it('should not affect other relationships when removing one', async () =>
+        {
+            // Act
+            await service.remove(mockUserId2, mockOrgId1);
+
+            // Assert - Owner relationship should still exist
+            const relationModel = connection.model('UserOrgRelation');
+            const ownerRelation = await relationModel.findOne({
+                userId: mockUserId1,
+                orgId: mockOrgId1,
+            });
+            expect(ownerRelation).not.toBeNull();
+            expect(ownerRelation!.orgRole).toBe(OrgRole.OWNER);
+        });
+
+        it('should throw UserNotMemberException when relationship does not exist', async () =>
+        {
+            // Arrange
+            const nonMemberId = new Types.ObjectId();
+
+            // Act & Assert
+            await expect(service.remove(nonMemberId, mockOrgId1))
+                .rejects
+                .toThrow('USER_NOT_MEMBER');
+        });
+
+        it('should throw UserNotMemberException for non-existent org', async () =>
+        {
+            // Arrange
+            const nonExistentOrgId = new Types.ObjectId();
+
+            // Act & Assert
+            await expect(service.remove(mockUserId1, nonExistentOrgId))
+                .rejects
+                .toThrow('USER_NOT_MEMBER');
+        });
+    });
 });

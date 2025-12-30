@@ -125,4 +125,36 @@ export class UserOrgRelationService
             throw new DatabaseOperationException('user-org role update', errorMessage);
         }
     }
+
+    async remove(userId: Types.ObjectId, orgId: Types.ObjectId): Promise<void>
+    {
+        this.logger.debug(`Attempting to remove user: ${userId} from org: ${orgId}`, 'UserOrgRelationService#remove');
+        
+        try 
+        {
+            const result = await this.userOrgRelationModel.findOneAndDelete({
+                userId: userId,
+                orgId: orgId,
+            }).exec();
+            
+            if (!result)
+            {
+                this.logger.warn(`User-org relationship not found for user: ${userId} in org: ${orgId}`, 'UserOrgRelationService#remove');
+                throw new UserNotMemberException(userId.toString(), orgId.toString());
+            }
+            
+            this.logger.debug(`Successfully removed user: ${userId} from org: ${orgId}`, 'UserOrgRelationService#remove');
+        }
+        catch (error)
+        {
+            if (error instanceof UserNotMemberException)
+            {
+                throw error;
+            }
+            const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
+            const errorStack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Database error during user removal from org: user ${userId} in org ${orgId}`, errorStack, 'UserOrgRelationService#remove');
+            throw new DatabaseOperationException('user-org relationship removal', errorMessage);
+        }
+    }
 }

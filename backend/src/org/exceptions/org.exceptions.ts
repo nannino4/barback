@@ -134,3 +134,48 @@ export class CorruptedUserOrgRelationException extends ConflictException
         });
     }
 }
+
+/**
+ * Custom exception thrown when owner tries to leave their organization
+ */
+export class OwnerCannotLeaveException extends BadRequestException
+{
+    constructor()
+    {
+        super({
+            message: 'Organization owner cannot leave. Transfer ownership first or delete the organization.',
+            error: 'OWNER_CANNOT_LEAVE',
+            statusCode: 400,
+        });
+    }
+}
+
+/**
+ * Custom exception thrown when trying to remove an organization owner
+ */
+export class CannotRemoveOwnerException extends BadRequestException
+{
+    constructor()
+    {
+        super({
+            message: 'Cannot remove the organization owner',
+            error: 'CANNOT_REMOVE_OWNER',
+            statusCode: 400,
+        });
+    }
+}
+
+/**
+ * Custom exception thrown when trying to remove self via remove endpoint
+ */
+export class CannotRemoveSelfException extends BadRequestException
+{
+    constructor()
+    {
+        super({
+            message: 'Cannot remove yourself. Use the leave endpoint instead.',
+            error: 'CANNOT_REMOVE_SELF',
+            statusCode: 400,
+        });
+    }
+}

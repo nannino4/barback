@@ -151,7 +151,7 @@ export class StripeService
                     save_default_payment_method: 'on_subscription',
                 },
                 // Expand confirmation_secret to get clientSecret for Payment Element
-                expand: ['latest_invoice.confirmation_secret'],
+                expand: ['latest_invoice.confirmation_secret', 'pending_setup_intent'],
             };
 
             if (isTrial)
@@ -170,8 +170,20 @@ export class StripeService
                 subscriptionParams.trial_period_days = trialDays;
             }
 
+            // print subscriptionParams for debugging
+            this.logger.debug(
+                `Subscription parameters: ${JSON.stringify(subscriptionParams)}`,
+                'StripeService#createSubscription'
+            );
+
             const subscription = await this.stripe.subscriptions.create(subscriptionParams);
             
+            // print the full subscription object for debugging
+            this.logger.debug(
+                `Full subscription object: ${JSON.stringify(subscription)}`,
+                'StripeService#createSubscription'
+            );
+
             this.logger.debug(
                 `${isTrial ? 'Trial' : 'Paid'} subscription created: ${subscription.id}`,
                 'StripeService#createSubscription'
@@ -222,6 +234,27 @@ export class StripeService
         {
             this.logger.error(`Failed to retrieve subscription: ${subscriptionId}`, error instanceof Error ? error.stack : undefined, 'StripeService#retrieveSubscription');
             this.handleStripeError(error, 'subscription retrieval');
+        }
+    }
+
+    async retrieveSetupIntent(setupIntentId: string): Promise<Stripe.SetupIntent>
+    {
+        this.logger.debug(`Retrieving setup intent: ${setupIntentId}`, 'StripeService#retrieveSetupIntent');
+
+        try
+        {
+            const setupIntent = await this.stripe.setupIntents.retrieve(setupIntentId);
+            this.logger.debug(`Setup intent retrieved: ${setupIntentId}`, 'StripeService#retrieveSetupIntent');
+            return setupIntent;
+        }
+        catch (error)
+        {
+            this.logger.error(
+                `Failed to retrieve setup intent: ${setupIntentId}`,
+                error instanceof Error ? error.stack : undefined,
+                'StripeService#retrieveSetupIntent'
+            );
+            this.handleStripeError(error, 'payment setup intent retrieval');
         }
     }
 

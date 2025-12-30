@@ -15,8 +15,8 @@ export class Invitation extends Document
     @Prop({ type: Types.ObjectId, ref: 'Org', required: true })
     orgId!: Types.ObjectId;
 
-    @Prop({ type: String, required: false })
-    invitedEmail?: string;
+    @Prop({ type: String, required: true })
+    invitedEmail!: string;
 
     @Prop({ type: String, enum: OrgRole, required: true })
     role!: OrgRole;
@@ -24,8 +24,8 @@ export class Invitation extends Document
     @Prop({ type: String, enum: InvitationStatus, default: InvitationStatus.PENDING })
     status!: InvitationStatus;
 
-    @Prop({ type: Date, required: false })
-    expiresAt?: Date;
+    @Prop({ type: Date, required: true })
+    expiresAt!: Date;
 
     @Prop({ type: Types.ObjectId, ref: 'User', required: true })
     invitedBy!: Types.ObjectId;
@@ -36,7 +36,6 @@ export class Invitation extends Document
 export const InvitationSchema = SchemaFactory.createForClass(Invitation);
 
 // Define indexes as required by coding guidelines
-InvitationSchema.index({ invitedEmail: 1, orgId: 1 }, { unique: true });
 InvitationSchema.index({ orgId: 1 });
 InvitationSchema.index({ status: 1 });
 InvitationSchema.index({ invitedEmail: 1 });

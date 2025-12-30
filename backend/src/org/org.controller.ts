@@ -3,6 +3,7 @@ import {
     Get,
     Post,
     Put,
+    Delete,
     Query,
     UseGuards,
     NotFoundException,
@@ -20,6 +21,7 @@ import { UserOrgRelationService } from './user-org-relation.service';
 import { OutUserOrgRelationDto } from './dto/out.user-org-relation';
 import { OutOrgDto } from './dto/out.org.dto';
 import { OutSubscriptionDto } from '../subscription/dto/out.subscription.dto';
+import { OutSubscriptionStatusDto } from '../subscription/dto/out.subscription-status.dto';
 import { UpdateOrganizationDto } from './dto/in.update-org.dto';
 import { UpdateMemberRoleDto } from './dto/in.update-member-role.dto';
 import { CreateOrgDto } from './dto/in.create-org.dto';
@@ -39,6 +41,9 @@ import {
     OwnerRoleAssignmentException,
     OwnerRoleModificationException,
     CorruptedUserOrgRelationException,
+    OwnerCannotLeaveException,
+    CannotRemoveOwnerException,
+    CannotRemoveSelfException,
 } from './exceptions/org.exceptions';
 
 @Controller('orgs')
@@ -185,6 +190,31 @@ export class OrgController
         return result;
     }
 
+    @Get(':id/subscription/status')
+    @UseGuards(OrgRolesGuard)
+    @OrgRoles(OrgRole.OWNER, OrgRole.MANAGER, OrgRole.STAFF)
+    async getOrgSubscriptionStatus(
+        @CurrentUser() user: User,
+        @Param('id', ObjectIdValidationPipe) orgId: Types.ObjectId,
+    ): Promise<OutSubscriptionStatusDto>
+    {
+        this.logger.debug(`Getting subscription status for organization: ${orgId} by user: ${user.email}`, 'OrgController#getOrgSubscriptionStatus');
+        
+        // Get organization (guards already checked access)
+        const org = await this.orgService.findById(orgId);
+        if (!org) 
+        {
+            this.logger.warn(`Organization not found: ${orgId}`, 'OrgController#getOrgSubscriptionStatus');
+            throw new OrganizationNotFoundException(orgId.toString());
+        }
+        
+        // Get the subscription by ID from org
+        const subscription = await this.subscriptionService.findById(org.subscriptionId);
+        
+        this.logger.debug(`Returning subscription status for organization: ${orgId}`, 'OrgController#getOrgSubscriptionStatus');
+        return plainToInstance(OutSubscriptionStatusDto, subscription.toObject(), { excludeExtraneousValues: true });
+    }
+
     @Get(':id/subscription')
     @UseGuards(OrgRolesGuard)
     @OrgRoles(OrgRole.OWNER)
@@ -295,6 +325,92 @@ export class OrgController
         this.logger.debug(`Organization name "${validateData.name}" availability: ${available}`, 'OrgController#validateOrgName');
         
         return { available };
+    }
+
+    @Post(':id/leave')
+    @UseGuards(OrgRolesGuard)
+    @OrgRoles(OrgRole.OWNER, OrgRole.MANAGER, OrgRole.STAFF)
+    async leaveOrganization(
+        @CurrentUser() user: User,
+        @Param('id', ObjectIdValidationPipe) orgId: Types.ObjectId,
+    ): Promise<void>
+    {
+        this.logger.debug(`User: ${user.email} attempting to leave organization: ${orgId}`, 'OrgController#leaveOrganization');
+        
+        // Verify organization exists
+        const org = await this.orgService.findById(orgId);
+        if (!org) 
+        {
+            this.logger.warn(`Organization not found: ${orgId}`, 'OrgController#leaveOrganization');
+            throw new OrganizationNotFoundException(orgId.toString());
+        }
+        
+        // Get the user's membership
+        const membership = await this.userOrgRelationService.findOne(user._id as Types.ObjectId, orgId);
+        if (!membership)
+        {
+            this.logger.warn(`User: ${user.email} is not a member of organization: ${orgId}`, 'OrgController#leaveOrganization');
+            throw new NotFoundException('User is not a member of this organization');
+        }
+        
+        // Prevent owner from leaving
+        if (membership.orgRole === OrgRole.OWNER)
+        {
+            this.logger.warn(`Owner: ${user.email} attempted to leave organization: ${orgId}`, 'OrgController#leaveOrganization');
+            throw new OwnerCannotLeaveException();
+        }
+        
+        // Remove the membership
+        await this.userOrgRelationService.remove(user._id as Types.ObjectId, orgId);
+        
+        this.logger.debug(`User: ${user.email} successfully left organization: ${orgId}`, 'OrgController#leaveOrganization');
+    }
+
+    @Delete(':id/members/:userId')
+    @UseGuards(OrgRolesGuard)
+    @OrgRoles(OrgRole.OWNER, OrgRole.MANAGER)
+    async removeMember(
+        @CurrentUser() user: User,
+        @Param('id', ObjectIdValidationPipe) orgId: Types.ObjectId,
+        @Param('userId', ObjectIdValidationPipe) userId: Types.ObjectId,
+    ): Promise<void>
+    {
+        this.logger.debug(`User: ${user.email} attempting to remove member: ${userId} from organization: ${orgId}`, 'OrgController#removeMember');
+        
+        // Verify organization exists
+        const org = await this.orgService.findById(orgId);
+        if (!org) 
+        {
+            this.logger.warn(`Organization not found: ${orgId}`, 'OrgController#removeMember');
+            throw new OrganizationNotFoundException(orgId.toString());
+        }
+        
+        // Prevent removing self (use leave endpoint instead)
+        if (user.id === userId.toString())
+        {
+            this.logger.warn(`User: ${user.email} attempted to remove themselves via remove endpoint`, 'OrgController#removeMember');
+            throw new CannotRemoveSelfException();
+        }
+        
+        // Get the target member's membership
+        const targetMembership = await this.userOrgRelationService.findOne(userId, orgId);
+        if (!targetMembership)
+        {
+            this.logger.warn(`Target user: ${userId} is not a member of organization: ${orgId}`, 'OrgController#removeMember');
+            throw new NotFoundException('User is not a member of this organization');
+        }
+        
+        // Prevent removing the owner
+        if (targetMembership.orgRole === OrgRole.OWNER)
+        {
+            this.logger.warn(`User: ${user.email} attempted to remove owner from organization: ${orgId}`, 'OrgController#removeMember');
+            throw new CannotRemoveOwnerException();
+        }
+        
+        // Remove the membership
+        await this.userOrgRelationService.remove(userId, orgId);
+        
+        this.logger.debug(`Member: ${userId} successfully removed from organization: ${orgId} by user: ${user.email}`, 'OrgController#removeMember');
     }
 
 }

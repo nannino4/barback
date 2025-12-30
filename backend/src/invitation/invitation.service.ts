@@ -259,7 +259,7 @@ export class InvitationService
                 const userOrgRelation = new this.userOrgRelationModel({
                     userId,
                     orgId: invitation.orgId,
-                    role: invitation.role,
+                    orgRole: invitation.role,
                 });
                 await userOrgRelation.save();
             }

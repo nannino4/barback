@@ -92,19 +92,41 @@ export class SubscriptionService
             { isTrial }
         );
 
+        // print all the stripeSubscription object for debugging
+        this.logger.debug(
+            `Stripe subscription created: ${JSON.stringify(stripeSubscription)} for user: ${userId}`,
+            'SubscriptionService#setupSubscriptionPayment'
+        );
+
         // Extract clientSecret from latest invoice
         // For incomplete subscriptions, we use confirmation_secret (includes both PaymentIntent and SetupIntent)
         let clientSecret: string | null = null;
-        
-        if (stripeSubscription.latest_invoice)
+
+        if (stripeSubscription.latest_invoice && typeof stripeSubscription.latest_invoice !== 'string')
         {
             const invoice = stripeSubscription.latest_invoice as Stripe.Invoice;
-            
-            // Use confirmation_secret which provides a unified client secret
-            // This works for both $0 trial invoices (SetupIntent) and paid invoices (PaymentIntent)
+
+            // confirmation_secret is present when Stripe creates an invoice that requires confirmation.
+            // For trial subscriptions, Stripe often creates a $0 invoice with confirmation_secret=null.
             if (invoice.confirmation_secret)
             {
                 clientSecret = invoice.confirmation_secret.client_secret || null;
+            }
+        }
+
+        // Trial subscriptions typically use pending_setup_intent (not latest_invoice.confirmation_secret)
+        if (!clientSecret && isTrial && stripeSubscription.pending_setup_intent)
+        {
+            const pendingSetupIntent = stripeSubscription.pending_setup_intent;
+
+            if (typeof pendingSetupIntent === 'string')
+            {
+                const setupIntent = await this.stripeService.retrieveSetupIntent(pendingSetupIntent);
+                clientSecret = setupIntent.client_secret || null;
+            }
+            else
+            {
+                clientSecret = (pendingSetupIntent as Stripe.SetupIntent).client_secret || null;
             }
         }
 
@@ -113,12 +135,12 @@ export class SubscriptionService
             // Cleanup Stripe subscription and throw 500 error (integration failure)
             try
             {
-                await this.stripeService.cancelSubscription(stripeSubscription.id);
                 this.logger.error(
-                    `Missing client secret from Stripe subscription ${stripeSubscription.id}, cancelled subscription`,
+                    `Missing client secret from Stripe subscription ${stripeSubscription.id}, canceling subscription`,
                     undefined,
                     'SubscriptionService#setupSubscriptionPayment'
                 );
+                await this.stripeService.cancelSubscription(stripeSubscription.id);
             }
             catch (cleanupError)
             {
@@ -508,7 +530,9 @@ export class SubscriptionService
                 .exec();
             
             // User is eligible for trial only if this is their first subscription
-            return existingSubscriptionCount === 0;
+            const isEligible = existingSubscriptionCount === 0;
+            this.logger.debug(`User: ${userId} trial eligibility: ${isEligible}`, 'SubscriptionService#isEligibleForTrial');
+            return isEligible;
         }
         catch (error)
         {

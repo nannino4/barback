@@ -1498,4 +1498,296 @@ describe('OrgController (Integration)', () =>
             expect(response.body.message).toContain('validation.org.name.required');
         });
     });
+
+    describe('POST /orgs/:id/leave', () =>
+    {
+        beforeEach(async () =>
+        {
+            // Create test users
+            testUser = await userService.create({
+                email: 'test@example.com',
+                firstName: 'John',
+                lastName: 'Doe',
+                hashedPassword: 'hashedPassword123',
+                phoneNumber: '+1234567890',
+            });
+
+            testUser2 = await userService.create({
+                email: 'owner@example.com',
+                firstName: 'Jane',
+                lastName: 'Owner',
+                hashedPassword: 'hashedPassword456',
+                phoneNumber: '+0987654321',
+            });
+
+            // Create test organization owned by testUser2
+            const subscriptionId = new Types.ObjectId();
+            testOrgs = await orgModel.insertMany([
+                {
+                    name: 'Test Organization',
+                    ownerId: testUser2._id,
+                    subscriptionId: subscriptionId,
+                    settings: { defaultCurrency: 'USD' },
+                },
+            ]);
+
+            // Create user-org relations
+            await relationModel.insertMany([
+                {
+                    userId: testUser2._id,
+                    orgId: testOrgs[0]._id,
+                    orgRole: OrgRole.OWNER,
+                },
+                {
+                    userId: testUser._id,
+                    orgId: testOrgs[0]._id,
+                    orgRole: OrgRole.MANAGER,
+                },
+            ]);
+        });
+
+        afterEach(async () =>
+        {
+            await Promise.all([
+                userModel.deleteMany({}).exec(),
+                orgModel.deleteMany({}).exec(),
+                relationModel.deleteMany({}).exec(),
+            ]);
+        });
+
+        it('should allow non-owner member to leave organization', async () =>
+        {
+            // Override guard to use testUser (manager)
+            const moduleRef = app.get(JwtAuthGuard);
+            jest.spyOn(moduleRef, 'canActivate').mockImplementation(async (context) =>
+            {
+                const request = context.switchToHttp().getRequest();
+                const freshUser = await userService.findById(testUser._id as Types.ObjectId);
+                request.user = freshUser;
+                return true;
+            });
+
+            await request(app.getHttpServer())
+                .post(`/api/orgs/${testOrgs[0]._id}/leave`)
+                .expect(201);
+
+            // Verify user is no longer a member
+            const relation = await relationModel.findOne({
+                userId: testUser._id,
+                orgId: testOrgs[0]._id,
+            });
+            expect(relation).toBeNull();
+        });
+
+        it('should prevent owner from leaving organization', async () =>
+        {
+            // Override guard to use testUser2 (owner)
+            const moduleRef = app.get(JwtAuthGuard);
+            jest.spyOn(moduleRef, 'canActivate').mockImplementation(async (context) =>
+            {
+                const request = context.switchToHttp().getRequest();
+                const freshUser = await userService.findById(testUser2._id as Types.ObjectId);
+                request.user = freshUser;
+                return true;
+            });
+
+            const response = await request(app.getHttpServer())
+                .post(`/api/orgs/${testOrgs[0]._id}/leave`)
+                .expect(400);
+
+            expect(response.body.error).toBe('OWNER_CANNOT_LEAVE');
+        });
+
+        it('should return 404 for non-existent organization', async () =>
+        {
+            const moduleRef = app.get(JwtAuthGuard);
+            jest.spyOn(moduleRef, 'canActivate').mockImplementation(async (context) =>
+            {
+                const request = context.switchToHttp().getRequest();
+                const freshUser = await userService.findById(testUser._id as Types.ObjectId);
+                request.user = freshUser;
+                return true;
+            });
+
+            const fakeOrgId = new Types.ObjectId();
+            await request(app.getHttpServer())
+                .post(`/api/orgs/${fakeOrgId}/leave`)
+                .expect(404);
+        });
+    });
+
+    describe('DELETE /orgs/:id/members/:userId', () =>
+    {
+        let staffUser: User;
+
+        beforeEach(async () =>
+        {
+            // Create test users
+            testUser = await userService.create({
+                email: 'owner@example.com',
+                firstName: 'John',
+                lastName: 'Owner',
+                hashedPassword: 'hashedPassword123',
+                phoneNumber: '+1234567890',
+            });
+
+            testUser2 = await userService.create({
+                email: 'manager@example.com',
+                firstName: 'Jane',
+                lastName: 'Manager',
+                hashedPassword: 'hashedPassword456',
+                phoneNumber: '+0987654321',
+            });
+
+            staffUser = await userService.create({
+                email: 'staff@example.com',
+                firstName: 'Bob',
+                lastName: 'Staff',
+                hashedPassword: 'hashedPassword789',
+                phoneNumber: '+1122334455',
+            });
+
+            // Create test organization owned by testUser
+            const subscriptionId = new Types.ObjectId();
+            testOrgs = await orgModel.insertMany([
+                {
+                    name: 'Test Organization',
+                    ownerId: testUser._id,
+                    subscriptionId: subscriptionId,
+                    settings: { defaultCurrency: 'USD' },
+                },
+            ]);
+
+            // Create user-org relations
+            await relationModel.insertMany([
+                {
+                    userId: testUser._id,
+                    orgId: testOrgs[0]._id,
+                    orgRole: OrgRole.OWNER,
+                },
+                {
+                    userId: testUser2._id,
+                    orgId: testOrgs[0]._id,
+                    orgRole: OrgRole.MANAGER,
+                },
+                {
+                    userId: staffUser._id,
+                    orgId: testOrgs[0]._id,
+                    orgRole: OrgRole.STAFF,
+                },
+            ]);
+        });
+
+        afterEach(async () =>
+        {
+            await Promise.all([
+                userModel.deleteMany({}).exec(),
+                orgModel.deleteMany({}).exec(),
+                relationModel.deleteMany({}).exec(),
+            ]);
+        });
+
+        it('should allow owner to remove a member', async () =>
+        {
+            // Override guard to use testUser (owner)
+            const moduleRef = app.get(JwtAuthGuard);
+            jest.spyOn(moduleRef, 'canActivate').mockImplementation(async (context) =>
+            {
+                const request = context.switchToHttp().getRequest();
+                const freshUser = await userService.findById(testUser._id as Types.ObjectId);
+                request.user = freshUser;
+                return true;
+            });
+
+            await request(app.getHttpServer())
+                .delete(`/api/orgs/${testOrgs[0]._id}/members/${staffUser._id}`)
+                .expect(200);
+
+            // Verify user is no longer a member
+            const relation = await relationModel.findOne({
+                userId: staffUser._id,
+                orgId: testOrgs[0]._id,
+            });
+            expect(relation).toBeNull();
+        });
+
+        it('should allow manager to remove a staff member', async () =>
+        {
+            // Override guard to use testUser2 (manager)
+            const moduleRef = app.get(JwtAuthGuard);
+            jest.spyOn(moduleRef, 'canActivate').mockImplementation(async (context) =>
+            {
+                const request = context.switchToHttp().getRequest();
+                const freshUser = await userService.findById(testUser2._id as Types.ObjectId);
+                request.user = freshUser;
+                return true;
+            });
+
+            await request(app.getHttpServer())
+                .delete(`/api/orgs/${testOrgs[0]._id}/members/${staffUser._id}`)
+                .expect(200);
+
+            // Verify user is no longer a member
+            const relation = await relationModel.findOne({
+                userId: staffUser._id,
+                orgId: testOrgs[0]._id,
+            });
+            expect(relation).toBeNull();
+        });
+
+        it('should prevent removing the owner', async () =>
+        {
+            // Override guard to use testUser2 (manager)
+            const moduleRef = app.get(JwtAuthGuard);
+            jest.spyOn(moduleRef, 'canActivate').mockImplementation(async (context) =>
+            {
+                const request = context.switchToHttp().getRequest();
+                const freshUser = await userService.findById(testUser2._id as Types.ObjectId);
+                request.user = freshUser;
+                return true;
+            });
+
+            const response = await request(app.getHttpServer())
+                .delete(`/api/orgs/${testOrgs[0]._id}/members/${testUser._id}`)
+                .expect(400);
+
+            expect(response.body.error).toBe('CANNOT_REMOVE_OWNER');
+        });
+
+        it('should prevent removing self via remove endpoint', async () =>
+        {
+            // Override guard to use testUser2 (manager)
+            const moduleRef = app.get(JwtAuthGuard);
+            jest.spyOn(moduleRef, 'canActivate').mockImplementation(async (context) =>
+            {
+                const request = context.switchToHttp().getRequest();
+                const freshUser = await userService.findById(testUser2._id as Types.ObjectId);
+                request.user = freshUser;
+                return true;
+            });
+
+            const response = await request(app.getHttpServer())
+                .delete(`/api/orgs/${testOrgs[0]._id}/members/${testUser2._id}`)
+                .expect(400);
+
+            expect(response.body.error).toBe('CANNOT_REMOVE_SELF');
+        });
+
+        it('should return 404 for non-member user', async () =>
+        {
+            const moduleRef = app.get(JwtAuthGuard);
+            jest.spyOn(moduleRef, 'canActivate').mockImplementation(async (context) =>
+            {
+                const request = context.switchToHttp().getRequest();
+                const freshUser = await userService.findById(testUser._id as Types.ObjectId);
+                request.user = freshUser;
+                return true;
+            });
+
+            const fakeUserId = new Types.ObjectId();
+            await request(app.getHttpServer())
+                .delete(`/api/orgs/${testOrgs[0]._id}/members/${fakeUserId}`)
+                .expect(404);
+        });
+    });
 });

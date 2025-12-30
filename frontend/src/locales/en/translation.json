@@ -24,7 +24,10 @@
         "or": "or",
         "refresh": "Refresh",
         "yes": "Yes",
-        "no": "No"
+        "no": "No",
+        "showAll": "Show all",
+        "showLess": "Show less",
+        "dangerZone": "Danger Zone"
     },
     "auth": {
         "login": {
@@ -516,7 +519,8 @@
     },
     "organizations": {
         "title": "Select where you want to work today",
-        "selectDescription": "Choose an organization to access your products, orders, and inventory.",
+        "selectDescription": "Choose a venue to access your products and inventory.",
+        "selectVenue": "Select Venue",
         "myOrganizations": "My Venues",
         "myVenues": "My Venues",
         "ownedVenues": "Owned Venues",
@@ -542,6 +546,7 @@
         "select": "Select",
         "selected": "Selected",
         "manage": "Manage",
+        "viewDetails": "View details",
         "switchTo": "Switch to {{name}}",
         "noOrgSelected": {
             "title": "No venue selected",
@@ -732,6 +737,16 @@
             "success": "Member removed successfully",
             "error": "Failed to remove member",
             "cannotRemoveSelf": "You cannot remove yourself"
+        },
+        "leave": {
+            "description": "Leave the organization and lose access to all its resources.",
+            "button": "Leave Organization",
+            "leaving": "Leaving...",
+            "confirm": "Leave Organization",
+            "confirmDescription": "Are you sure you want to leave this organization? You will lose access to all organization resources and will need to be re-invited to rejoin.",
+            "success": "Successfully left the organization",
+            "error": "Failed to leave organization",
+            "ownerCannotLeave": "Organization owner cannot leave. Transfer ownership first."
         }
     },
     "orgManagement": {
@@ -799,6 +814,15 @@
             },
             "currentStatus": "Current Status",
             "createdOn": "Subscription Started",
+            "renewsOn": "Renews on",
+            "endsOn": "Ends on",
+            "cancelSubscription": "Cancel Subscription",
+            "cancelConfirm": {
+                "title": "Cancel Subscription",
+                "description": "Are you sure you want to cancel your subscription? You'll lose access to premium features at the end of your current billing period.",
+                "confirmButton": "Yes, Cancel Subscription",
+                "cancelButton": "Keep Subscription"
+            },
             "paymentFailedMessage": "Payment failed. Please update your payment method or try again.",
             "paymentMethodsTitle": "Payment Methods",
             "paymentMethodsDescription": "Manage your payment methods",
@@ -936,6 +960,9 @@
         "openPreferences": "Open preferences",
         "userMenu": "User Menu",
         "userMenuDescription": "Access your account settings, organization management, and preferences",
-        "preferencesDescription": "Customize your theme and language preferences"
+        "preferencesDescription": "Customize your theme and language preferences",
+        "myVenues": "My Venues",
+        "switchVenue": "Switch venue",
+        "viewAllVenues": "View all venues"
     }
 }

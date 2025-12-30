@@ -9,7 +9,7 @@ import {
   type UpdateOrganizationRequest,
   type OrgRole,
 } from '@/types/organization';
-import { SubscriptionSchema, type Subscription } from '@/types/subscription';
+import { SubscriptionSchema, SubscriptionStatusOnlySchema, type Subscription, type SubscriptionStatusOnly } from '@/types/subscription';
 
 // ============================================================================
 // API Methods
@@ -86,9 +86,9 @@ export const organizationApi = {
   },
 
   /**
-   * Get organization subscription
+   * Get organization subscription (owner only)
    * @param orgId Organization ID
-   * @returns The organization's subscription
+   * @returns The organization's full subscription details
    */
   getOrganizationSubscription: (orgId: string): Promise<Subscription> =>
   {
@@ -98,6 +98,22 @@ export const organizationApi = {
         method: 'GET',
       },
       SubscriptionSchema,
+    );
+  },
+
+  /**
+   * Get organization subscription status (all members)
+   * @param orgId Organization ID
+   * @returns The organization's subscription status
+   */
+  getOrganizationSubscriptionStatus: (orgId: string): Promise<SubscriptionStatusOnly> =>
+  {
+    return apiClient.request<SubscriptionStatusOnly>(
+      `/orgs/${orgId}/subscription/status`,
+      {
+        method: 'GET',
+      },
+      SubscriptionStatusOnlySchema,
     );
   },
 
@@ -150,6 +166,22 @@ export const organizationApi = {
       `/orgs/${orgId}/members/${userId}`,
       {
         method: 'DELETE',
+      },
+      z.void(),
+    );
+  },
+
+  /**
+   * Leave an organization (non-owner members only)
+   * @param orgId Organization ID
+   * @returns void
+   */
+  leaveOrganization: (orgId: string): Promise<void> =>
+  {
+    return apiClient.request<void>(
+      `/orgs/${orgId}/leave`,
+      {
+        method: 'POST',
       },
       z.void(),
     );

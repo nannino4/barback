@@ -44,6 +44,7 @@ interface PaymentStepProps
   stripeSubscriptionId: string;
   organizationName: string;
   isTrial: boolean;
+  intentType: 'setup' | 'payment';
   onBack: () => void;
   onSuccess: (orgId: string) => void;
 }
@@ -63,6 +64,7 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
   stripeSubscriptionId,
   organizationName,
   isTrial,
+  intentType,
   onBack,
   onSuccess,
 }) =>
@@ -75,6 +77,7 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [expressCheckoutReady, setExpressCheckoutReady] = useState(false);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
+
 
   const getStripePaymentErrorMessage = (error?: StripeError): string =>
   {
@@ -187,13 +190,21 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
     
     try
     {
-      const { error } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: window.location.origin + '/orgs',
-        },
-        redirect: 'if_required',
-      });
+      const { error } = intentType === 'setup'
+        ? await stripe.confirmSetup({
+          elements,
+          confirmParams: {
+            return_url: window.location.origin + '/orgs',
+          },
+          redirect: 'if_required',
+        })
+        : await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: window.location.origin + '/orgs',
+          },
+          redirect: 'if_required',
+        });
 
       if (error)
       {
@@ -239,13 +250,21 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
     
     try
     {
-      const { error } = await stripe.confirmPayment({
-        elements,
-        confirmParams: {
-          return_url: window.location.origin + '/orgs',
-        },
-        redirect: 'if_required',
-      });
+      const { error } = intentType === 'setup'
+        ? await stripe.confirmSetup({
+          elements,
+          confirmParams: {
+            return_url: window.location.origin + '/orgs',
+          },
+          redirect: 'if_required',
+        })
+        : await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: window.location.origin + '/orgs',
+          },
+          redirect: 'if_required',
+        });
       
       if (error)
       {

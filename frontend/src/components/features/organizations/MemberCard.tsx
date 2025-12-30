@@ -40,7 +40,7 @@ export const MemberCard: React.FC<MemberCardProps> = ({
   const displayName = fullName || member.user.email;
 
   return (
-    <Card>
+    <Card variant="bordered">
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-4">
           {/* Left section: Avatar and info */}

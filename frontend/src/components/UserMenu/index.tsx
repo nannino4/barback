@@ -1,6 +1,10 @@
 import { UserMenuDesktop } from './UserMenuDesktop';
 import { UserMenuMobile } from './UserMenuMobile';
 
+// Re-export for external use
+export { OrganizationSwitcherPopover } from './OrganizationSwitcherPopover';
+export { OrganizationSwitcherSheet } from './OrganizationSwitcherSheet';
+
 /**
  * UserMenu - Responsive user menu component
  * 

@@ -1,12 +1,19 @@
 import { Badge } from '@/components/ui/badge';
 import { useI18n } from '@/hooks/useI18n';
+import { cn } from '@/lib/utils';
 
 interface OrgRoleBadgeProps
 {
   role: 'OWNER' | 'MANAGER' | 'STAFF';
+  size?: 'sm' | 'default';
 }
 
 type OrgRoleBadgeVariant = 'org-role-owner' | 'org-role-manager' | 'org-role-staff';
+
+const sizeClasses = {
+  sm: 'px-1.5 py-0 text-[10px]',
+  default: '',
+};
 
 /**
  * OrgRoleBadge - Displays organization role badge with appropriate styling
@@ -15,7 +22,7 @@ type OrgRoleBadgeVariant = 'org-role-owner' | 'org-role-manager' | 'org-role-sta
  * - Manager: Primary background
  * - Staff: Outline with primary text
  */
-export const OrgRoleBadge: React.FC<OrgRoleBadgeProps> = ({ role }) =>
+export const OrgRoleBadge: React.FC<OrgRoleBadgeProps> = ({ role, size = 'default' }) =>
 {
   const { t } = useI18n();
   
@@ -41,7 +48,10 @@ export const OrgRoleBadge: React.FC<OrgRoleBadgeProps> = ({ role }) =>
   };
 
   return (
-    <Badge variant={getVariant(role)}>
+    <Badge 
+      variant={getVariant(role)}
+      className={cn(sizeClasses[size])}
+    >
       {getRoleLabel(role)}
     </Badge>
   );

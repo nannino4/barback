@@ -3,6 +3,13 @@
  */
 
 /**
+ * Minimum delay to show loading/feedback state (in milliseconds)
+ * Ensures users see visual feedback even for fast operations
+ * Used for refresh buttons, form submissions, etc.
+ */
+export const MIN_LOADING_FEEDBACK_MS = 400;
+
+/**
  * Delay before redirecting after a successful operation (in milliseconds)
  * Used to give users time to read success messages
  */

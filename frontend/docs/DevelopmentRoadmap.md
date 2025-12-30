@@ -59,85 +59,83 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
       - [X] redirect to organization page showing subscription status
       - [ ] on failure state, surface actions on organization page to retry/change payment method or cancel organization
     - [X] consolidate plans/pricing
-- [ ] Implement Organizations Hub Page (`/orgs`)
-  - [ ] Refactor `OrganizationsPage` with sections layout
-    - [ ] **Pending Invitations Section** (top, requires attention)
-      - [ ] Horizontal scrollable row of compact invitation cards
-      - [ ] Card shows: org name, owner, user's future role
-      - [ ] Card actions: Accept / Decline buttons
-      - [ ] "Show all (N)" button → expands to multiple rows (not horizontally scrollable)
-      - [ ] "Show less" button → collapses back to horizontal row
-      - [ ] Section hidden when no pending invitations
-    - [ ] **My Venues Section**
-      - [ ] Keep existing filters (search, role toggle)
-      - [ ] Organization cards grid with selection
-      - [ ] "Create Venue" button
+- [X] Implement Organizations Hub Page (`/orgs`)
+  - [X] Refactor `OrganizationsPage` with sections layout
+    - [X] **Pending Invitations Section** (top, requires attention)
+      - [X] Grid of invitation cards
+      - [X] Card shows: org name, owner, user's future role, inviter info
+      - [X] Card actions: Accept / Decline buttons
+      - [X] Section hidden when no pending invitations
+    - [X] **My Venues Section**
+      - [X] Keep existing filters (search, role toggle)
+      - [X] Organization cards grid with selection
+      - [X] "Create Venue" button
   - [ ] Add invitations badge count to UserMenu
-  - [ ] Empty states for both sections
-- [ ] Implement Organization Detail Page (`/orgs/:orgId`) - Role-Aware
-  - [ ] **All members can view:**
-    - [ ] Organization name
-    - [ ] Owner info
-    - [ ] Members list with roles
-    - [ ] Subscription status (only if not active/trialing)
-  - [ ] **Owner/Manager can:**
-    - [ ] View pending invitations sent by org
-    - [ ] Send new invitations (existing `SendInvitationDialog`)
-    - [ ] Revoke pending invitations (with confirmation)
-    - [ ] Edit member roles (inline dropdown)
-    - [ ] Remove members (× icon with confirmation dialog)
-  - [ ] **Owner only can:**
-    - [ ] Edit organization name (inline edit with validation)
-    - [ ] Edit currency (inline dropdown)
-    - [ ] View full subscription details
-      - [ ] Status badge
-      - [ ] Renewal text: "Subscription will renew/end on [date]"
-      - [ ] Next billing date
-      - [ ] Current period start
-      - [ ] Creation date
+  - [X] Empty states for both sections
+- [X] Implement Organization Detail Page (`/orgs/:orgId`) - Role-Aware
+  - [X] **All members can view:**
+    - [X] Organization name
+    - [X] Owner info
+    - [X] Members list with roles
+    - [X] Subscription status (only if not active/trialing)
+  - [X] **Owner/Manager can:**
+    - [X] View pending invitations sent by org
+    - [X] Send new invitations (existing `SendInvitationDialog`)
+    - [X] Revoke pending invitations (with confirmation)
+    - [X] Edit member roles (inline dropdown)
+    - [X] Remove members (× icon with confirmation dialog)
+  - [X] **Owner only can:**
+    - [X] Edit organization name (inline edit with validation)
+    - [X] Edit currency (inline dropdown)
+    - [X] View full subscription details
+      - [X] Status badge
+      - [X] Renewal text: "Subscription will renew/end on [date]"
+      - [X] Next billing date
+      - [X] Creation date
     - [ ] Manage payment method (Sheet/Dialog with Stripe)
     - [ ] Cancel subscription (confirmation dialog)
-- [ ] Implement Navigation & Quick Switch
-  - [ ] Refactor `UserMenu` dropdown
-    - [ ] Add "My Venues" item → links to `/orgs`
+  - [X] **Non-owner members can:**
+    - [X] Leave organization (with confirmation dialog)
+- [X] Implement Navigation & Quick Switch
+  - [X] Refactor `UserMenu` dropdown
+    - [X] Add "My Venues" item → links to `/orgs`
     - [ ] Add invitations badge to "My Venues" item when pending
-    - [ ] Refactor "Current Venue" item for quick switch
-  - [ ] Implement Quick Org Switch
-    - [ ] Desktop: dropdown extension/popover from "Current Venue"
-      - [ ] Show current org highlighted
-      - [ ] List other orgs (max 5)
-      - [ ] "View all" link to `/orgs`
-    - [ ] Mobile: Bottom Sheet component
-      - [ ] `OrganizationSwitcherSheet` component
-      - [ ] Triggered from UserMenu "Current Venue" item
-      - [ ] Same content as desktop popover
-      - [ ] Swipe down to dismiss
-- [ ] Implement Invitation Management
-  - [ ] Create `useInvitations` hook
-    - [ ] Query for pending invitations (`GET /api/invites`)
-    - [ ] Accept mutation (`POST /api/invites/:id/accept`)
-    - [ ] Decline mutation (`POST /api/invites/:id/decline`)
-    - [ ] Sync with `organizationStore.pendingInvitations`
-  - [ ] Refactor `InvitationCard` for received invitations
-    - [ ] Org name, role badge, inviter info
-    - [ ] Sent date, expiry date/countdown
-    - [ ] Accept/Decline buttons
-    - [ ] Expired state styling
-  - [ ] Create `InvitationList` component with empty state
-- [ ] Create Skeleton Components
-  - [ ] `MemberCardSkeleton`
-  - [ ] `InvitationCardSkeleton`
-  - [ ] `PendingInvitationCardSkeleton`
-  - [ ] `SubscriptionCardSkeleton`
-- [ ] Create/Refactor Organization Components
-  - [ ] `MemberCard` - refactor with inline role dropdown
-  - [ ] `MemberList` - new, with owner/manager actions
-  - [ ] `PendingInvitationList` - new, org's outgoing invitations
-  - [ ] `SubscriptionCard` - new, detailed subscription info
-  - [ ] `InlineEditField` - reusable inline edit component
-  - [ ] `ConfirmationDialog` - reusable confirmation dialog
-  - [ ] `OrganizationSwitcherSheet` - mobile bottom sheet
-  - [ ] `OrganizationSwitcherPopover` - desktop popover
+    - [X] Refactor "Current Venue" item for quick switch
+  - [X] Implement Quick Org Switch
+    - [X] Desktop: `OrganizationSwitcherPopover` from "Current Venue"
+      - [X] Show current org highlighted
+      - [X] List other orgs (max 5)
+      - [X] "View all" link to `/orgs`
+    - [X] Mobile: `OrganizationSwitcherSheet` component
+      - [X] Triggered from UserMenu "Current Venue" item
+      - [X] Same content as desktop popover
+      - [X] Swipe down or tap outside to dismiss
+      - [X] Selecting an org switches immediately and dismisses
+- [X] Implement Invitation Management
+  - [X] Create `useInvitations` hook
+    - [X] Query for pending invitations (`GET /api/invitations`)
+    - [X] Accept mutation (`POST /api/invitations/accept/:token`)
+    - [X] Decline mutation (`POST /api/invitations/decline/:token`)
+  - [X] Refactor `InvitationCard` for received invitations
+    - [X] Org name, role badge, inviter info
+    - [X] Accept/Decline buttons
+    - [X] Expired state styling
+  - [X] Create `InvitationList` component with empty state
+- [X] Create Skeleton Components
+  - [X] `MemberCardSkeleton`
+  - [X] `InvitationCardSkeleton`
+  - [X] `SubscriptionCardSkeleton`
+- [X] Create/Refactor Organization Components
+  - [X] `MemberCard` - refactor with inline role dropdown
+  - [X] `MemberList` - with owner/manager actions
+  - [X] `PendingInvitationCard` - org's outgoing invitations with revoke
+    - [ ] show expiration date
+  - [X] `SubscriptionCard` - detailed subscription info
+  - [X] `InlineEditField` - reusable inline edit component
+  - [X] `InlineEditSelect` - reusable inline select component
+  - [X] `ConfirmationDialog` - reusable confirmation dialog
+  - [X] `OrganizationSwitcherSheet` - mobile bottom sheet
+  - [X] `OrganizationSwitcherPopover` - desktop popover
   - [ ] `InvitationsBadge` - notification badge component
 - [X] Create organization switching functionality (basic)
 - [ ] User Settings & Profile Management:
@@ -152,7 +150,7 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 - **good to have**
   - [ ] routes consolidation
   - [ ] update toasters style and position
-  - [ ] consolidate type names for requests/responses to/from backend
+  - [ ] consolidate type names for requests/responses schemas to/from backend
   - [ ] autofocus first input on modals and forms
   - [ ] `enter` key goes to next input or submits form
   - [ ] consolidate loading states (skeletons, spinners)

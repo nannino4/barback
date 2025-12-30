@@ -35,8 +35,11 @@ export const queryKeys = {
     /** Organization members */
     members: (orgId: string) => ['organization', orgId, 'members'] as const,
     
-    /** Organization subscription */
+    /** Organization subscription (full details - owner only) */
     subscription: (orgId: string) => ['organization', orgId, 'subscription'] as const,
+    
+    /** Organization subscription status (all members) */
+    subscriptionStatus: (orgId: string) => ['organization', orgId, 'subscription-status'] as const,
     
     /** Organization invitations (pending) */
     invitations: (orgId: string) => ['organization', orgId, 'invitations'] as const,

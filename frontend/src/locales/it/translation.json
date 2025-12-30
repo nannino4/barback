@@ -24,7 +24,10 @@
         "or": "oppure",
         "refresh": "Aggiorna",
         "yes": "Sì",
-        "no": "No"
+        "no": "No",
+        "showAll": "Mostra tutto",
+        "showLess": "Mostra meno",
+        "dangerZone": "Zona Pericolosa"
     },
     "auth": {
         "login": {
@@ -517,7 +520,8 @@
     },
     "organizations": {
         "title": "Seleziona dove vuoi lavorare oggi",
-        "selectDescription": "Scegli un'organizzazione per accedere ai tuoi prodotti, ordini e inventario.",
+        "selectDescription": "Scegli un locale per accedere ai tuoi prodotti e inventario.",
+        "selectVenue": "Seleziona Locale",
         "myOrganizations": "I Miei Locali",
         "myVenues": "I Miei Locali",
         "ownedVenues": "Locali di Proprietà",
@@ -543,6 +547,7 @@
         "select": "Seleziona",
         "selected": "Selezionata",
         "manage": "Gestisci",
+        "viewDetails": "Vedi dettagli",
         "switchTo": "Passa a {{name}}",
         "noOrgSelected": {
             "title": "Nessun locale selezionato",
@@ -731,6 +736,16 @@
             "success": "Membro rimosso con successo",
             "error": "Impossibile rimuovere il membro",
             "cannotRemoveSelf": "Non puoi rimuovere te stesso"
+        },
+        "leave": {
+            "description": "Lascia questa organizzazione. Perderai l'accesso a tutte le risorse.",
+            "button": "Lascia Organizzazione",
+            "leaving": "Uscita...",
+            "confirm": "Lascia Organizzazione",
+            "confirmDescription": "Sei sicuro di voler lasciare questa organizzazione? Perderai l'accesso a tutte le risorse e dovrai essere re-invitato per rientrare.",
+            "success": "Hai lasciato l'organizzazione con successo",
+            "error": "Impossibile lasciare l'organizzazione",
+            "ownerCannotLeave": "Il proprietario non può lasciare l'organizzazione. Trasferisci prima la proprietà."
         }
     },
     "orgManagement": {
@@ -798,6 +813,15 @@
             },
             "currentStatus": "Stato Corrente",
             "createdOn": "Abbonamento Iniziato",
+            "renewsOn": "Si rinnova il",
+            "endsOn": "Termina il",
+            "cancelSubscription": "Annulla Abbonamento",
+            "cancelConfirm": {
+                "title": "Annulla Abbonamento",
+                "description": "Sei sicuro di voler annullare il tuo abbonamento? Perderai l'accesso alle funzionalità premium alla fine del periodo di fatturazione corrente.",
+                "confirmButton": "Sì, Annulla Abbonamento",
+                "cancelButton": "Mantieni Abbonamento"
+            },
             "paymentFailedMessage": "Pagamento fallito. Aggiorna il tuo metodo di pagamento o riprova.",
             "paymentMethodsTitle": "Metodi di Pagamento",
             "paymentMethodsDescription": "Gestisci i tuoi metodi di pagamento",
@@ -935,6 +959,9 @@
         "openPreferences": "Apri preferenze",
         "userMenu": "Menu Utente",
         "userMenuDescription": "Accedi alle impostazioni dell'account, alla gestione dei locali e alle preferenze",
-        "preferencesDescription": "Personalizza il tema e le preferenze della lingua"
+        "preferencesDescription": "Personalizza il tema e le preferenze della lingua",
+        "myVenues": "I Miei Locali",
+        "switchVenue": "Cambia locale",
+        "viewAllVenues": "Vedi tutti i locali"
     }
 }

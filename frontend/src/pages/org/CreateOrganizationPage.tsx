@@ -65,7 +65,19 @@ export const CreateOrganizationPage: React.FC = () =>
     clientSecret: string;
     stripeSubscriptionId: string;
     isTrial: boolean;
+    intentType: 'setup' | 'payment';
   } | null>(null);
+
+  const getIntentTypeFromClientSecret = (clientSecret: string): 'setup' | 'payment' =>
+  {
+    if (clientSecret.startsWith('seti_'))
+    {
+      return 'setup';
+    }
+
+    // Default to payment for pi_ and any other future types
+    return 'payment';
+  };
 
   // Check trial eligibility
   const { data: eligibility, isLoading: isCheckingEligibility } = useQuery({
@@ -98,6 +110,7 @@ export const CreateOrganizationPage: React.FC = () =>
         clientSecret: data.clientSecret,
         stripeSubscriptionId: data.stripeSubscriptionId,
         isTrial,
+        intentType: getIntentTypeFromClientSecret(data.clientSecret),
       });
       setCurrentStep(WizardStep.PAYMENT);
     },
@@ -137,10 +150,11 @@ export const CreateOrganizationPage: React.FC = () =>
   /**
    * Handle successful organization creation
    * Redirects to the org management page to show subscription status
+   * Creator is always the owner, so we pass OWNER role
    */
   const handleSuccess = (orgId: string) =>
   {
-    void navigate(`/orgs/${orgId}`);
+    void navigate(`/orgs/${orgId}`, { state: { userOrgRole: 'OWNER' } });
   };
 
   /**
@@ -240,6 +254,7 @@ export const CreateOrganizationPage: React.FC = () =>
               stripeSubscriptionId={paymentSetup.stripeSubscriptionId}
               organizationName={form.getValues('name')}
               isTrial={paymentSetup.isTrial}
+              intentType={paymentSetup.intentType}
               onBack={handleBackFromPayment}
               onSuccess={handleSuccess}
             />

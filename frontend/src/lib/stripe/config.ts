@@ -292,10 +292,10 @@ export const paymentElementOptions: StripePaymentElementOptions = {
   },
   fields: {
     billingDetails: {
-      name: 'never',
-      email: 'never',
-      phone: 'never',
-      address: 'never',
+      name: 'auto',
+      email: 'auto',
+      phone: 'auto',
+      address: 'auto',
     },
   },
 };

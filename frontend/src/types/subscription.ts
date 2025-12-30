@@ -72,6 +72,14 @@ export const StripeSubscriptionStatusSchema = z.object({
   status: SubscriptionStatusSchema,
 });
 
+/**
+ * Subscription status only schema - for non-owner members viewing subscription status
+ * GET /api/orgs/:orgId/subscription/status
+ */
+export const SubscriptionStatusOnlySchema = z.object({
+  status: SubscriptionStatusSchema,
+});
+
 // ============================================================================
 // TypeScript Types - Derived from Zod Schemas
 // ============================================================================
@@ -83,3 +91,4 @@ export type TrialEligibilityResponse = z.infer<typeof TrialEligibilityResponseSc
 export type CreateSubscriptionRequest = z.infer<typeof CreateSubscriptionRequestSchema>;
 export type SubscriptionSetup = z.infer<typeof SubscriptionSetupSchema>;
 export type StripeSubscriptionStatus = z.infer<typeof StripeSubscriptionStatusSchema>;
+export type SubscriptionStatusOnly = z.infer<typeof SubscriptionStatusOnlySchema>;

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Stack } from '@/components/layout';
 import { OrgRoleBadge } from '@/components/features/organizations/OrgRoleBadge';
 import { useI18n } from '@/hooks/useI18n';
+import { formatDate } from '@/lib/date';
 import { cn } from '@/lib/utils';
 import type { Invitation } from '@/types/invitation';
 
@@ -31,20 +32,10 @@ export const PendingInvitationCard: React.FC<PendingInvitationCardProps> = ({
   isRevoking = false,
 }) =>
 {
-  const { t } = useI18n();
+  const { t, currentLanguage } = useI18n();
 
   const inviterName = `${invitation.invitedBy.firstName} ${invitation.invitedBy.lastName}`.trim();
   const displayInviterName = inviterName || invitation.invitedBy.email;
-
-  const formatDate = (dateString: string) =>
-  {
-    const date = new Date(dateString);
-    return date.toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
 
   const isExpired = new Date(invitation.expiresAt) < new Date();
 
@@ -70,7 +61,7 @@ export const PendingInvitationCard: React.FC<PendingInvitationCardProps> = ({
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <Calendar className="w-4 h-4 flex-shrink-0" />
-              <span>{t('invitations.created', { date: formatDate(invitation.createdAt) })}</span>
+              <span>{t('invitations.created', { date: formatDate(invitation.createdAt, currentLanguage) })}</span>
             </div>
             <span className="hidden sm:inline">•</span>
             <div className={cn(
@@ -85,7 +76,7 @@ export const PendingInvitationCard: React.FC<PendingInvitationCardProps> = ({
               <span>
                 {isExpired
                   ? t('invitations.expired')
-                  : t('invitations.expires', { date: formatDate(invitation.expiresAt) })
+                  : t('invitations.expires', { date: formatDate(invitation.expiresAt, currentLanguage) })
                 }
               </span>
             </div>

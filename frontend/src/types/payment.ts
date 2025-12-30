@@ -20,9 +20,8 @@ export const PaymentMethodCardSchema = z.object({
 export const PaymentMethodSchema = z.object({
   id: z.string(), // Stripe payment method ID
   type: z.string(), // 'card', etc.
-  card: PaymentMethodCardSchema,
+  card: PaymentMethodCardSchema.optional(),
   isDefault: z.boolean(),
-  createdAt: z.string().datetime(),
 });
 
 /**
@@ -30,7 +29,6 @@ export const PaymentMethodSchema = z.object({
  */
 export const AddPaymentMethodRequestSchema = z.object({
   paymentMethodId: z.string(), // From Stripe.js
-  setAsDefault: z.boolean().optional().default(false),
 });
 
 // ============================================================================

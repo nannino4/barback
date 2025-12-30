@@ -9,8 +9,12 @@ import { CACHE_TIMES } from '@/constants/cacheTimes';
 import type { Invitation } from '@/types/invitation';
 
 /**
- * Hook for managing invitations
- * Provides queries and mutations for invitation management
+ * Hook for managing user's pending invitations
+ * 
+ * Provides:
+ * - Query for fetching pending invitations
+ * - Accept/decline mutations with per-invitation loading states
+ * - Sync with organizationStore.pendingInvitations
  */
 export const useInvitations = () =>
 {
@@ -100,5 +104,13 @@ export const useInvitations = () =>
     isDeclining: declineInvitationMutation.isPending,
     acceptError: acceptInvitationMutation.error,
     declineError: declineInvitationMutation.error,
+    
+    // Track which specific invitation is being processed
+    acceptingInvitationId: acceptInvitationMutation.isPending 
+      ? acceptInvitationMutation.variables 
+      : null,
+    decliningInvitationId: declineInvitationMutation.isPending 
+      ? declineInvitationMutation.variables 
+      : null,
   };
 };

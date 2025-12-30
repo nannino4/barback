@@ -1,38 +1,44 @@
 import React from 'react';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Stack } from '@/components/layout';
 
 /**
  * OrganizationCardSkeleton - Loading state for OrganizationCard
  * 
  * Matches the structure of OrganizationCard:
- * - Icon + Title + Description in header
- * - Role badge on the right
- * - Action button in content
+ * - Icon placeholder (12x12 rounded)
+ * - Name + role badge inline
+ * - Owner info below
+ * - Chevron on the right
  */
 export const OrganizationCardSkeleton: React.FC = () =>
 {
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-3 flex-1 min-w-0">
-            {/* Icon skeleton */}
-            <Skeleton className="w-10 h-10 rounded-lg flex-shrink-0 mt-1" />
-            <div className="flex-1 min-w-0 space-y-2">
-              {/* Title skeleton */}
-              <Skeleton className="h-5 w-3/4" />
-              {/* Description skeleton */}
-              <Skeleton className="h-4 w-1/2" />
-            </div>
-          </div>
-          {/* Badge skeleton */}
-          <Skeleton className="w-16 h-6 rounded-full flex-shrink-0" />
-        </div>
-      </CardHeader>
       <CardContent>
-        {/* Button skeleton */}
-        <Skeleton className="h-10 w-full rounded-md" />
+        <Stack direction="horizontal" space="md" align="center">
+          {/* Icon skeleton */}
+          <Skeleton className="w-12 h-12 rounded-xl flex-shrink-0" />
+
+          {/* Info skeleton */}
+          <Stack space="xs" className="flex-1 min-w-0">
+            <Stack direction="horizontal" space="sm" align="center">
+              {/* Name skeleton */}
+              <Skeleton className="h-5 w-32" />
+              {/* Role badge skeleton */}
+              <Skeleton className="h-4 w-14 rounded-md" />
+            </Stack>
+            {/* Owner info skeleton */}
+            <Stack direction="horizontal" space="sm" align="center">
+              <Skeleton className="h-6 w-6 rounded-full" />
+              <Skeleton className="h-4 w-24" />
+            </Stack>
+          </Stack>
+
+          {/* Chevron skeleton */}
+          <Skeleton className="w-5 h-5 rounded flex-shrink-0" />
+        </Stack>
       </CardContent>
     </Card>
   );

@@ -48,7 +48,7 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
       - [X] test over https (using ngrok)
     - [X] consolidate payment methods
       - [X] card payments
-        - [ ] remove link payment method?
+        - [ ] is it possible to accept card but without link payment method?
       - [X] google pay
       - [X] apple pay
     - [X] consolidate stripe elements appearance
@@ -70,7 +70,7 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
       - [X] Keep existing filters (search, role toggle)
       - [X] Organization cards grid with selection
       - [X] "Create Venue" button
-  - [ ] Add invitations badge count to UserMenu
+  - [X] Add invitations badge count to UserMenu
   - [X] Empty states for both sections
 - [X] Implement Organization Detail Page (`/orgs/:orgId`) - Role-Aware
   - [X] **All members can view:**
@@ -99,7 +99,8 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 - [X] Implement Navigation & Quick Switch
   - [X] Refactor `UserMenu` dropdown
     - [X] Add "My Venues" item → links to `/orgs`
-    - [ ] Add invitations badge to "My Venues" item when pending
+    - [X] Add invitations badge to "My Venues" item when pending
+      - [ ] Add clue also when menu is closed (red dot?)
     - [X] Refactor "Current Venue" item for quick switch
   - [X] Implement Quick Org Switch
     - [X] Desktop: `OrganizationSwitcherPopover` from "Current Venue"
@@ -146,7 +147,7 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [X] Move theme toggle and language selector to settings page (from navigation)
 - **fixes needed**
   - [ ] Date formatting doesn't respect user's locale from i18n
-  - [ ] refresh token service restarts every page load
+  - [X] refresh token service restarts every page load
 - **good to have**
   - [ ] routes consolidation
   - [ ] update toasters style and position

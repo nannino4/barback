@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Building2, Users, RefreshCw, UserPlus, Loader2, Settings, LogOut, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Building2, Users, Mail, RefreshCw, UserPlus, Loader2, Settings, LogOut, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageContainer, Stack, Grid, Section } from '@/components/layout';
 import { ErrorState } from '@/components/feedback/ErrorState';
 import { ConfirmationDialog } from '@/components/feedback/ConfirmationDialog';
@@ -11,6 +11,7 @@ import { SubscriptionCard } from '@/components/features/organizations/Subscripti
 import { SubscriptionCardSkeleton } from '@/components/features/organizations/SubscriptionCardSkeleton';
 import { MemberCard } from '@/components/features/organizations/MemberCard';
 import { MemberCardSkeleton } from '@/components/features/organizations/MemberCardSkeleton';
+import { PendingInvitationCard } from '@/components/features/organizations/PendingInvitationCard';
 import { SendInvitationDialog } from '@/components/features/organizations/SendInvitationDialog';
 import { InlineEditField } from '@/components/forms/InlineEditField';
 import { InlineEditSelect } from '@/components/forms/InlineEditSelect';
@@ -18,6 +19,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useI18n } from '@/hooks/useI18n';
 import { useAuthStore } from '@/stores/authStore';
 import { organizationApi } from '@/api/organization-api';
+import { invitationApi } from '@/api/invitation-api';
 import { queryKeys } from '@/lib/queryKeys';
 import { CACHE_TIMES } from '@/constants/cacheTimes';
 import { MIN_LOADING_FEEDBACK_MS } from '@/constants/constants';
@@ -110,6 +112,23 @@ export const OrganizationManagePage: React.FC = () =>
   const canManageMembers = isOwner || isManager;
   const canEditSettings = isOwner;
 
+  // Fetch pending invitations for this organization (owner/manager only)
+  const {
+    data: organizationInvitations,
+    isLoading: isLoadingInvitations,
+    error: invitationsError,
+    refetch: refetchInvitations,
+  } = useQuery({
+    queryKey: queryKeys.organizations.invitations(orgId ?? ''),
+    queryFn: () => invitationApi.getOrganizationInvitations(orgId ?? ''),
+    enabled: Boolean(orgId) && isRoleKnown && canManageMembers,
+    staleTime: CACHE_TIMES.ORGANIZATIONS,
+  });
+
+  const visibleOrganizationInvitations = (organizationInvitations ?? []).filter(
+    (inv) => new Date(inv.expiresAt) >= new Date(),
+  );
+
   // Fetch full subscription details (owner only)
   const {
     data: subscription,
@@ -173,12 +192,28 @@ export const OrganizationManagePage: React.FC = () =>
       toast.success(t('members.leave.success'));
       // Invalidate all organization queries and navigate away
       void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.all });
-      navigate('/orgs');
+      void navigate('/orgs');
     },
     onError: () =>
     {
       toast.error(t('members.leave.error'));
       setLeaveDialogOpen(false);
+    },
+  });
+
+  const revokeInvitationMutation = useMutation({
+    mutationFn: async (invitationId: string) =>
+    {
+      return invitationApi.revokeInvitation(orgId ?? '', invitationId);
+    },
+    onSuccess: () =>
+    {
+      toast.success(t('invitations.revoke.success'));
+      void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.invitations(orgId ?? '') });
+    },
+    onError: () =>
+    {
+      toast.error(t('invitations.revoke.error'));
     },
   });
 
@@ -217,10 +252,11 @@ export const OrganizationManagePage: React.FC = () =>
     
     // Refetch based on user role
     const subscriptionRefetch = isOwner ? refetchSubscription() : refetchSubscriptionStatus();
+    const invitationsRefetch = canManageMembers ? refetchInvitations() : Promise.resolve();
     
     // Run refresh and minimum delay in parallel
     await Promise.all([
-      Promise.all([refetchOrg(), subscriptionRefetch, refetchMembers()]),
+      Promise.all([refetchOrg(), subscriptionRefetch, refetchMembers(), invitationsRefetch]),
       new Promise(resolve => setTimeout(resolve, MIN_LOADING_FEEDBACK_MS)),
     ]);
     
@@ -344,7 +380,7 @@ export const OrganizationManagePage: React.FC = () =>
           <ErrorState
             title={t('organizations.errors.loadFailed')}
             description={t('organizations.errors.loadFailedDescription')}
-            onRetry={handleRefresh}
+            onRetry={() => void handleRefresh()}
             retryLabel={t('common.tryAgain')}
           />
         </Stack>
@@ -425,30 +461,29 @@ export const OrganizationManagePage: React.FC = () =>
         <Section>
           <Card>
             <CardHeader>
-              <Stack direction="horizontal" justify="between" align="center" className="flex-wrap gap-2">
-                <Stack direction="horizontal" space="sm" align="center">
-                  <Users className="w-5 h-5 text-muted-foreground" />
-                  <CardTitle>{t('orgManagement.members.title')}</CardTitle>
-                </Stack>
-                <Stack direction="horizontal" space="sm" align="center">
-                  <span className="text-sm text-muted-foreground">
-                    {t('organizations.members', { count: members?.length ?? 0 })}
+              <Stack direction="horizontal" space="sm" align="center">
+                <Users className="w-5 h-5 text-muted-foreground" />
+                <CardTitle>
+                  {t('orgManagement.members.title')}{' '}
+                  <span className="text-muted-foreground font-normal">
+                    ({members?.length ?? 0})
                   </span>
-                  {canManageMembers && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setInviteDialogOpen(true)}
-                    >
-                      <UserPlus className="w-4 h-4 mr-1" />
-                      {t('invitations.send.sendButton')}
-                    </Button>
-                  )}
-                </Stack>
+                </CardTitle>
               </Stack>
-              <CardDescription>
-                {t('orgManagement.members.description')}
-              </CardDescription>
+
+              {canManageMembers && (
+                <CardAction>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setInviteDialogOpen(true)}
+                    aria-label={t('invitations.send.sendButton')}
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    <span className="hidden sm:inline">{t('invitations.send.sendButton')}</span>
+                  </Button>
+                </CardAction>
+              )}
             </CardHeader>
             <CardContent>
               <Stack space="md">
@@ -480,6 +515,52 @@ export const OrganizationManagePage: React.FC = () =>
           </Card>
         </Section>
 
+        {/* Pending Invitations Section (Owner/Manager only) */}
+        {canManageMembers && (
+          <Section>
+            <Card>
+              <CardHeader>
+                <Stack direction="horizontal" space="sm" align="center">
+                  <Mail className="w-5 h-5 text-muted-foreground" />
+                  <CardTitle>
+                    {t('invitations.pendingInvitations')}{' '}
+                    <span className="text-muted-foreground font-normal">
+                      ({visibleOrganizationInvitations.length})
+                    </span>
+                  </CardTitle>
+                </Stack>
+              </CardHeader>
+              <CardContent>
+                {invitationsError ? (
+                  <p className="text-sm text-muted-foreground text-center py-8">
+                    {t('invitations.errors.loadFailed')}
+                  </p>
+                ) : isLoadingInvitations ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Skeleton className="h-28 w-full rounded-xl" />
+                    <Skeleton className="h-28 w-full rounded-xl" />
+                  </div>
+                ) : visibleOrganizationInvitations.length > 0 ? (
+                  <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
+                    {visibleOrganizationInvitations.map((invitation) => (
+                      <PendingInvitationCard
+                        key={invitation.id}
+                        invitation={invitation}
+                        onRevoke={(invitationId) => revokeInvitationMutation.mutate(invitationId)}
+                        isRevoking={revokeInvitationMutation.isPending}
+                      />
+                    ))}
+                  </Grid>
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-8">
+                    {t('invitations.noPendingInvitations')}
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </Section>
+        )}
+
         {/* Organization Settings Section (Owner only) */}
         {canEditSettings && (
           <Section>
@@ -503,8 +584,9 @@ export const OrganizationManagePage: React.FC = () =>
                       <InlineEditSelect
                         value={organization.settings.defaultCurrency}
                         options={currencyOptions}
-                        onSave={async (_newCurrency) =>
+                        onSave={(newCurrency) =>
                         {
+                          void newCurrency;
                           // TODO: Implement currency update API
                           toast.error('Currency update not implemented yet');
                         }}

@@ -1,6 +1,7 @@
 import type { User, UserPublic } from '@/types/user';
 import { UserAvatar } from './UserAvatar';
 import { Stack } from '@/components/layout';
+import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
 
 interface UserInfoProps
@@ -32,7 +33,9 @@ export const UserInfo: React.FC<UserInfoProps> = ({
   className,
 }) =>
 {
-  const userFullName = `${user.firstName} ${user.lastName}`;
+  const { t } = useI18n();
+  const userFullName = `${user.firstName} ${user.lastName}`.trim();
+  const displayName = userFullName || t('common.userWithoutName');
 
   if (!showName)
   {
@@ -53,7 +56,7 @@ export const UserInfo: React.FC<UserInfoProps> = ({
           'font-medium truncate',
         )}
       >
-        {userFullName}
+        {displayName}
       </span>
     </Stack>
   );

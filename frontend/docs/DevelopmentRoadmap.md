@@ -130,7 +130,6 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [X] `MemberCard` - refactor with inline role dropdown
   - [X] `MemberList` - with owner/manager actions
   - [X] `PendingInvitationCard` - org's outgoing invitations with revoke
-    - [ ] show expiration date
   - [X] `SubscriptionCard` - detailed subscription info
   - [X] `InlineEditField` - reusable inline edit component
   - [X] `InlineEditSelect` - reusable inline select component

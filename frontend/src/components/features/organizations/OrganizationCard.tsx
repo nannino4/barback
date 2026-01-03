@@ -7,6 +7,7 @@ import { Stack } from '@/components/layout';
 import { UserInfo } from '@/components/user';
 import { OrgRoleBadge } from './OrgRoleBadge';
 import { useI18n } from '@/hooks/useI18n';
+import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
 import type { OrganizationMembership } from '@/types/organization';
 
@@ -38,6 +39,9 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
 {
   const { t } = useI18n();
   const navigate = useNavigate();
+  const currentUser = useAuthStore((state) => state.user);
+
+  const isOwnerCurrentUser = organization.org.owner.id === currentUser?.id;
 
   const handleCardClick = () =>
   {
@@ -107,11 +111,18 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
             <span className="font-semibold text-base truncate">
               {organization.org.name}
             </span>
-            <UserInfo 
-              user={organization.org.owner} 
-              size="sm"
-              className="text-muted-foreground"
-            />
+            <Stack direction="horizontal" space="xs" align="center" className="text-muted-foreground">
+              <span className="text-sm">{t('organizations.ownedBy')}</span>
+              {isOwnerCurrentUser ? (
+                <span className="text-sm font-medium">{t('common.you')}</span>
+              ) : (
+                <UserInfo
+                  user={organization.org.owner}
+                  size="sm"
+                  className="text-muted-foreground"
+                />
+              )}
+            </Stack>
           </Stack>
 
           {/* Navigate to Details Button */}

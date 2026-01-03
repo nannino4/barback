@@ -30,7 +30,9 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   className,
 }) =>
 {
-  const userInitials = `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase();
+  const firstInitial = user.firstName?.trim()?.charAt(0) ?? '';
+  const lastInitial = user.lastName?.trim()?.charAt(0) ?? '';
+  const userInitials = `${firstInitial}${lastInitial}`.toUpperCase() || '?';
 
   if (user.profilePictureUrl)
   {

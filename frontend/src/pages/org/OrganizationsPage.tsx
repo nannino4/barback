@@ -104,7 +104,10 @@ export const OrganizationsPage: React.FC = () =>
     return t(`organizations.role.${roleKey}`);
   };
 
-  const hasInvitations = pendingInvitations.length > 0;
+  const visiblePendingInvitations = pendingInvitations.filter(
+    (inv) => new Date(inv.expiresAt) >= new Date(),
+  );
+  const hasInvitations = visiblePendingInvitations.length > 0;
 
   // ============================================================================
   // Render Helpers
@@ -122,13 +125,13 @@ export const OrganizationsPage: React.FC = () =>
             {t('invitations.pendingInvitations')}
           </h2>
           <span className="text-sm text-muted-foreground">
-            ({pendingInvitations.length})
+            ({visiblePendingInvitations.length})
           </span>
         </Stack>
 
         {/* Invitations Display */}
         <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
-          {pendingInvitations.map((invitation) => (
+          {visiblePendingInvitations.map((invitation) => (
             <InvitationCard
               key={invitation.id}
               invitation={invitation}
@@ -154,7 +157,6 @@ export const OrganizationsPage: React.FC = () =>
           </h2>
           <Button
             onClick={handleCreateOrganization}
-            size="sm"
           >
             <Plus className="w-4 h-4" />
             <span>{t('organizations.createOrganization')}</span>

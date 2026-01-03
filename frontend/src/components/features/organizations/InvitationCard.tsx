@@ -1,9 +1,10 @@
 import React from 'react';
-import { Building2, User } from 'lucide-react';
+import { Building2 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { InlineSpinner } from '@/components/ui/spinner';
 import { Stack } from '@/components/layout';
+import { UserInfo } from '@/components/user';
 import { OrgRoleBadge } from './OrgRoleBadge';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
@@ -33,7 +34,11 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
 
   const isExpired = new Date(invitation.expiresAt) < new Date();
   const isProcessing = isAccepting || isDeclining;
-  const ownerName = `${invitation.organization.owner.firstName} ${invitation.organization.owner.lastName}`.trim();
+
+  if (isExpired)
+  {
+    return null;
+  }
 
   const handleAccept = (e: React.MouseEvent) =>
   {
@@ -54,48 +59,48 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
   };
 
   return (
-    <Card 
+    <Card
       className={cn(
         'transition-all',
-        isExpired && 'opacity-60 border-destructive/30',
         isProcessing && 'opacity-70',
       )}
     >
-      <CardContent className="p-4">
+      <CardContent>
         <Stack space="md">
-          {/* Header: Org name + Role badge */}
-          <Stack direction="horizontal" justify="between" align="start" className="gap-3">
-            <Stack direction="horizontal" space="md" align="center" className="flex-1 min-w-0">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <Building2 className="w-5 h-5 text-primary" />
-              </div>
-              <Stack space="xs" className="flex-1 min-w-0">
-                <span className="font-semibold truncate">
-                  {invitation.organization.name}
+          {/* Header: Icon + Info */}
+          <Stack direction="horizontal" space="md" align="center">
+            <div
+              className={cn(
+                'w-12 h-12 rounded-xl flex items-center justify-center transition-colors flex-shrink-0',
+                'bg-primary/10 text-primary',
+              )}
+            >
+              <Building2 className="w-6 h-6" />
+            </div>
+
+            <Stack space="sm" className="flex-1 min-w-0">
+              <OrgRoleBadge role={invitation.role} size="sm" />
+              <span className="font-semibold text-base truncate">
+                {invitation.organization.name}
+              </span>
+              <Stack direction='horizontal' space='sm'>
+                <span className="text-sm text-muted-foreground">
+                  {t('invitations.invitedBy')}
                 </span>
-                <Stack direction="horizontal" space="xs" align="center" className="text-muted-foreground">
-                  <User className="w-3.5 h-3.5 flex-shrink-0" />
-                  <span className="text-sm truncate">
-                    {ownerName || invitation.organization.owner.email}
-                  </span>
-                </Stack>
+                <UserInfo
+                  user={invitation.organization.owner}
+                  size="sm"
+                  className="text-muted-foreground"
+                />
               </Stack>
             </Stack>
-            <OrgRoleBadge role={invitation.role} />
           </Stack>
 
-          {/* Invited by info */}
-          <p className="text-sm text-muted-foreground">
-            {t('invitations.invitedBy', { 
-              name: `${invitation.invitedBy.firstName} ${invitation.invitedBy.lastName}`.trim() || invitation.invitedBy.email,
-            })}
-          </p>
-
           {/* Actions */}
-          <Stack direction="horizontal" space="sm">
+          <Stack direction="horizontal" space="sm" className="w-full">
             <Button
               onClick={handleAccept}
-              disabled={isExpired || isProcessing}
+              disabled={isProcessing}
               className="flex-1"
             >
               {isAccepting ? (
@@ -110,7 +115,7 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
             <Button
               variant="outline"
               onClick={handleDecline}
-              disabled={isExpired || isProcessing}
+              disabled={isProcessing}
               className="flex-1"
             >
               {isDeclining ? (
@@ -123,13 +128,6 @@ export const InvitationCard: React.FC<InvitationCardProps> = ({
               )}
             </Button>
           </Stack>
-
-          {/* Expired message */}
-          {isExpired && (
-            <p className="text-xs text-destructive text-center">
-              {t('invitations.expiredMessage')}
-            </p>
-          )}
         </Stack>
       </CardContent>
     </Card>

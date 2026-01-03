@@ -18,35 +18,29 @@ export const MemberCardSkeleton: React.FC<{ showAction?: boolean }> = ({
 {
   return (
     <Card>
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-4">
-          {/* Left section: Avatar and info */}
-          <div className="flex items-start gap-3 flex-1 min-w-0">
-            {/* Avatar skeleton */}
-            <Skeleton className="w-12 h-12 rounded-full flex-shrink-0" />
+      <CardContent>
+        <Stack direction="horizontal" space="md" align="center" className="gap-4">
+          {/* Avatar skeleton */}
+          <Skeleton className="w-12 h-12 rounded-full flex-shrink-0" />
 
-            {/* Member info skeleton */}
-            <Stack space="sm" className="flex-1 min-w-0">
-              <Stack space="xs">
-                {/* Name skeleton */}
-                <Skeleton className="h-5 w-32" />
-                {/* Email skeleton */}
-                <div className="flex items-center gap-1.5">
-                  <Skeleton className="w-3.5 h-3.5 rounded-full flex-shrink-0" />
-                  <Skeleton className="h-4 w-40" />
-                </div>
+          {/* Member info skeleton */}
+          <Stack space="sm" className="flex-1 min-w-0">
+            {/* Role badge skeleton */}
+            <Skeleton className="h-4 w-16 rounded-md" />
+            <Stack space="xs">
+              {/* Name skeleton */}
+              <Skeleton className="h-5 w-32" />
+              {/* Email skeleton */}
+              <Stack direction="horizontal" space="xs" align="center">
+                <Skeleton className="w-4 h-4 rounded-full flex-shrink-0" />
+                <Skeleton className="h-4 w-40" />
               </Stack>
-
-              {/* Role badge skeleton */}
-              <Skeleton className="w-16 h-6 rounded-full" />
             </Stack>
-          </div>
+          </Stack>
 
-          {/* Right section: Action button skeleton */}
-          {showAction && (
-            <Skeleton className="h-8 w-20 rounded-md flex-shrink-0" />
-          )}
-        </div>
+          {/* Action button skeleton */}
+          {showAction && <Skeleton className="h-8 w-20 rounded-md flex-shrink-0" />}
+        </Stack>
       </CardContent>
     </Card>
   );

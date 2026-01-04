@@ -304,7 +304,7 @@ export const UserMenuMobile: React.FC = () =>
                             variant="ghost"
                             size="lg"
                             onClick={() => handleSelectOrg(orgMembership)}
-                            className="w-full justify-start h-auto p-4"
+                            className="w-full justify-start h-auto p-0 hover:bg-transparent"
                           >
                             <Stack direction="horizontal" space="md" align="center">
                               {isSelected ? (

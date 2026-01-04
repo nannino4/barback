@@ -538,7 +538,6 @@
         "switchOrganization": "Switch Venue",
         "manageOrganizations": "Manage Venues",
         "createdBy": "Created by {{name}}",
-        "ownedBy": "Owned by",
         "unknownOwner": "Unknown Owner",
         "ownerLabel": "Owner",
         "members": "{{count}} member",
@@ -958,6 +957,7 @@
     },
     "menu": {
         "currentVenue": "Current Venue",
+        "noVenueSelected": "No venue selected",
         "account": "Account",
         "preferences": "Preferences",
         "openUserMenu": "Open user menu",

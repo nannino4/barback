@@ -72,8 +72,16 @@ export const OrganizationsPage: React.FC = () =>
       );
     }
 
+    // Always show current org first (within the filtered results)
+    filtered = [...filtered].sort((a, b) =>
+    {
+      if (a.org.id === currentOrg?.org.id) return -1;
+      if (b.org.id === currentOrg?.org.id) return 1;
+      return 0;
+    });
+
     return filtered;
-  }, [organizations, roleFilter, searchQuery]);
+  }, [organizations, roleFilter, searchQuery, currentOrg?.org.id]);
 
   /**
    * Handle organization selection

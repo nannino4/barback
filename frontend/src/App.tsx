@@ -15,7 +15,7 @@ import { LandingPage } from '@/pages/LandingPage'
 import { OrganizationsPage } from '@/pages/org/OrganizationsPage'
 import { CreateOrganizationPage } from '@/pages/org/CreateOrganizationPage'
 import { OrganizationManagePage } from '@/pages/org/OrganizationManagePage'
-import { AccountPage } from '@/pages/user/AccountPage'
+import { UserProfilePage } from '@/pages/user/UserProfilePage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import DesignSystemPage from '@/pages/DesignSystemPage'
 import { ApiError } from '@/lib/errors'
@@ -83,11 +83,16 @@ function AppContent()
           {/* Design System Showcase */}
           <Route path="/design-system" element={<DesignSystemPage />} />
           
-          {/* Organization Selection Route - Requires authentication AND email verification */}
+          {/* Requires authentication AND email verification */}
           <Route element={<VerifiedRoute />}>
+
+            { /* Organization management */ }
             <Route path="/orgs" element={<OrganizationsPage />} />
             <Route path="/orgs/create" element={<CreateOrganizationPage />} />
             <Route path="/orgs/:orgId" element={<OrganizationManagePage />} />
+
+            { /* User Profile */ }
+            <Route path="/account" element={<UserProfilePage />} />
           </Route>
           
           
@@ -99,9 +104,6 @@ function AppContent()
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/inventory" element={<InventoryPage />} />
               <Route path="/orders" element={<OrdersPage />} />
-
-              { /* User menu */ }
-              <Route path="/account" element={<AccountPage />} />
             </Route>
           </Route>
 

@@ -6,12 +6,11 @@ import { useI18n } from '@/hooks/useI18n';
 import { User, Mail, Phone } from 'lucide-react';
 
 /**
- * AccountPage - User account information display
- * 
- * Shows basic user information from the auth store.
- * This is a placeholder page for future account management features.
+ * UserProfilePage - User account information display
+ *
+ * Draft placeholder for future profile management features.
  */
-export function AccountPage()
+export function UserProfilePage()
 {
   const { user } = useAuth();
   const { t } = useI18n();

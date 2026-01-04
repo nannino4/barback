@@ -7,7 +7,6 @@ import { Stack } from '@/components/layout';
 import { UserInfo } from '@/components/user';
 import { OrgRoleBadge } from './OrgRoleBadge';
 import { useI18n } from '@/hooks/useI18n';
-import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
 import type { OrganizationMembership } from '@/types/organization';
 
@@ -39,9 +38,6 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
 {
   const { t } = useI18n();
   const navigate = useNavigate();
-  const currentUser = useAuthStore((state) => state.user);
-
-  const isOwnerCurrentUser = organization.org.owner.id === currentUser?.id;
 
   const handleCardClick = () =>
   {
@@ -68,13 +64,11 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
 
   return (
     <Card
-      variant={isSelected ? 'primary' : 'default'}
+      variant={isSelected ? 'highlighted' : 'default'}
       className={cn(
         'cursor-pointer transition-all',
         'hover:shadow-md hover:border-primary/30',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
         isLoading && 'opacity-60 pointer-events-none',
-        isSelected && 'ring-1 ring-primary/40',
       )}
       tabIndex={0}
       role="button"
@@ -108,20 +102,15 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           {/* Organization Info */}
           <Stack space="sm" className="flex-1 min-w-0">
             <OrgRoleBadge role={organization.role} size="sm" />
-            <span className="font-semibold text-base truncate">
-              {organization.org.name}
-            </span>
-            <Stack direction="horizontal" space="xs" align="center" className="text-muted-foreground">
-              <span className="text-sm">{t('organizations.ownedBy')}</span>
-              {isOwnerCurrentUser ? (
-                <span className="text-sm font-medium">{t('common.you')}</span>
-              ) : (
-                <UserInfo
-                  user={organization.org.owner}
-                  size="sm"
-                  className="text-muted-foreground"
-                />
-              )}
+            <Stack space='xs'>
+              <span className="font-semibold text-base truncate">
+                {organization.org.name}
+              </span>
+              <UserInfo
+                user={organization.org.owner}
+                size="sm"
+                className="text-muted-foreground"
+              />
             </Stack>
           </Stack>
 

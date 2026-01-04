@@ -3,7 +3,6 @@ import { UserMenuMobile } from './UserMenuMobile';
 
 // Re-export for external use
 export { OrganizationSwitcherPopover } from './OrganizationSwitcherPopover';
-export { OrganizationSwitcherSheet } from './OrganizationSwitcherSheet';
 
 /**
  * UserMenu - Responsive user menu component
@@ -14,9 +13,8 @@ export { OrganizationSwitcherSheet } from './OrganizationSwitcherSheet';
  * - Breakpoint: md (768px) defined in Tailwind config
  * 
  * Menu Structure:
- * - User Info Header
- * - Current Venue (navigates to /organizations)
- * - Account (navigates to /account)
+ * - User Info (navigates to /account)
+ * - Current Venue (opens venue switch)
  * - Preferences (theme + language selection)
  * - Logout
  */

@@ -539,7 +539,6 @@
         "switchOrganization": "Cambia Locale",
         "manageOrganizations": "Gestisci Locali",
         "createdBy": "Creata da {{name}}",
-        "ownedBy": "Di",
         "unknownOwner": "Proprietario Sconosciuto",
         "ownerLabel": "Proprietario",
         "members": "{{count}} membro",
@@ -957,6 +956,7 @@
     },
     "menu": {
         "currentVenue": "Locale Corrente",
+        "noVenueSelected": "Nessun locale selezionato",
         "account": "Account",
         "preferences": "Preferenze",
         "openUserMenu": "Apri menu utente",

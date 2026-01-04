@@ -10,7 +10,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { InlineSpinner } from '@/components/ui/spinner';
-import { cn } from '@/lib/utils';
+import { Stack } from '@/components/layout';
+import { Icon } from '@/components/ui/icon';
 
 type ConfirmationVariant = 'destructive' | 'warning' | 'info';
 
@@ -91,36 +92,19 @@ export const ConfirmationDialog: React.FC<ConfirmationDialogProps> = ({
     info: Info,
   }[variant];
 
-  const iconColorClass = {
-    destructive: 'text-destructive',
-    warning: 'text-warning',
-    info: 'text-info',
-  }[variant];
-
-  const iconBgClass = {
-    destructive: 'bg-destructive/10',
-    warning: 'bg-warning/10',
-    info: 'bg-info/10',
-  }[variant];
-
   const confirmButtonVariant = variant === 'destructive' ? 'destructive' : 'default';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent>
         <DialogHeader>
-          <div className="flex items-start gap-4">
-            <div className={cn(
-              'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
-              iconBgClass,
-            )}>
-              <IconComponent className={cn('h-5 w-5', iconColorClass)} />
-            </div>
-            <div className="flex-1 space-y-1.5">
-              <DialogTitle>{title}</DialogTitle>
-              <DialogDescription>{description}</DialogDescription>
-            </div>
-          </div>
+          <Stack align="center" space="sm">
+            <Icon size="md" variant={variant}>
+              <IconComponent />
+            </Icon>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogDescription>{description}</DialogDescription>
+          </Stack>
         </DialogHeader>
 
         {children && (

@@ -649,12 +649,12 @@ export const OrganizationManagePage: React.FC = () =>
       <ConfirmationDialog
         open={removeMemberDialogOpen}
         onOpenChange={setRemoveMemberDialogOpen}
-        title={t('members.remove.confirm')}
-        description={t('members.remove.confirmDescription', { 
-          name: memberToRemoveDetails 
+        title={t('members.remove.removeMember')}
+        description={`${t('members.remove.confirm', {
+          name: memberToRemoveDetails
             ? `${memberToRemoveDetails.user.firstName} ${memberToRemoveDetails.user.lastName}`.trim() || memberToRemoveDetails.user.email
             : '',
-        })}
+        })} ${t('members.remove.confirmDescription')}`}
         confirmLabel={t('members.remove.button')}
         cancelLabel={t('common.cancel')}
         onConfirm={confirmRemoveMember}

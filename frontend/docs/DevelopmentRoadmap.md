@@ -100,7 +100,7 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [X] Refactor `UserMenu` dropdown
     - [X] Add "My Venues" item → links to `/orgs`
     - [X] Add invitations badge to "My Venues" item when pending
-      - [ ] Add clue also when menu is closed (red dot?)
+      - [X] Add clue also when menu is closed (red dot)
     - [X] Refactor "Current Venue" item for quick switch
   - [X] Implement Quick Org Switch
     - [X] Desktop: `OrganizationSwitcherPopover` from "Current Venue"
@@ -136,7 +136,7 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [X] `ConfirmationDialog` - reusable confirmation dialog
   - [X] `OrganizationSwitcherSheet` - mobile bottom sheet
   - [X] `OrganizationSwitcherPopover` - desktop popover
-  - [ ] `InvitationsBadge` - notification badge component
+  - [X] `InvitationsBadge` - notification badge component
 - [X] Create organization switching functionality (basic)
 - [ ] User Settings & Profile Management:
   - [ ] Build user profile page

@@ -52,10 +52,14 @@ export const UserMenuDesktop: React.FC = () =>
         <Button
           variant="ghost"
           size="sm"
-          className="gap-2"
+          className="gap-2 relative"
           aria-label={t('menu.openUserMenu')}
         >
           <UserAvatar user={user} size="md" />
+          <InvitationsBadge
+            display="dot"
+            className="absolute right-1 top-1"
+          />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-72">

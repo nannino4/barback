@@ -52,7 +52,7 @@ export const PendingInvitationCard: React.FC<PendingInvitationCardProps> = ({
           {/* Header */}
           <Stack direction="vertical" justify="between" align="start">
             <Stack space="sm" className="flex-1 min-w-0">
-              <OrgRoleBadge role={invitation.role} size="sm" />
+              <OrgRoleBadge role={invitation.role}/>
               <span className="font-semibold text-base truncate">
                 {invitation.invitedEmail}
               </span>

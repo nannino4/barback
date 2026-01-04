@@ -674,7 +674,7 @@
         "pendingInvitations": "Inviti In Sospeso",
         "pendingCount": "{{count}} invito in sospeso",
         "pendingCount_plural": "{{count}} inviti in sospeso",
-        "invitedBy": "Invitato da {{name}}",
+        "invitedBy": "Invitato da",
         "invitedByLabel": "Invitato da",
         "invitedTo": "Invitato a {{orgName}}",
         "created": "Invitato il {{date}}",

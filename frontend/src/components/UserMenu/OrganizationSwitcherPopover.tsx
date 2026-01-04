@@ -2,6 +2,7 @@ import React from 'react';
 import { Building2, ChevronDown, Check, ChevronRight, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,11 +54,15 @@ export const OrganizationSwitcherPopover: React.FC = () =>
           className="gap-2 max-w-[200px]"
           aria-label={t('menu.switchVenue')}
         >
-          <Building2 className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+          <Icon mode="inline" size="sm" variant="muted" className="flex-shrink-0">
+            <Building2 />
+          </Icon>
           <span className="truncate text-sm">
             {currentOrg?.org.name ?? t('organizations.selectVenue')}
           </span>
-          <ChevronDown className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+          <Icon mode="inline" size="xs" variant="muted" className="flex-shrink-0">
+            <ChevronDown />
+          </Icon>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-72" align="start">
@@ -74,7 +79,9 @@ export const OrganizationSwitcherPopover: React.FC = () =>
         {/* Organization List */}
         {organizations.length === 0 ? (
           <div className="px-2 py-4 text-center">
-            <Building2 className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
+            <Icon size="md" variant="muted" className="mx-auto mb-2">
+              <Building2 />
+            </Icon>
             <p className="text-sm text-muted-foreground">
               {t('organizations.noOrganizations')}
             </p>
@@ -93,9 +100,9 @@ export const OrganizationSwitcherPopover: React.FC = () =>
                 )}
               >
                 <Stack direction="horizontal" space="md" align="center" className="w-full">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Building2 className="w-4 h-4 text-primary" />
-                  </div>
+                  <Icon size="sm" variant="default">
+                    <Building2 />
+                  </Icon>
                   <Stack space="xs" className="flex-1 min-w-0">
                     <span className="font-medium text-sm truncate">
                       {orgMembership.org.name}
@@ -103,7 +110,9 @@ export const OrganizationSwitcherPopover: React.FC = () =>
                     <OrgRoleBadge role={orgMembership.role} />
                   </Stack>
                   {isSelected && (
-                    <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                    <Icon mode="inline" size="sm" variant="primary" className="flex-shrink-0">
+                      <Check />
+                    </Icon>
                   )}
                 </Stack>
               </DropdownMenuItem>
@@ -124,7 +133,9 @@ export const OrganizationSwitcherPopover: React.FC = () =>
               <span className="ml-1 text-muted-foreground">({organizations.length})</span>
             )}
           </span>
-          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          <Icon mode="inline" size="sm" variant="muted">
+            <ChevronRight />
+          </Icon>
         </DropdownMenuItem>
 
         {/* Create New */}
@@ -132,7 +143,9 @@ export const OrganizationSwitcherPopover: React.FC = () =>
           onClick={handleCreateOrg}
           className="cursor-pointer"
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <Icon mode="inline" size="sm" className="mr-2">
+            <Plus />
+          </Icon>
           {t('organizations.createOrganization')}
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -22,7 +22,7 @@ import { Card } from '@/components/ui/card';
 import { ThemeSelector } from './ThemeSelector';
 import { LanguageSelector } from './LanguageSelector';
 import { Stack, Divider } from '../layout';
-import { Icon } from '../ui/icon';
+import { Icon } from '@/components/ui/icon';
 
 /**
  * UserMenuMobile - Mobile sheet menu implementation
@@ -121,27 +121,29 @@ export const UserMenuMobile: React.FC = () =>
           {mobileView === 'main' && (
             <Stack direction="vertical" space='sm' className="pt-6">
               {/* User Info Header - navigates to profile */}
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="lg"
                 onClick={() => handleNavigate('/account')}
                 className={cn(
-                  'w-full flex items-center gap-3 px-4 py-3 rounded-lg',
-                  'hover:bg-muted transition-colors text-left',
+                  'w-full justify-start rounded-lg h-auto py-3 px-4',
+                  'text-left hover:bg-muted',
                 )}
                 aria-label={t('menu.viewAccount')}
               >
                 <UserInfo user={user} size="md" className="flex-1 min-w-0" />
-              </button>
+              </Button>
 
               <Divider />
 
               {/* Current Organization - Opens Org Switcher */}
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="lg"
                 onClick={() => setMobileView('orgSwitch')}
                 className={cn(
-                  'w-full flex items-center gap-3 px-4 py-3 rounded-lg',
-                  'hover:bg-muted transition-colors text-left',
+                  'w-full justify-start rounded-lg h-auto py-3 px-4',
+                  'text-left hover:bg-muted',
                 )}
                 aria-label={t('menu.switchVenue')}
               >
@@ -159,53 +161,65 @@ export const UserMenuMobile: React.FC = () =>
                     {t('menu.noVenueSelected')}
                   </span>
                 )}
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
-              </button>
+                <Icon mode="inline" size="md" variant="muted">
+                  <ChevronRight />
+                </Icon>
+              </Button>
 
               {/* My Venues - direct link */}
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="lg"
                 onClick={() => handleNavigate('/orgs')}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-lg",
-                  "hover:bg-muted transition-colors text-left",
+                  'w-full justify-start rounded-lg h-auto py-3 px-4',
+                  'text-left hover:bg-muted',
                 )}
               >
-                <Building2 className="h-5 w-5" />
+                <Icon mode="inline" size="md">
+                  <Building2 />
+                </Icon>
                 <span className="flex-1 font-medium">{t('menu.myVenues')}</span>
                 <InvitationsBadge />
-              </button>
+              </Button>
 
               {/* Preferences */}
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="lg"
                 onClick={() => setMobileView('preferences')}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-lg",
-                  "hover:bg-muted transition-colors text-left",
+                  'w-full justify-start rounded-lg h-auto py-3 px-4',
+                  'text-left hover:bg-muted',
                 )}
                 aria-label={t('menu.openPreferences')}
               >
-                <Settings className="h-5 w-5" />
+                <Icon mode="inline" size="md">
+                  <Settings />
+                </Icon>
                 <span className="flex-1 font-medium">{t('menu.preferences')}</span>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
-              </button>
+                <Icon mode="inline" size="md" variant="muted">
+                  <ChevronRight />
+                </Icon>
+              </Button>
 
               <Divider />
 
               {/* Logout Button */}
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="lg"
                 onClick={handleLogout}
                 className={cn(
-                  "w-full flex items-center gap-3 px-4 py-3 rounded-lg",
-                  "hover:bg-destructive/10 transition-colors text-left",
-                  "text-destructive",
+                  'w-full justify-start rounded-lg h-auto py-3 px-4',
+                  'text-left text-destructive hover:bg-destructive/10 hover:text-destructive',
                 )}
               >
-                <LogOut className="h-5 w-5" />
+                <Icon mode="inline" size="md" variant="destructive">
+                  <LogOut />
+                </Icon>
                 <span className="flex-1 font-medium">{t('nav.logout')}</span>
-              </button>
+              </Button>
             </Stack>
           )}
 
@@ -213,14 +227,17 @@ export const UserMenuMobile: React.FC = () =>
           {mobileView === 'preferences' && (
             <Stack direction="vertical" space="lg" className="pt-16">
               {/* Back Button */}
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="sm"
                 onClick={() => setMobileView('main')}
-                className="absolute left-4 top-4 min-h-touch min-w-touch flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute left-4 top-4 min-h-touch min-w-touch justify-start gap-2 text-muted-foreground hover:text-foreground"
               >
-                <ChevronRight className="h-4 w-4 rotate-180" />
+                <Icon mode="inline" size="sm" variant="muted" className="rotate-180">
+                  <ChevronRight />
+                </Icon>
                 <span>{t('common.back')}</span>
-              </button>
+              </Button>
 
               {/* Theme Selection */}
               <ThemeSelector
@@ -247,7 +264,9 @@ export const UserMenuMobile: React.FC = () =>
                 className="absolute left-4 top-4 min-h-touch min-w-touch flex text-muted-foreground hover:text-foreground"
                 onClick={() => setMobileView('main')}
               >
-                <ChevronRight className="h-4 w-4 rotate-180" />
+                <Icon mode="inline" size="sm" variant="muted" className="rotate-180">
+                  <ChevronRight />
+                </Icon>
                 <span>{t('common.back')}</span>
               </Button>
 
@@ -260,7 +279,9 @@ export const UserMenuMobile: React.FC = () =>
                   </div>
                 ) : organizations.length === 0 ? (
                   <div className="px-4 py-8 text-center">
-                    <Building2 className="h-10 w-10 mx-auto mb-3 text-muted-foreground" />
+                    <Icon size="lg" variant="muted" className="mx-auto mb-3">
+                      <Building2 />
+                    </Icon>
                     <p className="text-muted-foreground">
                       {t('organizations.noOrganizations')}
                     </p>
@@ -275,9 +296,11 @@ export const UserMenuMobile: React.FC = () =>
                           key={orgMembership.org.id}
                           variant={isSelected ? 'highlighted' : 'default'}
                         >
-                          <button
-                            type="button"
+                          <Button
+                            variant="ghost"
+                            size="lg"
                             onClick={() => handleSelectOrg(orgMembership)}
+                            className="w-full justify-start h-auto p-4"
                           >
                             <Stack direction="horizontal" space="md" align="center">
                               {isSelected ? (
@@ -302,7 +325,7 @@ export const UserMenuMobile: React.FC = () =>
                                 <OrgRoleBadge role={orgMembership.role} />
                               </Stack>
                             </Stack>
-                          </button>
+                          </Button>
                         </Card>
                       );
                     })}

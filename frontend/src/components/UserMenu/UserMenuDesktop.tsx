@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { LogOut, Settings, Building2, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Icon } from '@/components/ui/icon';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -122,9 +123,9 @@ export const UserMenuDesktop: React.FC = () =>
                         )}
                       >
                         <Stack direction="horizontal" space="md" align="center" className="w-full">
-                          <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                            <Building2 className="w-4 h-4 text-primary" />
-                          </div>
+                          <Icon size="sm" variant="default">
+                            <Building2 />
+                          </Icon>
                           <Stack space="xs" className="flex-1 min-w-0">
                             <span className="font-medium text-sm truncate">
                               {orgMembership.org.name}
@@ -132,7 +133,9 @@ export const UserMenuDesktop: React.FC = () =>
                             <OrgRoleBadge role={orgMembership.role} size="sm" />
                           </Stack>
                           {isSelected && (
-                            <Check className="h-4 w-4 text-primary flex-shrink-0" />
+                            <Icon mode="inline" size="sm" variant="primary" className="flex-shrink-0">
+                              <Check />
+                            </Icon>
                           )}
                         </Stack>
                       </DropdownMenuItem>
@@ -148,7 +151,9 @@ export const UserMenuDesktop: React.FC = () =>
           onClick={() => handleNavigate('/orgs')}
           className="cursor-pointer"
         >
-          <Building2 className="mr-2 h-4 w-4" />
+          <Icon mode="inline" size="sm" className="mr-2">
+            <Building2 />
+          </Icon>
           <span>{t('menu.myVenues')}</span>
           <InvitationsBadge className="ml-auto" />
         </DropdownMenuItem>
@@ -158,7 +163,9 @@ export const UserMenuDesktop: React.FC = () =>
         {/* Preferences Submenu */}
         <DropdownMenuSub>
           <DropdownMenuSubTrigger aria-label={t('menu.openPreferences')}>
-            <Settings className="mr-2 h-4 w-4" />
+            <Icon mode="inline" size="sm" className="mr-2">
+              <Settings />
+            </Icon>
             <span>{t('menu.preferences')}</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="w-56">
@@ -183,7 +190,9 @@ export const UserMenuDesktop: React.FC = () =>
           onClick={logout}
           className="cursor-pointer text-destructive focus:text-destructive"
         >
-          <LogOut className="mr-2 h-4 w-4" />
+          <Icon mode="inline" size="sm" variant="destructive" className="mr-2">
+            <LogOut />
+          </Icon>
           <span>{t('nav.logout')}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

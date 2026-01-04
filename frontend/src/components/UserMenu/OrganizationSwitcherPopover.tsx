@@ -1,6 +1,6 @@
 import React from 'react';
 import { Building2, ChevronDown, Check, ChevronRight, Plus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import {
@@ -27,23 +27,12 @@ import { cn } from '@/lib/utils';
 export const OrganizationSwitcherPopover: React.FC = () =>
 {
   const { t } = useI18n();
-  const navigate = useNavigate();
   
   const { 
     organizations, 
     currentOrg, 
     switchOrganization, 
   } = useOrganizations();
-
-  const handleViewAllVenues = () =>
-  {
-    void navigate('/orgs');
-  };
-
-  const handleCreateOrg = () =>
-  {
-    void navigate('/orgs/create');
-  };
 
   return (
     <DropdownMenu>
@@ -123,30 +112,28 @@ export const OrganizationSwitcherPopover: React.FC = () =>
         <DropdownMenuSeparator />
 
         {/* View All Venues */}
-        <DropdownMenuItem
-          onClick={handleViewAllVenues}
-          className="cursor-pointer"
-        >
-          <span className="flex-1">
-            {t('menu.viewAllVenues')}
-            {organizations.length > 5 && (
-              <span className="ml-1 text-muted-foreground">({organizations.length})</span>
-            )}
-          </span>
-          <Icon mode="inline" size="sm" variant="muted">
-            <ChevronRight />
-          </Icon>
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <Link to="/orgs">
+            <span className="flex-1">
+              {t('menu.viewAllVenues')}
+              {organizations.length > 5 && (
+                <span className="ml-1 text-muted-foreground">({organizations.length})</span>
+              )}
+            </span>
+            <Icon mode="inline" size="sm" variant="muted">
+              <ChevronRight />
+            </Icon>
+          </Link>
         </DropdownMenuItem>
 
         {/* Create New */}
-        <DropdownMenuItem
-          onClick={handleCreateOrg}
-          className="cursor-pointer"
-        >
-          <Icon mode="inline" size="sm" className="mr-2">
-            <Plus />
-          </Icon>
-          {t('organizations.createOrganization')}
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <Link to="/orgs/create">
+            <Icon mode="inline" size="sm" className="mr-2">
+              <Plus />
+            </Icon>
+            {t('organizations.createOrganization')}
+          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

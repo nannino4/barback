@@ -246,12 +246,9 @@ body {
 /* Focus states are handled by individual components via ring utilities */
 /* No global focus-visible styles to avoid conflicts with component-level rings */
 
-/* Smooth scrolling with preference support */
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
+/* Note: Avoid global `scroll-behavior: smooth`.
+   React Router's ScrollRestoration manages scroll positions on navigation.
+   Global smooth scrolling can cause visible/late animated scroll jumps. */
 
 /* ===================================
    ACCESSIBILITY - REDUCED MOTION

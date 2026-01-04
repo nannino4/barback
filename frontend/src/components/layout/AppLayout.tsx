@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
 import { TopNav } from '@/components/layout/TopNav';
 import { BottomNav } from '@/components/layout/BottomNav';
@@ -18,7 +19,7 @@ import { BottomNav } from '@/components/layout/BottomNav';
  * 
  * Note: Individual pages should use PageContainer for consistent padding/max-width
  */
-export function AppLayout()
+export function AppLayout({ children }: { children?: ReactNode })
 {
   return (
     <div className="min-h-screen bg-background">
@@ -27,7 +28,7 @@ export function AppLayout()
       
       {/* Main Content Area - Only needs bottom padding for fixed mobile nav */}
       <main className="pb-16 md:pb-0">
-        <Outlet />
+        {children ?? <Outlet />}
       </main>
       
       {/* Fixed Bottom Navigation (Mobile Only) - Overlays content */}

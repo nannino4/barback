@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { LogOut, Settings, Building2, Check } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
 import {
@@ -34,17 +34,11 @@ export const UserMenuDesktop: React.FC = () =>
 {
   const { user, logout } = useAuth();
   const { t, changeLanguage, currentLanguage } = useI18n();
-  const navigate = useNavigate();
   const { currentOrg, organizations, switchOrganization } = useOrganizations();
   const { theme, setTheme } = useThemeStore();
   const [isOrgSwitcherOpen, setIsOrgSwitcherOpen] = useState(false);
 
   if (!user) return null;
-
-  const handleNavigate = (path: string) =>
-  {
-    void navigate(path);
-  };
 
   return (
     <DropdownMenu>
@@ -64,12 +58,10 @@ export const UserMenuDesktop: React.FC = () =>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-72">
         {/* User Info - navigates to profile */}
-        <DropdownMenuItem
-          onClick={() => handleNavigate('/account')}
-          className="cursor-pointer"
-          aria-label={t('menu.viewAccount')}
-        >
-          <UserInfo user={user} size="md" className="w-full" />
+        <DropdownMenuItem asChild className="cursor-pointer" aria-label={t('menu.viewAccount')}>
+          <Link to="/account">
+            <UserInfo user={user} size="md" className="w-full" />
+          </Link>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -151,15 +143,14 @@ export const UserMenuDesktop: React.FC = () =>
         </DropdownMenuSub>
 
         {/* My Venues - direct link */}
-        <DropdownMenuItem
-          onClick={() => handleNavigate('/orgs')}
-          className="cursor-pointer"
-        >
-          <Icon mode="inline" size="sm" className="mr-2">
-            <Building2 />
-          </Icon>
-          <span>{t('menu.myVenues')}</span>
-          <InvitationsBadge className="ml-auto" />
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <Link to="/orgs">
+            <Icon mode="inline" size="sm" className="mr-2">
+              <Building2 />
+            </Icon>
+            <span>{t('menu.myVenues')}</span>
+            <InvitationsBadge className="ml-auto" />
+          </Link>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />

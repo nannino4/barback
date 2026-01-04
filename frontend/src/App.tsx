@@ -1,17 +1,23 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { GlobalErrorBoundary } from '@/components/ErrorBoundary'
-import { AuthProvider } from '@/components/features/auth/AuthProvider'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { AppRouteRoot } from '@/components/routing/AppRouteRoot'
 import { VerifiedRoute } from '@/components/features/auth/VerifiedRoute'
 import { HasCurrentOrgRoute } from '@/components/features/organizations/HasCurrentOrgRoute'
-import { AuthRouter } from '@/components/features/auth/AuthRouter'
+import { ProtectedRoute } from '@/components/features/auth/ProtectedRoute'
 import { Dashboard } from '@/pages/Dashboard'
 import { InventoryPage } from '@/pages/inventory/InventoryPage'
 import { OrdersPage } from '@/pages/OrdersPage'
 import { LandingPage } from '@/pages/LandingPage'
+import { LoginPage } from '@/pages/auth/LoginPage'
+import { RegisterPage } from '@/pages/auth/RegisterPage'
+import { SendVerificationEmailPage } from '@/pages/auth/SendVerificationEmailPage'
+import { VerifyEmailCallbackPage } from '@/pages/auth/VerifyEmailCallbackPage'
+import { GoogleCallbackPage } from '@/pages/auth/GoogleCallbackPage'
+import { ForgotPasswordPage } from '@/pages/auth/ForgotPasswordPage'
+import { ForgotPasswordSentPage } from '@/pages/auth/ForgotPasswordSentPage'
+import { ResetPasswordPage } from '@/pages/auth/ResetPasswordPage'
 import { OrganizationsPage } from '@/pages/org/OrganizationsPage'
 import { CreateOrganizationPage } from '@/pages/org/CreateOrganizationPage'
 import { OrganizationManagePage } from '@/pages/org/OrganizationManagePage'
@@ -67,61 +73,60 @@ const queryClient = new QueryClient({
   },
 })
 
-function AppContent()
-{
-  return (
-    <>
-      <Routes>
-        {/* AppLayout wraps ALL routes with consistent Navigation */}
-        <Route element={<AppLayout />}>
-          {/* Public Routes */}
-          <Route path="/" element={<LandingPage />} />
-          
-          {/* Auth routes */}
-          <Route path="/auth/*" element={<AuthRouter />} />
-          
-          {/* Design System Showcase */}
-          <Route path="/design-system" element={<DesignSystemPage />} />
-          
-          {/* Requires authentication AND email verification */}
-          <Route element={<VerifiedRoute />}>
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route element={<AppRouteRoot />}>
+      {/* Public Routes */}
+      <Route path="/" element={<LandingPage />} />
 
-            { /* Organization management */ }
-            <Route path="/orgs" element={<OrganizationsPage />} />
-            <Route path="/orgs/create" element={<CreateOrganizationPage />} />
-            <Route path="/orgs/:orgId" element={<OrganizationManagePage />} />
+      {/* Auth routes */}
+      <Route path="/auth">
+        <Route path="register" element={<RegisterPage />} />
+        <Route path="login" element={<LoginPage />} />
 
-            { /* User Profile */ }
-            <Route path="/account" element={<UserProfilePage />} />
-          </Route>
-          
-          
-          {/* Protected Routes - Requires authentication, email verification, AND organization selection */}
-          <Route element={<VerifiedRoute />}>
-            <Route element={<HasCurrentOrgRoute />}>
+        <Route
+          path="send-verification-email"
+          element={
+            <ProtectedRoute>
+              <SendVerificationEmailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="verify-email" element={<VerifyEmailCallbackPage />} />
 
-              { /* Bottom Navigation */ }
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/inventory" element={<InventoryPage />} />
-              <Route path="/orders" element={<OrdersPage />} />
-            </Route>
-          </Route>
+        <Route path="forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="forgot-password/sent" element={<ForgotPasswordSentPage />} />
+        <Route path="reset-password" element={<ResetPasswordPage />} />
 
-          {/* 404 Not Found - Catch-all route */}
-          <Route path="*" element={<NotFoundPage />} />
+        <Route path="oauth/google/callback" element={<GoogleCallbackPage />} />
+      </Route>
+
+      {/* Design System Showcase */}
+      <Route path="/design-system" element={<DesignSystemPage />} />
+
+      {/* Requires authentication AND email verification */}
+      <Route element={<VerifiedRoute />}>
+        {/* Organization management */}
+        <Route path="/orgs" element={<OrganizationsPage />} />
+        <Route path="/orgs/create" element={<CreateOrganizationPage />} />
+        <Route path="/orgs/:orgId" element={<OrganizationManagePage />} />
+
+        {/* User Profile */}
+        <Route path="/account" element={<UserProfilePage />} />
+
+        {/* Requires organization selection */}
+        <Route element={<HasCurrentOrgRoute />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/inventory" element={<InventoryPage />} />
+          <Route path="/orders" element={<OrdersPage />} />
         </Route>
-      </Routes>
-            
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          className: 'bg-card border border-border text-card-foreground font-body',
-          duration: 4000,
-        }}
-      />
-    </>
-  );
-}
+      </Route>
+
+      {/* 404 Not Found - Catch-all route */}
+      <Route path="*" element={<NotFoundPage />} />
+    </Route>,
+  ),
+);
 
 function App()
 {
@@ -129,11 +134,7 @@ function App()
     <GlobalErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
-          <BrowserRouter>
-            <AuthProvider>
-              <AppContent />
-            </AuthProvider>
-          </BrowserRouter>
+          <RouterProvider router={router} />
         </ThemeProvider>
       </QueryClientProvider>
     </GlobalErrorBoundary>

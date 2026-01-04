@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageContainer } from '@/components/layout/PageContainer';
@@ -11,25 +11,9 @@ import { useAuthStore } from '@/stores/authStore';
 export function LandingPage()
 {
   const { t } = useI18n();
-  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
 
-  const handleGetStarted = () =>
-  {
-    if (user)
-    {
-      void navigate('/dashboard');
-    }
-    else
-    {
-      void navigate('/auth/register');
-    }
-  };
-
-  const handleSignIn = () =>
-  {
-    void navigate('/auth/login');
-  };
+  const getStartedTo = user ? '/dashboard' : '/auth/register';
 
   return (
     <PageContainer>
@@ -47,19 +31,19 @@ export function LandingPage()
             <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
               <Button
                 size="lg"
-                onClick={handleGetStarted}
+                asChild
                 className="text-lg px-8"
               >
-                {t('landing.hero.getStarted')}
+                <Link to={getStartedTo}>{t('landing.hero.getStarted')}</Link>
               </Button>
               {!user && (
                 <Button
                   size="lg"
                   variant="outline"
-                  onClick={handleSignIn}
+                  asChild
                   className="text-lg px-8"
                 >
-                  {t('landing.hero.signIn')}
+                  <Link to="/auth/login">{t('landing.hero.signIn')}</Link>
                 </Button>
               )}
             </div>
@@ -158,12 +142,8 @@ export function LandingPage()
             <p className="text-lg text-muted-foreground mb-6">
               {t('landing.cta.description')}
             </p>
-            <Button
-              size="lg"
-              onClick={handleGetStarted}
-              className="text-lg px-8"
-            >
-              {t('landing.cta.button')}
+            <Button size="lg" asChild className="text-lg px-8">
+              <Link to={getStartedTo}>{t('landing.cta.button')}</Link>
             </Button>
           </div>
         </Section>

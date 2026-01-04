@@ -1,10 +1,11 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Home, LogIn, LayoutDashboard, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
 import { useAuthStore } from '@/stores/authStore';
+import { useSmartBack } from '@/hooks/useSmartBack';
 
 /**
  * NotFoundPage - 404 error page
@@ -14,9 +15,9 @@ import { useAuthStore } from '@/stores/authStore';
  */
 export const NotFoundPage: React.FC = () =>
 {
-  const navigate = useNavigate();
   const { t } = useI18n();
   const { isAuthenticated } = useAuthStore();
+  const goBack = useSmartBack('/');
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4 bg-background">
@@ -40,7 +41,7 @@ export const NotFoundPage: React.FC = () =>
 
           {/* Go Back */}
           <Button
-            onClick={() => void navigate(-1)}
+            onClick={goBack}
             variant="outline"
             className="w-full"
           >
@@ -49,31 +50,27 @@ export const NotFoundPage: React.FC = () =>
           </Button>
 
           {/* Home */}
-          <Button
-            onClick={() => void navigate('/')}
-            variant="outline"
-            className="w-full"
-          >
-            <Home className="mr-2 h-4 w-4" />
-            {t('errors.notFound.goHome')}
+          <Button asChild variant="outline" className="w-full">
+            <Link to="/">
+              <Home className="mr-2 h-4 w-4" />
+              {t('errors.notFound.goHome')}
+            </Link>
           </Button>
 
           {/* Conditional navigation based on auth status */}
           {isAuthenticated ? (
-            <Button
-              onClick={() => void navigate('/dashboard')}
-              className="w-full"
-            >
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              {t('errors.notFound.goDashboard')}
+            <Button asChild className="w-full">
+              <Link to="/dashboard">
+                <LayoutDashboard className="mr-2 h-4 w-4" />
+                {t('errors.notFound.goDashboard')}
+              </Link>
             </Button>
           ) : (
-            <Button
-              onClick={() => void navigate('/auth/login')}
-              className="w-full"
-            >
-              <LogIn className="mr-2 h-4 w-4" />
-              {t('errors.notFound.goLogin')}
+            <Button asChild className="w-full">
+              <Link to="/auth/login">
+                <LogIn className="mr-2 h-4 w-4" />
+                {t('errors.notFound.goLogin')}
+              </Link>
             </Button>
           )}
         </CardContent>

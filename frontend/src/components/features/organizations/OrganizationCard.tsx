@@ -1,6 +1,6 @@
 import React from 'react';
 import { Building2, Check, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { InlineSpinner } from '@/components/ui/spinner';
 import { Stack } from '@/components/layout';
@@ -37,7 +37,6 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
 }) =>
 {
   const { t } = useI18n();
-  const navigate = useNavigate();
 
   const handleCardClick = () =>
   {
@@ -50,7 +49,6 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
   const handleNavigateClick = (e: React.MouseEvent) =>
   {
     e.stopPropagation();
-    void navigate(`/orgs/${organization.org.id}`, { state: { userOrgRole: organization.role } });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) =>
@@ -115,8 +113,9 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
           </Stack>
 
           {/* Navigate to Details Button */}
-          <button
-            type="button"
+          <Link
+            to={`/orgs/${organization.org.id}`}
+            state={{ userOrgRole: organization.role }}
             onClick={handleNavigateClick}
             className={cn(
               'flex-shrink-0 p-3 -m-2 rounded-lg transition-colors',
@@ -126,7 +125,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = ({
             aria-label={t('organizations.viewDetails')}
           >
             <ChevronRight className="w-5 h-5" />
-          </button>
+          </Link>
         </Stack>
       </CardContent>
     </Card>

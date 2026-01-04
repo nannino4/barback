@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Home, Palette, LayoutDashboard, Package, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { UserMenu } from '@/components/UserMenu';
@@ -20,19 +20,14 @@ import { cn } from '@/lib/utils';
 export const TopNav: React.FC = () =>
 {
   const { t } = useI18n();
-  const navigate = useNavigate();
   const location = useLocation();
   const user = useAuthStore((state) => state.user);
 
-  const handleLoginClick = () =>
-  {
-    // Include current path as redirect if not already on auth pages
-    const isAuthPage = location.pathname.startsWith('/auth');
-    const redirectUrl = !isAuthPage && location.pathname !== '/' 
-      ? `/auth/login?redirect=${encodeURIComponent(location.pathname)}`
-      : '/auth/login';
-    void navigate(redirectUrl);
-  };
+  // Include current path as redirect if not already on auth pages
+  const isAuthPage = location.pathname.startsWith('/auth');
+  const loginTo = !isAuthPage && location.pathname !== '/'
+    ? `/auth/login?redirect=${encodeURIComponent(location.pathname)}`
+    : '/auth/login';
 
   // Desktop navigation items - only shown when authenticated
   const navItems = user ? [
@@ -111,12 +106,12 @@ export const TopNav: React.FC = () =>
               <UserMenu />
             ) : (
               <Button
-                onClick={handleLoginClick}
+                asChild
                 variant="default"
                 size="sm"
                 className="ml-2"
               >
-                {t('nav.login')}
+                <Link to={loginTo}>{t('nav.login')}</Link>
               </Button>
             )}
           </div>

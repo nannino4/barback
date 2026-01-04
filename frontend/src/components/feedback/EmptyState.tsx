@@ -1,5 +1,7 @@
 import React from 'react';
 import type { LucideIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import type { To } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -20,11 +22,17 @@ interface EmptyStateProps
   /**
    * Optional call-to-action button
    */
-  action?: {
-    label: string;
-    onClick: () => void;
-    variant?: 'default' | 'secondary' | 'outline';
-  };
+  action?:
+    | {
+        label: string;
+        onClick: () => void;
+        variant?: 'default' | 'secondary' | 'outline';
+      }
+    | {
+        label: string;
+        to: To;
+        variant?: 'default' | 'secondary' | 'outline';
+      };
   /**
    * Size of the empty state
    * @default 'md'
@@ -124,14 +132,25 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
           )}
         </div>
         {action && (
-          <Button
-            onClick={action.onClick}
-            variant={action.variant || 'default'}
-            className="gap-2 mt-2"
-            size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
-          >
-            {action.label}
-          </Button>
+          'to' in action ? (
+            <Button
+              asChild
+              variant={action.variant || 'default'}
+              className="gap-2 mt-2"
+              size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
+            >
+              <Link to={action.to}>{action.label}</Link>
+            </Button>
+          ) : (
+            <Button
+              onClick={action.onClick}
+              variant={action.variant || 'default'}
+              className="gap-2 mt-2"
+              size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
+            >
+              {action.label}
+            </Button>
+          )
         )}
       </div>
     </div>

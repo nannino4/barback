@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Building2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
@@ -26,7 +26,6 @@ import type { OrgRole, OrganizationMembership } from '@/types/organization';
 export const OrganizationsPage: React.FC = () =>
 {
   const { t } = useI18n();
-  const navigate = useNavigate();
 
   // Organizations state
   const { 
@@ -89,14 +88,6 @@ export const OrganizationsPage: React.FC = () =>
   const handleSelectOrganization = (orgMembership: OrganizationMembership) =>
   {
     switchOrganization(orgMembership);
-  };
-
-  /**
-   * Navigate to organization creation page
-   */
-  const handleCreateOrganization = () =>
-  {
-    void navigate('/orgs/create');
   };
 
   /**
@@ -164,10 +155,12 @@ export const OrganizationsPage: React.FC = () =>
             {t('organizations.myVenues')}
           </h2>
           <Button
-            onClick={handleCreateOrganization}
+            asChild
           >
-            <Plus className="w-4 h-4" />
-            <span>{t('organizations.createOrganization')}</span>
+            <Link to="/orgs/create">
+              <Plus className="w-4 h-4" />
+              <span>{t('organizations.createOrganization')}</span>
+            </Link>
           </Button>
         </Stack>
 
@@ -247,7 +240,7 @@ export const OrganizationsPage: React.FC = () =>
               description={t('organizations.noOrganizationsDescription')}
               action={{
                 label: t('organizations.createOrganization'),
-                onClick: handleCreateOrganization,
+                to: '/orgs/create',
               }}
               size="lg"
             />

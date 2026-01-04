@@ -1,10 +1,9 @@
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import { Building2 } from 'lucide-react';
 import { useOrganizationStore } from '@/stores/organizationStore';
 import { PageContainer, Stack } from '@/components/layout';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/hooks/useI18n';
-import { useNavigate } from 'react-router-dom';
 
 /**
  * HasCurrentOrgRoute - Protects routes that require an organization context
@@ -26,7 +25,6 @@ export const HasCurrentOrgRoute: React.FC = () =>
 {
   const { currentOrg } = useOrganizationStore();
   const { t } = useI18n();
-  const navigate = useNavigate();
 
   // Display feedback if no organization is selected
   if (!currentOrg)
@@ -49,12 +47,14 @@ export const HasCurrentOrgRoute: React.FC = () =>
             </Stack>
             
             <Button
-              onClick={() => void navigate('/orgs')}
+              asChild
               size="lg"
               className="gap-2"
             >
-              <Building2 className="w-4 h-4" />
-              {t('organizations.noOrgSelected.goToOrganizations')}
+              <Link to="/orgs">
+                <Building2 className="w-4 h-4" />
+                {t('organizations.noOrgSelected.goToOrganizations')}
+              </Link>
             </Button>
           </Stack>
         </div>

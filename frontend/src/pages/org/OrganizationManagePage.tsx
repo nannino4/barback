@@ -17,6 +17,7 @@ import { InlineEditField } from '@/components/forms/InlineEditField';
 import { InlineEditSelect } from '@/components/forms/InlineEditSelect';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useI18n } from '@/hooks/useI18n';
+import { useSmartBack } from '@/hooks/useSmartBack';
 import { useAuthStore } from '@/stores/authStore';
 import { organizationApi } from '@/api/organization-api';
 import { invitationApi } from '@/api/invitation-api';
@@ -241,10 +242,7 @@ export const OrganizationManagePage: React.FC = () =>
   const isLoading = isLoadingOrg || isLoadingMembers || (isRoleKnown && isLoadingSubscriptionData);
   const error = orgError ?? membersError ?? (isOwner ? subscriptionError : subscriptionStatusError);
 
-  const handleBack = () =>
-  {
-    void navigate('/orgs');
-  };
+  const goBack = useSmartBack('/orgs');
 
   const handleRefresh = async () =>
   {
@@ -370,7 +368,7 @@ export const OrganizationManagePage: React.FC = () =>
             <Button
               variant="ghost"
               size="sm"
-              onClick={handleBack}
+              onClick={goBack}
               className="text-muted-foreground"
             >
               <ArrowLeft className="w-4 h-4 mr-1" />
@@ -396,7 +394,7 @@ export const OrganizationManagePage: React.FC = () =>
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleBack}
+            onClick={goBack}
             className="text-muted-foreground"
           >
             <ArrowLeft className="w-4 h-4 mr-1" />

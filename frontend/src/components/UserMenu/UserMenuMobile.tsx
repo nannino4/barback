@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { LogOut, Settings, ChevronRight, Building2, Check } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,
@@ -33,7 +33,6 @@ export const UserMenuMobile: React.FC = () =>
 {
   const { user, logout } = useAuth();
   const { t, changeLanguage, currentLanguage } = useI18n();
-  const navigate = useNavigate();
   const {
     currentOrg,
     organizations,
@@ -45,12 +44,6 @@ export const UserMenuMobile: React.FC = () =>
   const [mobileView, setMobileView] = useState<'main' | 'preferences' | 'orgSwitch'>('main');
 
   if (!user) return null;
-
-  const handleNavigate = (path: string) =>
-  {
-    setSheetOpen(false);
-    void navigate(path);
-  };
 
   const handleLogout = () =>
   {
@@ -128,14 +121,23 @@ export const UserMenuMobile: React.FC = () =>
               <Button
                 variant="ghost"
                 size="lg"
-                onClick={() => handleNavigate('/account')}
+                asChild
                 className={cn(
                   'w-full justify-start rounded-lg h-auto py-3 px-4',
                   'text-left hover:bg-muted',
                 )}
                 aria-label={t('menu.viewAccount')}
               >
-                <UserInfo user={user} size="md" className="flex-1 min-w-0" />
+                <Link
+                  to="/account"
+                  onClick={() =>
+                  {
+                    setSheetOpen(false);
+                    setMobileView('main');
+                  }}
+                >
+                  <UserInfo user={user} size="md" className="flex-1 min-w-0" />
+                </Link>
               </Button>
 
               <Divider />
@@ -174,17 +176,26 @@ export const UserMenuMobile: React.FC = () =>
               <Button
                 variant="ghost"
                 size="lg"
-                onClick={() => handleNavigate('/orgs')}
+                asChild
                 className={cn(
                   'w-full justify-start rounded-lg h-auto py-3 px-4',
                   'text-left hover:bg-muted',
                 )}
               >
-                <Icon mode="inline" size="md">
-                  <Building2 />
-                </Icon>
-                <span className="flex-1 font-medium">{t('menu.myVenues')}</span>
-                <InvitationsBadge />
+                <Link
+                  to="/orgs"
+                  onClick={() =>
+                  {
+                    setSheetOpen(false);
+                    setMobileView('main');
+                  }}
+                >
+                  <Icon mode="inline" size="md">
+                    <Building2 />
+                  </Icon>
+                  <span className="flex-1 font-medium">{t('menu.myVenues')}</span>
+                  <InvitationsBadge />
+                </Link>
               </Button>
 
               {/* Preferences */}

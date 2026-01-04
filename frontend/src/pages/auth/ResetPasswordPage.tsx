@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import { Eye, EyeOff, Lock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -41,7 +41,6 @@ type ResetStatus = 'validating' | 'form' | 'success' | 'error';
 export const ResetPasswordPage: React.FC = () =>
 {
   const { t } = useI18n();
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token');
     
@@ -203,16 +202,20 @@ export const ResetPasswordPage: React.FC = () =>
             <div className="space-y-3 pt-4">
               <Button
                 className="w-full h-touch"
-                onClick={() => void navigate('/auth/forgot-password')}
+                asChild
               >
-                {t('auth.resetPasswordError.requestNewLinkButton')}
+                <Link to="/auth/forgot-password">
+                  {t('auth.resetPasswordError.requestNewLinkButton')}
+                </Link>
               </Button>
               <Button
                 variant="outline"
                 className="w-full h-touch"
-                onClick={() => void navigate('/auth/login')}
+                asChild
               >
-                {t('auth.resetPasswordError.backToSignIn')}
+                <Link to="/auth/login">
+                  {t('auth.resetPasswordError.backToSignIn')}
+                </Link>
               </Button>
             </div>
           </CardContent>
@@ -244,9 +247,11 @@ export const ResetPasswordPage: React.FC = () =>
 
             <Button
               className="w-full h-touch"
-              onClick={() => void navigate('/auth/login')}
+              asChild
             >
-              {t('auth.resetPasswordSuccess.signInButton')}
+              <Link to="/auth/login">
+                {t('auth.resetPasswordSuccess.signInButton')}
+              </Link>
             </Button>
           </CardContent>
         </Card>

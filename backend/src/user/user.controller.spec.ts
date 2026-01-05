@@ -5,6 +5,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as request from 'supertest';
 import { JwtModule } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { ConfigModule } from '@nestjs/config';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { User, UserSchema, AuthProvider } from './schemas/user.schema';
@@ -13,6 +14,8 @@ import { UpdateUserProfileDto } from './dto/in.update-user-profile.dto';
 import { ChangePasswordDto } from './dto/in.change-password.dto';
 import { CustomLogger } from '../common/logger/custom.logger';
 import { EmailVerifiedGuard } from 'src/auth/guards/email-verified.guard';
+import { StorageService } from '../storage/storage.service';
+import { ProfilePictureValidationPipe } from '../pipes/profile-picture-validation.pipe';
 
 describe('UserController (Integration)', () =>
 {
@@ -21,6 +24,7 @@ describe('UserController (Integration)', () =>
     let userService: UserService;
     let testUser: User;
     let mockLogger: jest.Mocked<CustomLogger>;
+    let mockStorageService: jest.Mocked<StorageService>;
 
     beforeAll(async () =>
     {
@@ -35,8 +39,19 @@ describe('UserController (Integration)', () =>
             verbose: jest.fn(),
         } as any;
 
+        mockStorageService = {
+            uploadUserProfilePicture: jest.fn(),
+            deleteUserProfilePicture: jest.fn(),
+        } as any;
+
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [
+                ConfigModule.forRoot({
+                    isGlobal: true,
+                    load: [() => ({
+                        USER_PROFILE_PICTURE_MAX_BYTES: 5242880,
+                    })],
+                }),
                 MongooseModule.forRoot(mongoUri),
                 MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
                 JwtModule.register({
@@ -47,9 +62,14 @@ describe('UserController (Integration)', () =>
             controllers: [UserController],
             providers: [
                 UserService,
+                ProfilePictureValidationPipe,
                 {
                     provide: CustomLogger,
                     useValue: mockLogger,
+                },
+                {
+                    provide: StorageService,
+                    useValue: mockStorageService,
                 },
             ],
         })

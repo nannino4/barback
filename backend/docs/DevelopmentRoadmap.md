@@ -66,16 +66,12 @@ This document outlines the development tasks for the Minimum Viable Product (MVP
     - [ ] Implement soft delete for user accounts (mark inactive instead of hard delete)
     - [ ] Add hard delete endpoint for admin use only
     - [ ] Add PII (Personally Identifiable Information) logging policy and audit
-    - [ ] **Implement profile picture upload** (Hybrid Approach - Recommended):
-      - **Frontend**: Request presigned URL from backend endpoint
-      - **Backend**: Generate presigned URL with size/type restrictions (max 5MB, image types only)
-      - **Frontend**: Upload directly to cloud storage (Cloudinary or S3)
-      - **Frontend**: Send final URL to backend for validation and storage
-      - **Backend**: Validate URL pattern matches expected format before saving
-      - **Storage Options**:
-        - AWS S3 + CloudFront: Cost-effective for scale, requires more setup
-      - **Benefits**: Performance (direct upload), security (backend controls validation), simple backend (URL validation only)
-      - **Store both full and thumbnail URLs for optimization**
+    - [X] **Implement profile picture upload**:
+      - [X] Integrate with cloud storage service (e.g., Google Cloud Storage, AWS S3, Cloudinary)
+      - [X] Create API endpoint for profile picture upload
+      - [X] Handle image processing (resize, format conversion)
+      - [X] Update User model to store profile picture URL
+      - [X] Store both full and thumbnail URLs for optimization
   - [ ] **Account Deletion Business Logic** (planned for post-MVP):
     - Organizations keep existing when sole owner deletes account
     - Subscriptions auto-cancel on renewal (not immediately)

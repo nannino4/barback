@@ -20,6 +20,9 @@ export class OutUserDto
     
     @Expose()
     profilePictureUrl?: string;
+
+    @Expose()
+    profilePictureThumbnailUrl?: string;
     
     @Expose()
     isEmailVerified!: boolean;

@@ -1,4 +1,16 @@
-import { Controller, Get, UseGuards, Delete, HttpCode, HttpStatus, Put, Body } from '@nestjs/common';
+import { 
+    Controller, 
+    Get, 
+    UseGuards, 
+    Delete, 
+    HttpCode, 
+    HttpStatus, 
+    Put, 
+    Body,
+    UseInterceptors,
+    UploadedFile,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { EmailVerifiedGuard } from '../auth/guards/email-verified.guard';
@@ -9,6 +21,8 @@ import { User } from './schemas/user.schema';
 import { OutUserDto } from './dto/out.user.dto';
 import { plainToInstance } from 'class-transformer';
 import { CustomLogger } from '../common/logger/custom.logger';
+import { StorageService } from '../storage/storage.service';
+import { ProfilePictureValidationPipe } from '../pipes/profile-picture-validation.pipe';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, EmailVerifiedGuard)
@@ -16,6 +30,7 @@ export class UserController
 {
     constructor(
         private readonly userService: UserService,
+        private readonly storageService: StorageService,
         private readonly logger: CustomLogger,
     ) { }
 
@@ -37,6 +52,37 @@ export class UserController
         this.logger.debug(`User updating own profile: ${user.email}`, 'UserController#updateCurrentUserProfile');
         const updatedUser = await this.userService.updateProfile(user.id, updateData);
         this.logger.debug(`User profile updated successfully: ${updatedUser.email}`, 'UserController#updateCurrentUserProfile');
+        return plainToInstance(OutUserDto, updatedUser.toObject(), { excludeExtraneousValues: true });
+    }
+
+    @Put('me/profile-picture')
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadProfilePicture(
+        @CurrentUser() user: User,
+        @UploadedFile(ProfilePictureValidationPipe) file: Express.Multer.File
+    ): Promise<OutUserDto>
+    {
+        this.logger.debug(`User uploading profile picture: ${user.email}`, 'UserController#uploadProfilePicture');
+
+        // Upload to storage (processes image and generates thumbnail)
+        const uploadResult = await this.storageService.uploadUserProfilePicture({
+            userId: user.id.toString(),
+            contentType: file.mimetype,
+            bytes: file.buffer,
+        });
+
+        // Update user with new picture URLs and keys
+        // Note: S3 keys are deterministic based on userId, so uploading with
+        // the same key automatically replaces the old object - no deletion needed.
+        const { user: updatedUser } = await this.userService.updateProfilePicture(
+            user.id,
+            uploadResult.picture.url,
+            uploadResult.picture.key,
+            uploadResult.thumbnail.url,
+            uploadResult.thumbnail.key
+        );
+
+        this.logger.debug(`Profile picture uploaded successfully for user: ${updatedUser.email}`, 'UserController#uploadProfilePicture');
         return plainToInstance(OutUserDto, updatedUser.toObject(), { excludeExtraneousValues: true });
     }
 

@@ -49,6 +49,15 @@ export class User extends Document
     @Prop({ type: String, required: false })
     profilePictureUrl?: string;
 
+    @Prop({ type: String, required: false })
+    profilePictureKey?: string;
+
+    @Prop({ type: String, required: false })
+    profilePictureThumbnailUrl?: string;
+
+    @Prop({ type: String, required: false })
+    profilePictureThumbnailKey?: string;
+
     @Prop({ type: Boolean, default: false })
     isEmailVerified!: boolean;
 

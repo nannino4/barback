@@ -165,6 +165,76 @@ export class UserService
         }
     }
 
+    /**
+     * Update user's profile picture URLs and keys
+     * 
+     * @param id User ID
+     * @param pictureUrl URL of the main profile picture
+     * @param pictureKey S3 key of the main profile picture
+     * @param thumbnailUrl URL of the thumbnail
+     * @param thumbnailKey S3 key of the thumbnail
+     * @returns Updated user with old picture keys (for cleanup)
+     */
+    async updateProfilePicture(
+        id: Types.ObjectId,
+        pictureUrl: string,
+        pictureKey: string,
+        thumbnailUrl: string,
+        thumbnailKey: string
+    ): Promise<{ user: User; oldPictureKey?: string; oldThumbnailKey?: string }>
+    {
+        this.logger.debug(`Attempting to update profile picture for user ID: ${id}`, 'UserService#updateProfilePicture');
+        
+        try
+        {
+            // First, get the current user to retrieve old picture keys
+            const currentUser = await this.userModel.findById(id).exec();
+            if (!currentUser)
+            {
+                this.logger.warn(`User with ID "${id}" not found for profile picture update`, 'UserService#updateProfilePicture');
+                throw new UserNotFoundByIdException(id.toString());
+            }
+
+            const oldPictureKey = currentUser.profilePictureKey;
+            const oldThumbnailKey = currentUser.profilePictureThumbnailKey;
+
+            // Update with new picture data
+            const user = await this.userModel.findByIdAndUpdate(
+                id,
+                {
+                    $set: {
+                        profilePictureUrl: pictureUrl,
+                        profilePictureKey: pictureKey,
+                        profilePictureThumbnailUrl: thumbnailUrl,
+                        profilePictureThumbnailKey: thumbnailKey,
+                    }
+                },
+                { new: true, runValidators: true }
+            ).exec();
+            
+            if (!user)
+            {
+                this.logger.warn(`User with ID "${id}" not found for profile picture update`, 'UserService#updateProfilePicture');
+                throw new UserNotFoundByIdException(id.toString());
+            }
+            
+            this.logger.debug(`Profile picture updated successfully for user: ${user.email}`, 'UserService#updateProfilePicture');
+            return { user, oldPictureKey, oldThumbnailKey };
+        }
+        catch (error)
+        {
+            if (error instanceof UserNotFoundByIdException)
+            {
+                throw error;
+            }
+            
+            const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
+            const errorStack = error instanceof Error ? error.stack : undefined;
+            this.logger.error(`Database operation failed for profile picture update: ${id}`, errorStack, 'UserService#updateProfilePicture');
+            throw new DatabaseOperationException('profile picture update', errorMessage);
+        }
+    }
+
     async updateRole(id: Types.ObjectId, role: UserRole): Promise<User>
     {
         this.logger.debug(`Attempting to update role for user ID: ${id} to role: ${role}`, 'UserService#updateRole');

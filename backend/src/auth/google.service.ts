@@ -18,6 +18,7 @@ import {
     GoogleAccountLinkingException,
     InvalidOAuthStateException,
 } from './exceptions/oauth.exceptions';
+import { parseJwtExpiration, type JwtExpiresIn } from '../common/utils/jwt-expiration';
 
 @Injectable()
 export class GoogleService 
@@ -27,7 +28,7 @@ export class GoogleService
     private readonly clientSecret: string;
     private readonly redirectUri: string;
     private readonly oauthStateSecret: string;
-    private readonly oauthStateExpiration: string;
+    private readonly oauthStateExpiration: JwtExpiresIn;
 
     constructor(
         private readonly configService: ConfigService,
@@ -40,7 +41,9 @@ export class GoogleService
         this.clientSecret = this.configService.get<string>('GOOGLE_CLIENT_SECRET')!;
         this.redirectUri = this.configService.get<string>('GOOGLE_REDIRECT_URI')!;
         this.oauthStateSecret = this.configService.get<string>('JWT_OAUTH_STATE_SECRET')!;
-        this.oauthStateExpiration = this.configService.get<string>('JWT_OAUTH_STATE_EXPIRATION_TIME')!;
+        this.oauthStateExpiration = parseJwtExpiration(
+            this.configService.get<string>('JWT_OAUTH_STATE_EXPIRATION_TIME')!,
+        );
 
         // Validate configuration and throw specific exceptions
         if (!this.clientId) 

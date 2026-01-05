@@ -28,14 +28,15 @@ import {
     InvalidPasswordResetTokenException,
 } from '../user/exceptions/user.exceptions';
 import { CustomLogger } from '../common/logger/custom.logger';
+import { parseJwtExpiration, type JwtExpiresIn } from '../common/utils/jwt-expiration';
 
 @Injectable()
 export class AuthService
 {
     private readonly jwtAccessTokenSecret: string;
-    private readonly jwtAccessTokenExpiration: string;
+    private readonly jwtAccessTokenExpiration: JwtExpiresIn;
     private readonly jwtRefreshTokenSecret: string;
-    private readonly jwtRefreshTokenExpiration: string;
+    private readonly jwtRefreshTokenExpiration: JwtExpiresIn;
 
     constructor(
         private readonly userService: UserService,
@@ -59,7 +60,7 @@ export class AuthService
         {
             throw new JwtConfigurationException('JWT_ACCESS_TOKEN_EXPIRATION_TIME');
         }
-        this.jwtAccessTokenExpiration = accessExpiration;
+        this.jwtAccessTokenExpiration = parseJwtExpiration(accessExpiration);
 
         const refreshSecret = this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET');
         if (!refreshSecret)
@@ -73,7 +74,7 @@ export class AuthService
         {
             throw new JwtConfigurationException('JWT_REFRESH_TOKEN_EXPIRATION_TIME');
         }
-        this.jwtRefreshTokenExpiration = refreshExpiration;
+        this.jwtRefreshTokenExpiration = parseJwtExpiration(refreshExpiration);
 
         this.logger.debug('AuthService initialized with valid JWT configuration', 'AuthService#constructor');
     }

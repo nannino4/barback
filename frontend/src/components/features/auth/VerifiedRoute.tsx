@@ -21,7 +21,7 @@ interface VerifiedRouteProps
  * Usage:
  * ```tsx
  * // Legacy pattern (with children)
- * <Route path="/account" element={<VerifiedRoute><UserProfilePage /></VerifiedRoute>} />
+ * <Route path="/users/me" element={<VerifiedRoute><UserProfilePage /></VerifiedRoute>} />
  * 
  * // New pattern (with nested routes)
  * <Route element={<VerifiedRoute />}>

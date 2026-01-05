@@ -13,7 +13,7 @@ export { OrganizationSwitcherPopover } from './OrganizationSwitcherPopover';
  * - Breakpoint: md (768px) defined in Tailwind config
  * 
  * Menu Structure:
- * - User Info (navigates to /account)
+ * - User Info (navigates to /users/me)
  * - Current Venue (opens venue switch)
  * - Preferences (theme + language selection)
  * - Logout

@@ -129,7 +129,7 @@ export const UserMenuMobile: React.FC = () =>
                 aria-label={t('menu.viewAccount')}
               >
                 <Link
-                  to="/account"
+                  to="/users/me"
                   onClick={() =>
                   {
                     setSheetOpen(false);

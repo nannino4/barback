@@ -112,7 +112,7 @@ const router = createBrowserRouter(
         <Route path="/orgs/:orgId" element={<OrganizationManagePage />} />
 
         {/* User Profile */}
-        <Route path="/account" element={<UserProfilePage />} />
+        <Route path="/users/me" element={<UserProfilePage />} />
 
         {/* Requires organization selection */}
         <Route element={<HasCurrentOrgRoute />}>

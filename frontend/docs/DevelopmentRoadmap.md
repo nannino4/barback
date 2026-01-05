@@ -138,12 +138,7 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [X] `OrganizationSwitcherPopover` - desktop popover
   - [X] `InvitationsBadge` - notification badge component
 - [X] Create organization switching functionality (basic)
-- [ ] User Settings & Profile Management:
-  - [ ] Build user profile page
-  - [ ] Implement profile editing (name, phone, profile picture)
-  - [ ] Add password change functionality
-  - [ ] Create account deletion flow
-  - [X] Move theme toggle and language selector to settings page (from navigation)
+- [ ] User Profile Management
 - **fixes needed**
   - [ ] Date formatting doesn't respect user's locale from i18n
   - [X] refresh token service restarts every page load

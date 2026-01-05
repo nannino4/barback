@@ -59,7 +59,7 @@ export const UserMenuDesktop: React.FC = () =>
       <DropdownMenuContent align="end" className="w-72">
         {/* User Info - navigates to profile */}
         <DropdownMenuItem asChild className="cursor-pointer" aria-label={t('menu.viewAccount')}>
-          <Link to="/account">
+          <Link to="/users/me">
             <UserInfo user={user} size="md" className="w-full" />
           </Link>
         </DropdownMenuItem>

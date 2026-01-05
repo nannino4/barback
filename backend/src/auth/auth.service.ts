@@ -28,7 +28,7 @@ import {
     InvalidPasswordResetTokenException,
 } from '../user/exceptions/user.exceptions';
 import { CustomLogger } from '../common/logger/custom.logger';
-import { parseJwtExpiration, type JwtExpiresIn } from '../common/utils/jwt-expiration';
+import { isJwtExpiredError, parseJwtExpiration, type JwtExpiresIn } from '../common/utils/jwt-expiration';
 
 @Injectable()
 export class AuthService
@@ -163,7 +163,19 @@ export class AuthService
         {
             // Convert all token validation errors to InvalidRefreshTokenException for security
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            this.logger.error(`Refresh Token Error: ${errorMessage}`, error instanceof Error ? error.stack : undefined, 'AuthService#validateRefreshToken');
+
+            if (isJwtExpiredError(error))
+            {
+                this.logger.warn(`Refresh Token Expired: ${errorMessage}`, 'AuthService#validateRefreshToken');
+            }
+            else
+            {
+                this.logger.error(
+                    `Refresh Token Error: ${errorMessage}`,
+                    error instanceof Error ? error.stack : undefined,
+                    'AuthService#validateRefreshToken',
+                );
+            }
             throw new InvalidRefreshTokenException();
         }
         

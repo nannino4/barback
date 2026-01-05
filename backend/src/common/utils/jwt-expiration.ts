@@ -14,3 +14,12 @@ export function parseJwtExpiration(expiresIn: string): JwtExpiresIn {
 
     return trimmed as unknown as StringValue;
 }
+
+export function isJwtExpiredError(error: unknown): boolean {
+    if (!error || typeof error !== 'object') {
+        return false;
+    }
+
+    const name = (error as { name?: unknown }).name;
+    return name === 'TokenExpiredError';
+}

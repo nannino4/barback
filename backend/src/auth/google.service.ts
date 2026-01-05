@@ -18,7 +18,7 @@ import {
     GoogleAccountLinkingException,
     InvalidOAuthStateException,
 } from './exceptions/oauth.exceptions';
-import { parseJwtExpiration, type JwtExpiresIn } from '../common/utils/jwt-expiration';
+import { isJwtExpiredError, parseJwtExpiration, type JwtExpiresIn } from '../common/utils/jwt-expiration';
 
 @Injectable()
 export class GoogleService 
@@ -128,11 +128,18 @@ export class GoogleService
         } 
         catch (error) 
         {
-            this.logger.error(
-                'OAuth state validation failed',
-                error instanceof Error ? error.stack : undefined,
-                'GoogleService#validateOAuthState'
-            );
+            if (isJwtExpiredError(error))
+            {
+                this.logger.warn('OAuth state JWT expired', 'GoogleService#validateOAuthState');
+            }
+            else
+            {
+                this.logger.error(
+                    'OAuth state validation failed',
+                    error instanceof Error ? error.stack : undefined,
+                    'GoogleService#validateOAuthState'
+                );
+            }
             throw new InvalidOAuthStateException();
         }
     }

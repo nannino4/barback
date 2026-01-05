@@ -938,7 +938,26 @@
         "emailVerified": "✓ Verificata",
         "phoneNumber": "Numero di Telefono",
         "memberSince": "Membro Dal",
-        "futureFeatures": "Modifica account e gestione password in arrivo"
+        "futureFeatures": "Modifica account e gestione password in arrivo",
+        "updated": "Profilo aggiornato",
+        "profilePictureUpdated": "Immagine profilo aggiornata",
+        "changeProfilePicture": "Cambia immagine profilo",
+        "addPhoneNumber": "Aggiungi numero di telefono",
+        "fullNameMustIncludeLastName": "Inserisci anche il cognome",
+        "ownedOrganizations": {
+            "title": "Organizzazioni possedute",
+            "description": "Stato abbonamento delle organizzazioni di cui sei proprietario",
+            "count": "{{count}} organizzazione posseduta",
+            "count_plural": "{{count}} organizzazioni possedute",
+            "activeCount": "{{count}} attiva",
+            "activeCount_plural": "{{count}} attive",
+            "trialCount": "{{count}} in prova",
+            "trialCount_plural": "{{count}} in prova",
+            "trialExpiresUnknown": "scadenza prova sconosciuta",
+            "trialExpiresInDays": "la prova scade tra {{days}} giorni",
+            "inactiveCount": "{{count}} inattiva",
+            "inactiveCount_plural": "{{count}} inattive"
+        }
     },
     "preferences": {
         "title": "Preferenze",

@@ -939,7 +939,26 @@
         "emailVerified": "✓ Verified",
         "phoneNumber": "Phone Number",
         "memberSince": "Member Since",
-        "futureFeatures": "Account editing and password management coming soon"
+        "futureFeatures": "Account editing and password management coming soon",
+        "updated": "Profile updated",
+        "profilePictureUpdated": "Profile picture updated",
+        "changeProfilePicture": "Change profile picture",
+        "addPhoneNumber": "Add phone number",
+        "fullNameMustIncludeLastName": "Please include a last name",
+        "ownedOrganizations": {
+            "title": "Owned organizations",
+            "description": "Subscription status for organizations you own",
+            "count": "{{count}} organization owned",
+            "count_plural": "{{count}} organizations owned",
+            "activeCount": "{{count}} active",
+            "activeCount_plural": "{{count}} active",
+            "trialCount": "{{count}} trial",
+            "trialCount_plural": "{{count}} trials",
+            "trialExpiresUnknown": "trial expiry unknown",
+            "trialExpiresInDays": "trial expires in {{days}} days",
+            "inactiveCount": "{{count}} inactive",
+            "inactiveCount_plural": "{{count}} inactive"
+        }
     },
     "preferences": {
         "title": "Preferences",

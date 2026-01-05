@@ -19,6 +19,12 @@ import type { OrgRole } from '@/types/organization';
  * ```
  */
 export const queryKeys = {
+  /** User-related queries */
+  users: {
+    /** Current authenticated user */
+    me: ['user', 'me'] as const,
+  },
+
   /**
    * Organization-related queries
    */

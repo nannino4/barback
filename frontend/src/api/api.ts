@@ -250,11 +250,12 @@ class ApiClient
     
     // Build base config
     const hasBody = fetchOptions.body !== undefined;
+    const isFormDataBody = typeof FormData !== 'undefined' && fetchOptions.body instanceof FormData;
     
     // Check if Content-Type is already set in headers
     const headers = fetchOptions.headers as Record<string, string> | undefined;
     const hasContentType = headers && 'Content-Type' in headers;
-    const shouldAddContentType = hasBody && !hasContentType;
+    const shouldAddContentType = hasBody && !hasContentType && !isFormDataBody;
     
     let config: RequestInit = {
       headers: {

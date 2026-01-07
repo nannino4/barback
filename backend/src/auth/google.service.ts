@@ -9,6 +9,7 @@ import { User, AuthProvider } from '../user/schemas/user.schema';
 import { UserService } from '../user/user.service';
 import { OutGoogleAuthUrlDto } from './dto/out.google-auth-url.dto';
 import { CustomLogger } from 'src/common/logger/custom.logger';
+import { StorageService } from '../storage/storage.service';
 import {
     GoogleConfigurationException,
     GoogleTokenExchangeException,
@@ -19,6 +20,9 @@ import {
     InvalidOAuthStateException,
 } from './exceptions/oauth.exceptions';
 import { isJwtExpiredError, parseJwtExpiration, type JwtExpiresIn } from '../common/utils/jwt-expiration';
+
+const GOOGLE_PROFILE_PICTURE_MAX_BYTES = 5 * 1024 * 1024; // 5MB
+const GOOGLE_PROFILE_PICTURE_TIMEOUT_MS = 5_000;
 
 @Injectable()
 export class GoogleService 
@@ -35,6 +39,7 @@ export class GoogleService
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
         private readonly logger : CustomLogger,
+        private readonly storageService: StorageService,
     ) 
     {
         this.clientId = this.configService.get<string>('GOOGLE_CLIENT_ID')!;
@@ -220,7 +225,7 @@ export class GoogleService
         if (user) 
         {
             this.logger.debug(`User found by Google ID: ${user.email}`, 'GoogleService#findOrCreateUser');
-            return user;
+            return await this.importGoogleProfilePictureIfNeeded(user, googleUserInfo.picture);
         }
 
         // Try to find user by email
@@ -245,7 +250,7 @@ export class GoogleService
             );
 
             this.logger.debug(`Google account linked successfully for user: ${user.email}`, 'GoogleService#findOrCreateUser');
-            return user;
+            return await this.importGoogleProfilePictureIfNeeded(user, googleUserInfo.picture);
         }
 
         // Create new user
@@ -261,7 +266,167 @@ export class GoogleService
         });
 
         this.logger.debug(`User created successfully: ${user.email}`, 'GoogleService#findOrCreateUser');
-        return user;
+        return await this.importGoogleProfilePictureIfNeeded(user, googleUserInfo.picture);
+    }
+
+    /**
+     * Attempts to import and upload a Google profile picture for the user if needed.
+     * Logging is performed at method entry, on all early returns, and on completion.
+     * This method never throws; login flow is never blocked by avatar import failure.
+     */
+    private async importGoogleProfilePictureIfNeeded(user: User, pictureUrl?: string): Promise<User>
+    {
+        this.logger.debug(
+            `Checking if Google profile picture import is needed for user: ${user.email}`,
+            'GoogleService#importGoogleProfilePictureIfNeeded'
+        );
+
+        if (!this.shouldImportGoogleProfilePicture(user, pictureUrl))
+        {
+            this.logger.debug(
+                `No import needed for user: ${user.email}`,
+                'GoogleService#importGoogleProfilePictureIfNeeded'
+            );
+            return user;
+        }
+
+        const safeUrl: string | null = this.normalizeAndValidateGooglePictureUrl(pictureUrl!);
+        if (!safeUrl)
+        {
+            this.logger.warn(
+                `Skipping profile picture import due to unsafe/unsupported URL for user: ${user.email}`,
+                'GoogleService#importGoogleProfilePictureIfNeeded'
+            );
+            return user;
+        }
+
+        try
+        {
+            this.logger.debug(
+                `Attempting to download and upload Google profile picture for user: ${user.email}`,
+                'GoogleService#importGoogleProfilePictureIfNeeded'
+            );
+
+            const { bytes, contentType }: { bytes: Buffer; contentType: string } = await this.downloadImageFromUrl(safeUrl);
+
+            const uploadResult = await this.storageService.uploadUserProfilePicture({
+                userId: user.id,
+                contentType,
+                bytes,
+            });
+
+            const updated = await this.userService.updateProfilePicture(
+                user._id,
+                uploadResult.picture.url,
+                uploadResult.picture.key,
+                uploadResult.thumbnail.url,
+                uploadResult.thumbnail.key,
+            );
+
+            this.logger.debug(
+                `Google profile picture imported and uploaded for user: ${user.email}`,
+                'GoogleService#importGoogleProfilePictureIfNeeded'
+            );
+            return updated.user;
+        }
+        catch (error)
+        {
+            const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
+            this.logger.warn(
+                `Failed to import Google profile picture for user: ${user.email} - ${errorMessage}`,
+                'GoogleService#importGoogleProfilePictureIfNeeded'
+            );
+            return user;
+        }
+    }
+
+    /**
+     * Determines if a Google profile picture should be imported for the user.
+     * Returns true only if:
+     *   - pictureUrl is present
+     *   - user has no uploaded profile picture keys
+     *   - user has no different profilePictureUrl set
+     */
+    private shouldImportGoogleProfilePicture(user: User, pictureUrl?: string): boolean
+    {
+        if (!pictureUrl)
+        {
+            return false;
+        }
+
+        if (user.profilePictureKey || user.profilePictureThumbnailKey)
+        {
+            return false;
+        }
+
+        if (user.profilePictureUrl && user.profilePictureUrl !== pictureUrl)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Validates and normalizes a Google profile picture URL.
+     * Only allows HTTPS URLs from googleusercontent.com.
+     * Returns the normalized URL string or null if invalid.
+     */
+    private normalizeAndValidateGooglePictureUrl(url: string): string | null
+    {
+        try
+        {
+            const parsed: URL = new URL(url);
+            if (parsed.protocol !== 'https:')
+            {
+                return null;
+            }
+
+            const hostname: string = parsed.hostname.toLowerCase();
+            if (!hostname.endsWith('googleusercontent.com'))
+            {
+                return null;
+            }
+
+            return parsed.toString();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /**
+     * Downloads an image from a given URL, enforcing content type and size limits.
+     * Throws on network, type, or size errors. Returns image bytes and content type.
+     */
+    private async downloadImageFromUrl(url: string): Promise<{ bytes: Buffer; contentType: string }>
+    {
+        const response = await axios.get(url, {
+            responseType: 'arraybuffer',
+            timeout: GOOGLE_PROFILE_PICTURE_TIMEOUT_MS,
+            maxContentLength: GOOGLE_PROFILE_PICTURE_MAX_BYTES,
+            validateStatus: (status: number) => status >= 200 && status < 300,
+        });
+
+        const contentTypeHeader: unknown = response.headers?.['content-type'];
+        const contentType: string = typeof contentTypeHeader === 'string' ? contentTypeHeader : 'application/octet-stream';
+        if (!contentType.toLowerCase().startsWith('image/'))
+        {
+            throw new Error(`Unexpected content-type: ${contentType}`);
+        }
+
+        const bytes: Buffer = Buffer.isBuffer(response.data) ? response.data : Buffer.from(response.data);
+        if (bytes.length === 0)
+        {
+            throw new Error('Empty image response');
+        }
+        if (bytes.length > GOOGLE_PROFILE_PICTURE_MAX_BYTES)
+        {
+            throw new Error('Image exceeds maximum allowed size');
+        }
+
+        return { bytes, contentType };
     }
 
 }

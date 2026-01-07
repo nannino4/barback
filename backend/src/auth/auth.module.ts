@@ -6,6 +6,7 @@ import { UserModule } from '../user/user.module';
 import { EmailModule } from '../email/email.module';
 import { GoogleService } from './google.service';
 import { AuthGuardModule } from './auth-guard.module';
+import { StorageModule } from '../storage/storage.module';
 
 @Module({
     imports: [
@@ -13,6 +14,7 @@ import { AuthGuardModule } from './auth-guard.module';
         UserModule,
         EmailModule,
         AuthGuardModule,
+        StorageModule,
     ],
     providers: [AuthService, GoogleService],
     controllers: [AuthController],

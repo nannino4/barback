@@ -139,6 +139,19 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [X] `InvitationsBadge` - notification badge component
 - [X] Create organization switching functionality (basic)
 - [ ] User Profile Management
+  - user personal info card
+    - user profile picture (editable)
+    - user full name (editable)
+    - user email (not editable)
+    - user phone (editable)
+  - user owned organizations card displays
+    - number of orgs owned
+    - subscriptions statuses
+      - n venues are active
+      - n venues are in trial
+        - org names with "trial expires in n days"
+      - n venues are inactive and require action
+        - org names
 - **fixes needed**
   - [ ] Date formatting doesn't respect user's locale from i18n
   - [X] refresh token service restarts every page load

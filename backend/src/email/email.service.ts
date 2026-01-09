@@ -4,6 +4,7 @@ import * as nodemailer from 'nodemailer';
 import { Transporter } from 'nodemailer';
 import { EmailConfigurationException, EmailSendingException } from './exceptions/email.exceptions';
 import { CustomLogger } from 'src/common/logger/custom.logger';
+import { maskEmail } from 'src/common/utils/mask-email';
 
 export interface EmailOptions 
 {
@@ -81,7 +82,7 @@ export class EmailService
             },
         });
 
-        this.logger.debug('Email transporter initialized successfully', 'EmailService#initializeTransporter');
+        this.logger.log('Email transporter initialized successfully', 'EmailService#initializeTransporter');
     }
 
     async sendEmail(options: EmailOptions): Promise<void> 
@@ -97,7 +98,10 @@ export class EmailService
                 html: options.html,
             });
 
-            this.logger.debug(`Email sent successfully to ${options.to}. Message ID: ${info.messageId}`, 'EmailService#sendEmail');
+            this.logger.debug(
+                `Email sent successfully to ${maskEmail(options.to)}. Message ID: ${info.messageId}`,
+                'EmailService#sendEmail',
+            );
             
             // For development with Ethereal, log preview URL
             if (nodemailer.getTestMessageUrl(info)) 
@@ -108,7 +112,11 @@ export class EmailService
         catch (error) 
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            this.logger.error(`Failed to send email to ${options.to}: ${errorMessage}`, error instanceof Error ? error.stack : undefined, 'EmailService#sendEmail');
+            this.logger.error(
+                `Failed to send email to ${maskEmail(options.to)}: ${errorMessage}`,
+                error instanceof Error ? error.stack : undefined,
+                'EmailService#sendEmail',
+            );
             throw new EmailSendingException(errorMessage);
         }
     }

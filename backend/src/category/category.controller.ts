@@ -71,6 +71,11 @@ export class CategoryController
         this.logger.debug(`Creating category for org ${orgId}`, 'CategoryController#createCategory', requestId);
         
         const category = await this.categoryService.createCategory(orgId, createCategoryDto, requestId);
+        this.logger.log(
+            `Category created: ${category.id} orgId=${orgId.toString()}`,
+            'CategoryController#createCategory',
+            requestId,
+        );
         return plainToInstance(OutCategoryDto, category, { excludeExtraneousValues: true });
     }
 
@@ -86,6 +91,11 @@ export class CategoryController
         this.logger.debug(`Updating category ${categoryId} for org ${orgId}`, 'CategoryController#updateCategory', requestId);
         
         const category = await this.categoryService.updateCategory(orgId, categoryId, updateCategoryDto, requestId);
+        this.logger.log(
+            `Category updated: ${category.id} orgId=${orgId.toString()}`,
+            'CategoryController#updateCategory',
+            requestId,
+        );
         return plainToInstance(OutCategoryDto, category, { excludeExtraneousValues: true });
     }
 
@@ -100,6 +110,11 @@ export class CategoryController
         this.logger.debug(`Deleting category ${categoryId} for org ${orgId}`, 'CategoryController#deleteCategory', requestId);
         
         await this.categoryService.deleteCategory(orgId, categoryId, requestId);
+        this.logger.log(
+            `Category deleted: ${categoryId.toString()} orgId=${orgId.toString()}`,
+            'CategoryController#deleteCategory',
+            requestId,
+        );
         return { message: 'Category deleted successfully' };
     }
 }

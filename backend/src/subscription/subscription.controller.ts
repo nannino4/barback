@@ -21,7 +21,7 @@ export class SubscriptionController
         private readonly logger: CustomLogger,
     ) 
     {
-        this.logger.debug('SubscriptionController initialized', 'SubscriptionController#constructor');
+        this.logger.log('SubscriptionController initialized', 'SubscriptionController#constructor');
     }
 
     @UseGuards(JwtAuthGuard, EmailVerifiedGuard)
@@ -52,7 +52,7 @@ export class SubscriptionController
         @RequestId() requestId?: string,
     ): Promise<OutSubscriptionSetupDto> 
     {
-        this.logger.debug(
+        this.logger.log(
             `Setting up ${createSubscriptionDto.isTrial ? 'trial' : 'paid'} subscription payment for user: ${user.id}`,
             'SubscriptionController#setupSubscriptionPayment',
             requestId,
@@ -62,6 +62,12 @@ export class SubscriptionController
             user.id,
             createSubscriptionDto.billingInterval,
             createSubscriptionDto.isTrial,
+            requestId,
+        );
+
+        this.logger.log(
+            `Subscription setup started: userId=${user.id} stripeSubscriptionId=${result.stripeSubscriptionId} isTrial=${createSubscriptionDto.isTrial}`,
+            'SubscriptionController#setupSubscriptionPayment',
             requestId,
         );
         

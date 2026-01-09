@@ -25,6 +25,7 @@ import { plainToInstance } from 'class-transformer';
 import { Types } from 'mongoose';
 import { CustomLogger } from '../common/logger/custom.logger';
 import { RequestId } from '../common/decorators/request-id.decorator';
+import { maskEmail } from '../common/utils/mask-email';
 
 /**
  * Controller for organization owners and managers to manage invitations.
@@ -59,8 +60,8 @@ export class InvitationController
         @RequestId() requestId?: string,
     ): Promise<OutInvitationDto> 
     {
-        this.logger.debug(
-            `User ${user._id} sending invitation to ${createInviteDto.invitedEmail} for org ${orgId}`,
+        this.logger.log(
+            `User ${user._id} sending invitation to ${maskEmail(createInviteDto.invitedEmail)} for org ${orgId}`,
             'InvitationController#sendInvitation',
             requestId,
         );
@@ -79,8 +80,8 @@ export class InvitationController
             organization.name,
             requestId,
         );
-        this.logger.debug(
-            `Invitation ${(invitation._id as Types.ObjectId).toString()} created (status=${invitation.status}) for email=${invitation.invitedEmail}`,
+        this.logger.log(
+            `Invitation ${(invitation._id as Types.ObjectId).toString()} created for email=${maskEmail(invitation.invitedEmail)} orgId=${orgId.toString()} role=${invitation.role}`,
             'InvitationController#sendInvitation',
             requestId,
         );
@@ -184,11 +185,11 @@ export class InvitationController
         @RequestId() requestId?: string,
     ): Promise<OutInvitationDto> 
     {
-        this.logger.debug(`User ${user._id} accepting invitation ${invitationId}`, 'InvitationController#acceptInvitation', requestId);
+        this.logger.log(`User ${user._id} accepting invitation ${invitationId}`, 'InvitationController#acceptInvitation', requestId);
         
         const invitation = await this.invitationService.acceptInvitation(invitationId, user._id as Types.ObjectId, requestId);
-        this.logger.debug(
-            `Invitation ${(invitation._id as Types.ObjectId).toString()} accepted (status=${invitation.status}) by user ${(user._id as Types.ObjectId).toString()}`,
+        this.logger.log(
+            `Invitation ${(invitation._id as Types.ObjectId).toString()} accepted by user ${(user._id as Types.ObjectId).toString()} orgId=${String(invitation.orgId)}`,
             'InvitationController#acceptInvitation',
             requestId,
         );
@@ -206,10 +207,10 @@ export class InvitationController
         @RequestId() requestId?: string,
     ): Promise<OutInvitationDto> 
     {
-        this.logger.debug(`Declining invitation ${invitationId}`, 'InvitationController#declineInvitation', requestId);
+        this.logger.log(`Declining invitation ${invitationId}`, 'InvitationController#declineInvitation', requestId);
         
         const invitation = await this.invitationService.declineInvitation(invitationId, requestId);
-        this.logger.debug(
+        this.logger.log(
             `Invitation ${(invitation._id as Types.ObjectId).toString()} declined (status=${invitation.status})`,
             'InvitationController#declineInvitation',
             requestId,

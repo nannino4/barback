@@ -7,6 +7,7 @@ import { UserService } from '../user/user.service';
 import { EmailService } from '../email/email.service';
 import { InCreateInvitationDto } from './dto/in.create-invitation.dto';
 import { CustomLogger } from '../common/logger/custom.logger';
+import { maskEmail } from '../common/utils/mask-email';
 import { DatabaseOperationException } from '../common/exceptions/database.exceptions';
 import { 
     InvitationNotFoundException,
@@ -37,7 +38,7 @@ export class InvitationService
     ): Promise<Invitation> 
     {
         this.logger.debug(
-            `Creating invitation for email=${createInviteDto.invitedEmail} orgId=${orgId} role=${createInviteDto.role}`,
+            `Creating invitation for email=${maskEmail(createInviteDto.invitedEmail)} orgId=${orgId} role=${createInviteDto.role}`,
             'InvitationService#createInvitation',
             requestId,
         );
@@ -105,7 +106,7 @@ export class InvitationService
                 );
                 await this.emailService.sendEmail(emailOptions);
                 this.logger.debug(
-                    `Invitation email sent to ${invitedEmail} for organization ${organizationName}`,
+                    `Invitation email sent to ${maskEmail(invitedEmail)} for organization ${organizationName}`,
                     'InvitationService#createInvitation',
                     requestId,
                 );
@@ -113,7 +114,7 @@ export class InvitationService
             catch (error) 
             {
                 this.logger.error(
-                    `Failed to send invitation email to ${invitedEmail}`,
+                    `Failed to send invitation email to ${maskEmail(invitedEmail)}`,
                     error instanceof Error ? error.stack : undefined,
                     'InvitationService#createInvitation',
                     requestId,
@@ -125,7 +126,7 @@ export class InvitationService
             }
 
             this.logger.debug(
-                `Invitation ${invitation.id} created successfully for email=${invitedEmail}`,
+                `Invitation ${invitation.id} created successfully for email=${maskEmail(invitedEmail)}`,
                 'InvitationService#createInvitation',
                 requestId,
             );
@@ -172,7 +173,7 @@ export class InvitationService
         try 
         {
             this.logger.debug(
-                `Finding pending invitations by email=${email}`,
+                `Finding pending invitations by email=${maskEmail(email)}`,
                 'InvitationService#findPendingInvitationsByEmail',
                 requestId,
             );
@@ -198,7 +199,7 @@ export class InvitationService
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
             const errorStack = error instanceof Error ? error.stack : undefined;
             this.logger.error(
-                `Database error while finding invitations for email ${email}`,
+                `Database error while finding invitations for email ${maskEmail(email)}`,
                 errorStack,
                 'InvitationService#findPendingInvitationsByEmail',
                 requestId,

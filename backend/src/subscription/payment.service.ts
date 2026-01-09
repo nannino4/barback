@@ -14,7 +14,7 @@ export class PaymentService
         private readonly logger: CustomLogger,
     ) 
     {
-        this.logger.debug('PaymentService initialized', 'PaymentService#constructor');
+        this.logger.log('PaymentService initialized', 'PaymentService#constructor');
     }
 
     async addPaymentMethod(userId: Types.ObjectId, paymentMethodId: string, requestId?: string): Promise<Stripe.PaymentMethod> 

@@ -17,6 +17,7 @@ import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from '../user/schemas/user.schema';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { RequestId } from '../common/decorators/request-id.decorator';
+import { maskEmail } from '../common/utils/mask-email';
 
 @Controller('auth')
 export class AuthController
@@ -37,9 +38,9 @@ export class AuthController
         @RequestId() requestId?: string,
     ): Promise<OutAuthResponseDto>
     {
-        this.logger.debug(`Registration attempt for user: ${registerUserDto.email}`, 'AuthController#register', requestId);
+        this.logger.debug(`Registration attempt for user: ${maskEmail(registerUserDto.email)}`, 'AuthController#register', requestId);
         const response = await this.authService.registerEmail(registerUserDto, requestId);
-        this.logger.debug(`User ${registerUserDto.email} registered successfully`, 'AuthController#register', requestId);
+        this.logger.log(`User signed up userId=${response.user.id}`, 'AuthController#register', requestId);
         return response;
     }
 
@@ -86,9 +87,9 @@ export class AuthController
         @RequestId() requestId?: string,
     ): Promise<void>
     {
-        this.logger.debug(`Sending verification email to: ${user.email}`, 'AuthController#sendVerificationEmail', requestId);
+        this.logger.debug(`Sending verification email to: ${maskEmail(user.email)}`, 'AuthController#sendVerificationEmail', requestId);
         await this.authService.sendVerificationEmail(user.email, requestId);
-        this.logger.debug(`Verification email sent to: ${user.email}`, 'AuthController#sendVerificationEmail', requestId);
+        this.logger.debug(`Verification email sent to: ${maskEmail(user.email)}`, 'AuthController#sendVerificationEmail', requestId);
     }
 
     @Post('verify-email')
@@ -98,9 +99,9 @@ export class AuthController
         @RequestId() requestId?: string,
     ): Promise<void>
     {
-        this.logger.debug('Email verification attempt', 'AuthController#verifyEmail', requestId);
+        this.logger.log('Email verification attempt', 'AuthController#verifyEmail', requestId);
         await this.authService.verifyEmail(verifyEmailDto.token, requestId);
-        this.logger.debug('Email verification successful', 'AuthController#verifyEmail', requestId);
+        this.logger.log('Email verification successful', 'AuthController#verifyEmail', requestId);
     }
 
     @Get('verify-email/:token')
@@ -110,9 +111,9 @@ export class AuthController
         @RequestId() requestId?: string,
     ): Promise<void>
     {
-        this.logger.debug('Email verification by link attempt', 'AuthController#verifyEmailByLink', requestId);
+        this.logger.log('Email verification by link attempt', 'AuthController#verifyEmailByLink', requestId);
         await this.authService.verifyEmail(token, requestId);
-        this.logger.debug('Email verification by link successful', 'AuthController#verifyEmailByLink', requestId);
+        this.logger.log('Email verification by link successful', 'AuthController#verifyEmailByLink', requestId);
     }
 
     @Post('forgot-password')
@@ -124,9 +125,9 @@ export class AuthController
         @RequestId() requestId?: string,
     ): Promise<void>
     {
-        this.logger.debug(`Password reset request for: ${forgotPasswordDto.email}`, 'AuthController#forgotPassword', requestId);
+        this.logger.log(`Password reset request for: ${maskEmail(forgotPasswordDto.email)}`, 'AuthController#forgotPassword', requestId);
         await this.authService.forgotPassword(forgotPasswordDto.email, requestId);
-        this.logger.debug(`Password reset request processed for: ${forgotPasswordDto.email}`, 'AuthController#forgotPassword', requestId);
+        this.logger.log(`Password reset request processed for: ${maskEmail(forgotPasswordDto.email)}`, 'AuthController#forgotPassword', requestId);
     }
 
     @Post('reset-password')
@@ -136,9 +137,9 @@ export class AuthController
         @RequestId() requestId?: string,
     ): Promise<void>
     {
-        this.logger.debug('Password reset attempt', 'AuthController#resetPassword', requestId);
+        this.logger.log('Password reset attempt', 'AuthController#resetPassword', requestId);
         await this.authService.resetPassword(resetPasswordDto.token, resetPasswordDto.newPassword, requestId);
-        this.logger.debug('Password reset successful', 'AuthController#resetPassword', requestId);
+        this.logger.log('Password reset successful', 'AuthController#resetPassword', requestId);
     }
 
     @Get('reset-password/:token')
@@ -148,9 +149,9 @@ export class AuthController
         @RequestId() requestId?: string,
     ): Promise<void>
     {
-        this.logger.debug('Validating password reset token', 'AuthController#validateResetToken', requestId);
+        this.logger.log('Validating password reset token', 'AuthController#validateResetToken', requestId);
         await this.authService.validatePasswordResetToken(token, requestId);
-        this.logger.debug('Password reset token is valid', 'AuthController#validateResetToken', requestId);
+        this.logger.log('Password reset token is valid', 'AuthController#validateResetToken', requestId);
     }
 
     // Google OAuth Endpoints

@@ -74,7 +74,7 @@ export class WebhookController
             // Creates local subscription when Stripe subscription is created
             // Initial status is typically INCOMPLETE (payment not yet processed)
             // Organization can be created immediately after this - no need to wait for ACTIVE
-            this.logger.debug(`Processing customer.subscription.created event with id: ${event.id}`, 'WebhookController#handleStripeWebhook');
+            this.logger.log(`Processing customer.subscription.created event with id: ${event.id}`, 'WebhookController#handleStripeWebhook', requestId);
             const subscriptionData = event.data.object as Stripe.Subscription;
             const subscriptionResult = await this.getStripeSubscriptionAndUser(
                 subscriptionData,
@@ -95,7 +95,7 @@ export class WebhookController
                 requestId,
             );
             
-            this.logger.debug(
+            this.logger.log(
                 `Local subscription created for Stripe subscription ${stripeSubscription.id}`,
                 'WebhookController#handleStripeWebhook',
                 requestId,
@@ -108,12 +108,12 @@ export class WebhookController
             // INCOMPLETE → ACTIVE: Payment succeeded
             // INCOMPLETE → TRIALING: Trial subscription confirmed
             // Also updates billing details (interval, next billing date, amount)
-            this.logger.debug(`Processing customer.subscription.updated event with id: ${event.id}`, 'WebhookController#handleStripeWebhook');
+            this.logger.log(`Processing customer.subscription.updated event with id: ${event.id}`, 'WebhookController#handleStripeWebhook', requestId);
             
             const stripeSubscription = event.data.object as Stripe.Subscription;
             await this.subscriptionService.syncSubscriptionFromStripe(stripeSubscription, requestId);
             this.logger.debug(
-                `Local subscription synced from Stripe subscription ${stripeSubscription.id} with status ${stripeSubscription.status}`,
+            `Local subscription synced from Stripe subscription ${stripeSubscription.id} with status ${stripeSubscription.status}`,
                 'WebhookController#handleStripeWebhook',
                 requestId,
             );

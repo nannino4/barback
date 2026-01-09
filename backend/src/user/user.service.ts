@@ -27,7 +27,7 @@ export class UserService
         private readonly logger: CustomLogger,
     )
     {
-        this.logger.debug('UserService initialized', 'UserService#constructor');
+        this.logger.log('UserService initialized', 'UserService#constructor');
     }
 
     async create(user: CreateUserDto, requestId?: string): Promise<User>

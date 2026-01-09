@@ -77,9 +77,14 @@ export class ProductController
         @RequestId() requestId?: string,
     ): Promise<OutProductDto> 
     {
-        this.logger.debug(`Creating product for org ${orgId}`, 'ProductController#createProduct', requestId);
+        this.logger.log(`Creating product for org ${orgId}`, 'ProductController#createProduct', requestId);
         
         const product = await this.productService.createProduct(orgId, createProductDto, requestId);
+        this.logger.log(
+            `Product created: ${product.id} orgId=${orgId.toString()}`,
+            'ProductController#createProduct',
+            requestId,
+        );
         return plainToInstance(OutProductDto, product, { excludeExtraneousValues: true });
     }
 
@@ -92,9 +97,15 @@ export class ProductController
         @RequestId() requestId?: string,
     ): Promise<OutProductDto> 
     {
-        this.logger.debug(`Updating product ${productId} for org ${orgId}`, 'ProductController#updateProduct', requestId);
+        this.logger.log(`Updating product ${productId} for org ${orgId}`, 'ProductController#updateProduct', requestId);
         
         const product = await this.productService.updateProduct(orgId, productId, updateProductDto, requestId);
+
+        this.logger.log(
+            `Product updated: ${product.id} orgId=${orgId.toString()}`,
+            'ProductController#updateProduct',
+            requestId,
+        );
         return plainToInstance(OutProductDto, product, { excludeExtraneousValues: true });
     }
 
@@ -106,9 +117,15 @@ export class ProductController
         @RequestId() requestId?: string,
     ): Promise<{ message: string }> 
     {
-        this.logger.debug(`Deleting product ${productId} for org ${orgId}`, 'ProductController#deleteProduct', requestId);
+        this.logger.log(`Deleting product ${productId} for org ${orgId}`, 'ProductController#deleteProduct', requestId);
         
         await this.productService.deleteProduct(orgId, productId, requestId);
+
+        this.logger.log(
+            `Product deleted: ${productId} orgId=${orgId.toString()}`,
+            'ProductController#deleteProduct',
+            requestId,
+        );
         return { message: 'Product deleted successfully' };
     }
 
@@ -124,13 +141,19 @@ export class ProductController
         @RequestId() requestId?: string,
     ): Promise<OutInventoryLogDto> 
     {
-        this.logger.debug(`Adjusting stock for product ${productId} in org ${orgId}`, 'ProductController#adjustStock', requestId);
+        this.logger.log(`Adjusting stock for product ${productId} in org ${orgId}`, 'ProductController#adjustStock', requestId);
         
         const inventoryLog = await this.inventoryService.adjustStock(
             orgId, 
             productId, 
             user._id as Types.ObjectId,
             adjustmentDto,
+            requestId,
+        );
+
+        this.logger.log(
+            `Inventory log created: ${inventoryLog.id} orgId=${orgId.toString()} productId=${productId.toString()}`,
+            'ProductController#adjustStock',
             requestId,
         );
         

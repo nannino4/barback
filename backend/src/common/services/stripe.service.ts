@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Stripe from 'stripe';
 import { CustomLogger } from '../logger/custom.logger';
+import { maskEmail } from '../utils/mask-email';
 import { 
     StripeConfigurationException, 
     StripeCustomerException, 
@@ -67,13 +68,14 @@ export class StripeService
             throw new StripeConfigurationException(`Failed to initialize Stripe: ${errorMessage}`);
         }
         
-        this.logger.debug('StripeService initialized', 'StripeService#constructor');
+        this.logger.log('StripeService initialized', 'StripeService#constructor');
     }
+
 
     // Customer Management
     async createCustomer(email: string, name: string, requestId?: string): Promise<Stripe.Customer> 
     {
-        this.logger.debug(`Creating Stripe customer: ${email}`, 'StripeService#createCustomer', requestId);
+        this.logger.log(`Creating Stripe customer: ${maskEmail(email)}`, 'StripeService#createCustomer', requestId);
         
         try 
         {
@@ -82,12 +84,17 @@ export class StripeService
                 name,
             });
             
-            this.logger.debug(`Stripe customer created: ${customer.id}`, 'StripeService#createCustomer', requestId);
+            this.logger.log(`Stripe customer created: ${customer.id}`, 'StripeService#createCustomer', requestId);
             return customer;
         }
         catch (error)
         {
-            this.logger.error(`Failed to create Stripe customer: ${email}`, error instanceof Error ? error.stack : undefined, 'StripeService#createCustomer', requestId);
+            this.logger.error(
+                `Failed to create Stripe customer: ${maskEmail(email)}`,
+                error instanceof Error ? error.stack : undefined,
+                'StripeService#createCustomer',
+                requestId,
+            );
             this.handleStripeError(error, 'customer creation', requestId);
         }
     }

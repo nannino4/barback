@@ -25,7 +25,7 @@ export class SubscriptionService
         private readonly logger: CustomLogger,
     ) 
     {
-        this.logger.debug('SubscriptionService initialized', 'SubscriptionService#constructor');
+        this.logger.log('SubscriptionService initialized', 'SubscriptionService#constructor');
     }
 
     /**

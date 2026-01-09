@@ -81,7 +81,7 @@ export class GoogleService
             throw new GoogleConfigurationException('JWT_OAUTH_STATE_EXPIRATION_TIME');
         }
 
-        this.logger.debug('GoogleService initialized with valid configuration', 'GoogleService#constructor');
+        this.logger.log('GoogleService initialized with valid configuration', 'GoogleService#constructor');
     }
 
     generateAuthUrl(requestId?: string): OutGoogleAuthUrlDto
@@ -225,7 +225,7 @@ export class GoogleService
         let user = await this.userService.findByGoogleId(googleUserInfo.id, requestId);
         if (user) 
         {
-            this.logger.debug(`User found by Google ID: ${user.email}`, 'GoogleService#findOrCreateUser', requestId);
+            this.logger.debug(`User found by Google ID userId=${user.id}`, 'GoogleService#findOrCreateUser', requestId);
             return await this.importGoogleProfilePictureIfNeeded(user, googleUserInfo.picture, requestId);
         }
 
@@ -237,12 +237,20 @@ export class GoogleService
             // Handle existing user with different auth provider
             if (existingUserByEmail.authProvider !== AuthProvider.EMAIL) 
             {
-                this.logger.warn(`User ${googleUserInfo.email} exists with different auth provider: ${existingUserByEmail.authProvider}`, 'GoogleService#findOrCreateUser', requestId);
+                this.logger.warn(
+                    `User exists with different auth provider userId=${existingUserByEmail.id} authProvider=${existingUserByEmail.authProvider}`,
+                    'GoogleService#findOrCreateUser',
+                    requestId,
+                );
                 throw new GoogleAccountLinkingException(existingUserByEmail.authProvider);
             }
 
             // Link Google account to existing email user
-            this.logger.debug(`Linking Google account to existing email user: ${existingUserByEmail.email}`, 'GoogleService#findOrCreateUser', requestId);
+            this.logger.debug(
+                `Linking Google account to existing user userId=${existingUserByEmail.id}`,
+                'GoogleService#findOrCreateUser',
+                requestId,
+            );
             
             user = await this.userService.linkGoogleAccount(
                 existingUserByEmail, 
@@ -251,12 +259,16 @@ export class GoogleService
                 requestId
             );
 
-            this.logger.debug(`Google account linked successfully for user: ${user.email}`, 'GoogleService#findOrCreateUser', requestId);
+            this.logger.log(
+                `Google account linked userId=${user.id} googleId=${googleUserInfo.id}`,
+                'GoogleService#findOrCreateUser',
+                requestId,
+            );
             return await this.importGoogleProfilePictureIfNeeded(user, googleUserInfo.picture, requestId);
         }
 
         // Create new user
-        this.logger.debug(`Creating new Google user: ${googleUserInfo.email}`, 'GoogleService#findOrCreateUser', requestId);
+        this.logger.debug(`Creating new Google user googleId=${googleUserInfo.id}`, 'GoogleService#findOrCreateUser', requestId);
         user = await this.userService.create({
             googleId: googleUserInfo.id,
             email: googleUserInfo.email,
@@ -267,7 +279,11 @@ export class GoogleService
             isEmailVerified: true, // Google emails are pre-verified
         }, requestId);
 
-        this.logger.debug(`User created successfully: ${user.email}`, 'GoogleService#findOrCreateUser', requestId);
+        this.logger.log(
+            `User created via Google OAuth userId=${user.id} googleId=${googleUserInfo.id}`,
+            'GoogleService#findOrCreateUser',
+            requestId,
+        );
         return await this.importGoogleProfilePictureIfNeeded(user, googleUserInfo.picture, requestId);
     }
 

@@ -36,7 +36,7 @@ export class AdminController
         private readonly logger: CustomLogger,
     )
     {
-        this.logger.debug('AdminController initialized', 'AdminController#constructor');
+        this.logger.log('AdminController initialized', 'AdminController#constructor');
     }
 
     @Get()
@@ -64,7 +64,7 @@ export class AdminController
     {
         this.logger.debug(`Admin fetching user by ID: ${id}`, 'AdminController#getUserById', requestId);
         const user = await this.userService.findById(id, requestId);
-        this.logger.debug(`Admin found user: ${user.email}`, 'AdminController#getUserById', requestId);
+        this.logger.debug(`Admin found user: ${user.id}`, 'AdminController#getUserById', requestId);
         return plainToInstance(OutAdminUserDto, user.toObject(), { excludeExtraneousValues: true });
     }
 
@@ -75,9 +75,9 @@ export class AdminController
         @RequestId() requestId?: string,
     ): Promise<OutAdminUserDto>
     {
-        this.logger.debug(`Admin updating user profile for ID: ${id}`, 'AdminController#updateUserProfile', requestId);
+        this.logger.log(`Admin updating user profile for ID: ${id}`, 'AdminController#updateUserProfile', requestId);
         const user = await this.userService.updateProfile(id, updateData, requestId);
-        this.logger.debug(`Admin updated user profile: ${user.email}`, 'AdminController#updateUserProfile', requestId);
+        this.logger.log(`Admin updated user profile userId=${user.id}`, 'AdminController#updateUserProfile', requestId);
         return plainToInstance(OutAdminUserDto, user.toObject(), { excludeExtraneousValues: true });
     }
 
@@ -88,9 +88,9 @@ export class AdminController
         @RequestId() requestId?: string,
     ): Promise<OutAdminUserDto>
     {
-        this.logger.debug(`Admin updating user role for ID: ${id} to role: ${updateData.role}`, 'AdminController#updateUserRole', requestId);
+        this.logger.log(`Admin updating user role for ID: ${id} to role: ${updateData.role}`, 'AdminController#updateUserRole', requestId);
         const user = await this.userService.updateRole(id, updateData.role, requestId);
-        this.logger.debug(`Admin updated user role: ${user.email} to ${user.role}`, 'AdminController#updateUserRole', requestId);
+        this.logger.log(`Admin updated user role userId=${user.id} role=${user.role}`, 'AdminController#updateUserRole', requestId);
         return plainToInstance(OutAdminUserDto, user.toObject(), { excludeExtraneousValues: true });
     }
 
@@ -101,9 +101,9 @@ export class AdminController
         @RequestId() requestId?: string,
     ): Promise<OutAdminUserDto>
     {
-        this.logger.debug(`Admin updating user status for ID: ${id} to active: ${updateData.isActive}`, 'AdminController#updateUserStatus', requestId);
+        this.logger.log(`Admin updating user status for ID: ${id} to active: ${updateData.isActive}`, 'AdminController#updateUserStatus', requestId);
         const user = await this.userService.updateStatus(id, updateData.isActive, requestId);
-        this.logger.debug(`Admin updated user status: ${user.email} to active: ${user.isActive}`, 'AdminController#updateUserStatus', requestId);
+        this.logger.log(`Admin updated user status userId=${user.id} isActive=${user.isActive}`, 'AdminController#updateUserStatus', requestId);
         return plainToInstance(OutAdminUserDto, user.toObject(), { excludeExtraneousValues: true });
     }
 
@@ -114,8 +114,9 @@ export class AdminController
         @RequestId() requestId?: string,
     )
     {
-        this.logger.debug(`Admin attempting to delete user with ID: ${id}`, 'AdminController#deleteUser', requestId);
+        this.logger.log(`Admin attempting to delete user with ID: ${id}`, 'AdminController#deleteUser', requestId);
         const result = await this.userService.remove(id, requestId);
+        this.logger.log(`Admin deleted user userId=${id.toString()}`, 'AdminController#deleteUser', requestId);
         this.logger.debug(`Admin user deletion result: ${JSON.stringify(result)}`, 'AdminController#deleteUser', requestId);
         return ;
     }

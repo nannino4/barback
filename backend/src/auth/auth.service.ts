@@ -76,7 +76,7 @@ export class AuthService
         }
         this.jwtRefreshTokenExpiration = parseJwtExpiration(refreshExpiration);
 
-        this.logger.debug('AuthService initialized with valid JWT configuration', 'AuthService#constructor');
+        this.logger.log('AuthService initialized with valid JWT configuration', 'AuthService#constructor');
     }
 
     async generateTokens(user: User, requestId?: string): Promise<OutTokensDto>

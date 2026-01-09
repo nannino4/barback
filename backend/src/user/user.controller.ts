@@ -24,6 +24,7 @@ import { CustomLogger } from '../common/logger/custom.logger';
 import { StorageService } from '../storage/storage.service';
 import { ProfilePictureValidationPipe } from '../pipes/profile-picture-validation.pipe';
 import { RequestId } from '../common/decorators/request-id.decorator';
+import { maskEmail } from '../common/utils/mask-email';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, EmailVerifiedGuard)
@@ -54,9 +55,9 @@ export class UserController
         @RequestId() requestId?: string,
     ): Promise<OutUserDto>
     {
-        this.logger.debug(`User updating own profile: ${user.email}`, 'UserController#updateCurrentUserProfile', requestId);
+        this.logger.log(`User updating own profile: ${user.id}`, 'UserController#updateCurrentUserProfile', requestId);
         const updatedUser = await this.userService.updateProfile(user.id, updateData, requestId);
-        this.logger.debug(`User profile updated successfully: ${updatedUser.email}`, 'UserController#updateCurrentUserProfile', requestId);
+        this.logger.log(`User profile updated successfully: ${updatedUser.id}`, 'UserController#updateCurrentUserProfile', requestId);
         return plainToInstance(OutUserDto, updatedUser.toObject(), { excludeExtraneousValues: true });
     }
 
@@ -68,7 +69,7 @@ export class UserController
         @RequestId() requestId?: string,
     ): Promise<OutUserDto>
     {
-        this.logger.debug(`User uploading profile picture: ${user.email}`, 'UserController#uploadProfilePicture', requestId);
+        this.logger.log(`User uploading profile picture: ${user.id}`, 'UserController#uploadProfilePicture', requestId);
 
         // Upload to storage (processes image and generates thumbnail)
         const uploadResult = await this.storageService.uploadUserProfilePicture({
@@ -90,7 +91,8 @@ export class UserController
             requestId,
         );
 
-        this.logger.debug(`Profile picture uploaded successfully for user: ${updatedUser.email}`, 'UserController#uploadProfilePicture', requestId);
+        // File storage success stays debug (handled in storage layer); profile update is an info-level business event.
+        this.logger.log(`User profile picture updated: ${updatedUser.id}`, 'UserController#uploadProfilePicture', requestId);
         return plainToInstance(OutUserDto, updatedUser.toObject(), { excludeExtraneousValues: true });
     }
 
@@ -102,7 +104,7 @@ export class UserController
         @RequestId() requestId?: string,
     ): Promise<void>
     {
-        this.logger.debug(`User attempting to change password: ${user.email}`, 'UserController#changeCurrentUserPassword', requestId);
+        this.logger.log(`User attempting to change password: ${user.id}`, 'UserController#changeCurrentUserPassword', requestId);
         await this.userService.changePassword(
             user.id,
             changePasswordDto.currentPassword,
@@ -110,7 +112,7 @@ export class UserController
         ,
             requestId,
         );
-        this.logger.debug(`Password changed successfully for user: ${user.email}`, 'UserController#changeCurrentUserPassword', requestId);
+        this.logger.log(`Password changed successfully for user: ${user.id}`, 'UserController#changeCurrentUserPassword', requestId);
     }
 
     @Delete('me')
@@ -120,8 +122,8 @@ export class UserController
         @RequestId() requestId?: string,
     ): Promise<void>
     {
-        this.logger.debug(`User attempting to delete own account: ${user.email}`, 'UserController#deleteCurrentUser', requestId);
+        this.logger.log(`User attempting to delete own account: ${user.id}`, 'UserController#deleteCurrentUser', requestId);
         const result = await this.userService.remove(user.id, requestId);
-        this.logger.debug(`User account deletion result: ${JSON.stringify(result)}`, 'UserController#deleteCurrentUser', requestId);
+        this.logger.log(`User account deletion result: ${JSON.stringify(result)}`, 'UserController#deleteCurrentUser', requestId);
     }
 }

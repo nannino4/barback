@@ -81,6 +81,7 @@ describe('GoogleService', () =>
         };
 
         const mockLogger = {
+            log: jest.fn(),
             debug: jest.fn(),
             error: jest.fn(),
             warn: jest.fn(),
@@ -141,7 +142,7 @@ describe('GoogleService', () =>
         it('should initialize successfully with valid configuration', () => 
         {
             expect(service).toBeDefined();
-            expect(logger.debug).toHaveBeenCalledWith(
+            expect(logger.log).toHaveBeenCalledWith(
                 'GoogleService initialized with valid configuration',
                 'GoogleService#constructor'
             );

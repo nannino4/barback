@@ -35,6 +35,7 @@ import { SubscriptionService } from '../subscription/subscription.service';
 import { SubscriptionStatus } from '../subscription/schemas/subscription.schema';
 import { CustomLogger } from '../common/logger/custom.logger';
 import { RequestId } from '../common/decorators/request-id.decorator';
+import { maskEmail } from '../common/utils/mask-email';
 import { 
     OrganizationNotFoundException, 
     SubscriptionNotActiveException, 
@@ -66,8 +67,8 @@ export class OrgController
         @RequestId() requestId?: string,
     ): Promise<OutOrgDto>
     {
-        this.logger.debug(
-            `Creating organization: ${createData.name} for user: ${user.email} with Stripe subscription: ${createData.stripeSubscriptionId}`,
+        this.logger.log(
+            `Creating organization: ${createData.name} for user: ${maskEmail(user.email)} with Stripe subscription: ${createData.stripeSubscriptionId}`,
             'OrgController#createOrganization',
             requestId,
         );
@@ -78,7 +79,7 @@ export class OrgController
         if (subscription.userId.toString() !== user.id)
         {
             this.logger.error(
-                `Subscription ${createData.stripeSubscriptionId} does not belong to user: ${user.email}`,
+                `Subscription ${createData.stripeSubscriptionId} does not belong to user: ${maskEmail(user.email)}`,
                 undefined,
                 'OrgController#createOrganization',
                 requestId,
@@ -107,7 +108,7 @@ export class OrgController
         // Create the organization
         const org = await this.orgService.create(createData, user._id as Types.ObjectId, subscription._id as Types.ObjectId, requestId);
         
-        this.logger.debug(
+        this.logger.log(
             `Organization created successfully: ${org.name} with ID: ${org._id}`,
             'OrgController#createOrganization',
             requestId,
@@ -263,9 +264,9 @@ export class OrgController
         @RequestId() requestId?: string,
     ): Promise<OutOrgDto>
     {
-        this.logger.debug(`Updating organization: ${orgId} by user: ${user.email}`, 'OrgController#updateOrganization', requestId);
+        this.logger.log(`Updating organization: ${orgId} by user: ${user.id}`, 'OrgController#updateOrganization', requestId);
         const updatedOrg = await this.orgService.update(orgId, updateData, requestId);
-        this.logger.debug(`Organization updated successfully: ${updatedOrg.name}`, 'OrgController#updateOrganization', requestId);
+        this.logger.log(`Organization updated successfully: ${updatedOrg.name}`, 'OrgController#updateOrganization', requestId);
         return plainToInstance(OutOrgDto, updatedOrg.toObject(), { excludeExtraneousValues: true });
     }
 
@@ -280,12 +281,12 @@ export class OrgController
         @RequestId() requestId?: string,
     ): Promise<OutUserOrgRelationDto>
     {
-        this.logger.debug(`Updating member role for user: ${userId} in org: ${orgId} to role: ${updateData.role} by user: ${user.email}`, 'OrgController#updateMemberRole', requestId);
+        this.logger.log(`Updating member role for user: ${userId} in org: ${orgId} to role: ${updateData.role} by user: ${user.id}`, 'OrgController#updateMemberRole', requestId);
         
         // Prevent assignment of OWNER role through role updates
         if (updateData.role === OrgRole.OWNER)
         {
-            this.logger.warn(`Attempt to assign OWNER role to user: ${userId} in org: ${orgId} by user: ${user.email}`, 'OrgController#updateMemberRole', requestId);
+            this.logger.warn(`Attempt to assign OWNER role to user: ${userId} in org: ${orgId} by user: ${user.id}`, 'OrgController#updateMemberRole', requestId);
             throw new OwnerRoleAssignmentException();
         }
         
@@ -322,7 +323,7 @@ export class OrgController
             throw new CorruptedUserOrgRelationException(updatedRelation.id, !populatedRelation.userId ? 'user' : 'organization');
         }
         
-        this.logger.debug(`Member role updated successfully for user: ${userId} in org: ${orgId} to role: ${updateData.role}`, 'OrgController#updateMemberRole', requestId);
+        this.logger.log(`Member role updated successfully for user: ${userId} in org: ${orgId} to role: ${updateData.role}`, 'OrgController#updateMemberRole', requestId);
         
         return plainToInstance(OutUserOrgRelationDto, populatedRelation.toObject(), { excludeExtraneousValues: true });
     }
@@ -352,7 +353,7 @@ export class OrgController
         @RequestId() requestId?: string,
     ): Promise<void>
     {
-        this.logger.debug(`User: ${user.email} attempting to leave organization: ${orgId}`, 'OrgController#leaveOrganization', requestId);
+        this.logger.log(`User: ${user.id} attempting to leave organization: ${orgId}`, 'OrgController#leaveOrganization', requestId);
         
         // Verify organization exists
         const org = await this.orgService.findById(orgId, requestId);
@@ -380,7 +381,7 @@ export class OrgController
         // Remove the membership
         await this.userOrgRelationService.remove(user._id as Types.ObjectId, orgId, requestId);
         
-        this.logger.debug(`User: ${user.email} successfully left organization: ${orgId}`, 'OrgController#leaveOrganization', requestId);
+        this.logger.log(`User: ${user.id} successfully left organization: ${orgId}`, 'OrgController#leaveOrganization', requestId);
     }
 
     @Delete(':id/members/:userId')

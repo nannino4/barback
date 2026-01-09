@@ -98,7 +98,7 @@ export class S3StorageService extends StorageService
             throw new StorageConfigurationException(`Failed to initialize S3 client: ${errorMessage}`);
         }
 
-        this.logger.debug('S3StorageService initialized', 'S3StorageService#constructor');
+        this.logger.log('S3StorageService initialized', 'S3StorageService#constructor');
     }
 
     async uploadUserProfilePicture(input: UploadUserProfilePictureInput, requestId?: string): Promise<UploadUserProfilePictureResult>

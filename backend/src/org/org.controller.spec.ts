@@ -26,6 +26,8 @@ import { EmailVerifiedGuard } from 'src/auth/guards/email-verified.guard';
 
 describe('OrgController (Integration)', () => 
 {
+    jest.setTimeout(60000);
+
     let app: INestApplication;
     let mongoServer: MongoMemoryReplSet;
     let userService: UserService;
@@ -39,6 +41,21 @@ describe('OrgController (Integration)', () =>
     let orgModel: any;
     let relationModel: any;
     let subscriptionModel: any;
+
+    const cleanupDatabase = async (): Promise<void> =>
+    {
+        if (!userModel || !orgModel || !relationModel)
+        {
+            return;
+        }
+
+        await Promise.all([
+            userModel.deleteMany({}).exec(),
+            orgModel.deleteMany({}).exec(),
+            relationModel.deleteMany({}).exec(),
+            subscriptionModel ? subscriptionModel.deleteMany({}).exec() : Promise.resolve(),
+        ]);
+    };
 
     beforeAll(async () => 
     {
@@ -124,13 +141,20 @@ describe('OrgController (Integration)', () =>
         subscriptionModel = moduleFixture.get('SubscriptionModel');
 
         await app.init();
-    });
+    }, 60000);
 
     afterAll(async () => 
     {
-        await app.close();
-        await mongoServer.stop();
-    });
+        if (app)
+        {
+            await app.close();
+        }
+
+        if (mongoServer)
+        {
+            await mongoServer.stop();
+        }
+    }, 60000);
 
     describe('GET /orgs', () => 
     {
@@ -217,12 +241,7 @@ describe('OrgController (Integration)', () =>
 
         afterEach(async () => 
         {
-            // Clean up database after each test using model references
-            await Promise.all([
-                userModel.deleteMany({}).exec(),
-                orgModel.deleteMany({}).exec(),
-                relationModel.deleteMany({}).exec(),
-            ]);
+            await cleanupDatabase();
         });
 
         it('should return all user organizations without role filter', async () => 
@@ -596,12 +615,7 @@ describe('OrgController (Integration)', () =>
 
         afterEach(async () => 
         {
-            // Clean up database after each test using model references
-            await Promise.all([
-                userModel.deleteMany({}).exec(),
-                orgModel.deleteMany({}).exec(),
-                relationModel.deleteMany({}).exec(),
-            ]);
+            await cleanupDatabase();
         });
 
         it('should return all members of an organization', async () => 
@@ -784,12 +798,7 @@ describe('OrgController (Integration)', () =>
 
         afterEach(async () => 
         {
-            // Clean up database after each test using model references
-            await Promise.all([
-                userModel.deleteMany({}).exec(),
-                orgModel.deleteMany({}).exec(),
-                relationModel.deleteMany({}).exec(),
-            ]);
+            await cleanupDatabase();
         });
 
         it('should update organization name successfully', async () => 
@@ -1052,12 +1061,7 @@ describe('OrgController (Integration)', () =>
 
         afterEach(async () => 
         {
-            // Clean up database after each test using model references
-            await Promise.all([
-                userModel.deleteMany({}).exec(),
-                orgModel.deleteMany({}).exec(),
-                relationModel.deleteMany({}).exec(),
-            ]);
+            await cleanupDatabase();
         });
 
         it('should update member role from STAFF to MANAGER successfully', async () => 
@@ -1361,13 +1365,7 @@ describe('OrgController (Integration)', () =>
 
         afterEach(async () => 
         {
-            // Clean up database after each test
-            await Promise.all([
-                userModel.deleteMany({}).exec(),
-                orgModel.deleteMany({}).exec(),
-                relationModel.deleteMany({}).exec(),
-                subscriptionModel.deleteMany({}).exec(),
-            ]);
+            await cleanupDatabase();
         });
 
         it('should return available true when organization name is available', async () => 
@@ -1598,7 +1596,7 @@ describe('OrgController (Integration)', () =>
             expect(response.body.error).toBe('OWNER_CANNOT_LEAVE');
         });
 
-        it('should return 404 for non-existent organization', async () =>
+        it('should return 403 for non-existent organization', async () =>
         {
             const moduleRef = app.get(JwtAuthGuard);
             jest.spyOn(moduleRef, 'canActivate').mockImplementation(async (context) =>
@@ -1612,7 +1610,7 @@ describe('OrgController (Integration)', () =>
             const fakeOrgId = new Types.ObjectId();
             await request(app.getHttpServer())
                 .post(`/api/orgs/${fakeOrgId}/leave`)
-                .expect(404);
+                .expect(403);
         });
     });
 

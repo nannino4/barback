@@ -549,7 +549,11 @@ describe('UserOrgRelationService - Service Tests (Unit-style)', () =>
             // Act & Assert
             await expect(service.remove(nonMemberId, mockOrgId1))
                 .rejects
-                .toThrow('USER_NOT_MEMBER');
+                .toMatchObject({
+                    response: {
+                        error: 'USER_NOT_MEMBER',
+                    },
+                });
         });
 
         it('should throw UserNotMemberException for non-existent org', async () =>
@@ -560,7 +564,11 @@ describe('UserOrgRelationService - Service Tests (Unit-style)', () =>
             // Act & Assert
             await expect(service.remove(mockUserId1, nonExistentOrgId))
                 .rejects
-                .toThrow('USER_NOT_MEMBER');
+                .toMatchObject({
+                    response: {
+                        error: 'USER_NOT_MEMBER',
+                    },
+                });
         });
     });
 });

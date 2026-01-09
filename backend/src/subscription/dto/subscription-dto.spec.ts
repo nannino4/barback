@@ -41,8 +41,8 @@ describe('Subscription DTOs', () =>
                 expect(transformed.type).toBe(paymentMethod.type);
                 expect(transformed.card?.brand).toBe(paymentMethod.card.brand);
                 expect(transformed.card?.last4).toBe(paymentMethod.card.last4);
-                expect(transformed.card?.exp_month).toBe(paymentMethod.card.exp_month);
-                expect(transformed.card?.exp_year).toBe(paymentMethod.card.exp_year);
+                expect(transformed.card?.expMonth).toBe(paymentMethod.card.exp_month);
+                expect(transformed.card?.expYear).toBe(paymentMethod.card.exp_year);
                 expect(transformed.isDefault).toBe(paymentMethod.isDefault);
 
                 // Should exclude sensitive fields
@@ -106,8 +106,8 @@ describe('Subscription DTOs', () =>
                 expect(transformed.card).toEqual({
                     brand: 'mastercard',
                     last4: '5555',
-                    exp_month: 6,
-                    exp_year: 2026,
+                    expMonth: 6,
+                    expYear: 2026,
                 });
 
                 // Should exclude extra card data

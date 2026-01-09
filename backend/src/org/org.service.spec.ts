@@ -416,12 +416,14 @@ describe('OrgService - Service Tests (Unit-style)', () =>
             // Assert
             expect(result).toBe(true);
             expect(mockLogger.debug).toHaveBeenCalledWith(
-                expect.stringContaining(`Checking if organization name is available: "${orgName}"`),
-                'OrgService#isNameAvailable'
+                expect.stringContaining(`Checking if organization name is available: "${orgName}" for owner: ${ownerId}`),
+                'OrgService#isNameAvailable',
+                undefined,
             );
             expect(mockLogger.debug).toHaveBeenCalledWith(
-                expect.stringContaining(`Organization name "${orgName}" is available`),
-                'OrgService#isNameAvailable'
+                expect.stringContaining(`Organization name "${orgName}" is available for owner: ${ownerId}`),
+                'OrgService#isNameAvailable',
+                undefined,
             );
         });
 
@@ -446,8 +448,9 @@ describe('OrgService - Service Tests (Unit-style)', () =>
             // Assert
             expect(result).toBe(false);
             expect(mockLogger.debug).toHaveBeenCalledWith(
-                expect.stringContaining(`Organization name "${orgName}" is not available`),
-                'OrgService#isNameAvailable'
+                expect.stringContaining(`Organization name "${orgName}" is not available for owner: ${ownerId}`),
+                'OrgService#isNameAvailable',
+                undefined,
             );
         });
 
@@ -491,7 +494,8 @@ describe('OrgService - Service Tests (Unit-style)', () =>
             expect(mockLogger.error).toHaveBeenCalledWith(
                 expect.stringContaining(`Database error during name availability check: ${orgName}`),
                 expect.any(String),
-                'OrgService#isNameAvailable'
+                'OrgService#isNameAvailable',
+                undefined,
             );
         });
     });

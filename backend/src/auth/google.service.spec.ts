@@ -7,6 +7,7 @@ import { UserService } from '../user/user.service';
 import { CustomLogger } from '../common/logger/custom.logger';
 import { User, AuthProvider } from '../user/schemas/user.schema';
 import { Types } from 'mongoose';
+import { StorageService } from '../storage/storage.service';
 import {
     GoogleConfigurationException,
     GoogleTokenExchangeException,
@@ -28,6 +29,7 @@ describe('GoogleService', () =>
     let logger: jest.Mocked<CustomLogger>;
     let jwtService: JwtService;
     let testingModule: TestingModule;
+    let storageService: jest.Mocked<StorageService>;
 
     const mockConfig = {
         GOOGLE_CLIENT_ID: 'test-client-id',
@@ -84,6 +86,10 @@ describe('GoogleService', () =>
             warn: jest.fn(),
         };
 
+        const mockStorageService = {
+            uploadUserProfilePicture: jest.fn(),
+        };
+
         testingModule = await Test.createTestingModule({
             imports: [
                 JwtModule.register({}), // Register JwtModule without default secret
@@ -93,6 +99,7 @@ describe('GoogleService', () =>
                 { provide: ConfigService, useValue: mockConfigService },
                 { provide: UserService, useValue: mockUserService },
                 { provide: CustomLogger, useValue: mockLogger },
+                { provide: StorageService, useValue: mockStorageService },
             ],
         }).compile();
 
@@ -100,6 +107,7 @@ describe('GoogleService', () =>
         userService = testingModule.get(UserService);
         logger = testingModule.get(CustomLogger);
         jwtService = testingModule.get<JwtService>(JwtService);
+        storageService = testingModule.get(StorageService);
     });
 
     afterEach(() => 
@@ -124,6 +132,7 @@ describe('GoogleService', () =>
                         { provide: ConfigService, useValue: mockConfigMissing },
                         { provide: UserService, useValue: userService },
                         { provide: CustomLogger, useValue: logger },
+                        { provide: StorageService, useValue: storageService },
                     ],
                 }).compile();
             }).rejects.toThrow(GoogleConfigurationException);
@@ -306,7 +315,7 @@ describe('GoogleService', () =>
             const result = await service.findOrCreateUser(mockGoogleUserInfo);
 
             expect(result).toEqual(mockUser);
-            expect(userService.findByGoogleId).toHaveBeenCalledWith('google-123');
+            expect(userService.findByGoogleId).toHaveBeenCalledWith('google-123', undefined);
         });
 
         it('should link Google account to existing email user', async () => 
@@ -324,7 +333,8 @@ describe('GoogleService', () =>
             expect(userService.linkGoogleAccount).toHaveBeenCalledWith(
                 emailUser,
                 'google-123',
-                'https://example.com/pic.jpg'
+                'https://example.com/pic.jpg',
+                undefined,
             );
         });
 
@@ -357,7 +367,7 @@ describe('GoogleService', () =>
                 profilePictureUrl: 'https://example.com/pic.jpg',
                 authProvider: AuthProvider.GOOGLE,
                 isEmailVerified: true,
-            });
+            }, undefined);
         });
 
     });

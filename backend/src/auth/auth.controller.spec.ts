@@ -19,6 +19,7 @@ import { EmailService } from '../email/email.service';
 import { InvitationService } from '../invitation/invitation.service';
 import { GoogleService } from './google.service';
 import { CustomLogger } from '../common/logger/custom.logger';
+import { StorageService } from '../storage/storage.service';
 
 describe('AuthController - Integration Tests', () => 
 {
@@ -92,6 +93,12 @@ describe('AuthController - Integration Tests', () =>
                     useValue: {},
                 },
                 {
+                    provide: StorageService,
+                    useValue: {
+                        uploadUserProfilePicture: jest.fn(),
+                    },
+                },
+                {
                     provide: ConfigService,
                     useValue: {
                         get: jest.fn((key: string) => 
@@ -149,8 +156,16 @@ describe('AuthController - Integration Tests', () =>
 
     afterAll(async () => 
     {
-        await app.close();
-        await module.close();
+        if (app)
+        {
+            await app.close();
+        }
+
+        if (module)
+        {
+            await module.close();
+        }
+
         await DatabaseTestHelper.stopInMemoryDatabase();
     });
 

@@ -232,7 +232,8 @@ describe('SubscriptionController - Integration Tests', () =>
             expect(response.body).toHaveProperty('status', SubscriptionStatus.ACTIVE);
             expect(mockLogger.debug).toHaveBeenCalledWith(
                 expect.stringContaining(`Getting Stripe subscription status for user: ${testUserId}`),
-                'SubscriptionController#getStripeSubscriptionStatus'
+                'SubscriptionController#getStripeSubscriptionStatus',
+                undefined,
             );
         });
 
@@ -267,7 +268,8 @@ describe('SubscriptionController - Integration Tests', () =>
             // Verify warning was logged
             expect(mockLogger.warn).toHaveBeenCalledWith(
                 expect.stringContaining(`User: ${testUserId} attempted to access subscription`),
-                'SubscriptionController#getStripeSubscriptionStatus'
+                'SubscriptionController#getStripeSubscriptionStatus',
+                undefined,
             );
         });
 

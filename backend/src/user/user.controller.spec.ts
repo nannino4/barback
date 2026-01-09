@@ -360,6 +360,12 @@ describe('UserController (Integration)', () =>
             // Override the guard to reject authentication
             const moduleWithoutAuth = await Test.createTestingModule({
                 imports: [
+                    ConfigModule.forRoot({
+                        isGlobal: true,
+                        load: [() => ({
+                            USER_PROFILE_PICTURE_MAX_BYTES: 5242880,
+                        })],
+                    }),
                     MongooseModule.forRoot(mongoServer.getUri()),
                     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
                     JwtModule.register({
@@ -370,6 +376,11 @@ describe('UserController (Integration)', () =>
                 controllers: [UserController],
                 providers: [
                     UserService,
+                    ProfilePictureValidationPipe,
+                    {
+                        provide: StorageService,
+                        useValue: mockStorageService,
+                    },
                     {
                         provide: CustomLogger,
                         useValue: mockLogger,

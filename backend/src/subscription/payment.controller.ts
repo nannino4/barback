@@ -9,6 +9,7 @@ import { InSetDefaultPaymentMethodDto } from './dto/in.set-default-payment-metho
 import { OutPaymentMethodDto } from './dto/out.payment-method.dto';
 import { plainToInstance } from 'class-transformer';
 import { CustomLogger } from '../common/logger/custom.logger';
+import { RequestId } from '../common/decorators/request-id.decorator';
 
 @Controller('payment')
 @UseGuards(JwtAuthGuard, EmailVerifiedGuard)
@@ -20,34 +21,49 @@ export class PaymentController
     ) {}
 
     @Get('methods')
-    async getPaymentMethods(@CurrentUser() user: User): Promise<OutPaymentMethodDto[]> 
+    async getPaymentMethods(
+        @CurrentUser() user: User,
+        @RequestId() requestId?: string,
+    ): Promise<OutPaymentMethodDto[]> 
     {
-        this.logger.debug(`Getting payment methods for user: ${user.id}`, 'PaymentController#getPaymentMethods');
-        const paymentMethods = await this.paymentService.getPaymentMethods(user.id);
+        this.logger.debug(`Getting payment methods for user: ${user.id}`, 'PaymentController#getPaymentMethods', requestId);
+        const paymentMethods = await this.paymentService.getPaymentMethods(user.id, requestId);
         return plainToInstance(OutPaymentMethodDto, paymentMethods, { excludeExtraneousValues: true });
     }
 
     @Post('methods')
-    async addPaymentMethod(@CurrentUser() user: User, @Body() addPaymentMethodDto: InAddPaymentMethodDto): Promise<OutPaymentMethodDto> 
+    async addPaymentMethod(
+        @CurrentUser() user: User,
+        @Body() addPaymentMethodDto: InAddPaymentMethodDto,
+        @RequestId() requestId?: string,
+    ): Promise<OutPaymentMethodDto> 
     {
-        this.logger.debug(`Adding payment method for user: ${user.id}`, 'PaymentController#addPaymentMethod');
-        const paymentMethod = await this.paymentService.addPaymentMethod(user.id, addPaymentMethodDto.paymentMethodId);
+        this.logger.debug(`Adding payment method for user: ${user.id}`, 'PaymentController#addPaymentMethod', requestId);
+        const paymentMethod = await this.paymentService.addPaymentMethod(user.id, addPaymentMethodDto.paymentMethodId, requestId);
         return plainToInstance(OutPaymentMethodDto, paymentMethod, { excludeExtraneousValues: true });
     }
 
     @Delete('methods/:paymentMethodId')
     @HttpCode(HttpStatus.NO_CONTENT)
-    async removePaymentMethod(@CurrentUser() user: User, @Param('paymentMethodId') paymentMethodId: string): Promise<void> 
+    async removePaymentMethod(
+        @CurrentUser() user: User,
+        @Param('paymentMethodId') paymentMethodId: string,
+        @RequestId() requestId?: string,
+    ): Promise<void> 
     {
-        this.logger.debug(`Removing payment method ${paymentMethodId} for user: ${user.id}`, 'PaymentController#removePaymentMethod');
-        await this.paymentService.removePaymentMethod(user.id, paymentMethodId);
+        this.logger.debug(`Removing payment method ${paymentMethodId} for user: ${user.id}`, 'PaymentController#removePaymentMethod', requestId);
+        await this.paymentService.removePaymentMethod(user.id, paymentMethodId, requestId);
     }
 
     @Post('methods/default')
     @HttpCode(HttpStatus.NO_CONTENT)
-    async setDefaultPaymentMethod(@CurrentUser() user: User, @Body() setDefaultPaymentMethodDto: InSetDefaultPaymentMethodDto): Promise<void> 
+    async setDefaultPaymentMethod(
+        @CurrentUser() user: User,
+        @Body() setDefaultPaymentMethodDto: InSetDefaultPaymentMethodDto,
+        @RequestId() requestId?: string,
+    ): Promise<void> 
     {
-        this.logger.debug(`Setting default payment method for user: ${user.id}`, 'PaymentController#setDefaultPaymentMethod');
-        await this.paymentService.setDefaultPaymentMethod(user.id, setDefaultPaymentMethodDto.paymentMethodId);
+        this.logger.debug(`Setting default payment method for user: ${user.id}`, 'PaymentController#setDefaultPaymentMethod', requestId);
+        await this.paymentService.setDefaultPaymentMethod(user.id, setDefaultPaymentMethodDto.paymentMethodId, requestId);
     }
 }

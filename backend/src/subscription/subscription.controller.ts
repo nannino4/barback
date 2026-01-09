@@ -11,6 +11,7 @@ import { OutStripeSubscriptionStatusDto } from './dto/out.stripe-subscription-st
 import { plainToInstance } from 'class-transformer';
 import { CustomLogger } from '../common/logger/custom.logger';
 import { SubscriptionOwnershipException } from 'src/org/exceptions/org.exceptions';
+import { RequestId } from '../common/decorators/request-id.decorator';
 
 @Controller('subscriptions')
 export class SubscriptionController 
@@ -25,11 +26,14 @@ export class SubscriptionController
 
     @UseGuards(JwtAuthGuard, EmailVerifiedGuard)
     @Get()
-    async getAllSubscriptions(@CurrentUser() user: User): Promise<OutSubscriptionDto[]> 
+    async getAllSubscriptions(
+        @CurrentUser() user: User,
+        @RequestId() requestId?: string,
+    ): Promise<OutSubscriptionDto[]> 
     {
-        this.logger.debug(`Getting all subscriptions for user: ${user.id}`, 'SubscriptionController#getAllSubscriptions');
+        this.logger.debug(`Getting all subscriptions for user: ${user.id}`, 'SubscriptionController#getAllSubscriptions', requestId);
         
-        const subscriptions = await this.subscriptionService.findAllByUserId(user.id);
+        const subscriptions = await this.subscriptionService.findAllByUserId(user.id, requestId);
         return plainToInstance(OutSubscriptionDto, subscriptions.map(sub => sub.toObject()), { excludeExtraneousValues: true });
     }
 
@@ -44,18 +48,21 @@ export class SubscriptionController
     @Post()
     async setupSubscriptionPayment(
         @CurrentUser() user: User,
-        @Body() createSubscriptionDto: InCreateSubscriptionDto
+        @Body() createSubscriptionDto: InCreateSubscriptionDto,
+        @RequestId() requestId?: string,
     ): Promise<OutSubscriptionSetupDto> 
     {
         this.logger.debug(
             `Setting up ${createSubscriptionDto.isTrial ? 'trial' : 'paid'} subscription payment for user: ${user.id}`,
-            'SubscriptionController#setupSubscriptionPayment'
+            'SubscriptionController#setupSubscriptionPayment',
+            requestId,
         );
         
         const result = await this.subscriptionService.setupSubscriptionPayment(
             user.id,
             createSubscriptionDto.billingInterval,
-            createSubscriptionDto.isTrial
+            createSubscriptionDto.isTrial,
+            requestId,
         );
         
         return plainToInstance(
@@ -67,11 +74,14 @@ export class SubscriptionController
 
     @UseGuards(JwtAuthGuard, EmailVerifiedGuard)
     @Get('trial-eligibility')
-    async checkTrialEligibility(@CurrentUser() user: User): Promise<{ eligible: boolean }> 
+    async checkTrialEligibility(
+        @CurrentUser() user: User,
+        @RequestId() requestId?: string,
+    ): Promise<{ eligible: boolean }> 
     {
-        this.logger.debug(`Checking trial eligibility for user: ${user.id}`, 'SubscriptionController#checkTrialEligibility');
+        this.logger.debug(`Checking trial eligibility for user: ${user.id}`, 'SubscriptionController#checkTrialEligibility', requestId);
         
-        const eligible = await this.subscriptionService.isEligibleForTrial(user.id);
+        const eligible = await this.subscriptionService.isEligibleForTrial(user.id, requestId);
         return { eligible };
     }
 
@@ -80,19 +90,22 @@ export class SubscriptionController
     async getStripeSubscriptionStatus(
         @CurrentUser() user: User,
         @Param('stripeSubscriptionId') stripeSubscriptionId: string,
+        @RequestId() requestId?: string,
     ): Promise<OutStripeSubscriptionStatusDto>
     {
         this.logger.debug(
             `Getting Stripe subscription status for user: ${user.id} and subscription: ${stripeSubscriptionId}`,
-            'SubscriptionController#getStripeSubscriptionStatus'
+            'SubscriptionController#getStripeSubscriptionStatus',
+            requestId,
         );
 
-        const subscription = await this.subscriptionService.findByStripeSubscriptionId(stripeSubscriptionId);
+        const subscription = await this.subscriptionService.findByStripeSubscriptionId(stripeSubscriptionId, requestId);
         if (subscription.userId.toString() !== user.id)
         {
             this.logger.warn(
                 `User: ${user.id} attempted to access subscription: ${stripeSubscriptionId} which does not belong to them.`,
-                'SubscriptionController#getStripeSubscriptionStatus'
+                'SubscriptionController#getStripeSubscriptionStatus',
+                requestId,
             );
             throw new SubscriptionOwnershipException(subscription.id);
         }

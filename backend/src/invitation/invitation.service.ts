@@ -33,11 +33,13 @@ export class InvitationService
         invitedBy: Types.ObjectId,
         createInviteDto: InCreateInvitationDto,
         organizationName: string,
+        requestId?: string,
     ): Promise<Invitation> 
     {
         this.logger.debug(
             `Creating invitation for email=${createInviteDto.invitedEmail} orgId=${orgId} role=${createInviteDto.role}`,
             'InvitationService#createInvitation',
+            requestId,
         );
         const { invitedEmail, role } = createInviteDto;
 
@@ -105,6 +107,7 @@ export class InvitationService
                 this.logger.debug(
                     `Invitation email sent to ${invitedEmail} for organization ${organizationName}`,
                     'InvitationService#createInvitation',
+                    requestId,
                 );
             } 
             catch (error) 
@@ -113,6 +116,7 @@ export class InvitationService
                     `Failed to send invitation email to ${invitedEmail}`,
                     error instanceof Error ? error.stack : undefined,
                     'InvitationService#createInvitation',
+                    requestId,
                 );
                 // Delete the invitation if email failed
                 await this.invitationModel.deleteOne({ _id: invitation._id });
@@ -123,6 +127,7 @@ export class InvitationService
             this.logger.debug(
                 `Invitation ${invitation.id} created successfully for email=${invitedEmail}`,
                 'InvitationService#createInvitation',
+                requestId,
             );
             
             // Populate before returning
@@ -156,16 +161,21 @@ export class InvitationService
                 `Database error during invitation creation for ${invitedEmail}`,
                 errorStack,
                 'InvitationService#createInvitation',
+                requestId,
             );
             throw new DatabaseOperationException('invitation creation', errorMessage);
         }
     }
 
-    async findPendingInvitationsByEmail(email: string): Promise<Invitation[]> 
+    async findPendingInvitationsByEmail(email: string, requestId?: string): Promise<Invitation[]> 
     {
         try 
         {
-            this.logger.debug(`Finding pending invitations by email=${email}`, 'InvitationService#findPendingInvitationsByEmail');
+            this.logger.debug(
+                `Finding pending invitations by email=${email}`,
+                'InvitationService#findPendingInvitationsByEmail',
+                requestId,
+            );
             return this.invitationModel
                 .find({
                     invitedEmail: email,
@@ -191,16 +201,21 @@ export class InvitationService
                 `Database error while finding invitations for email ${email}`,
                 errorStack,
                 'InvitationService#findPendingInvitationsByEmail',
+                requestId,
             );
             throw new DatabaseOperationException('invitation lookup by email', errorMessage);
         }
     }
 
-    async findPendingInvitationsByOrg(orgId: Types.ObjectId): Promise<Invitation[]> 
+    async findPendingInvitationsByOrg(orgId: Types.ObjectId, requestId?: string): Promise<Invitation[]> 
     {
         try 
         {
-            this.logger.debug(`Finding pending invitations for orgId=${orgId}`, 'InvitationService#findPendingInvitationsByOrg');
+            this.logger.debug(
+                `Finding pending invitations for orgId=${orgId}`,
+                'InvitationService#findPendingInvitationsByOrg',
+                requestId,
+            );
             return this.invitationModel
                 .find({
                     orgId,
@@ -226,18 +241,20 @@ export class InvitationService
                 `Database error while finding invitations for organization ${orgId}`,
                 errorStack,
                 'InvitationService#findPendingInvitationsByOrg',
+                requestId,
             );
             throw new DatabaseOperationException('invitation lookup by organization', errorMessage);
         }
     }
 
-    async acceptInvitation(invitationId: Types.ObjectId, userId: Types.ObjectId): Promise<Invitation> 
+    async acceptInvitation(invitationId: Types.ObjectId, userId: Types.ObjectId, requestId?: string): Promise<Invitation> 
     {
         try 
         {
             this.logger.debug(
                 `Accepting invitation invitationId=${invitationId} userId=${userId}`,
                 'InvitationService#acceptInvitation',
+                requestId,
             );
             const invitation = await this.invitationModel.findOne({
                 _id: invitationId,
@@ -268,6 +285,7 @@ export class InvitationService
             this.logger.debug(
                 `Invitation ${invitation.id} accepted by userId=${userId}`,
                 'InvitationService#acceptInvitation',
+                requestId,
             );
             
             // Populate before returning
@@ -298,18 +316,20 @@ export class InvitationService
                 `Database error during invitation acceptance by id`,
                 errorStack,
                 'InvitationService#acceptInvitation',
+                requestId,
             );
             throw new DatabaseOperationException('invitation acceptance', errorMessage);
         }
     }
 
-    async declineInvitation(invitationId: Types.ObjectId): Promise<Invitation> 
+    async declineInvitation(invitationId: Types.ObjectId, requestId?: string): Promise<Invitation> 
     {
         try 
         {
             this.logger.debug(
                 `Declining invitation invitationId=${invitationId}`,
                 'InvitationService#declineInvitation',
+                requestId,
             );
             const invitation = await this.invitationModel.findOne({
                 _id: invitationId,
@@ -328,6 +348,7 @@ export class InvitationService
             this.logger.debug(
                 `Invitation declined for email ${invitation.invitedEmail}`,
                 'InvitationService#declineInvitation',
+                requestId,
             );
             
             // Populate before returning
@@ -358,18 +379,20 @@ export class InvitationService
                 `Database error during invitation decline by id`,
                 errorStack,
                 'InvitationService#declineInvitation',
+                requestId,
             );
             throw new DatabaseOperationException('invitation decline', errorMessage);
         }
     }
 
-    async revokeInvitation(invitationId: Types.ObjectId, orgId: Types.ObjectId): Promise<Invitation> 
+    async revokeInvitation(invitationId: Types.ObjectId, orgId: Types.ObjectId, requestId?: string): Promise<Invitation> 
     {
         try 
         {
             this.logger.debug(
                 `Revoking invitation invitationId=${invitationId} orgId=${orgId}`,
                 'InvitationService#revokeInvitation',
+                requestId,
             );
             const invitation = await this.invitationModel.findOne({
                 _id: invitationId,
@@ -388,6 +411,7 @@ export class InvitationService
             this.logger.debug(
                 `Invitation revoked for email ${invitation.invitedEmail}`,
                 'InvitationService#revokeInvitation',
+                requestId,
             );
             
             // Populate before returning
@@ -418,6 +442,7 @@ export class InvitationService
                 `Database error during invitation revocation for ID ${invitationId}`,
                 errorStack,
                 'InvitationService#revokeInvitation',
+                requestId,
             );
             throw new DatabaseOperationException('invitation revocation', errorMessage);
         }

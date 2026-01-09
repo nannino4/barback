@@ -22,6 +22,7 @@ import { OrgRole } from '../org/schemas/user-org-relation.schema';
 import { ObjectIdValidationPipe } from '../pipes/object-id-validation.pipe';
 import { plainToInstance } from 'class-transformer';
 import { CustomLogger } from '../common/logger/custom.logger';
+import { RequestId } from '../common/decorators/request-id.decorator';
 
 @Controller('orgs/:orgId/categories')
 @UseGuards(JwtAuthGuard, EmailVerifiedGuard, OrgRolesGuard, OrgSubscriptionGuard)
@@ -36,11 +37,12 @@ export class CategoryController
     @OrgRoles(OrgRole.OWNER, OrgRole.MANAGER, OrgRole.STAFF)
     async getCategories(
         @Param('orgId', ObjectIdValidationPipe) orgId: Types.ObjectId,
+        @RequestId() requestId?: string,
     ): Promise<OutCategoryDto[]> 
     {
-        this.logger.debug(`Getting categories for org ${orgId}`, 'CategoryController#getCategories');
+        this.logger.debug(`Getting categories for org ${orgId}`, 'CategoryController#getCategories', requestId);
         
-        const categories = await this.categoryService.findCategoriesByOrg(orgId);
+        const categories = await this.categoryService.findCategoriesByOrg(orgId, requestId);
         return plainToInstance(OutCategoryDto, categories, { excludeExtraneousValues: true });
     }
 
@@ -49,11 +51,12 @@ export class CategoryController
     async getCategory(
         @Param('orgId', ObjectIdValidationPipe) orgId: Types.ObjectId,
         @Param('id', ObjectIdValidationPipe) categoryId: Types.ObjectId,
+        @RequestId() requestId?: string,
     ): Promise<OutCategoryDto> 
     {
-        this.logger.debug(`Getting category ${categoryId} for org ${orgId}`, 'CategoryController#getCategory');
+        this.logger.debug(`Getting category ${categoryId} for org ${orgId}`, 'CategoryController#getCategory', requestId);
         
-        const category = await this.categoryService.findCategoryById(orgId, categoryId);
+        const category = await this.categoryService.findCategoryById(orgId, categoryId, requestId);
         return plainToInstance(OutCategoryDto, category, { excludeExtraneousValues: true });
     }
 
@@ -62,11 +65,12 @@ export class CategoryController
     async createCategory(
         @Param('orgId', ObjectIdValidationPipe) orgId: Types.ObjectId,
         @Body() createCategoryDto: InCreateCategoryDto,
+        @RequestId() requestId?: string,
     ): Promise<OutCategoryDto> 
     {
-        this.logger.debug(`Creating category for org ${orgId}`, 'CategoryController#createCategory');
+        this.logger.debug(`Creating category for org ${orgId}`, 'CategoryController#createCategory', requestId);
         
-        const category = await this.categoryService.createCategory(orgId, createCategoryDto);
+        const category = await this.categoryService.createCategory(orgId, createCategoryDto, requestId);
         return plainToInstance(OutCategoryDto, category, { excludeExtraneousValues: true });
     }
 
@@ -76,11 +80,12 @@ export class CategoryController
         @Param('orgId', ObjectIdValidationPipe) orgId: Types.ObjectId,
         @Param('id', ObjectIdValidationPipe) categoryId: Types.ObjectId,
         @Body() updateCategoryDto: InUpdateCategoryDto,
+        @RequestId() requestId?: string,
     ): Promise<OutCategoryDto> 
     {
-        this.logger.debug(`Updating category ${categoryId} for org ${orgId}`, 'CategoryController#updateCategory');
+        this.logger.debug(`Updating category ${categoryId} for org ${orgId}`, 'CategoryController#updateCategory', requestId);
         
-        const category = await this.categoryService.updateCategory(orgId, categoryId, updateCategoryDto);
+        const category = await this.categoryService.updateCategory(orgId, categoryId, updateCategoryDto, requestId);
         return plainToInstance(OutCategoryDto, category, { excludeExtraneousValues: true });
     }
 
@@ -89,11 +94,12 @@ export class CategoryController
     async deleteCategory(
         @Param('orgId', ObjectIdValidationPipe) orgId: Types.ObjectId,
         @Param('id', ObjectIdValidationPipe) categoryId: Types.ObjectId,
+        @RequestId() requestId?: string,
     ): Promise<{ message: string }> 
     {
-        this.logger.debug(`Deleting category ${categoryId} for org ${orgId}`, 'CategoryController#deleteCategory');
+        this.logger.debug(`Deleting category ${categoryId} for org ${orgId}`, 'CategoryController#deleteCategory', requestId);
         
-        await this.categoryService.deleteCategory(orgId, categoryId);
+        await this.categoryService.deleteCategory(orgId, categoryId, requestId);
         return { message: 'Category deleted successfully' };
     }
 }

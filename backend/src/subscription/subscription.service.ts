@@ -49,53 +49,59 @@ export class SubscriptionService
     async setupSubscriptionPayment(
         userId: Types.ObjectId,
         billingInterval: StripeBillingInterval = StripeBillingInterval.MONTHLY,
-        isTrial: boolean
+        isTrial: boolean,
+        requestId?: string,
     ): Promise<{ stripeSubscriptionId: string; clientSecret: string }>
     {
         this.logger.debug(
             `Setting up ${isTrial ? 'trial' : 'paid'} subscription payment for user: ${userId}`,
-            'SubscriptionService#setupSubscriptionPayment'
+            'SubscriptionService#setupSubscriptionPayment',
+            requestId,
         );
 
         // If trial requested, ensure eligibility
         if (isTrial)
         {
-            const eligible = await this.isEligibleForTrial(userId);
+            const eligible = await this.isEligibleForTrial(userId, requestId);
             if (!eligible)
             {
                 this.logger.warn(
                     `User ${userId} is not eligible for trial subscription`,
-                    'SubscriptionService#setupSubscriptionPayment'
+                    'SubscriptionService#setupSubscriptionPayment',
+                    requestId,
                 );
                 throw new NotEligibleForTrialException('User already has a subscription or is not eligible for trial');
             }
         }
 
         // Retrieve user and ensure Stripe customer exists
-        const user = await this.userService.findById(userId);
+        const user = await this.userService.findById(userId, requestId);
         let stripeCustomerId = user.stripeCustomerId;
 
         if (!stripeCustomerId)
         {
             const stripeCustomer = await this.stripeService.createCustomer(
                 user.email,
-                `${user.firstName} ${user.lastName}`
+                `${user.firstName} ${user.lastName}`,
+                requestId,
             );
             stripeCustomerId = stripeCustomer.id;
-            await this.userService.updateStripeCustomerId(userId, stripeCustomerId);
+            await this.userService.updateStripeCustomerId(userId, stripeCustomerId, requestId);
         }
 
         // Create subscription in Stripe (both trial and paid collect payment upfront)
         const stripeSubscription = await this.stripeService.createSubscription(
             stripeCustomerId,
             billingInterval,
-            { isTrial }
+            { isTrial },
+            requestId,
         );
 
         // print all the stripeSubscription object for debugging
         this.logger.debug(
             `Stripe subscription created: ${JSON.stringify(stripeSubscription)} for user: ${userId}`,
-            'SubscriptionService#setupSubscriptionPayment'
+            'SubscriptionService#setupSubscriptionPayment',
+            requestId,
         );
 
         // Extract clientSecret from latest invoice
@@ -121,7 +127,7 @@ export class SubscriptionService
 
             if (typeof pendingSetupIntent === 'string')
             {
-                const setupIntent = await this.stripeService.retrieveSetupIntent(pendingSetupIntent);
+                const setupIntent = await this.stripeService.retrieveSetupIntent(pendingSetupIntent, requestId);
                 clientSecret = setupIntent.client_secret || null;
             }
             else
@@ -138,16 +144,18 @@ export class SubscriptionService
                 this.logger.error(
                     `Missing client secret from Stripe subscription ${stripeSubscription.id}, canceling subscription`,
                     undefined,
-                    'SubscriptionService#setupSubscriptionPayment'
+                    'SubscriptionService#setupSubscriptionPayment',
+                    requestId,
                 );
-                await this.stripeService.cancelSubscription(stripeSubscription.id);
+                await this.stripeService.cancelSubscription(stripeSubscription.id, requestId);
             }
             catch (cleanupError)
             {
                 this.logger.error(
                     `Failed to cleanup Stripe subscription ${stripeSubscription.id} after missing client secret`,
                     cleanupError instanceof Error ? cleanupError.stack : undefined,
-                    'SubscriptionService#setupSubscriptionPayment'
+                    'SubscriptionService#setupSubscriptionPayment',
+                    requestId,
                 );
             }
 
@@ -156,7 +164,8 @@ export class SubscriptionService
 
         this.logger.debug(
             `${isTrial ? 'Trial' : 'Paid'} subscription setup completed for user: ${userId}, Stripe subscription: ${stripeSubscription.id}`,
-            'SubscriptionService#setupSubscriptionPayment'
+            'SubscriptionService#setupSubscriptionPayment',
+            requestId,
         );
 
         // Return Stripe subscription ID and client secret
@@ -181,12 +190,14 @@ export class SubscriptionService
      */
     async createFromStripeSubscription(
         stripeSubscription: Stripe.Subscription,
-        userId: Types.ObjectId
+        userId: Types.ObjectId,
+        requestId?: string,
     ): Promise<Subscription>
     {
         this.logger.debug(
             `Creating local subscription from Stripe subscription: ${stripeSubscription.id} for user: ${userId}`,
-            'SubscriptionService#createFromStripeSubscription'
+            'SubscriptionService#createFromStripeSubscription',
+            requestId,
         );
         
         try
@@ -200,9 +211,10 @@ export class SubscriptionService
             {
                 this.logger.debug(
                     `Subscription already exists for Stripe subscription ${stripeSubscription.id}, updating status`,
-                    'SubscriptionService#createFromStripeSubscription'
+                    'SubscriptionService#createFromStripeSubscription',
+                    requestId,
                 );
-                return await this.updateFromStripeSubscription(stripeSubscription);
+                return await this.updateFromStripeSubscription(stripeSubscription, requestId);
             }
 
             // Extract billing details from Stripe subscription
@@ -211,7 +223,7 @@ export class SubscriptionService
             const subscription = new this.subscriptionModel({
                 userId: userId,
                 stripeSubscriptionId: stripeSubscription.id,
-                status: this.mapStripeStatusToLocal(stripeSubscription.status),
+                status: this.mapStripeStatusToLocal(stripeSubscription.status, requestId),
                 autoRenew: true,
                 billingInterval: billingDetails.billingInterval,
                 nextBillingDate: billingDetails.nextBillingDate,
@@ -222,7 +234,8 @@ export class SubscriptionService
 
             this.logger.debug(
                 `Local subscription created successfully for Stripe subscription: ${stripeSubscription.id}`,
-                'SubscriptionService#createFromStripeSubscription'
+                'SubscriptionService#createFromStripeSubscription',
+                requestId,
             );
 
             return subscription;
@@ -233,15 +246,16 @@ export class SubscriptionService
             this.logger.error(
                 `Database error during subscription creation from Stripe subscription: ${stripeSubscription.id}`,
                 error instanceof Error ? error.stack : undefined,
-                'SubscriptionService#createFromStripeSubscription'
+                'SubscriptionService#createFromStripeSubscription',
+                requestId,
             );
             throw new DatabaseOperationException('subscription creation from Stripe', errorMessage);
         }
     }
 
-    async findAllByUserId(userId: Types.ObjectId): Promise<Subscription[]> 
+    async findAllByUserId(userId: Types.ObjectId, requestId?: string): Promise<Subscription[]> 
     {
-        this.logger.debug(`Finding all subscriptions for user: ${userId}`, 'SubscriptionService#findAllByUserId');
+        this.logger.debug(`Finding all subscriptions for user: ${userId}`, 'SubscriptionService#findAllByUserId', requestId);
         
         try 
         {
@@ -253,14 +267,19 @@ export class SubscriptionService
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error(`Database error while finding subscriptions for user: ${userId} - ${errorMessage}`, error instanceof Error ? error.stack : undefined, 'SubscriptionService#findAllByUserId');
+            this.logger.error(
+                `Database error while finding subscriptions for user: ${userId} - ${errorMessage}`,
+                error instanceof Error ? error.stack : undefined,
+                'SubscriptionService#findAllByUserId',
+                requestId,
+            );
             throw new DatabaseOperationException('subscription lookup by user ID', errorMessage);
         }
     }
 
-    async findById(id: Types.ObjectId): Promise<Subscription> 
+    async findById(id: Types.ObjectId, requestId?: string): Promise<Subscription> 
     {
-        this.logger.debug(`Finding subscription by ID: ${id}`, 'SubscriptionService#findById');
+        this.logger.debug(`Finding subscription by ID: ${id}`, 'SubscriptionService#findById', requestId);
         
         try 
         {
@@ -270,7 +289,7 @@ export class SubscriptionService
             
             if (!subscription) 
             {
-                this.logger.warn(`Subscription not found with ID: ${id}`, 'SubscriptionService#findById');
+                this.logger.warn(`Subscription not found with ID: ${id}`, 'SubscriptionService#findById', requestId);
                 throw new SubscriptionNotFoundByIdException(id.toString());
             }
             
@@ -284,14 +303,23 @@ export class SubscriptionService
             }
             
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error(`Database error while finding subscription by ID: ${id} - ${errorMessage}`, error instanceof Error ? error.stack : undefined, 'SubscriptionService#findById');
+            this.logger.error(
+                `Database error while finding subscription by ID: ${id} - ${errorMessage}`,
+                error instanceof Error ? error.stack : undefined,
+                'SubscriptionService#findById',
+                requestId,
+            );
             throw new DatabaseOperationException('subscription lookup by ID', errorMessage);
         }
     }
 
-    async findByStripeSubscriptionId(stripeSubscriptionId: string): Promise<Subscription> 
+    async findByStripeSubscriptionId(stripeSubscriptionId: string, requestId?: string): Promise<Subscription> 
     {
-        this.logger.debug(`Finding subscription by Stripe ID: ${stripeSubscriptionId}`, 'SubscriptionService#findByStripeSubscriptionId');
+        this.logger.debug(
+            `Finding subscription by Stripe ID: ${stripeSubscriptionId}`,
+            'SubscriptionService#findByStripeSubscriptionId',
+            requestId,
+        );
         
         try 
         {
@@ -301,7 +329,11 @@ export class SubscriptionService
             
             if (!subscription) 
             {
-                this.logger.warn(`Subscription not found with Stripe ID: ${stripeSubscriptionId}`, 'SubscriptionService#findByStripeSubscriptionId');
+                this.logger.warn(
+                    `Subscription not found with Stripe ID: ${stripeSubscriptionId}`,
+                    'SubscriptionService#findByStripeSubscriptionId',
+                    requestId,
+                );
                 throw new SubscriptionNotFoundException(stripeSubscriptionId);
             }
             
@@ -315,14 +347,23 @@ export class SubscriptionService
             }
             
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error(`Database error while finding subscription by Stripe ID: ${stripeSubscriptionId} - ${errorMessage}`, error instanceof Error ? error.stack : undefined, 'SubscriptionService#findByStripeSubscriptionId');
+            this.logger.error(
+                `Database error while finding subscription by Stripe ID: ${stripeSubscriptionId} - ${errorMessage}`,
+                error instanceof Error ? error.stack : undefined,
+                'SubscriptionService#findByStripeSubscriptionId',
+                requestId,
+            );
             throw new DatabaseOperationException('subscription lookup by Stripe ID', errorMessage);
         }
     }
 
-    async updateStatus(stripeSubscriptionId: string, status: SubscriptionStatus): Promise<Subscription> 
+    async updateStatus(stripeSubscriptionId: string, status: SubscriptionStatus, requestId?: string): Promise<Subscription> 
     {
-        this.logger.debug(`Updating subscription status: ${stripeSubscriptionId} to ${status}`, 'SubscriptionService#updateStatus');
+        this.logger.debug(
+            `Updating subscription status: ${stripeSubscriptionId} to ${status}`,
+            'SubscriptionService#updateStatus',
+            requestId,
+        );
         
         try 
         {
@@ -336,11 +377,19 @@ export class SubscriptionService
             
             if (!subscription) 
             {
-                this.logger.warn(`Subscription not found with Stripe ID: ${stripeSubscriptionId}`, 'SubscriptionService#updateStatus');
+                this.logger.warn(
+                    `Subscription not found with Stripe ID: ${stripeSubscriptionId}`,
+                    'SubscriptionService#updateStatus',
+                    requestId,
+                );
                 throw new SubscriptionNotFoundException(stripeSubscriptionId);
             }
             
-            this.logger.debug(`Subscription status updated successfully: ${stripeSubscriptionId}`, 'SubscriptionService#updateStatus');
+            this.logger.debug(
+                `Subscription status updated successfully: ${stripeSubscriptionId}`,
+                'SubscriptionService#updateStatus',
+                requestId,
+            );
             return subscription;
         }
         catch (error)
@@ -351,17 +400,26 @@ export class SubscriptionService
             }
             
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error(`Database error while updating subscription status: ${stripeSubscriptionId} - ${errorMessage}`, error instanceof Error ? error.stack : undefined, 'SubscriptionService#updateStatus');
+            this.logger.error(
+                `Database error while updating subscription status: ${stripeSubscriptionId} - ${errorMessage}`,
+                error instanceof Error ? error.stack : undefined,
+                'SubscriptionService#updateStatus',
+                requestId,
+            );
             throw new DatabaseOperationException('subscription status update', errorMessage);
         }
     }
 
-    async cancelSubscription(userId: Types.ObjectId, subscriptionId: Types.ObjectId): Promise<Subscription> 
+    async cancelSubscription(userId: Types.ObjectId, subscriptionId: Types.ObjectId, requestId?: string): Promise<Subscription> 
     {
-        this.logger.debug(`Cancelling subscription ${subscriptionId} for user: ${userId}`, 'SubscriptionService#cancelSubscription');
+        this.logger.debug(
+            `Cancelling subscription ${subscriptionId} for user: ${userId}`,
+            'SubscriptionService#cancelSubscription',
+            requestId,
+        );
         
         // Find specific subscription and verify ownership
-        const subscription = await this.findById(subscriptionId);
+        const subscription = await this.findById(subscriptionId, requestId);
         
         if (subscription.userId.toString() !== userId.toString()) 
         {
@@ -371,34 +429,47 @@ export class SubscriptionService
         // Cancel subscription in Stripe
         try 
         {
-            await this.stripeService.cancelSubscription(subscription.stripeSubscriptionId);
+            await this.stripeService.cancelSubscription(subscription.stripeSubscriptionId, requestId);
         }
         catch (error)
         {
-            this.logger.warn(`Failed to cancel Stripe subscription ${subscription.stripeSubscriptionId}, proceeding with local cancellation`, 'SubscriptionService#cancelSubscription');
+            this.logger.warn(
+                `Failed to cancel Stripe subscription ${subscription.stripeSubscriptionId}, proceeding with local cancellation`,
+                'SubscriptionService#cancelSubscription',
+                requestId,
+            );
         }
 
         // Update local subscription status
         try 
         {
-            return await this.updateStatus(subscription.stripeSubscriptionId, SubscriptionStatus.CANCELED);
+            return await this.updateStatus(subscription.stripeSubscriptionId, SubscriptionStatus.CANCELED, requestId);
         }
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error(`Database error during subscription cancellation for user: ${userId}`, error instanceof Error ? error.stack : undefined, 'SubscriptionService#cancelSubscription');
+            this.logger.error(
+                `Database error during subscription cancellation for user: ${userId}`,
+                error instanceof Error ? error.stack : undefined,
+                'SubscriptionService#cancelSubscription',
+                requestId,
+            );
             throw new DatabaseOperationException('subscription cancellation', errorMessage);
         }
     }
 
-    async syncSubscriptionFromStripe(stripeSubscription: Stripe.Subscription): Promise<void> 
+    async syncSubscriptionFromStripe(stripeSubscription: Stripe.Subscription, requestId?: string): Promise<void> 
     {
-        this.logger.debug(`Syncing subscription from Stripe: ${stripeSubscription.id}`, 'SubscriptionService#syncSubscriptionFromStripe');
+        this.logger.debug(
+            `Syncing subscription from Stripe: ${stripeSubscription.id}`,
+            'SubscriptionService#syncSubscriptionFromStripe',
+            requestId,
+        );
 
-        await this.updateFromStripeSubscription(stripeSubscription);
+        await this.updateFromStripeSubscription(stripeSubscription, requestId);
     }
 
-    private mapStripeStatusToLocal(stripeStatus: Stripe.Subscription.Status): SubscriptionStatus 
+    private mapStripeStatusToLocal(stripeStatus: Stripe.Subscription.Status, requestId?: string): SubscriptionStatus 
     {
         switch (stripeStatus) 
         {
@@ -423,7 +494,8 @@ export class SubscriptionService
             this.logger.error(
                 `Unknown Stripe subscription status: ${stripeStatus}`,
                 undefined,
-                'SubscriptionService#mapStripeStatusToLocal'
+                'SubscriptionService#mapStripeStatusToLocal',
+                requestId,
             );
             throw new SubscriptionSetupFailedException(`Unknown Stripe subscription status: ${stripeStatus}`);
         }
@@ -468,15 +540,16 @@ export class SubscriptionService
      * Update local subscription record from Stripe subscription data
      * Updates status and billing details
      */
-    async updateFromStripeSubscription(stripeSubscription: Stripe.Subscription): Promise<Subscription>
+    async updateFromStripeSubscription(stripeSubscription: Stripe.Subscription, requestId?: string): Promise<Subscription>
     {
         this.logger.debug(
             `Updating local subscription from Stripe subscription: ${stripeSubscription.id}`,
-            'SubscriptionService#updateFromStripeSubscription'
+            'SubscriptionService#updateFromStripeSubscription',
+            requestId,
         );
 
         const billingDetails = this.extractBillingDetails(stripeSubscription);
-        const status = this.mapStripeStatusToLocal(stripeSubscription.status);
+        const status = this.mapStripeStatusToLocal(stripeSubscription.status, requestId);
 
         try
         {
@@ -510,15 +583,16 @@ export class SubscriptionService
             this.logger.error(
                 `Database error during subscription update from Stripe: ${stripeSubscription.id}`,
                 error instanceof Error ? error.stack : undefined,
-                'SubscriptionService#updateFromStripeSubscription'
+                'SubscriptionService#updateFromStripeSubscription',
+                requestId,
             );
             throw new DatabaseOperationException('subscription update from Stripe', errorMessage);
         }
     }
 
-    async isEligibleForTrial(userId: Types.ObjectId): Promise<boolean> 
+    async isEligibleForTrial(userId: Types.ObjectId, requestId?: string): Promise<boolean> 
     {
-        this.logger.debug(`Checking trial eligibility for user: ${userId}`, 'SubscriptionService#isEligibleForTrial');
+        this.logger.debug(`Checking trial eligibility for user: ${userId}`, 'SubscriptionService#isEligibleForTrial', requestId);
         
         try 
         {
@@ -531,7 +605,11 @@ export class SubscriptionService
             
             // User is eligible for trial only if this is their first subscription
             const isEligible = existingSubscriptionCount === 0;
-            this.logger.debug(`User: ${userId} trial eligibility: ${isEligible}`, 'SubscriptionService#isEligibleForTrial');
+            this.logger.debug(
+                `User: ${userId} trial eligibility: ${isEligible}`,
+                'SubscriptionService#isEligibleForTrial',
+                requestId,
+            );
             return isEligible;
         }
         catch (error)
@@ -542,7 +620,12 @@ export class SubscriptionService
                 throw error;
             }
             // For other errors, assume not eligible for safety
-            this.logger.error(`Error checking trial eligibility for user: ${userId}`, error instanceof Error ? error.stack : undefined, 'SubscriptionService#isEligibleForTrial');
+            this.logger.error(
+                `Error checking trial eligibility for user: ${userId}`,
+                error instanceof Error ? error.stack : undefined,
+                'SubscriptionService#isEligibleForTrial',
+                requestId,
+            );
             return false;
         }
     }

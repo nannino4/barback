@@ -28,5 +28,5 @@ export abstract class StorageService
      * @param input - The input containing userId, contentType, and image bytes
      * @returns Upload results for both the picture and thumbnail
      */
-    abstract uploadUserProfilePicture(input: UploadUserProfilePictureInput): Promise<UploadUserProfilePictureResult>;
+    abstract uploadUserProfilePicture(input: UploadUserProfilePictureInput, requestId?: string): Promise<UploadUserProfilePictureResult>;
 }

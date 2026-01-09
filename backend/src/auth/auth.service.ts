@@ -79,9 +79,9 @@ export class AuthService
         this.logger.debug('AuthService initialized with valid JWT configuration', 'AuthService#constructor');
     }
 
-    async generateTokens(user: User): Promise<OutTokensDto>
+    async generateTokens(user: User, requestId?: string): Promise<OutTokensDto>
     {
-        this.logger.debug(`Generating tokens for user: ${user.email}`, 'AuthService#generateTokens');
+        this.logger.debug(`Generating tokens for user: ${user.email}`, 'AuthService#generateTokens', requestId);
         
         try
         {
@@ -104,21 +104,21 @@ export class AuthService
                 expiresIn: this.jwtRefreshTokenExpiration,
             });
             
-            this.logger.debug(`Tokens generated successfully for user: ${user.email}`, 'AuthService#generateTokens');
+            this.logger.debug(`Tokens generated successfully for user: ${user.email}`, 'AuthService#generateTokens', requestId);
             return { access_token: accessToken, refresh_token: refreshToken };
         }
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-            this.logger.error(`Token generation failed for user ${user.email}: ${errorMessage}`, undefined, 'AuthService#generateTokens');
+            this.logger.error(`Token generation failed for user ${user.email}: ${errorMessage}`, undefined, 'AuthService#generateTokens', requestId);
             throw new TokenGenerationException(errorMessage);
         }
     }
 
-    async generateAuthResponse(user: User): Promise<OutAuthResponseDto>
+    async generateAuthResponse(user: User, requestId?: string): Promise<OutAuthResponseDto>
     {
-        this.logger.debug(`Generating auth response for user: ${user.email}`, 'AuthService#generateAuthResponse');
-        const tokens = await this.generateTokens(user);
+        this.logger.debug(`Generating auth response for user: ${user.email}`, 'AuthService#generateAuthResponse', requestId);
+        const tokens = await this.generateTokens(user, requestId);
         const userDto = plainToClass(OutUserDto, user, { excludeExtraneousValues: true });
         
         const response: OutAuthResponseDto = {
@@ -127,13 +127,13 @@ export class AuthService
             user: userDto,
         };
         
-        this.logger.debug(`Auth response generated successfully for user: ${user.email}`, 'AuthService#generateAuthResponse');
+        this.logger.debug(`Auth response generated successfully for user: ${user.email}`, 'AuthService#generateAuthResponse', requestId);
         return response;
     }
 
-    async validateRefreshToken(refreshTokenString: string) : Promise<OutAuthResponseDto>
+    async validateRefreshToken(refreshTokenString: string, requestId?: string) : Promise<OutAuthResponseDto>
     {
-        this.logger.debug('Refresh token process started', 'AuthService#validateRefreshToken');
+        this.logger.debug('Refresh token process started', 'AuthService#validateRefreshToken', requestId);
         
         let user: User;
         try
@@ -153,7 +153,7 @@ export class AuthService
             }
             
             // Find user (throws if not found)
-            user = await this.userService.findById(new Types.ObjectId(payload.sub));
+            user = await this.userService.findById(new Types.ObjectId(payload.sub), requestId);
             if (!user)
             {
                 throw new Error('User not found');
@@ -166,7 +166,7 @@ export class AuthService
 
             if (isJwtExpiredError(error))
             {
-                this.logger.warn(`Refresh Token Expired: ${errorMessage}`, 'AuthService#validateRefreshToken');
+                this.logger.warn(`Refresh Token Expired: ${errorMessage}`, 'AuthService#validateRefreshToken', requestId);
             }
             else
             {
@@ -174,45 +174,46 @@ export class AuthService
                     `Refresh Token Error: ${errorMessage}`,
                     error instanceof Error ? error.stack : undefined,
                     'AuthService#validateRefreshToken',
+                    requestId,
                 );
             }
             throw new InvalidRefreshTokenException();
         }
         
         // Generate response (outside try block - let TokenGenerationException bubble up)
-        this.logger.debug(`User ${user.email} validated for token refresh`, 'AuthService#validateRefreshToken');
-        const response = await this.generateAuthResponse(user);
-        this.logger.debug(`Tokens refreshed for user: ${user.email}`, 'AuthService#validateRefreshToken');
+        this.logger.debug(`User ${user.email} validated for token refresh`, 'AuthService#validateRefreshToken', requestId);
+        const response = await this.generateAuthResponse(user, requestId);
+        this.logger.debug(`Tokens refreshed for user: ${user.email}`, 'AuthService#validateRefreshToken', requestId);
         return response;
     }
 
-    async loginEmail(email: string, pass: string): Promise<OutAuthResponseDto>
+    async loginEmail(email: string, pass: string, requestId?: string): Promise<OutAuthResponseDto>
     {
-        this.logger.debug(`Authenticating user: ${email}`, 'AuthService#loginEmail');
-        const user = await this.userService.findByEmail(email);
+        this.logger.debug(`Authenticating user: ${email}`, 'AuthService#loginEmail', requestId);
+        const user = await this.userService.findByEmail(email, requestId);
         if (!user)
         {
-            this.logger.warn(`User not found: ${email}`, 'AuthService#loginEmail');
+            this.logger.warn(`User not found: ${email}`, 'AuthService#loginEmail', requestId);
             throw new InvalidCredentialsException();
         }
         if (user.authProvider !== AuthProvider.EMAIL)
         {
-            this.logger.warn(`User ${email} is not using EMAIL authentication`, 'AuthService#loginEmail');
+            this.logger.warn(`User ${email} is not using EMAIL authentication`, 'AuthService#loginEmail', requestId);
             throw new WrongAuthProviderException(user.authProvider);
         }
         if (!pass || !user.hashedPassword || !(await bcrypt.compare(pass, user.hashedPassword)))
         {
-            this.logger.warn(`Invalid password for user: ${email}`, 'AuthService#loginEmail');
+            this.logger.warn(`Invalid password for user: ${email}`, 'AuthService#loginEmail', requestId);
             throw new InvalidCredentialsException();
         }
-        const response = await this.generateAuthResponse(user);
-        this.logger.debug(`User ${email} authenticated successfully`, 'AuthService#loginEmail');
+        const response = await this.generateAuthResponse(user, requestId);
+        this.logger.debug(`User ${email} authenticated successfully`, 'AuthService#loginEmail', requestId);
         return response;
     }
 
-    async registerEmail(registerUserDto: RegisterEmailDto): Promise<OutAuthResponseDto>
+    async registerEmail(registerUserDto: RegisterEmailDto, requestId?: string): Promise<OutAuthResponseDto>
     {
-        this.logger.debug(`Registration process started for user: ${registerUserDto.email}`, 'AuthService#registerEmail');
+        this.logger.debug(`Registration process started for user: ${registerUserDto.email}`, 'AuthService#registerEmail', requestId);
         
         // Prepare user data
         const userData: CreateUserDto = new CreateUserDto();
@@ -225,7 +226,7 @@ export class AuthService
         }
         catch (error)
         {
-            this.logger.error('Password hashing failed during registration', 'AuthService#registerEmail');
+            this.logger.error('Password hashing failed during registration', undefined, 'AuthService#registerEmail', requestId);
             throw new PasswordHashingException();
         }
         
@@ -237,78 +238,78 @@ export class AuthService
             userData.phoneNumber = registerUserDto.phoneNumber;
         }
         
-        const newUser = await this.userService.create(userData);
-        this.logger.debug(`New user created: ${newUser.email}`, 'AuthService#registerEmail');
+        const newUser = await this.userService.create(userData, requestId);
+        this.logger.debug(`New user created: ${newUser.email}`, 'AuthService#registerEmail', requestId);
         
         // Send verification email
         try 
         {
-            await this.sendVerificationEmail(newUser.email);
+            await this.sendVerificationEmail(newUser.email, requestId);
         } 
         catch (error) 
         {
-            this.logger.warn(`Failed to send verification email to ${newUser.email}`, 'AuthService#registerEmail');
+            this.logger.warn(`Failed to send verification email to ${newUser.email}`, 'AuthService#registerEmail', requestId);
             // Don't fail registration if email sending fails
         }
         
-        const response = await this.generateAuthResponse(newUser);
-        this.logger.debug(`Auth response generated for new user: ${newUser.email}`, 'AuthService#registerEmail');
+        const response = await this.generateAuthResponse(newUser, requestId);
+        this.logger.debug(`Auth response generated for new user: ${newUser.email}`, 'AuthService#registerEmail', requestId);
         return response;
     }
 
-    async sendVerificationEmail(email: string): Promise<void>
+    async sendVerificationEmail(email: string, requestId?: string): Promise<void>
     {
-        this.logger.debug(`Sending verification email to: ${email}`, 'AuthService#sendVerificationEmail');
-        const user = await this.userService.findByEmail(email);
+        this.logger.debug(`Sending verification email to: ${email}`, 'AuthService#sendVerificationEmail', requestId);
+        const user = await this.userService.findByEmail(email, requestId);
         if (!user)
         {
-            this.logger.warn(`User not found for email verification: ${email}`, 'AuthService#sendVerificationEmail');
+            this.logger.warn(`User not found for email verification: ${email}`, 'AuthService#sendVerificationEmail', requestId);
             throw new UserNotFoundByEmailException(email);
         }
 
         if (user.isEmailVerified)
         {
-            this.logger.debug(`User ${email} is already verified`, 'AuthService#sendVerificationEmail');
+            this.logger.debug(`User ${email} is already verified`, 'AuthService#sendVerificationEmail', requestId);
             throw new EmailAlreadyVerifiedException(email);
         }
 
-        const token = await this.userService.generateEmailVerificationToken(user._id as Types.ObjectId);
+        const token = await this.userService.generateEmailVerificationToken(user._id as Types.ObjectId, requestId);
         const emailOptions = this.emailService.generateVerificationEmail(email, token);
         
         await this.emailService.sendEmail(emailOptions);
-        this.logger.debug(`Verification email sent to: ${email}`, 'AuthService#sendVerificationEmail');
+        this.logger.debug(`Verification email sent to: ${email}`, 'AuthService#sendVerificationEmail', requestId);
     }
 
-    async verifyEmail(token: string): Promise<void>
+    async verifyEmail(token: string, requestId?: string): Promise<void>
     {
-        this.logger.debug('Processing email verification', 'AuthService#verifyEmail');
-        await this.userService.verifyEmail(token);
-        this.logger.debug('Email verification completed successfully', 'AuthService#verifyEmail');
+        this.logger.debug('Processing email verification', 'AuthService#verifyEmail', requestId);
+        await this.userService.verifyEmail(token, requestId);
+        this.logger.debug('Email verification completed successfully', 'AuthService#verifyEmail', requestId);
     }
 
-    async forgotPassword(email: string): Promise<void>
+    async forgotPassword(email: string, requestId?: string): Promise<void>
     {
-        this.logger.debug(`Processing forgot password request for: ${email}`, 'AuthService#forgotPassword');
+        this.logger.debug(`Processing forgot password request for: ${email}`, 'AuthService#forgotPassword', requestId);
         
         try 
         {
-            const token = await this.userService.generatePasswordResetToken(email);
+            const token = await this.userService.generatePasswordResetToken(email, requestId);
             
             if (token)
             {
                 const emailOptions = this.emailService.generatePasswordResetEmail(email, token);
                 await this.emailService.sendEmail(emailOptions);
-                this.logger.debug(`Password reset email sent to: ${email}`, 'AuthService#forgotPassword');
+                this.logger.debug(`Password reset email sent to: ${email}`, 'AuthService#forgotPassword', requestId);
             }
             else
             {
-                this.logger.debug(`No valid user found for password reset: ${email}`, 'AuthService#forgotPassword');
+                this.logger.debug(`No valid user found for password reset: ${email}`, 'AuthService#forgotPassword', requestId);
             }
         }
         catch (error)
         {
             // Log the error but don't expose details to prevent information leakage
-            this.logger.error(`Failed to process password reset request for: ${email}`, error instanceof Error ? error.stack : undefined, 'AuthService#forgotPassword');
+            this.logger.error(`Failed to process password reset request for: ${email}`, error instanceof Error ? error.stack : undefined, 'AuthService#forgotPassword', requestId);
             
             // For security, we still return success even if email sending fails
             // This prevents enumeration attacks but logs the actual error for debugging
@@ -317,24 +318,24 @@ export class AuthService
         // Always return success to prevent email enumeration
     }
 
-    async resetPassword(token: string, newPassword: string): Promise<void>
+    async resetPassword(token: string, newPassword: string, requestId?: string): Promise<void>
     {
-        this.logger.debug('Processing password reset', 'AuthService#resetPassword');
-        await this.userService.resetPassword(token, newPassword);
-        this.logger.debug('Password reset completed successfully', 'AuthService#resetPassword');
+        this.logger.debug('Processing password reset', 'AuthService#resetPassword', requestId);
+        await this.userService.resetPassword(token, newPassword, requestId);
+        this.logger.debug('Password reset completed successfully', 'AuthService#resetPassword', requestId);
     }
 
-    async validatePasswordResetToken(token: string): Promise<void>
+    async validatePasswordResetToken(token: string, requestId?: string): Promise<void>
     {
-        this.logger.debug('Validating password reset token', 'AuthService#validatePasswordResetToken');
-        const user = await this.userService.findByPasswordResetToken(token);
+        this.logger.debug('Validating password reset token', 'AuthService#validatePasswordResetToken', requestId);
+        const user = await this.userService.findByPasswordResetToken(token, requestId);
         
         if (!user)
         {
-            this.logger.warn('Invalid or expired password reset token', 'AuthService#validatePasswordResetToken');
+            this.logger.warn('Invalid or expired password reset token', 'AuthService#validatePasswordResetToken', requestId);
             throw new InvalidPasswordResetTokenException();
         }
         
-        this.logger.debug('Password reset token is valid', 'AuthService#validatePasswordResetToken');
+        this.logger.debug('Password reset token is valid', 'AuthService#validatePasswordResetToken', requestId);
     }
 }

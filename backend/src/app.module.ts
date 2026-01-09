@@ -13,7 +13,6 @@ import { OrgModule } from './org/org.module';
 import { InvitationModule } from './invitation/invitation.module';
 import { CategoryModule } from './category/category.module';
 import { ProductModule } from './product/product.module';
-import { CorrelationIdInterceptor } from './common/interceptors/correlation-id.interceptor';
 import { AppController } from './app.controller';
 
 @Module({
@@ -47,11 +46,6 @@ import { AppController } from './app.controller';
     ],
     controllers: [AppController],
     providers: [
-        // Global interceptor for correlation ID tracking
-        {
-            provide: APP_INTERCEPTOR,
-            useClass: CorrelationIdInterceptor,
-        },
         // Global exception filter for throttler errors
         {
             provide: APP_FILTER,

@@ -23,14 +23,14 @@ export class ProductService
         private readonly logger: CustomLogger,
     ) {}
 
-    async createProduct(orgId: Types.ObjectId, createProductDto: InCreateProductDto): Promise<Product> 
+    async createProduct(orgId: Types.ObjectId, createProductDto: InCreateProductDto, requestId?: string): Promise<Product> 
     {
-        this.logger.debug(`Creating product for org ${orgId}`, 'ProductService#createProduct');
+        this.logger.debug(`Creating product for org ${orgId}`, 'ProductService#createProduct', requestId);
         
         // Validate categories exist and belong to the same org
         if (createProductDto.categoryIds && createProductDto.categoryIds.length > 0) 
         {
-            await this.validateCategories(orgId, createProductDto.categoryIds);
+            await this.validateCategories(orgId, createProductDto.categoryIds, requestId);
         }
 
         // Check if product name already exists in this org
@@ -54,7 +54,7 @@ export class ProductService
         try 
         {
             const savedProduct = await product.save();
-            this.logger.debug(`Product created with id: ${savedProduct._id}`, 'ProductService#createProduct');
+            this.logger.debug(`Product created with id: ${savedProduct._id}`, 'ProductService#createProduct', requestId);
             return savedProduct;
         } 
         catch (error) 
@@ -64,9 +64,9 @@ export class ProductService
         }
     }
 
-    async findProductsByOrg(orgId: Types.ObjectId, categoryId?: string): Promise<Product[]> 
+    async findProductsByOrg(orgId: Types.ObjectId, categoryId?: string, requestId?: string): Promise<Product[]> 
     {
-        this.logger.debug(`Finding products for org ${orgId}`, 'ProductService#findProductsByOrg');
+        this.logger.debug(`Finding products for org ${orgId}`, 'ProductService#findProductsByOrg', requestId);
         
         const filter: any = { orgId };
         
@@ -90,9 +90,9 @@ export class ProductService
         }
     }
 
-    async findProductById(orgId: Types.ObjectId, productId: Types.ObjectId): Promise<Product> 
+    async findProductById(orgId: Types.ObjectId, productId: Types.ObjectId, requestId?: string): Promise<Product> 
     {
-        this.logger.debug(`Finding product ${productId} for org ${orgId}`, 'ProductService#findProductById');
+        this.logger.debug(`Finding product ${productId} for org ${orgId}`, 'ProductService#findProductById', requestId);
         
         let product: Product | null;
         try 
@@ -118,15 +118,16 @@ export class ProductService
     async updateProduct(
         orgId: Types.ObjectId, 
         productId: Types.ObjectId, 
-        updateProductDto: InUpdateProductDto
+        updateProductDto: InUpdateProductDto,
+        requestId?: string,
     ): Promise<Product> 
     {
-        this.logger.debug(`Updating product ${productId} for org ${orgId}`, 'ProductService#updateProduct');
+        this.logger.debug(`Updating product ${productId} for org ${orgId}`, 'ProductService#updateProduct', requestId);
         
         // Validate categories exist and belong to the same org
         if (updateProductDto.categoryIds && updateProductDto.categoryIds.length > 0) 
         {
-            await this.validateCategories(orgId, updateProductDto.categoryIds);
+            await this.validateCategories(orgId, updateProductDto.categoryIds, requestId);
         }
 
         // Check if product name already exists in this org (excluding current product)
@@ -172,13 +173,13 @@ export class ProductService
             throw new ProductNotFoundException(productId.toString());
         }
 
-        this.logger.debug(`Product ${productId} updated successfully`, 'ProductService#updateProduct');
+        this.logger.debug(`Product ${productId} updated successfully`, 'ProductService#updateProduct', requestId);
         return updatedProduct;
     }
 
-    async deleteProduct(orgId: Types.ObjectId, productId: Types.ObjectId): Promise<void> 
+    async deleteProduct(orgId: Types.ObjectId, productId: Types.ObjectId, requestId?: string): Promise<void> 
     {
-        this.logger.debug(`Deleting product ${productId} for org ${orgId}`, 'ProductService#deleteProduct');
+        this.logger.debug(`Deleting product ${productId} for org ${orgId}`, 'ProductService#deleteProduct', requestId);
         
         let deletedProduct: Product | null;
         try 
@@ -198,21 +199,21 @@ export class ProductService
             throw new ProductNotFoundException(productId.toString());
         }
 
-        this.logger.debug(`Product ${productId} deleted successfully`, 'ProductService#deleteProduct');
+        this.logger.debug(`Product ${productId} deleted successfully`, 'ProductService#deleteProduct', requestId);
     }
 
     /**
      * Validates that all provided category IDs exist and belong to the organization
      */
-    private async validateCategories(orgId: Types.ObjectId, categoryIds: string[]): Promise<void> 
+    private async validateCategories(orgId: Types.ObjectId, categoryIds: string[], requestId?: string): Promise<void> 
     {
-        this.logger.debug(`Validating categories for org ${orgId}`, 'ProductService#validateCategories');
+        this.logger.debug(`Validating categories for org ${orgId}`, 'ProductService#validateCategories', requestId);
         
         for (const categoryId of categoryIds) 
         {
             try 
             {
-                await this.categoryService.findCategoryById(orgId, new Types.ObjectId(categoryId));
+                await this.categoryService.findCategoryById(orgId, new Types.ObjectId(categoryId), requestId);
             } 
             catch (error) 
             {

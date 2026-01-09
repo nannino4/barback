@@ -8,6 +8,7 @@ import Stripe from 'stripe';
 import { CustomLogger } from '../common/logger/custom.logger';
 import { Types } from 'mongoose';
 import { User } from 'src/user/schemas/user.schema';
+import { RequestId } from '../common/decorators/request-id.decorator';
 
 @Controller('webhooks')
 export class WebhookController 
@@ -44,9 +45,10 @@ export class WebhookController
     async handleStripeWebhook(
         @Req() req: RawBodyRequest<Request>,
         @Headers('stripe-signature') signature: string,
+        @RequestId() requestId?: string,
     ): Promise<{ received: boolean }> 
     {
-        this.logger.debug('Received Stripe webhook', 'WebhookController#handleStripeWebhook');
+        this.logger.debug('Received Stripe webhook', 'WebhookController#handleStripeWebhook', requestId);
 
         if (!signature) 
         {
@@ -57,14 +59,14 @@ export class WebhookController
 
         try 
         {
-            event = this.stripeService.constructWebhookEvent(req.rawBody!, signature, this.webhookSecret);
+            event = this.stripeService.constructWebhookEvent(req.rawBody!, signature, this.webhookSecret, requestId);
         } 
         catch (err) 
         {
-            this.logger.error(`Webhook signature verification failed: ${err}`, 'WebhookController#handleStripeWebhook');
+            this.logger.error(`Webhook signature verification failed: ${err}`, undefined, 'WebhookController#handleStripeWebhook', requestId);
             throw new BadRequestException('Webhook signature verification failed');
         }
-        this.logger.debug(`Handling webhook event: ${event.type}`, 'WebhookController#handleStripeWebhook');
+        this.logger.debug(`Handling webhook event: ${event.type}`, 'WebhookController#handleStripeWebhook', requestId);
         switch (event.type) 
         {
         case 'customer.subscription.created':
@@ -76,7 +78,8 @@ export class WebhookController
             const subscriptionData = event.data.object as Stripe.Subscription;
             const subscriptionResult = await this.getStripeSubscriptionAndUser(
                 subscriptionData,
-                'WebhookController#handleStripeWebhook'
+                'WebhookController#handleStripeWebhook',
+                requestId,
             );
 
             if (!subscriptionResult) 
@@ -88,12 +91,14 @@ export class WebhookController
 
             await this.subscriptionService.createFromStripeSubscription(
                 stripeSubscription,
-                user._id as Types.ObjectId
+                user._id as Types.ObjectId,
+                requestId,
             );
             
             this.logger.debug(
                 `Local subscription created for Stripe subscription ${stripeSubscription.id}`,
-                'WebhookController#handleStripeWebhook'
+                'WebhookController#handleStripeWebhook',
+                requestId,
             );
             break;
         }
@@ -106,17 +111,18 @@ export class WebhookController
             this.logger.debug(`Processing customer.subscription.updated event with id: ${event.id}`, 'WebhookController#handleStripeWebhook');
             
             const stripeSubscription = event.data.object as Stripe.Subscription;
-            await this.subscriptionService.syncSubscriptionFromStripe(stripeSubscription);
+            await this.subscriptionService.syncSubscriptionFromStripe(stripeSubscription, requestId);
             this.logger.debug(
                 `Local subscription synced from Stripe subscription ${stripeSubscription.id} with status ${stripeSubscription.status}`,
-                'WebhookController#handleStripeWebhook'
+                'WebhookController#handleStripeWebhook',
+                requestId,
             );
             break;
         }
         case 'customer.subscription.deleted':
         {
             const stripeSubscription = event.data.object as Stripe.Subscription;
-            await this.subscriptionService.updateStatus(stripeSubscription.id, SubscriptionStatus.CANCELED);
+            await this.subscriptionService.updateStatus(stripeSubscription.id, SubscriptionStatus.CANCELED, requestId);
             break;
         }
         case 'invoice.payment_failed':
@@ -125,12 +131,12 @@ export class WebhookController
             const invoice = event.data.object as Stripe.Invoice;
             if ((invoice as any).subscription) 
             {
-                this.logger.warn(`Payment failed for subscription: ${(invoice as any).subscription}`, 'WebhookController#handleStripeWebhook');
+                this.logger.warn(`Payment failed for subscription: ${(invoice as any).subscription}`, 'WebhookController#handleStripeWebhook', requestId);
             }
             break;
         }
         default:
-            this.logger.debug(`Unhandled webhook event type: ${event.type}`, 'WebhookController#handleStripeWebhook');
+            this.logger.debug(`Unhandled webhook event type: ${event.type}`, 'WebhookController#handleStripeWebhook', requestId);
         }
 
         return { received: true };
@@ -138,7 +144,8 @@ export class WebhookController
 
     private async getStripeSubscriptionAndUser(
         subscriptionData: string | Stripe.Subscription | null | undefined,
-        logContext: string
+        logContext: string,
+        requestId?: string,
     ): Promise<{ stripeSubscription: Stripe.Subscription; user: User } | null> 
     {
         const subscriptionId = typeof subscriptionData === 'string'
@@ -147,11 +154,11 @@ export class WebhookController
 
         if (!subscriptionId) 
         {
-            this.logger.error('No subscription ID found in event data', undefined, logContext);
+            this.logger.error('No subscription ID found in event data', undefined, logContext, requestId);
             return null;
         }
 
-        const stripeSubscription = await this.stripeService.retrieveSubscription(subscriptionId);
+        const stripeSubscription = await this.stripeService.retrieveSubscription(subscriptionId, requestId);
         const customerData = stripeSubscription.customer;
         const customerId = typeof customerData === 'string'
             ? customerData
@@ -162,19 +169,21 @@ export class WebhookController
             this.logger.error(
                 `No customer ID found in subscription ${subscriptionId}`,
                 undefined,
-                logContext
+                logContext,
+                requestId,
             );
             return null;
         }
 
-        const user = await this.userService.findByStripeCustomerId(customerId);
+        const user = await this.userService.findByStripeCustomerId(customerId, requestId);
 
         if (!user) 
         {
             this.logger.error(
                 `User not found for Stripe customer ${customerId}`,
                 undefined,
-                logContext
+                logContext,
+                requestId,
             );
             return null;
         }

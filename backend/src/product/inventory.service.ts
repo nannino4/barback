@@ -27,10 +27,11 @@ export class InventoryService
         orgId: Types.ObjectId, 
         productId: Types.ObjectId, 
         userId: Types.ObjectId,
-        adjustmentDto: InStockAdjustmentDto
+        adjustmentDto: InStockAdjustmentDto,
+        requestId?: string,
     ): Promise<InventoryLog> 
     {
-        this.logger.debug(`Adjusting stock for product ${productId} in org ${orgId}`, 'InventoryService#adjustStock');
+        this.logger.debug(`Adjusting stock for product ${productId} in org ${orgId}`, 'InventoryService#adjustStock', requestId);
 
         // Validate adjustment quantity is not zero
         if (adjustmentDto.quantity === 0) 
@@ -66,7 +67,7 @@ export class InventoryService
 
         // Execute atomic operation (log creation + product quantity update) with a manual session
         const session = await this.connection.startSession();
-        this.logger.debug('Starting transaction session for inventory stock adjustment', 'InventoryService#adjustStock');
+        this.logger.debug('Starting transaction session for inventory stock adjustment', 'InventoryService#adjustStock', requestId);
         try 
         {
             let savedLog: InventoryLog | null = null;
@@ -102,7 +103,11 @@ export class InventoryService
             {
                 throw new DatabaseOperationException('inventory stock adjustment', 'Transaction completed without persisted log');
             }
-            this.logger.debug(`Stock adjusted for product ${productId}: ${previousQuantity} -> ${newQuantity}`, 'InventoryService#adjustStock');
+            this.logger.debug(
+                `Stock adjusted for product ${productId}: ${previousQuantity} -> ${newQuantity}`,
+                'InventoryService#adjustStock',
+                requestId,
+            );
             return savedLog;
         }
         catch (error)
@@ -117,7 +122,7 @@ export class InventoryService
         finally
         {
             await session.endSession();
-            this.logger.debug('Ended transaction session for inventory stock adjustment', 'InventoryService#adjustStock');
+            this.logger.debug('Ended transaction session for inventory stock adjustment', 'InventoryService#adjustStock', requestId);
         }
     }
 
@@ -125,10 +130,15 @@ export class InventoryService
         orgId: Types.ObjectId, 
         productId: Types.ObjectId,
         startDate?: Date,
-        endDate?: Date
+        endDate?: Date,
+        requestId?: string,
     ): Promise<InventoryLog[]> 
     {
-        this.logger.debug(`Getting inventory logs for product ${productId} in org ${orgId}`, 'InventoryService#getProductInventoryLogs');
+        this.logger.debug(
+            `Getting inventory logs for product ${productId} in org ${orgId}`,
+            'InventoryService#getProductInventoryLogs',
+            requestId,
+        );
 
         // Validate date range if both dates are provided
         if (startDate && endDate && startDate > endDate) 
@@ -170,7 +180,11 @@ export class InventoryService
                 .sort({ createdAt: -1 })  // Most recent first
                 .exec();
 
-            this.logger.debug(`Found ${logs.length} inventory logs for product ${productId}`, 'InventoryService#getProductInventoryLogs');
+            this.logger.debug(
+                `Found ${logs.length} inventory logs for product ${productId}`,
+                'InventoryService#getProductInventoryLogs',
+                requestId,
+            );
             return logs;
         } 
         catch (error) 

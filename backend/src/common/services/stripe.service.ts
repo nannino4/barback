@@ -71,9 +71,9 @@ export class StripeService
     }
 
     // Customer Management
-    async createCustomer(email: string, name: string): Promise<Stripe.Customer> 
+    async createCustomer(email: string, name: string, requestId?: string): Promise<Stripe.Customer> 
     {
-        this.logger.debug(`Creating Stripe customer: ${email}`, 'StripeService#createCustomer');
+        this.logger.debug(`Creating Stripe customer: ${email}`, 'StripeService#createCustomer', requestId);
         
         try 
         {
@@ -82,30 +82,30 @@ export class StripeService
                 name,
             });
             
-            this.logger.debug(`Stripe customer created: ${customer.id}`, 'StripeService#createCustomer');
+            this.logger.debug(`Stripe customer created: ${customer.id}`, 'StripeService#createCustomer', requestId);
             return customer;
         }
         catch (error)
         {
-            this.logger.error(`Failed to create Stripe customer: ${email}`, error instanceof Error ? error.stack : undefined, 'StripeService#createCustomer');
-            this.handleStripeError(error, 'customer creation');
+            this.logger.error(`Failed to create Stripe customer: ${email}`, error instanceof Error ? error.stack : undefined, 'StripeService#createCustomer', requestId);
+            this.handleStripeError(error, 'customer creation', requestId);
         }
     }
 
-    async updateCustomer(customerId: string, updateData: Stripe.CustomerUpdateParams): Promise<Stripe.Customer> 
+    async updateCustomer(customerId: string, updateData: Stripe.CustomerUpdateParams, requestId?: string): Promise<Stripe.Customer> 
     {
-        this.logger.debug(`Updating Stripe customer: ${customerId}`, 'StripeService#updateCustomer');
+        this.logger.debug(`Updating Stripe customer: ${customerId}`, 'StripeService#updateCustomer', requestId);
         
         try 
         {
             const customer = await this.stripe.customers.update(customerId, updateData);
-            this.logger.debug(`Stripe customer updated: ${customerId}`, 'StripeService#updateCustomer');
+            this.logger.debug(`Stripe customer updated: ${customerId}`, 'StripeService#updateCustomer', requestId);
             return customer;
         }
         catch (error)
         {
-            this.logger.error(`Failed to update Stripe customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#updateCustomer');
-            this.handleStripeError(error, 'customer update');
+            this.logger.error(`Failed to update Stripe customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#updateCustomer', requestId);
+            this.handleStripeError(error, 'customer update', requestId);
         }
     }
 
@@ -130,18 +130,20 @@ export class StripeService
     async createSubscription(
         customerId: string,
         billingInterval: BillingInterval = BillingInterval.MONTHLY,
-        options?: { isTrial?: boolean; trialPeriodDays?: number }
+        options?: { isTrial?: boolean; trialPeriodDays?: number },
+        requestId?: string,
     ): Promise<Stripe.Subscription>
     {
         const isTrial = options?.isTrial === true;
         this.logger.debug(
             `Creating ${isTrial ? 'trial' : 'paid'} subscription for customer: ${customerId} with ${billingInterval} billing`,
-            'StripeService#createSubscription'
+            'StripeService#createSubscription',
+            requestId,
         );
 
         try
         {
-            const priceId = this.getPriceId(billingInterval);
+            const priceId = this.getPriceId(billingInterval, requestId);
             
             const subscriptionParams: Stripe.SubscriptionCreateParams = {
                 customer: customerId,
@@ -163,7 +165,8 @@ export class StripeService
                     this.logger.error(
                         `Invalid trial period days (${trialDays})`,
                         undefined,
-                        'StripeService#createSubscription'
+                        'StripeService#createSubscription',
+                        requestId,
                     );
                     throw new StripeSubscriptionException('trial configuration', 'Trial period days must be a positive number');
                 }
@@ -173,7 +176,8 @@ export class StripeService
             // print subscriptionParams for debugging
             this.logger.debug(
                 `Subscription parameters: ${JSON.stringify(subscriptionParams)}`,
-                'StripeService#createSubscription'
+                'StripeService#createSubscription',
+                requestId,
             );
 
             const subscription = await this.stripe.subscriptions.create(subscriptionParams);
@@ -181,12 +185,14 @@ export class StripeService
             // print the full subscription object for debugging
             this.logger.debug(
                 `Full subscription object: ${JSON.stringify(subscription)}`,
-                'StripeService#createSubscription'
+                'StripeService#createSubscription',
+                requestId,
             );
 
             this.logger.debug(
                 `${isTrial ? 'Trial' : 'Paid'} subscription created: ${subscription.id}`,
-                'StripeService#createSubscription'
+                'StripeService#createSubscription',
+                requestId,
             );
             
             return subscription;
@@ -196,55 +202,56 @@ export class StripeService
             this.logger.error(
                 `Failed to create ${options?.isTrial ? 'trial' : 'paid'} subscription for customer: ${customerId}`,
                 error instanceof Error ? error.stack : undefined,
-                'StripeService#createSubscription'
+                'StripeService#createSubscription',
+                requestId,
             );
-            this.handleStripeError(error, 'subscription creation');
+            this.handleStripeError(error, 'subscription creation', requestId);
         }
     }
 
 
-    async cancelSubscription(subscriptionId: string): Promise<Stripe.Subscription> 
+    async cancelSubscription(subscriptionId: string, requestId?: string): Promise<Stripe.Subscription> 
     {
-        this.logger.debug(`Cancelling subscription: ${subscriptionId}`, 'StripeService#cancelSubscription');
+        this.logger.debug(`Cancelling subscription: ${subscriptionId}`, 'StripeService#cancelSubscription', requestId);
         
         try 
         {
             const subscription = await this.stripe.subscriptions.cancel(subscriptionId);
-            this.logger.debug(`Subscription cancelled: ${subscriptionId}`, 'StripeService#cancelSubscription');
+            this.logger.debug(`Subscription cancelled: ${subscriptionId}`, 'StripeService#cancelSubscription', requestId);
             return subscription;
         }
         catch (error)
         {
-            this.logger.error(`Failed to cancel subscription: ${subscriptionId}`, error instanceof Error ? error.stack : undefined, 'StripeService#cancelSubscription');
-            this.handleStripeError(error, 'subscription cancellation');
+            this.logger.error(`Failed to cancel subscription: ${subscriptionId}`, error instanceof Error ? error.stack : undefined, 'StripeService#cancelSubscription', requestId);
+            this.handleStripeError(error, 'subscription cancellation', requestId);
         }
     }
 
-    async retrieveSubscription(subscriptionId: string): Promise<Stripe.Subscription> 
+    async retrieveSubscription(subscriptionId: string, requestId?: string): Promise<Stripe.Subscription> 
     {
-        this.logger.debug(`Retrieving subscription: ${subscriptionId}`, 'StripeService#retrieveSubscription');
+        this.logger.debug(`Retrieving subscription: ${subscriptionId}`, 'StripeService#retrieveSubscription', requestId);
         
         try 
         {
             const subscription = await this.stripe.subscriptions.retrieve(subscriptionId);
-            this.logger.debug(`Subscription retrieved: ${subscriptionId}`, 'StripeService#retrieveSubscription');
+            this.logger.debug(`Subscription retrieved: ${subscriptionId}`, 'StripeService#retrieveSubscription', requestId);
             return subscription;
         }
         catch (error)
         {
-            this.logger.error(`Failed to retrieve subscription: ${subscriptionId}`, error instanceof Error ? error.stack : undefined, 'StripeService#retrieveSubscription');
-            this.handleStripeError(error, 'subscription retrieval');
+            this.logger.error(`Failed to retrieve subscription: ${subscriptionId}`, error instanceof Error ? error.stack : undefined, 'StripeService#retrieveSubscription', requestId);
+            this.handleStripeError(error, 'subscription retrieval', requestId);
         }
     }
 
-    async retrieveSetupIntent(setupIntentId: string): Promise<Stripe.SetupIntent>
+    async retrieveSetupIntent(setupIntentId: string, requestId?: string): Promise<Stripe.SetupIntent>
     {
-        this.logger.debug(`Retrieving setup intent: ${setupIntentId}`, 'StripeService#retrieveSetupIntent');
+        this.logger.debug(`Retrieving setup intent: ${setupIntentId}`, 'StripeService#retrieveSetupIntent', requestId);
 
         try
         {
             const setupIntent = await this.stripe.setupIntents.retrieve(setupIntentId);
-            this.logger.debug(`Setup intent retrieved: ${setupIntentId}`, 'StripeService#retrieveSetupIntent');
+            this.logger.debug(`Setup intent retrieved: ${setupIntentId}`, 'StripeService#retrieveSetupIntent', requestId);
             return setupIntent;
         }
         catch (error)
@@ -252,52 +259,53 @@ export class StripeService
             this.logger.error(
                 `Failed to retrieve setup intent: ${setupIntentId}`,
                 error instanceof Error ? error.stack : undefined,
-                'StripeService#retrieveSetupIntent'
+                'StripeService#retrieveSetupIntent',
+                requestId,
             );
-            this.handleStripeError(error, 'payment setup intent retrieval');
+            this.handleStripeError(error, 'payment setup intent retrieval', requestId);
         }
     }
 
     // Payment Method Management
-    async attachPaymentMethod(paymentMethodId: string, customerId: string): Promise<Stripe.PaymentMethod> 
+    async attachPaymentMethod(paymentMethodId: string, customerId: string, requestId?: string): Promise<Stripe.PaymentMethod> 
     {
-        this.logger.debug(`Attaching payment method ${paymentMethodId} to customer: ${customerId}`, 'StripeService#attachPaymentMethod');
+        this.logger.debug(`Attaching payment method ${paymentMethodId} to customer: ${customerId}`, 'StripeService#attachPaymentMethod', requestId);
         
         try 
         {
             const paymentMethod = await this.stripe.paymentMethods.attach(paymentMethodId, {
                 customer: customerId,
             });
-            this.logger.debug(`Payment method attached: ${paymentMethodId}`, 'StripeService#attachPaymentMethod');
+            this.logger.debug(`Payment method attached: ${paymentMethodId}`, 'StripeService#attachPaymentMethod', requestId);
             return paymentMethod;
         }
         catch (error)
         {
-            this.logger.error(`Failed to attach payment method ${paymentMethodId} to customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#attachPaymentMethod');
-            this.handleStripeError(error, 'payment method attachment');
+            this.logger.error(`Failed to attach payment method ${paymentMethodId} to customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#attachPaymentMethod', requestId);
+            this.handleStripeError(error, 'payment method attachment', requestId);
         }
     }
 
-    async detachPaymentMethod(paymentMethodId: string): Promise<Stripe.PaymentMethod> 
+    async detachPaymentMethod(paymentMethodId: string, requestId?: string): Promise<Stripe.PaymentMethod> 
     {
-        this.logger.debug(`Detaching payment method: ${paymentMethodId}`, 'StripeService#detachPaymentMethod');
+        this.logger.debug(`Detaching payment method: ${paymentMethodId}`, 'StripeService#detachPaymentMethod', requestId);
         
         try 
         {
             const paymentMethod = await this.stripe.paymentMethods.detach(paymentMethodId);
-            this.logger.debug(`Payment method detached: ${paymentMethodId}`, 'StripeService#detachPaymentMethod');
+            this.logger.debug(`Payment method detached: ${paymentMethodId}`, 'StripeService#detachPaymentMethod', requestId);
             return paymentMethod;
         }
         catch (error)
         {
-            this.logger.error(`Failed to detach payment method: ${paymentMethodId}`, error instanceof Error ? error.stack : undefined, 'StripeService#detachPaymentMethod');
-            this.handleStripeError(error, 'payment method detachment');
+            this.logger.error(`Failed to detach payment method: ${paymentMethodId}`, error instanceof Error ? error.stack : undefined, 'StripeService#detachPaymentMethod', requestId);
+            this.handleStripeError(error, 'payment method detachment', requestId);
         }
     }
 
-    async listPaymentMethods(customerId: string, type: Stripe.PaymentMethodListParams.Type = 'card'): Promise<Stripe.PaymentMethod[]> 
+    async listPaymentMethods(customerId: string, type: Stripe.PaymentMethodListParams.Type = 'card', requestId?: string): Promise<Stripe.PaymentMethod[]> 
     {
-        this.logger.debug(`Listing payment methods for customer: ${customerId}`, 'StripeService#listPaymentMethods');
+        this.logger.debug(`Listing payment methods for customer: ${customerId}`, 'StripeService#listPaymentMethods', requestId);
         
         try 
         {
@@ -305,36 +313,36 @@ export class StripeService
                 customer: customerId,
                 type,
             });
-            this.logger.debug(`Found ${paymentMethods.data.length} payment methods for customer: ${customerId}`, 'StripeService#listPaymentMethods');
+            this.logger.debug(`Found ${paymentMethods.data.length} payment methods for customer: ${customerId}`, 'StripeService#listPaymentMethods', requestId);
             return paymentMethods.data;
         }
         catch (error)
         {
-            this.logger.error(`Failed to list payment methods for customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#listPaymentMethods');
-            this.handleStripeError(error, 'payment method listing');
+            this.logger.error(`Failed to list payment methods for customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#listPaymentMethods', requestId);
+            this.handleStripeError(error, 'payment method listing', requestId);
         }
     }
 
-    async retrievePaymentMethod(paymentMethodId: string): Promise<Stripe.PaymentMethod> 
+    async retrievePaymentMethod(paymentMethodId: string, requestId?: string): Promise<Stripe.PaymentMethod> 
     {
-        this.logger.debug(`Retrieving payment method: ${paymentMethodId}`, 'StripeService#retrievePaymentMethod');
+        this.logger.debug(`Retrieving payment method: ${paymentMethodId}`, 'StripeService#retrievePaymentMethod', requestId);
         
         try 
         {
             const paymentMethod = await this.stripe.paymentMethods.retrieve(paymentMethodId);
-            this.logger.debug(`Payment method retrieved: ${paymentMethodId}`, 'StripeService#retrievePaymentMethod');
+            this.logger.debug(`Payment method retrieved: ${paymentMethodId}`, 'StripeService#retrievePaymentMethod', requestId);
             return paymentMethod;
         }
         catch (error)
         {
-            this.logger.error(`Failed to retrieve payment method: ${paymentMethodId}`, error instanceof Error ? error.stack : undefined, 'StripeService#retrievePaymentMethod');
-            this.handleStripeError(error, 'payment method retrieval');
+            this.logger.error(`Failed to retrieve payment method: ${paymentMethodId}`, error instanceof Error ? error.stack : undefined, 'StripeService#retrievePaymentMethod', requestId);
+            this.handleStripeError(error, 'payment method retrieval', requestId);
         }
     }
 
-    async setDefaultPaymentMethod(customerId: string, paymentMethodId: string): Promise<Stripe.Customer> 
+    async setDefaultPaymentMethod(customerId: string, paymentMethodId: string, requestId?: string): Promise<Stripe.Customer> 
     {
-        this.logger.debug(`Setting default payment method ${paymentMethodId} for customer: ${customerId}`, 'StripeService#setDefaultPaymentMethod');
+        this.logger.debug(`Setting default payment method ${paymentMethodId} for customer: ${customerId}`, 'StripeService#setDefaultPaymentMethod', requestId);
         
         try 
         {
@@ -343,18 +351,18 @@ export class StripeService
                     default_payment_method: paymentMethodId,
                 },
             });
-            this.logger.debug(`Default payment method set for customer: ${customerId}`, 'StripeService#setDefaultPaymentMethod');
+            this.logger.debug(`Default payment method set for customer: ${customerId}`, 'StripeService#setDefaultPaymentMethod', requestId);
             return customer;
         }
         catch (error)
         {
-            this.logger.error(`Failed to set default payment method for customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#setDefaultPaymentMethod');
-            this.handleStripeError(error, 'default payment method setting');
+            this.logger.error(`Failed to set default payment method for customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#setDefaultPaymentMethod', requestId);
+            this.handleStripeError(error, 'default payment method setting', requestId);
         }
     }
 
     // Webhook handling
-    constructWebhookEvent(body: string | Buffer, signature: string, secret: string): Stripe.Event 
+    constructWebhookEvent(body: string | Buffer, signature: string, secret: string, requestId?: string): Stripe.Event 
     {
         try 
         {
@@ -362,13 +370,13 @@ export class StripeService
         }
         catch (error)
         {
-            this.logger.error('Failed to construct webhook event', error instanceof Error ? error.stack : undefined, 'StripeService#constructWebhookEvent');
+            this.logger.error('Failed to construct webhook event', error instanceof Error ? error.stack : undefined, 'StripeService#constructWebhookEvent', requestId);
             throw error;
         }
     }
 
     // Utility methods
-    getPriceId(billingInterval: BillingInterval): string 
+    getPriceId(billingInterval: BillingInterval, requestId?: string): string 
     {
         switch (billingInterval) 
         {
@@ -377,7 +385,7 @@ export class StripeService
         case BillingInterval.YEARLY:
             return this.priceIds.basicYearly;
         default:
-            this.logger.error(`Invalid billing interval: ${billingInterval}`, undefined, 'StripeService#getPriceId');
+            this.logger.error(`Invalid billing interval: ${billingInterval}`, undefined, 'StripeService#getPriceId', requestId);
             throw new StripeConfigurationException(`Invalid billing interval: ${billingInterval}`);
         }
     }
@@ -385,7 +393,7 @@ export class StripeService
     /**
      * Helper method to handle Stripe errors consistently
      */
-    private handleStripeError(error: unknown, operation: string): never 
+    private handleStripeError(error: unknown, operation: string, requestId?: string): never 
     {
         if (error instanceof Stripe.errors.StripeError) 
         {
@@ -409,11 +417,11 @@ export class StripeService
                 }
             }
             
-            this.logger.error(`Stripe error during ${operation}: ${error.message}`, error.stack, 'StripeService#handleStripeError');
+            this.logger.error(`Stripe error during ${operation}: ${error.message}`, error.stack, 'StripeService#handleStripeError', requestId);
             throw new StripeServiceUnavailableException();
         }
         
-        this.logger.error(`Unknown error during ${operation}`, error instanceof Error ? error.stack : undefined, 'StripeService#handleStripeError');
+        this.logger.error(`Unknown error during ${operation}`, error instanceof Error ? error.stack : undefined, 'StripeService#handleStripeError', requestId);
         throw new StripeServiceUnavailableException();
     }
 

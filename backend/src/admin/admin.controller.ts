@@ -24,6 +24,7 @@ import { OutAdminUserDto } from './dto/out.admin-user.dto';
 import { ObjectIdValidationPipe } from '../pipes/object-id-validation.pipe';
 import { plainToInstance } from 'class-transformer';
 import { CustomLogger } from '../common/logger/custom.logger';
+import { RequestId } from '../common/decorators/request-id.decorator';
 
 @Controller('admin/users')
 @UseGuards(JwtAuthGuard, EmailVerifiedGuard, UserRolesGuard)
@@ -42,69 +43,80 @@ export class AdminController
     async getAllUsers(
         @Query('limit') limit: string = '10',
         @Query('offset') offset: string = '0'
+        ,
+        @RequestId() requestId?: string,
     ): Promise<OutAdminUserDto[]>
     {
-        this.logger.debug(`Admin fetching all users with limit: ${limit}, offset: ${offset}`, 'AdminController#getAllUsers');
+        this.logger.debug(`Admin fetching all users with limit: ${limit}, offset: ${offset}`, 'AdminController#getAllUsers', requestId);
         const limitNum = parseInt(limit, 10);
         const offsetNum = parseInt(offset, 10);
         
-        const users = await this.userService.findAll(limitNum, offsetNum);
-        this.logger.debug(`Admin found ${users.length} users`, 'AdminController#getAllUsers');
+        const users = await this.userService.findAll(limitNum, offsetNum, requestId);
+        this.logger.debug(`Admin found ${users.length} users`, 'AdminController#getAllUsers', requestId);
         return users.map(user => plainToInstance(OutAdminUserDto, user.toObject(), { excludeExtraneousValues: true }));
     }
 
     @Get(':id')
-    async getUserById(@Param('id', ObjectIdValidationPipe) id: Types.ObjectId): Promise<OutAdminUserDto>
+    async getUserById(
+        @Param('id', ObjectIdValidationPipe) id: Types.ObjectId,
+        @RequestId() requestId?: string,
+    ): Promise<OutAdminUserDto>
     {
-        this.logger.debug(`Admin fetching user by ID: ${id}`, 'AdminController#getUserById');
-        const user = await this.userService.findById(id);
-        this.logger.debug(`Admin found user: ${user.email}`, 'AdminController#getUserById');
+        this.logger.debug(`Admin fetching user by ID: ${id}`, 'AdminController#getUserById', requestId);
+        const user = await this.userService.findById(id, requestId);
+        this.logger.debug(`Admin found user: ${user.email}`, 'AdminController#getUserById', requestId);
         return plainToInstance(OutAdminUserDto, user.toObject(), { excludeExtraneousValues: true });
     }
 
     @Put(':id/profile')
     async updateUserProfile(
         @Param('id', ObjectIdValidationPipe) id: Types.ObjectId,
-        @Body() updateData: UpdateUserProfileDto
+        @Body() updateData: UpdateUserProfileDto,
+        @RequestId() requestId?: string,
     ): Promise<OutAdminUserDto>
     {
-        this.logger.debug(`Admin updating user profile for ID: ${id}`, 'AdminController#updateUserProfile');
-        const user = await this.userService.updateProfile(id, updateData);
-        this.logger.debug(`Admin updated user profile: ${user.email}`, 'AdminController#updateUserProfile');
+        this.logger.debug(`Admin updating user profile for ID: ${id}`, 'AdminController#updateUserProfile', requestId);
+        const user = await this.userService.updateProfile(id, updateData, requestId);
+        this.logger.debug(`Admin updated user profile: ${user.email}`, 'AdminController#updateUserProfile', requestId);
         return plainToInstance(OutAdminUserDto, user.toObject(), { excludeExtraneousValues: true });
     }
 
     @Put(':id/role')
     async updateUserRole(
         @Param('id', ObjectIdValidationPipe) id: Types.ObjectId,
-        @Body() updateData: UpdateUserRoleDto
+        @Body() updateData: UpdateUserRoleDto,
+        @RequestId() requestId?: string,
     ): Promise<OutAdminUserDto>
     {
-        this.logger.debug(`Admin updating user role for ID: ${id} to role: ${updateData.role}`, 'AdminController#updateUserRole');
-        const user = await this.userService.updateRole(id, updateData.role);
-        this.logger.debug(`Admin updated user role: ${user.email} to ${user.role}`, 'AdminController#updateUserRole');
+        this.logger.debug(`Admin updating user role for ID: ${id} to role: ${updateData.role}`, 'AdminController#updateUserRole', requestId);
+        const user = await this.userService.updateRole(id, updateData.role, requestId);
+        this.logger.debug(`Admin updated user role: ${user.email} to ${user.role}`, 'AdminController#updateUserRole', requestId);
         return plainToInstance(OutAdminUserDto, user.toObject(), { excludeExtraneousValues: true });
     }
 
     @Put(':id/status')
     async updateUserStatus(
         @Param('id', ObjectIdValidationPipe) id: Types.ObjectId,
-        @Body() updateData: UpdateUserStatusDto
+        @Body() updateData: UpdateUserStatusDto,
+        @RequestId() requestId?: string,
     ): Promise<OutAdminUserDto>
     {
-        this.logger.debug(`Admin updating user status for ID: ${id} to active: ${updateData.isActive}`, 'AdminController#updateUserStatus');
-        const user = await this.userService.updateStatus(id, updateData.isActive);
-        this.logger.debug(`Admin updated user status: ${user.email} to active: ${user.isActive}`, 'AdminController#updateUserStatus');
+        this.logger.debug(`Admin updating user status for ID: ${id} to active: ${updateData.isActive}`, 'AdminController#updateUserStatus', requestId);
+        const user = await this.userService.updateStatus(id, updateData.isActive, requestId);
+        this.logger.debug(`Admin updated user status: ${user.email} to active: ${user.isActive}`, 'AdminController#updateUserStatus', requestId);
         return plainToInstance(OutAdminUserDto, user.toObject(), { excludeExtraneousValues: true });
     }
 
     @Delete(':id')
     @HttpCode(HttpStatus.OK)
-    async deleteUser(@Param('id', ObjectIdValidationPipe) id: Types.ObjectId)
+    async deleteUser(
+        @Param('id', ObjectIdValidationPipe) id: Types.ObjectId,
+        @RequestId() requestId?: string,
+    )
     {
-        this.logger.debug(`Admin attempting to delete user with ID: ${id}`, 'AdminController#deleteUser');
-        const result = await this.userService.remove(id);
-        this.logger.debug(`Admin user deletion result: ${JSON.stringify(result)}`, 'AdminController#deleteUser');
+        this.logger.debug(`Admin attempting to delete user with ID: ${id}`, 'AdminController#deleteUser', requestId);
+        const result = await this.userService.remove(id, requestId);
+        this.logger.debug(`Admin user deletion result: ${JSON.stringify(result)}`, 'AdminController#deleteUser', requestId);
         return ;
     }
 }

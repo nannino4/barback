@@ -84,7 +84,7 @@ export class GoogleService
         this.logger.debug('GoogleService initialized with valid configuration', 'GoogleService#constructor');
     }
 
-    generateAuthUrl(): OutGoogleAuthUrlDto
+    generateAuthUrl(requestId?: string): OutGoogleAuthUrlDto
     {
         // Generate signed JWT as state for stateless CSRF protection
         const statePayload = {
@@ -108,13 +108,13 @@ export class GoogleService
 
         const authUrl = `${this.googleOauthUrl}?${params.toString()}`;
         
-        this.logger.debug('Generated Google OAuth URL with signed state', 'GoogleService#generateAuthUrl');
+        this.logger.debug('Generated Google OAuth URL with signed state', 'GoogleService#generateAuthUrl', requestId);
         return { authUrl, state };
     }
 
-    async validateOAuthState(state: string): Promise<void>
+    async validateOAuthState(state: string, requestId?: string): Promise<void>
     {
-        this.logger.debug('Validating OAuth state parameter', 'GoogleService#validateOAuthState');
+        this.logger.debug('Validating OAuth state parameter', 'GoogleService#validateOAuthState', requestId);
         
         try 
         {
@@ -125,33 +125,34 @@ export class GoogleService
             // Verify it's for OAuth purpose
             if (statePayload.purpose !== 'google_oauth') 
             {
-                this.logger.warn('Invalid OAuth state: wrong purpose', 'GoogleService#validateOAuthState');
+                this.logger.warn('Invalid OAuth state: wrong purpose', 'GoogleService#validateOAuthState', requestId);
                 throw new Error('Invalid state purpose');
             }
             
-            this.logger.debug('OAuth state validated successfully', 'GoogleService#validateOAuthState');
+            this.logger.debug('OAuth state validated successfully', 'GoogleService#validateOAuthState', requestId);
         } 
         catch (error) 
         {
             if (isJwtExpiredError(error))
             {
-                this.logger.warn('OAuth state JWT expired', 'GoogleService#validateOAuthState');
+                this.logger.warn('OAuth state JWT expired', 'GoogleService#validateOAuthState', requestId);
             }
             else
             {
                 this.logger.error(
                     'OAuth state validation failed',
                     error instanceof Error ? error.stack : undefined,
-                    'GoogleService#validateOAuthState'
+                    'GoogleService#validateOAuthState',
+                    requestId
                 );
             }
             throw new InvalidOAuthStateException();
         }
     }
 
-    async exchangeCodeForTokens(code: string): Promise<GoogleTokenResponseDto> 
+    async exchangeCodeForTokens(code: string, requestId?: string): Promise<GoogleTokenResponseDto> 
     {
-        this.logger.debug('Exchanging authorization code for tokens', 'GoogleService#exchangeCodeForTokens');
+        this.logger.debug('Exchanging authorization code for tokens', 'GoogleService#exchangeCodeForTokens', requestId);
         
         try 
         {
@@ -167,19 +168,19 @@ export class GoogleService
                 },
             });
 
-            this.logger.debug('Successfully exchanged code for tokens', 'GoogleService#exchangeCodeForTokens');
+            this.logger.debug('Successfully exchanged code for tokens', 'GoogleService#exchangeCodeForTokens', requestId);
             return response.data;
         } 
         catch (error) 
         {
-            this.logger.error('Failed to exchange authorization code for tokens', error instanceof Error ? error.stack : undefined, 'GoogleService#exchangeCodeForTokens');
+            this.logger.error('Failed to exchange authorization code for tokens', error instanceof Error ? error.stack : undefined, 'GoogleService#exchangeCodeForTokens', requestId);
             throw new GoogleTokenExchangeException();
         }
     }
 
-    async getUserInfo(accessToken: string): Promise<GoogleUserInfoDto> 
+    async getUserInfo(accessToken: string, requestId?: string): Promise<GoogleUserInfoDto> 
     {
-        this.logger.debug('Fetching user info from Google', 'GoogleService#getUserInfo');
+        this.logger.debug('Fetching user info from Google', 'GoogleService#getUserInfo', requestId);
 
         let userInfo: GoogleUserInfoDto;
         
@@ -192,69 +193,70 @@ export class GoogleService
             });
 
             userInfo = response.data as GoogleUserInfoDto;
-            this.logger.debug(`Successfully fetched user info for: ${userInfo.email}`, 'GoogleService#getUserInfo');
+            this.logger.debug(`Successfully fetched user info for: ${userInfo.email}`, 'GoogleService#getUserInfo', requestId);
         } 
         catch (error) 
         {
             if (axios.isAxiosError(error) && error.response?.status === 401) 
             {
-                this.logger.warn('Invalid or expired Google access token', 'GoogleService#getUserInfo');
+                this.logger.warn('Invalid or expired Google access token', 'GoogleService#getUserInfo', requestId);
                 throw new GoogleTokenInvalidException();
             }
             
-            this.logger.error('Failed to fetch user info from Google', error instanceof Error ? error.stack : undefined, 'GoogleService#getUserInfo');
+            this.logger.error('Failed to fetch user info from Google', error instanceof Error ? error.stack : undefined, 'GoogleService#getUserInfo', requestId);
             throw new GoogleUserInfoException();
         }
 
         // Business validation - separate from HTTP error handling
         if (!userInfo.verified_email) 
         {
-            this.logger.warn('Google user email is not verified', 'GoogleService#getUserInfo');
+            this.logger.warn('Google user email is not verified', 'GoogleService#getUserInfo', requestId);
             throw new GoogleEmailNotVerifiedException();
         }
 
         return userInfo;
     }
 
-    async findOrCreateUser(googleUserInfo: GoogleUserInfoDto): Promise<User> 
+    async findOrCreateUser(googleUserInfo: GoogleUserInfoDto, requestId?: string): Promise<User> 
     {
-        this.logger.debug(`Finding or creating user for Google ID: ${googleUserInfo.id}`, 'GoogleService#findOrCreateUser');
+        this.logger.debug(`Finding or creating user for Google ID: ${googleUserInfo.id}`, 'GoogleService#findOrCreateUser', requestId);
         
         // First, try to find user by Google ID
-        let user = await this.userService.findByGoogleId(googleUserInfo.id);
+        let user = await this.userService.findByGoogleId(googleUserInfo.id, requestId);
         if (user) 
         {
-            this.logger.debug(`User found by Google ID: ${user.email}`, 'GoogleService#findOrCreateUser');
-            return await this.importGoogleProfilePictureIfNeeded(user, googleUserInfo.picture);
+            this.logger.debug(`User found by Google ID: ${user.email}`, 'GoogleService#findOrCreateUser', requestId);
+            return await this.importGoogleProfilePictureIfNeeded(user, googleUserInfo.picture, requestId);
         }
 
         // Try to find user by email
-        const existingUserByEmail = await this.userService.findByEmail(googleUserInfo.email);
+        const existingUserByEmail = await this.userService.findByEmail(googleUserInfo.email, requestId);
         
         if (existingUserByEmail) 
         {
             // Handle existing user with different auth provider
             if (existingUserByEmail.authProvider !== AuthProvider.EMAIL) 
             {
-                this.logger.warn(`User ${googleUserInfo.email} exists with different auth provider: ${existingUserByEmail.authProvider}`, 'GoogleService#findOrCreateUser');
+                this.logger.warn(`User ${googleUserInfo.email} exists with different auth provider: ${existingUserByEmail.authProvider}`, 'GoogleService#findOrCreateUser', requestId);
                 throw new GoogleAccountLinkingException(existingUserByEmail.authProvider);
             }
 
             // Link Google account to existing email user
-            this.logger.debug(`Linking Google account to existing email user: ${existingUserByEmail.email}`, 'GoogleService#findOrCreateUser');
+            this.logger.debug(`Linking Google account to existing email user: ${existingUserByEmail.email}`, 'GoogleService#findOrCreateUser', requestId);
             
             user = await this.userService.linkGoogleAccount(
                 existingUserByEmail, 
                 googleUserInfo.id, 
-                googleUserInfo.picture
+                googleUserInfo.picture,
+                requestId
             );
 
-            this.logger.debug(`Google account linked successfully for user: ${user.email}`, 'GoogleService#findOrCreateUser');
-            return await this.importGoogleProfilePictureIfNeeded(user, googleUserInfo.picture);
+            this.logger.debug(`Google account linked successfully for user: ${user.email}`, 'GoogleService#findOrCreateUser', requestId);
+            return await this.importGoogleProfilePictureIfNeeded(user, googleUserInfo.picture, requestId);
         }
 
         // Create new user
-        this.logger.debug(`Creating new Google user: ${googleUserInfo.email}`, 'GoogleService#findOrCreateUser');
+        this.logger.debug(`Creating new Google user: ${googleUserInfo.email}`, 'GoogleService#findOrCreateUser', requestId);
         user = await this.userService.create({
             googleId: googleUserInfo.id,
             email: googleUserInfo.email,
@@ -263,10 +265,10 @@ export class GoogleService
             profilePictureUrl: googleUserInfo.picture,
             authProvider: AuthProvider.GOOGLE,
             isEmailVerified: true, // Google emails are pre-verified
-        });
+        }, requestId);
 
-        this.logger.debug(`User created successfully: ${user.email}`, 'GoogleService#findOrCreateUser');
-        return await this.importGoogleProfilePictureIfNeeded(user, googleUserInfo.picture);
+        this.logger.debug(`User created successfully: ${user.email}`, 'GoogleService#findOrCreateUser', requestId);
+        return await this.importGoogleProfilePictureIfNeeded(user, googleUserInfo.picture, requestId);
     }
 
     /**
@@ -274,18 +276,20 @@ export class GoogleService
      * Logging is performed at method entry, on all early returns, and on completion.
      * This method never throws; login flow is never blocked by avatar import failure.
      */
-    private async importGoogleProfilePictureIfNeeded(user: User, pictureUrl?: string): Promise<User>
+    private async importGoogleProfilePictureIfNeeded(user: User, pictureUrl?: string, requestId?: string): Promise<User>
     {
         this.logger.debug(
             `Checking if Google profile picture import is needed for user: ${user.email}`,
-            'GoogleService#importGoogleProfilePictureIfNeeded'
+            'GoogleService#importGoogleProfilePictureIfNeeded',
+            requestId
         );
 
         if (!this.shouldImportGoogleProfilePicture(user, pictureUrl))
         {
             this.logger.debug(
                 `No import needed for user: ${user.email}`,
-                'GoogleService#importGoogleProfilePictureIfNeeded'
+                'GoogleService#importGoogleProfilePictureIfNeeded',
+                requestId
             );
             return user;
         }
@@ -295,7 +299,8 @@ export class GoogleService
         {
             this.logger.warn(
                 `Skipping profile picture import due to unsafe/unsupported URL for user: ${user.email}`,
-                'GoogleService#importGoogleProfilePictureIfNeeded'
+                'GoogleService#importGoogleProfilePictureIfNeeded',
+                requestId
             );
             return user;
         }
@@ -304,7 +309,8 @@ export class GoogleService
         {
             this.logger.debug(
                 `Attempting to download and upload Google profile picture for user: ${user.email}`,
-                'GoogleService#importGoogleProfilePictureIfNeeded'
+                'GoogleService#importGoogleProfilePictureIfNeeded',
+                requestId
             );
 
             const { bytes, contentType }: { bytes: Buffer; contentType: string } = await this.downloadImageFromUrl(safeUrl);
@@ -313,7 +319,7 @@ export class GoogleService
                 userId: user.id,
                 contentType,
                 bytes,
-            });
+            }, requestId);
 
             const updated = await this.userService.updateProfilePicture(
                 user._id,
@@ -321,11 +327,13 @@ export class GoogleService
                 uploadResult.picture.key,
                 uploadResult.thumbnail.url,
                 uploadResult.thumbnail.key,
+                requestId,
             );
 
             this.logger.debug(
                 `Google profile picture imported and uploaded for user: ${user.email}`,
-                'GoogleService#importGoogleProfilePictureIfNeeded'
+                'GoogleService#importGoogleProfilePictureIfNeeded',
+                requestId
             );
             return updated.user;
         }
@@ -334,7 +342,8 @@ export class GoogleService
             const errorMessage: string = error instanceof Error ? error.message : 'Unknown error';
             this.logger.warn(
                 `Failed to import Google profile picture for user: ${user.email} - ${errorMessage}`,
-                'GoogleService#importGoogleProfilePictureIfNeeded'
+                'GoogleService#importGoogleProfilePictureIfNeeded',
+                requestId
             );
             return user;
         }

@@ -30,13 +30,13 @@ export class UserService
         this.logger.debug('UserService initialized', 'UserService#constructor');
     }
 
-    async create(user: CreateUserDto): Promise<User>
+    async create(user: CreateUserDto, requestId?: string): Promise<User>
     {
-        this.logger.debug(`Attempting to create user with email: ${user.email}`, 'UserService#create');
+        this.logger.debug(`Attempting to create user with email: ${user.email}`, 'UserService#create', requestId);
         const existingUser = await this.userModel.findOne({ email: user.email }).exec();
         if (existingUser)
         {
-            this.logger.warn(`User with email "${user.email}" already exists`, 'UserService#create');
+            this.logger.warn(`User with email "${user.email}" already exists`, 'UserService#create', requestId);
             throw new EmailAlreadyExistsException(user.email);
         }
         
@@ -45,33 +45,33 @@ export class UserService
         {
             const createdUser = new this.userModel(user);
             await createdUser.save();
-            this.logger.debug(`User created successfully: ${createdUser.email}`, 'UserService#create');
+            this.logger.debug(`User created successfully: ${createdUser.email}`, 'UserService#create', requestId);
             return createdUser;
         }
         catch (error) 
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
             const errorStack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Database operation failed for user creation: ${user.email}`, errorStack, 'UserService#create');
+            this.logger.error(`Database operation failed for user creation: ${user.email}`, errorStack, 'UserService#create', requestId);
             throw new DatabaseOperationException('user creation', errorMessage);
         }
     }
 
-    async findAll(limit: number, offset: number): Promise<User[]>
+    async findAll(limit: number, offset: number, requestId?: string): Promise<User[]>
     {
-        this.logger.debug(`Fetching all users with limit: ${limit}, offset: ${offset}`, 'UserService#findAll');
+        this.logger.debug(`Fetching all users with limit: ${limit}, offset: ${offset}`, 'UserService#findAll', requestId);
         const users = await this.userModel
             .find()
             .skip(offset)
             .limit(limit)
             .exec();
-        this.logger.debug(`Found ${users.length} users`, 'UserService#findAll');
+        this.logger.debug(`Found ${users.length} users`, 'UserService#findAll', requestId);
         return users;
     }
 
-    async findById(id: Types.ObjectId): Promise<User>
+    async findById(id: Types.ObjectId, requestId?: string): Promise<User>
     {
-        this.logger.debug(`Attempting to find user by ID: ${id}`, 'UserService#findById');
+        this.logger.debug(`Attempting to find user by ID: ${id}`, 'UserService#findById', requestId);
         
         let user: User | null;
         try 
@@ -82,49 +82,49 @@ export class UserService
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
             const errorStack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Database error while finding user by ID: ${id}`, errorStack, 'UserService#findById');
+            this.logger.error(`Database error while finding user by ID: ${id}`, errorStack, 'UserService#findById', requestId);
             throw new DatabaseOperationException('user lookup by ID', errorMessage);
         }
         
         if (!user)
         {
-            this.logger.warn(`User with ID "${id}" not found`, 'UserService#findById');
+            this.logger.warn(`User with ID "${id}" not found`, 'UserService#findById', requestId);
             throw new UserNotFoundByIdException(id.toString());
         }
         
-        this.logger.debug(`User found: ${user.email} with ID: ${id}`, 'UserService#findById');
+        this.logger.debug(`User found: ${user.email} with ID: ${id}`, 'UserService#findById', requestId);
         return user;
     }
 
-    async findByEmail(email: string): Promise<User | null>
+    async findByEmail(email: string, requestId?: string): Promise<User | null>
     {
-        this.logger.debug(`Attempting to find user by email: ${email}`, 'UserService#findByEmail');
+        this.logger.debug(`Attempting to find user by email: ${email}`, 'UserService#findByEmail', requestId);
         const user = await this.userModel.findOne({ email }).exec();
         if (!user)
         {
-            this.logger.debug(`User with email "${email}" not found`, 'UserService#findByEmail');
+            this.logger.debug(`User with email "${email}" not found`, 'UserService#findByEmail', requestId);
             return null;
         }
-        this.logger.debug(`User found: ${user.email}`, 'UserService#findByEmail');
+        this.logger.debug(`User found: ${user.email}`, 'UserService#findByEmail', requestId);
         return user;
     }
 
-    async findByGoogleId(googleId: string): Promise<User | null>
+    async findByGoogleId(googleId: string, requestId?: string): Promise<User | null>
     {
-        this.logger.debug(`Attempting to find user by Google ID: ${googleId}`, 'UserService#findByGoogleId');
+        this.logger.debug(`Attempting to find user by Google ID: ${googleId}`, 'UserService#findByGoogleId', requestId);
         const user = await this.userModel.findOne({ googleId }).exec();
         if (!user)
         {
-            this.logger.debug(`User with Google ID "${googleId}" not found`, 'UserService#findByGoogleId');
+            this.logger.debug(`User with Google ID "${googleId}" not found`, 'UserService#findByGoogleId', requestId);
             return null;
         }
-        this.logger.debug(`User found with Google ID: ${googleId}`, 'UserService#findByGoogleId');
+        this.logger.debug(`User found with Google ID: ${googleId}`, 'UserService#findByGoogleId', requestId);
         return user;
     }
 
-    async updateProfile(id: Types.ObjectId, updateData: UpdateUserProfileDto): Promise<User>
+    async updateProfile(id: Types.ObjectId, updateData: UpdateUserProfileDto, requestId?: string): Promise<User>
     {
-        this.logger.debug(`Attempting to update profile for user ID: ${id}`, 'UserService#updateProfile');
+        this.logger.debug(`Attempting to update profile for user ID: ${id}`, 'UserService#updateProfile', requestId);
         
         try 
         {
@@ -136,11 +136,11 @@ export class UserService
             
             if (!user)
             {
-                this.logger.warn(`User with ID "${id}" not found for profile update`, 'UserService#updateProfile');
+                this.logger.warn(`User with ID "${id}" not found for profile update`, 'UserService#updateProfile', requestId);
                 throw new UserNotFoundByIdException(id.toString());
             }
             
-            this.logger.debug(`Profile updated successfully for user: ${user.email}`, 'UserService#updateProfile');
+            this.logger.debug(`Profile updated successfully for user: ${user.email}`, 'UserService#updateProfile', requestId);
             return user;
         }
         catch (error)
@@ -153,14 +153,14 @@ export class UserService
             // Handle MongoDB validation errors
             if (error instanceof Error && error.name === 'ValidationError')
             {
-                this.logger.warn(`Profile validation failed for user ID: ${id} - ${error.message}`, 'UserService#updateProfile');
+                this.logger.warn(`Profile validation failed for user ID: ${id} - ${error.message}`, 'UserService#updateProfile', requestId);
                 throw new DatabaseOperationException('profile update validation', error.message);
             }
             
             // Handle other database errors
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
             const errorStack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Database operation failed for profile update: ${id}`, errorStack, 'UserService#updateProfile');
+            this.logger.error(`Database operation failed for profile update: ${id}`, errorStack, 'UserService#updateProfile', requestId);
             throw new DatabaseOperationException('profile update', errorMessage);
         }
     }
@@ -180,10 +180,11 @@ export class UserService
         pictureUrl: string,
         pictureKey: string,
         thumbnailUrl: string,
-        thumbnailKey: string
+        thumbnailKey: string,
+        requestId?: string
     ): Promise<{ user: User; oldPictureKey?: string; oldThumbnailKey?: string }>
     {
-        this.logger.debug(`Attempting to update profile picture for user ID: ${id}`, 'UserService#updateProfilePicture');
+        this.logger.debug(`Attempting to update profile picture for user ID: ${id}`, 'UserService#updateProfilePicture', requestId);
         
         try
         {
@@ -191,7 +192,7 @@ export class UserService
             const currentUser = await this.userModel.findById(id).exec();
             if (!currentUser)
             {
-                this.logger.warn(`User with ID "${id}" not found for profile picture update`, 'UserService#updateProfilePicture');
+                this.logger.warn(`User with ID "${id}" not found for profile picture update`, 'UserService#updateProfilePicture', requestId);
                 throw new UserNotFoundByIdException(id.toString());
             }
 
@@ -214,11 +215,11 @@ export class UserService
             
             if (!user)
             {
-                this.logger.warn(`User with ID "${id}" not found for profile picture update`, 'UserService#updateProfilePicture');
+                this.logger.warn(`User with ID "${id}" not found for profile picture update`, 'UserService#updateProfilePicture', requestId);
                 throw new UserNotFoundByIdException(id.toString());
             }
             
-            this.logger.debug(`Profile picture updated successfully for user: ${user.email}`, 'UserService#updateProfilePicture');
+            this.logger.debug(`Profile picture updated successfully for user: ${user.email}`, 'UserService#updateProfilePicture', requestId);
             return { user, oldPictureKey, oldThumbnailKey };
         }
         catch (error)
@@ -230,14 +231,14 @@ export class UserService
             
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
             const errorStack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Database operation failed for profile picture update: ${id}`, errorStack, 'UserService#updateProfilePicture');
+            this.logger.error(`Database operation failed for profile picture update: ${id}`, errorStack, 'UserService#updateProfilePicture', requestId);
             throw new DatabaseOperationException('profile picture update', errorMessage);
         }
     }
 
-    async updateRole(id: Types.ObjectId, role: UserRole): Promise<User>
+    async updateRole(id: Types.ObjectId, role: UserRole, requestId?: string): Promise<User>
     {
-        this.logger.debug(`Attempting to update role for user ID: ${id} to role: ${role}`, 'UserService#updateRole');
+        this.logger.debug(`Attempting to update role for user ID: ${id} to role: ${role}`, 'UserService#updateRole', requestId);
         const user = await this.userModel.findByIdAndUpdate(
             id,
             { $set: { role } },
@@ -245,17 +246,17 @@ export class UserService
         ).exec();
         if (!user)
         {
-            this.logger.warn(`User with ID "${id}" not found for role update`, 'UserService#updateRole');
+            this.logger.warn(`User with ID "${id}" not found for role update`, 'UserService#updateRole', requestId);
             throw new UserNotFoundByIdException(id.toString());
         }
 
-        this.logger.debug(`Role updated successfully for user: ${user.email} to role: ${role}`, 'UserService#updateRole');
+        this.logger.debug(`Role updated successfully for user: ${user.email} to role: ${role}`, 'UserService#updateRole', requestId);
         return user;
     }
 
-    async updateStatus(id: Types.ObjectId, isActive: boolean): Promise<User>
+    async updateStatus(id: Types.ObjectId, isActive: boolean, requestId?: string): Promise<User>
     {
-        this.logger.debug(`Attempting to update status for user ID: ${id} to active: ${isActive}`, 'UserService#updateStatus');
+        this.logger.debug(`Attempting to update status for user ID: ${id} to active: ${isActive}`, 'UserService#updateStatus', requestId);
         const user = await this.userModel.findByIdAndUpdate(
             id,
             { $set: { isActive } },
@@ -263,17 +264,17 @@ export class UserService
         ).exec();
         if (!user)
         {
-            this.logger.warn(`User with ID "${id}" not found for status update`, 'UserService#updateStatus');
+            this.logger.warn(`User with ID "${id}" not found for status update`, 'UserService#updateStatus', requestId);
             throw new UserNotFoundByIdException(id.toString());
         }
 
-        this.logger.debug(`Status updated successfully for user: ${user.email} to active: ${isActive}`, 'UserService#updateStatus');
+        this.logger.debug(`Status updated successfully for user: ${user.email} to active: ${isActive}`, 'UserService#updateStatus', requestId);
         return user;
     }
 
-    async remove(id: Types.ObjectId): Promise<void>
+    async remove(id: Types.ObjectId, requestId?: string): Promise<void>
     {
-        this.logger.debug(`Attempting to remove user with ID: ${id}`, 'UserService#remove');
+        this.logger.debug(`Attempting to remove user with ID: ${id}`, 'UserService#remove', requestId);
         
         
         // TODO: Add business logic validations here when org/subscription modules are implemented
@@ -288,7 +289,7 @@ export class UserService
             const result = await this.userModel.deleteOne({ _id: id }).exec();
             if (result.deletedCount === 0)
             {
-                this.logger.warn(`No user was deleted for ID: ${id}`, 'UserService#remove');
+                this.logger.warn(`No user was deleted for ID: ${id}`, 'UserService#remove', requestId);
                 throw new UserNotFoundByIdException(id.toString());
             }
         }
@@ -301,30 +302,30 @@ export class UserService
             
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
             const errorStack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Database error while deleting user: ${id}`, errorStack, 'UserService#remove');
+            this.logger.error(`Database error while deleting user: ${id}`, errorStack, 'UserService#remove', requestId);
             throw new DatabaseOperationException('user deletion', errorMessage);
         }
         
-        this.logger.debug(`User with ID "${id}" successfully deleted`, 'UserService#remove');
+        this.logger.debug(`User with ID "${id}" successfully deleted`, 'UserService#remove', requestId);
         return;
     }
 
-    async changePassword(userId: Types.ObjectId, currentPassword: string, newPassword: string): Promise<void>
+    async changePassword(userId: Types.ObjectId, currentPassword: string, newPassword: string, requestId?: string): Promise<void>
     {
-        this.logger.debug(`Attempting to change password for user ID: ${userId}`, 'UserService#changePassword');
+        this.logger.debug(`Attempting to change password for user ID: ${userId}`, 'UserService#changePassword', requestId);
         
         // Use findById to get user and handle not found error
-        const user = await this.findById(userId);
+        const user = await this.findById(userId, requestId);
         
         if (user.authProvider !== AuthProvider.EMAIL)
         {
-            this.logger.warn(`User ${user.email} is not using EMAIL authentication`, 'UserService#changePassword');
+            this.logger.warn(`User ${user.email} is not using EMAIL authentication`, 'UserService#changePassword', requestId);
             throw new PasswordChangeNotAllowedException(user.authProvider);
         }
         
         if (!user.hashedPassword || !(await bcrypt.compare(currentPassword, user.hashedPassword)))
         {
-            this.logger.warn(`Invalid current password for user: ${user.email}`, 'UserService#changePassword');
+            this.logger.warn(`Invalid current password for user: ${user.email}`, 'UserService#changePassword', requestId);
             throw new UnauthorizedException('Current password is incorrect');
         }
         
@@ -336,7 +337,7 @@ export class UserService
         }
         catch (error)
         {
-            this.logger.error('Password hashing failed during password change', error instanceof Error ? error.stack : undefined, 'UserService#changePassword');
+            this.logger.error('Password hashing failed during password change', error instanceof Error ? error.stack : undefined, 'UserService#changePassword', requestId);
             throw new PasswordHashingException();
         }
         
@@ -356,7 +357,7 @@ export class UserService
             if (!result)
             {
                 // Password was changed by another request or user was deleted
-                this.logger.warn(`Password update failed - password changed concurrently for user: ${user.email}`, 'UserService#changePassword');
+                this.logger.warn(`Password update failed - password changed concurrently for user: ${user.email}`, 'UserService#changePassword', requestId);
                 throw new PasswordConcurrentChangeException();
             }
         }
@@ -369,17 +370,17 @@ export class UserService
             
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
             const errorStack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Database error while updating password for user: ${user.email}`, errorStack, 'UserService#changePassword');
+            this.logger.error(`Database error while updating password for user: ${user.email}`, errorStack, 'UserService#changePassword', requestId);
             throw new DatabaseOperationException('password update', errorMessage);
         }
         
-        this.logger.debug(`Password changed successfully for user: ${user.email}`, 'UserService#changePassword');
+        this.logger.debug(`Password changed successfully for user: ${user.email}`, 'UserService#changePassword', requestId);
         return;
     }
 
-    async updateStripeCustomerId(userId: Types.ObjectId, stripeCustomerId: string): Promise<User>
+    async updateStripeCustomerId(userId: Types.ObjectId, stripeCustomerId: string, requestId?: string): Promise<User>
     {
-        this.logger.debug(`Updating Stripe customer ID for user: ${userId}`, 'UserService#updateStripeCustomerId');
+        this.logger.debug(`Updating Stripe customer ID for user: ${userId}`, 'UserService#updateStripeCustomerId', requestId);
         const user = await this.userModel.findByIdAndUpdate(
             userId,
             { $set: { stripeCustomerId } },
@@ -387,16 +388,16 @@ export class UserService
         ).exec();
         if (!user)
         {
-            this.logger.warn(`User with ID "${userId}" not found for Stripe customer ID update`, 'UserService#updateStripeCustomerId');
+            this.logger.warn(`User with ID "${userId}" not found for Stripe customer ID update`, 'UserService#updateStripeCustomerId', requestId);
             throw new UserNotFoundByIdException(userId.toString());
         }
-        this.logger.debug(`Stripe customer ID updated successfully for user: ${user.email}`, 'UserService#updateStripeCustomerId');
+        this.logger.debug(`Stripe customer ID updated successfully for user: ${user.email}`, 'UserService#updateStripeCustomerId', requestId);
         return user;
     }
 
-    async findByStripeCustomerId(stripeCustomerId: string): Promise<User | null>
+    async findByStripeCustomerId(stripeCustomerId: string, requestId?: string): Promise<User | null>
     {
-        this.logger.debug(`Finding user by Stripe customer ID: ${stripeCustomerId}`, 'UserService#findByStripeCustomerId');
+        this.logger.debug(`Finding user by Stripe customer ID: ${stripeCustomerId}`, 'UserService#findByStripeCustomerId', requestId);
         
         try 
         {
@@ -404,11 +405,11 @@ export class UserService
             
             if (!user) 
             {
-                this.logger.warn(`User not found with Stripe customer ID: ${stripeCustomerId}`, 'UserService#findByStripeCustomerId');
+                this.logger.warn(`User not found with Stripe customer ID: ${stripeCustomerId}`, 'UserService#findByStripeCustomerId', requestId);
                 return null;
             }
             
-            this.logger.debug(`User found with Stripe customer ID: ${stripeCustomerId}`, 'UserService#findByStripeCustomerId');
+            this.logger.debug(`User found with Stripe customer ID: ${stripeCustomerId}`, 'UserService#findByStripeCustomerId', requestId);
             return user;
         }
         catch (error)
@@ -417,15 +418,16 @@ export class UserService
             this.logger.error(
                 `Database error while finding user by Stripe customer ID: ${stripeCustomerId}`,
                 error instanceof Error ? error.stack : undefined,
-                'UserService#findByStripeCustomerId'
+                'UserService#findByStripeCustomerId',
+                requestId
             );
             throw new DatabaseOperationException('user lookup by Stripe customer ID', errorMessage);
         }
     }
 
-    async generateEmailVerificationToken(userId: Types.ObjectId): Promise<string>
+    async generateEmailVerificationToken(userId: Types.ObjectId, requestId?: string): Promise<string>
     {
-        this.logger.debug(`Generating email verification token for user ID: ${userId}`, 'UserService#generateEmailVerificationToken');
+        this.logger.debug(`Generating email verification token for user ID: ${userId}`, 'UserService#generateEmailVerificationToken', requestId);
         
         try 
         {
@@ -444,20 +446,20 @@ export class UserService
                 { new: true, runValidators: true }
             ).exec();
 
-            this.logger.debug(`Email verification token generated for user ID: ${userId}`, 'UserService#generateEmailVerificationToken');
+            this.logger.debug(`Email verification token generated for user ID: ${userId}`, 'UserService#generateEmailVerificationToken', requestId);
             return token;
         }
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error(`Failed to generate email verification token for user ID: ${userId}`, error instanceof Error ? error.stack : undefined, 'UserService#generateEmailVerificationToken');
+            this.logger.error(`Failed to generate email verification token for user ID: ${userId}`, error instanceof Error ? error.stack : undefined, 'UserService#generateEmailVerificationToken', requestId);
             throw new DatabaseOperationException('email verification token generation', errorMessage);
         }
     }
 
-    async verifyEmail(token: string): Promise<User>
+    async verifyEmail(token: string, requestId?: string): Promise<User>
     {
-        this.logger.debug('Attempting to verify email with token', 'UserService#verifyEmail');
+        this.logger.debug('Attempting to verify email with token', 'UserService#verifyEmail', requestId);
         
         let user: User | null;
         try 
@@ -470,20 +472,20 @@ export class UserService
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error('Database error while finding user by verification token', error instanceof Error ? error.stack : undefined, 'UserService#verifyEmail');
+            this.logger.error('Database error while finding user by verification token', error instanceof Error ? error.stack : undefined, 'UserService#verifyEmail', requestId);
             throw new DatabaseOperationException('email verification lookup', errorMessage);
         }
 
         if (!user)
         {
-            this.logger.warn('Invalid or expired email verification token', 'UserService#verifyEmail');
+            this.logger.warn('Invalid or expired email verification token', 'UserService#verifyEmail', requestId);
             throw new InvalidEmailVerificationTokenException();
         }
 
         // Check if email is already verified (business logic validation)
         if (user.isEmailVerified)
         {
-            this.logger.warn(`Email already verified for user: ${user.email}`, 'UserService#verifyEmail');
+            this.logger.warn(`Email already verified for user: ${user.email}`, 'UserService#verifyEmail', requestId);
             throw new EmailAlreadyVerifiedException(user.email);
         }
 
@@ -507,23 +509,23 @@ export class UserService
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error(`Database error while updating user verification status for user ID: ${user.id}`, error instanceof Error ? error.stack : undefined, 'UserService#verifyEmail');
+            this.logger.error(`Database error while updating user verification status for user ID: ${user.id}`, error instanceof Error ? error.stack : undefined, 'UserService#verifyEmail', requestId);
             throw new DatabaseOperationException('email verification update', errorMessage);
         }
 
         if (!updatedUser)
         {
-            this.logger.error(`Failed to update user after email verification for user ID: ${user.id}`, 'UserService#verifyEmail');
+            this.logger.error(`Failed to update user after email verification for user ID: ${user.id}`, undefined, 'UserService#verifyEmail', requestId);
             throw new UserNotFoundByIdException(user.id.toString());
         }
 
-        this.logger.debug(`Email verified successfully for user: ${updatedUser.email}`, 'UserService#verifyEmail');
+        this.logger.debug(`Email verified successfully for user: ${updatedUser.email}`, 'UserService#verifyEmail', requestId);
         return updatedUser;
     }
 
-    async findByEmailVerificationToken(token: string): Promise<User | null>
+    async findByEmailVerificationToken(token: string, requestId?: string): Promise<User | null>
     {
-        this.logger.debug('Attempting to find user by email verification token', 'UserService#findByEmailVerificationToken');
+        this.logger.debug('Attempting to find user by email verification token', 'UserService#findByEmailVerificationToken', requestId);
         const user = await this.userModel.findOne({
             emailVerificationToken: token,
             emailVerificationExpires: { $gt: new Date() },
@@ -531,17 +533,17 @@ export class UserService
 
         if (!user)
         {
-            this.logger.debug('User not found with valid email verification token', 'UserService#findByEmailVerificationToken');
+            this.logger.debug('User not found with valid email verification token', 'UserService#findByEmailVerificationToken', requestId);
             return null;
         }
 
-        this.logger.debug(`User found with email verification token: ${user.email}`, 'UserService#findByEmailVerificationToken');
+        this.logger.debug(`User found with email verification token: ${user.email}`, 'UserService#findByEmailVerificationToken', requestId);
         return user;
     }
 
-    async generatePasswordResetToken(email: string): Promise<string | null>
+    async generatePasswordResetToken(email: string, requestId?: string): Promise<string | null>
     {
-        this.logger.debug(`Generating password reset token for email: ${email}`, 'UserService#generatePasswordResetToken');
+        this.logger.debug(`Generating password reset token for email: ${email}`, 'UserService#generatePasswordResetToken', requestId);
         
         let user: User | null;
         try 
@@ -551,19 +553,19 @@ export class UserService
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error(`Database error while finding user for password reset: ${email}`, error instanceof Error ? error.stack : undefined, 'UserService#generatePasswordResetToken');
+            this.logger.error(`Database error while finding user for password reset: ${email}`, error instanceof Error ? error.stack : undefined, 'UserService#generatePasswordResetToken', requestId);
             throw new DatabaseOperationException('password reset user lookup', errorMessage);
         }
         
         if (!user)
         {
-            this.logger.debug(`User not found for password reset request: ${email}`, 'UserService#generatePasswordResetToken');
+            this.logger.debug(`User not found for password reset request: ${email}`, 'UserService#generatePasswordResetToken', requestId);
             return null; // Don't reveal if email exists
         }
 
         if (user.authProvider !== AuthProvider.EMAIL)
         {
-            this.logger.debug(`User ${email} is not using EMAIL authentication for password reset`, 'UserService#generatePasswordResetToken');
+            this.logger.debug(`User ${email} is not using EMAIL authentication for password reset`, 'UserService#generatePasswordResetToken', requestId);
             return null; // Don't reveal auth provider
         }
 
@@ -587,17 +589,17 @@ export class UserService
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error(`Database error while updating password reset token for user: ${user.email}`, error instanceof Error ? error.stack : undefined, 'UserService#generatePasswordResetToken');
+            this.logger.error(`Database error while updating password reset token for user: ${user.email}`, error instanceof Error ? error.stack : undefined, 'UserService#generatePasswordResetToken', requestId);
             throw new DatabaseOperationException('password reset token update', errorMessage);
         }
 
-        this.logger.debug(`Password reset token generated for user: ${user.email}`, 'UserService#generatePasswordResetToken');
+        this.logger.debug(`Password reset token generated for user: ${user.email}`, 'UserService#generatePasswordResetToken', requestId);
         return token;
     }
 
-    async resetPassword(token: string, newPassword: string): Promise<User>
+    async resetPassword(token: string, newPassword: string, requestId?: string): Promise<User>
     {
-        this.logger.debug('Attempting to reset password with token', 'UserService#resetPassword');
+        this.logger.debug('Attempting to reset password with token', 'UserService#resetPassword', requestId);
         
         let user: User | null;
         try 
@@ -610,13 +612,13 @@ export class UserService
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error('Database error while finding user by password reset token', error instanceof Error ? error.stack : undefined, 'UserService#resetPassword');
+            this.logger.error('Database error while finding user by password reset token', error instanceof Error ? error.stack : undefined, 'UserService#resetPassword', requestId);
             throw new DatabaseOperationException('password reset token lookup', errorMessage);
         }
 
         if (!user)
         {
-            this.logger.warn('Invalid or expired password reset token', 'UserService#resetPassword');
+            this.logger.warn('Invalid or expired password reset token', 'UserService#resetPassword', requestId);
             throw new InvalidPasswordResetTokenException();
         }
 
@@ -628,7 +630,7 @@ export class UserService
         }
         catch (error)
         {
-            this.logger.error('Password hashing failed during reset', error instanceof Error ? error.stack : undefined, 'UserService#resetPassword');
+            this.logger.error('Password hashing failed during reset', error instanceof Error ? error.stack : undefined, 'UserService#resetPassword', requestId);
             throw new PasswordHashingException();
         }
 
@@ -652,23 +654,23 @@ export class UserService
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error(`Database error while updating password for user ID: ${user.id}`, error instanceof Error ? error.stack : undefined, 'UserService#resetPassword');
+            this.logger.error(`Database error while updating password for user ID: ${user.id}`, error instanceof Error ? error.stack : undefined, 'UserService#resetPassword', requestId);
             throw new DatabaseOperationException('password reset update', errorMessage);
         }
 
         if (!updatedUser)
         {
-            this.logger.error(`Failed to update user after password reset for user ID: ${user.id}`, 'UserService#resetPassword');
+            this.logger.error(`Failed to update user after password reset for user ID: ${user.id}`, undefined, 'UserService#resetPassword', requestId);
             throw new UserNotFoundByIdException(user.id.toString());
         }
 
-        this.logger.debug(`Password reset successfully for user: ${updatedUser.email}`, 'UserService#resetPassword');
+        this.logger.debug(`Password reset successfully for user: ${updatedUser.email}`, 'UserService#resetPassword', requestId);
         return updatedUser;
     }
 
-    async findByPasswordResetToken(token: string): Promise<User | null>
+    async findByPasswordResetToken(token: string, requestId?: string): Promise<User | null>
     {
-        this.logger.debug('Attempting to find user by password reset token', 'UserService#findByPasswordResetToken');
+        this.logger.debug('Attempting to find user by password reset token', 'UserService#findByPasswordResetToken', requestId);
         
         let user: User | null;
         try 
@@ -681,23 +683,23 @@ export class UserService
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error('Database error while finding user by password reset token', error instanceof Error ? error.stack : undefined, 'UserService#findByPasswordResetToken');
+            this.logger.error('Database error while finding user by password reset token', error instanceof Error ? error.stack : undefined, 'UserService#findByPasswordResetToken', requestId);
             throw new DatabaseOperationException('password reset token lookup', errorMessage);
         }
 
         if (!user)
         {
-            this.logger.debug('User not found with valid password reset token', 'UserService#findByPasswordResetToken');
+            this.logger.debug('User not found with valid password reset token', 'UserService#findByPasswordResetToken', requestId);
             return null;
         }
 
-        this.logger.debug(`User found with password reset token: ${user.email}`, 'UserService#findByPasswordResetToken');
+        this.logger.debug(`User found with password reset token: ${user.email}`, 'UserService#findByPasswordResetToken', requestId);
         return user;
     }
 
-    async linkGoogleAccount(user: User, googleId: string, googleProfilePicture?: string): Promise<User>
+    async linkGoogleAccount(user: User, googleId: string, googleProfilePicture?: string, requestId?: string): Promise<User>
     {
-        this.logger.debug(`Linking Google account to user: ${user.email}`, 'UserService#linkGoogleAccount');
+        this.logger.debug(`Linking Google account to user: ${user.email}`, 'UserService#linkGoogleAccount', requestId);
         
         const updateData: any = {
             googleId: googleId,
@@ -718,11 +720,11 @@ export class UserService
 
         if (!updatedUser) 
         {
-            this.logger.warn(`User with ID "${user.id}" not found for Google account linking`, 'UserService#linkGoogleAccount');
+            this.logger.warn(`User with ID "${user.id}" not found for Google account linking`, 'UserService#linkGoogleAccount', requestId);
             throw new UserNotFoundByIdException(user.id.toString());
         }
 
-        this.logger.debug(`Google account linked successfully for user: ${updatedUser.email}`, 'UserService#linkGoogleAccount');
+        this.logger.debug(`Google account linked successfully for user: ${updatedUser.email}`, 'UserService#linkGoogleAccount', requestId);
         return updatedUser;
     }
 }

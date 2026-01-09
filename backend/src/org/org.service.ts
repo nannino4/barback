@@ -19,13 +19,13 @@ export class OrgService
         @InjectConnection() private readonly connection: Connection,
     ) {}
 
-    async create(createData: CreateOrgDto, ownerId: Types.ObjectId, subscriptionId: Types.ObjectId): Promise<Org>
+    async create(createData: CreateOrgDto, ownerId: Types.ObjectId, subscriptionId: Types.ObjectId, requestId?: string): Promise<Org>
     {
-        this.logger.debug(`Creating organization: ${createData.name} for owner: ${ownerId}`, 'OrgService#create');
+        this.logger.debug(`Creating organization: ${createData.name} for owner: ${ownerId}`, 'OrgService#create', requestId);
         
         // Create organization + owner relation atomically
         const session = await this.connection.startSession();
-        this.logger.debug('Starting transaction for organization creation + owner relation', 'OrgService#create');
+        this.logger.debug('Starting transaction for organization creation + owner relation', 'OrgService#create', requestId);
         try 
         {
             const txOptions = { writeConcern: { w: 'majority' as const } };
@@ -55,78 +55,78 @@ export class OrgService
                 throw new DatabaseOperationException('organization creation', 'Transaction finished without created organization (unexpected)');
             }
 
-            this.logger.debug(`Organization created successfully: ${createdOrg.name} with ID: ${createdOrg._id}`, 'OrgService#create');
+            this.logger.debug(`Organization created successfully: ${createdOrg.name} with ID: ${createdOrg._id}`, 'OrgService#create', requestId);
             return createdOrg;
         }
         catch (error)
         {
             // Duplicate key detection (subscriptionId or (ownerId,name) compound index)
-            this.logger.warn('Duplicate key error during organization creation', 'OrgService#create');
+            this.logger.warn('Duplicate key error during organization creation', 'OrgService#create', requestId);
             if (error instanceof Error && error.message.includes('E11000') && error.message.includes('subscriptionId'))
             {
-                this.logger.warn(`Subscription ${subscriptionId} is already being used by another organization`, 'OrgService#create');
+                this.logger.warn(`Subscription ${subscriptionId} is already being used by another organization`, 'OrgService#create', requestId);
                 throw new SubscriptionAlreadyInUseException(subscriptionId.toString());
             }
             if (error instanceof Error && error.message.includes('E11000') && error.message.includes('ownerId') && error.message.includes('name'))
             {
-                this.logger.warn(`Organization name conflict for owner ${ownerId}: ${createData.name}`, 'OrgService#create');
+                this.logger.warn(`Organization name conflict for owner ${ownerId}: ${createData.name}`, 'OrgService#create', requestId);
                 throw new OrganizationNameExistsException(createData.name);
             }
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
             const errorStack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Database error during organization creation (transaction): ${createData.name}`, errorStack, 'OrgService#create');
+            this.logger.error(`Database error during organization creation (transaction): ${createData.name}`, errorStack, 'OrgService#create', requestId);
             throw new DatabaseOperationException('organization creation', errorMessage);
         }
         finally
         {
             await session.endSession();
-            this.logger.debug('Ended transaction for organization creation + owner relation', 'OrgService#create');
+            this.logger.debug('Ended transaction for organization creation + owner relation', 'OrgService#create', requestId);
         }
     }
 
-    async findById(orgId: Types.ObjectId): Promise<Org | null> 
+    async findById(orgId: Types.ObjectId, requestId?: string): Promise<Org | null> 
     {
-        this.logger.debug(`Finding organization by ID: ${orgId}`, 'OrgService#findById');
+        this.logger.debug(`Finding organization by ID: ${orgId}`, 'OrgService#findById', requestId);
         
         try 
         {
             const org = await this.orgModel.findById(orgId).exec();
             if (!org)
             {
-                this.logger.warn(`Organization not found for ID: ${orgId}`, 'OrgService#findById');
+                this.logger.warn(`Organization not found for ID: ${orgId}`, 'OrgService#findById', requestId);
                 return null;
             }
-            this.logger.debug(`Found organization: ${org.name} for ID: ${orgId}`, 'OrgService#findById');
+            this.logger.debug(`Found organization: ${org.name} for ID: ${orgId}`, 'OrgService#findById', requestId);
             return org;
         }
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
             const errorStack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Database error while finding organization by ID: ${orgId}`, errorStack, 'OrgService#findById');
+            this.logger.error(`Database error while finding organization by ID: ${orgId}`, errorStack, 'OrgService#findById', requestId);
             throw new DatabaseOperationException('organization lookup by ID', errorMessage);
         }
     }
 
-    async update(orgId: Types.ObjectId, updateData: UpdateOrganizationDto): Promise<Org>
+    async update(orgId: Types.ObjectId, updateData: UpdateOrganizationDto, requestId?: string): Promise<Org>
     {
-        this.logger.debug(`Attempting to update organization ID: ${orgId}`, 'OrgService#update');
+        this.logger.debug(`Attempting to update organization ID: ${orgId}`, 'OrgService#update', requestId);
         
         // Get the current organization to check ownership for name validation
-        const currentOrg = await this.findById(orgId);
+        const currentOrg = await this.findById(orgId, requestId);
         if (!currentOrg)
         {
-            this.logger.warn(`Organization with ID "${orgId}" not found for update operation`, 'OrgService#update');
+            this.logger.warn(`Organization with ID "${orgId}" not found for update operation`, 'OrgService#update', requestId);
             throw new OrganizationNotFoundException(orgId.toString());
         }
         
         // Check for duplicate organization names if name is being updated
         if (updateData.name && updateData.name !== currentOrg.name)
         {
-            const isNameAvailable = await this.isNameAvailable(updateData.name, currentOrg.ownerId);
+            const isNameAvailable = await this.isNameAvailable(updateData.name, currentOrg.ownerId, requestId);
             if (!isNameAvailable)
             {
-                this.logger.warn(`Organization name conflict for owner ${currentOrg.ownerId}: ${updateData.name}`, 'OrgService#update');
+                this.logger.warn(`Organization name conflict for owner ${currentOrg.ownerId}: ${updateData.name}`, 'OrgService#update', requestId);
                 throw new OrganizationNameExistsException(updateData.name);
             }
         }
@@ -142,11 +142,11 @@ export class OrgService
             // This shouldn't happen since we already verified the org exists, but keeping for safety
             if (!org)
             {
-                this.logger.warn(`Organization with ID "${orgId}" not found during update operation`, 'OrgService#update');
+                this.logger.warn(`Organization with ID "${orgId}" not found during update operation`, 'OrgService#update', requestId);
                 throw new OrganizationNotFoundException(orgId.toString());
             }
             
-            this.logger.debug(`Organization updated successfully: ${org.name}`, 'OrgService#update');
+            this.logger.debug(`Organization updated successfully: ${org.name}`, 'OrgService#update', requestId);
             return org;
         }
         catch (error)
@@ -157,14 +157,14 @@ export class OrgService
             }
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
             const errorStack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Database error during organization update: ${orgId}`, errorStack, 'OrgService#update');
+            this.logger.error(`Database error during organization update: ${orgId}`, errorStack, 'OrgService#update', requestId);
             throw new DatabaseOperationException('organization update', errorMessage);
         }
     }
 
-    async isNameAvailable(name: string, ownerId: Types.ObjectId): Promise<boolean>
+    async isNameAvailable(name: string, ownerId: Types.ObjectId, requestId?: string): Promise<boolean>
     {
-        this.logger.debug(`Checking if organization name is available: "${name}" for owner: ${ownerId}`, 'OrgService#isNameAvailable');
+        this.logger.debug(`Checking if organization name is available: "${name}" for owner: ${ownerId}`, 'OrgService#isNameAvailable', requestId);
         
         try
         {
@@ -177,7 +177,8 @@ export class OrgService
             
             this.logger.debug(
                 `Organization name "${name}" is ${available ? 'available' : 'not available'} for owner: ${ownerId}`,
-                'OrgService#isNameAvailable'
+                'OrgService#isNameAvailable',
+                requestId,
             );
             
             return available;
@@ -186,7 +187,7 @@ export class OrgService
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
             const errorStack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Database error during name availability check: ${name}`, errorStack, 'OrgService#isNameAvailable');
+            this.logger.error(`Database error during name availability check: ${name}`, errorStack, 'OrgService#isNameAvailable', requestId);
             throw new DatabaseOperationException('organization name availability check', errorMessage);
         }
     }

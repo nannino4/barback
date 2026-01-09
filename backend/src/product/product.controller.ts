@@ -29,6 +29,7 @@ import { User } from '../user/schemas/user.schema';
 import { plainToInstance } from 'class-transformer';
 import { CustomLogger } from '../common/logger/custom.logger';
 import { InvalidDateRangeException } from './exceptions/product.exceptions';
+import { RequestId } from '../common/decorators/request-id.decorator';
 
 @Controller('orgs/:orgId/products')
 @UseGuards(JwtAuthGuard, EmailVerifiedGuard, OrgRolesGuard, OrgSubscriptionGuard)
@@ -45,11 +46,12 @@ export class ProductController
     async getProducts(
         @Param('orgId', ObjectIdValidationPipe) orgId: Types.ObjectId,
         @Query('categoryId') categoryId?: string,
+        @RequestId() requestId?: string,
     ): Promise<OutProductDto[]> 
     {
-        this.logger.debug(`Getting products for org ${orgId}`, 'ProductController#getProducts');
+        this.logger.debug(`Getting products for org ${orgId}`, 'ProductController#getProducts', requestId);
         
-        const products = await this.productService.findProductsByOrg(orgId, categoryId);
+        const products = await this.productService.findProductsByOrg(orgId, categoryId, requestId);
         return plainToInstance(OutProductDto, products, { excludeExtraneousValues: true });
     }
 
@@ -58,11 +60,12 @@ export class ProductController
     async getProduct(
         @Param('orgId', ObjectIdValidationPipe) orgId: Types.ObjectId,
         @Param('id', ObjectIdValidationPipe) productId: Types.ObjectId,
+        @RequestId() requestId?: string,
     ): Promise<OutProductDto> 
     {
-        this.logger.debug(`Getting product ${productId} for org ${orgId}`, 'ProductController#getProduct');
+        this.logger.debug(`Getting product ${productId} for org ${orgId}`, 'ProductController#getProduct', requestId);
         
-        const product = await this.productService.findProductById(orgId, productId);
+        const product = await this.productService.findProductById(orgId, productId, requestId);
         return plainToInstance(OutProductDto, product, { excludeExtraneousValues: true });
     }
 
@@ -71,11 +74,12 @@ export class ProductController
     async createProduct(
         @Param('orgId', ObjectIdValidationPipe) orgId: Types.ObjectId,
         @Body() createProductDto: InCreateProductDto,
+        @RequestId() requestId?: string,
     ): Promise<OutProductDto> 
     {
-        this.logger.debug(`Creating product for org ${orgId}`, 'ProductController#createProduct');
+        this.logger.debug(`Creating product for org ${orgId}`, 'ProductController#createProduct', requestId);
         
-        const product = await this.productService.createProduct(orgId, createProductDto);
+        const product = await this.productService.createProduct(orgId, createProductDto, requestId);
         return plainToInstance(OutProductDto, product, { excludeExtraneousValues: true });
     }
 
@@ -85,11 +89,12 @@ export class ProductController
         @Param('orgId', ObjectIdValidationPipe) orgId: Types.ObjectId,
         @Param('id', ObjectIdValidationPipe) productId: Types.ObjectId,
         @Body() updateProductDto: InUpdateProductDto,
+        @RequestId() requestId?: string,
     ): Promise<OutProductDto> 
     {
-        this.logger.debug(`Updating product ${productId} for org ${orgId}`, 'ProductController#updateProduct');
+        this.logger.debug(`Updating product ${productId} for org ${orgId}`, 'ProductController#updateProduct', requestId);
         
-        const product = await this.productService.updateProduct(orgId, productId, updateProductDto);
+        const product = await this.productService.updateProduct(orgId, productId, updateProductDto, requestId);
         return plainToInstance(OutProductDto, product, { excludeExtraneousValues: true });
     }
 
@@ -98,11 +103,12 @@ export class ProductController
     async deleteProduct(
         @Param('orgId', ObjectIdValidationPipe) orgId: Types.ObjectId,
         @Param('id', ObjectIdValidationPipe) productId: Types.ObjectId,
+        @RequestId() requestId?: string,
     ): Promise<{ message: string }> 
     {
-        this.logger.debug(`Deleting product ${productId} for org ${orgId}`, 'ProductController#deleteProduct');
+        this.logger.debug(`Deleting product ${productId} for org ${orgId}`, 'ProductController#deleteProduct', requestId);
         
-        await this.productService.deleteProduct(orgId, productId);
+        await this.productService.deleteProduct(orgId, productId, requestId);
         return { message: 'Product deleted successfully' };
     }
 
@@ -115,15 +121,17 @@ export class ProductController
         @Param('id', ObjectIdValidationPipe) productId: Types.ObjectId,
         @CurrentUser() user: User,
         @Body() adjustmentDto: InStockAdjustmentDto,
+        @RequestId() requestId?: string,
     ): Promise<OutInventoryLogDto> 
     {
-        this.logger.debug(`Adjusting stock for product ${productId} in org ${orgId}`, 'ProductController#adjustStock');
+        this.logger.debug(`Adjusting stock for product ${productId} in org ${orgId}`, 'ProductController#adjustStock', requestId);
         
         const inventoryLog = await this.inventoryService.adjustStock(
             orgId, 
             productId, 
             user._id as Types.ObjectId,
-            adjustmentDto
+            adjustmentDto,
+            requestId,
         );
         
         return plainToInstance(OutInventoryLogDto, inventoryLog, { excludeExtraneousValues: true });
@@ -136,9 +144,10 @@ export class ProductController
         @Param('id', ObjectIdValidationPipe) productId: Types.ObjectId,
         @Query('startDate') startDate?: string,
         @Query('endDate') endDate?: string,
+        @RequestId() requestId?: string,
     ): Promise<OutInventoryLogDto[]> 
     {
-        this.logger.debug(`Getting inventory logs for product ${productId} in org ${orgId}`, 'ProductController#getProductInventoryLogs');
+        this.logger.debug(`Getting inventory logs for product ${productId} in org ${orgId}`, 'ProductController#getProductInventoryLogs', requestId);
         
         // Handle date parsing with validation
         let startDateObj: Date | undefined;
@@ -172,7 +181,8 @@ export class ProductController
             orgId, 
             productId, 
             startDateObj, 
-            endDateObj
+            endDateObj,
+            requestId,
         );
         
         return plainToInstance(OutInventoryLogDto, logs, { excludeExtraneousValues: true });

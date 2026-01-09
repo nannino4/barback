@@ -16,6 +16,7 @@ import { SkipEmailVerification } from './decorators/skip-email-verification.deco
 import { CurrentUser } from './decorators/current-user.decorator';
 import { User } from '../user/schemas/user.schema';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { RequestId } from '../common/decorators/request-id.decorator';
 
 @Controller('auth')
 export class AuthController
@@ -31,11 +32,14 @@ export class AuthController
     @UseGuards(ThrottlerGuard)
     @Throttle({ default: { limit: 3, ttl: 300000 } }) // 3 requests per 5 minutes
     @HttpCode(HttpStatus.CREATED)
-    async register(@Body() registerUserDto: RegisterEmailDto): Promise<OutAuthResponseDto>
+    async register(
+        @Body() registerUserDto: RegisterEmailDto,
+        @RequestId() requestId?: string,
+    ): Promise<OutAuthResponseDto>
     {
-        this.logger.debug(`Registration attempt for user: ${registerUserDto.email}`, 'AuthController#register');
-        const response = await this.authService.registerEmail(registerUserDto);
-        this.logger.debug(`User ${registerUserDto.email} registered successfully`, 'AuthController#register');
+        this.logger.debug(`Registration attempt for user: ${registerUserDto.email}`, 'AuthController#register', requestId);
+        const response = await this.authService.registerEmail(registerUserDto, requestId);
+        this.logger.debug(`User ${registerUserDto.email} registered successfully`, 'AuthController#register', requestId);
         return response;
     }
 
@@ -43,26 +47,32 @@ export class AuthController
     @UseGuards(ThrottlerGuard)
     @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 requests per minute
     @HttpCode(HttpStatus.OK)
-    async emailLogin(@Body() loginDto: LoginEmailDto): Promise<OutAuthResponseDto>
+    async emailLogin(
+        @Body() loginDto: LoginEmailDto,
+        @RequestId() requestId?: string,
+    ): Promise<OutAuthResponseDto>
     {
-        this.logger.debug(`Login attempt for user: ${loginDto.email}`, 'AuthController#emailLogin');
-        const response = await this.authService.loginEmail(loginDto.email, loginDto.password);
-        this.logger.debug(`User ${loginDto.email} authenticated successfully`, 'AuthController#emailLogin');
+        this.logger.debug(`Login attempt for user: ${loginDto.email}`, 'AuthController#emailLogin', requestId);
+        const response = await this.authService.loginEmail(loginDto.email, loginDto.password, requestId);
+        this.logger.debug(`User ${loginDto.email} authenticated successfully`, 'AuthController#emailLogin', requestId);
         return response;
     }
 
     @Post('refresh-token')
     @HttpCode(HttpStatus.OK)
-    async validateRefreshToken(@Body() refreshTokenDto: RefreshTokenDto): Promise<OutAuthResponseDto>
+    async validateRefreshToken(
+        @Body() refreshTokenDto: RefreshTokenDto,
+        @RequestId() requestId?: string,
+    ): Promise<OutAuthResponseDto>
     {
-        this.logger.debug('Refresh token attempt', 'AuthController#refreshToken');
+        this.logger.debug('Refresh token attempt', 'AuthController#refreshToken', requestId);
         if (!refreshTokenDto.refresh_token)
         {
-            this.logger.warn('Refresh token is missing', 'AuthController#refreshToken');
+            this.logger.warn('Refresh token is missing', 'AuthController#refreshToken', requestId);
             throw new UnauthorizedException('Refresh token is missing');
         }
-        const response = await this.authService.validateRefreshToken(refreshTokenDto.refresh_token);
-        this.logger.debug('Token refreshed successfully', 'AuthController#refreshToken');
+        const response = await this.authService.validateRefreshToken(refreshTokenDto.refresh_token, requestId);
+        this.logger.debug('Token refreshed successfully', 'AuthController#refreshToken', requestId);
         return response;
     }
 
@@ -71,84 +81,105 @@ export class AuthController
     @SkipEmailVerification()
     @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 requests per minute
     @HttpCode(HttpStatus.OK)
-    async sendVerificationEmail(@CurrentUser() user: User): Promise<void>
+    async sendVerificationEmail(
+        @CurrentUser() user: User,
+        @RequestId() requestId?: string,
+    ): Promise<void>
     {
-        this.logger.debug(`Sending verification email to: ${user.email}`, 'AuthController#sendVerificationEmail');
-        await this.authService.sendVerificationEmail(user.email);
-        this.logger.debug(`Verification email sent to: ${user.email}`, 'AuthController#sendVerificationEmail');
+        this.logger.debug(`Sending verification email to: ${user.email}`, 'AuthController#sendVerificationEmail', requestId);
+        await this.authService.sendVerificationEmail(user.email, requestId);
+        this.logger.debug(`Verification email sent to: ${user.email}`, 'AuthController#sendVerificationEmail', requestId);
     }
 
     @Post('verify-email')
     @HttpCode(HttpStatus.OK)
-    async verifyEmail(@Body() verifyEmailDto: VerifyEmailDto): Promise<void>
+    async verifyEmail(
+        @Body() verifyEmailDto: VerifyEmailDto,
+        @RequestId() requestId?: string,
+    ): Promise<void>
     {
-        this.logger.debug('Email verification attempt', 'AuthController#verifyEmail');
-        await this.authService.verifyEmail(verifyEmailDto.token);
-        this.logger.debug('Email verification successful', 'AuthController#verifyEmail');
+        this.logger.debug('Email verification attempt', 'AuthController#verifyEmail', requestId);
+        await this.authService.verifyEmail(verifyEmailDto.token, requestId);
+        this.logger.debug('Email verification successful', 'AuthController#verifyEmail', requestId);
     }
 
     @Get('verify-email/:token')
     @HttpCode(HttpStatus.OK)
-    async verifyEmailByLink(@Param('token') token: string): Promise<void>
+    async verifyEmailByLink(
+        @Param('token') token: string,
+        @RequestId() requestId?: string,
+    ): Promise<void>
     {
-        this.logger.debug('Email verification by link attempt', 'AuthController#verifyEmailByLink');
-        await this.authService.verifyEmail(token);
-        this.logger.debug('Email verification by link successful', 'AuthController#verifyEmailByLink');
+        this.logger.debug('Email verification by link attempt', 'AuthController#verifyEmailByLink', requestId);
+        await this.authService.verifyEmail(token, requestId);
+        this.logger.debug('Email verification by link successful', 'AuthController#verifyEmailByLink', requestId);
     }
 
     @Post('forgot-password')
     @UseGuards(ThrottlerGuard)
     @Throttle({ default: { limit: 3, ttl: 60000 } }) // 3 requests per minute
     @HttpCode(HttpStatus.OK)
-    async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto): Promise<void>
+    async forgotPassword(
+        @Body() forgotPasswordDto: ForgotPasswordDto,
+        @RequestId() requestId?: string,
+    ): Promise<void>
     {
-        this.logger.debug(`Password reset request for: ${forgotPasswordDto.email}`, 'AuthController#forgotPassword');
-        await this.authService.forgotPassword(forgotPasswordDto.email);
-        this.logger.debug(`Password reset request processed for: ${forgotPasswordDto.email}`, 'AuthController#forgotPassword');
+        this.logger.debug(`Password reset request for: ${forgotPasswordDto.email}`, 'AuthController#forgotPassword', requestId);
+        await this.authService.forgotPassword(forgotPasswordDto.email, requestId);
+        this.logger.debug(`Password reset request processed for: ${forgotPasswordDto.email}`, 'AuthController#forgotPassword', requestId);
     }
 
     @Post('reset-password')
     @HttpCode(HttpStatus.OK)
-    async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<void>
+    async resetPassword(
+        @Body() resetPasswordDto: ResetPasswordDto,
+        @RequestId() requestId?: string,
+    ): Promise<void>
     {
-        this.logger.debug('Password reset attempt', 'AuthController#resetPassword');
-        await this.authService.resetPassword(resetPasswordDto.token, resetPasswordDto.newPassword);
-        this.logger.debug('Password reset successful', 'AuthController#resetPassword');
+        this.logger.debug('Password reset attempt', 'AuthController#resetPassword', requestId);
+        await this.authService.resetPassword(resetPasswordDto.token, resetPasswordDto.newPassword, requestId);
+        this.logger.debug('Password reset successful', 'AuthController#resetPassword', requestId);
     }
 
     @Get('reset-password/:token')
     @HttpCode(HttpStatus.OK)
-    async validateResetToken(@Param('token') token: string): Promise<void>
+    async validateResetToken(
+        @Param('token') token: string,
+        @RequestId() requestId?: string,
+    ): Promise<void>
     {
-        this.logger.debug('Validating password reset token', 'AuthController#validateResetToken');
-        await this.authService.validatePasswordResetToken(token);
-        this.logger.debug('Password reset token is valid', 'AuthController#validateResetToken');
+        this.logger.debug('Validating password reset token', 'AuthController#validateResetToken', requestId);
+        await this.authService.validatePasswordResetToken(token, requestId);
+        this.logger.debug('Password reset token is valid', 'AuthController#validateResetToken', requestId);
     }
 
     // Google OAuth Endpoints
     @Get('oauth/google')
     @HttpCode(HttpStatus.OK)
-    getGoogleAuthUrl(): OutGoogleAuthUrlDto
+    getGoogleAuthUrl(@RequestId() requestId?: string): OutGoogleAuthUrlDto
     {
-        this.logger.debug('Generating Google OAuth URL', 'AuthController#getGoogleAuthUrl');
-        const result = this.googleService.generateAuthUrl();
-        this.logger.debug('Google OAuth URL generated successfully', 'AuthController#getGoogleAuthUrl');
+        this.logger.debug('Generating Google OAuth URL', 'AuthController#getGoogleAuthUrl', requestId);
+        const result = this.googleService.generateAuthUrl(requestId);
+        this.logger.debug('Google OAuth URL generated successfully', 'AuthController#getGoogleAuthUrl', requestId);
         return result;
     }
 
     @Post('oauth/google/callback')
     @HttpCode(HttpStatus.OK)
-    async googleCallback(@Body() body: GoogleCallbackDto): Promise<OutAuthResponseDto>
+    async googleCallback(
+        @Body() body: GoogleCallbackDto,
+        @RequestId() requestId?: string,
+    ): Promise<OutAuthResponseDto>
     {
-        this.logger.debug('Processing Google OAuth POST callback', 'AuthController#googleCallback');
+        this.logger.debug('Processing Google OAuth POST callback', 'AuthController#googleCallback', requestId);
         
-        await this.googleService.validateOAuthState(body.state);
-        const tokens = await this.googleService.exchangeCodeForTokens(body.code);
-        const googleUserInfo = await this.googleService.getUserInfo(tokens.access_token);
-        const user = await this.googleService.findOrCreateUser(googleUserInfo);
-        const authResponse = await this.authService.generateAuthResponse(user);
+        await this.googleService.validateOAuthState(body.state, requestId);
+        const tokens = await this.googleService.exchangeCodeForTokens(body.code, requestId);
+        const googleUserInfo = await this.googleService.getUserInfo(tokens.access_token, requestId);
+        const user = await this.googleService.findOrCreateUser(googleUserInfo, requestId);
+        const authResponse = await this.authService.generateAuthResponse(user, requestId);
 
-        this.logger.debug('Google OAuth POST callback processed successfully', 'AuthController#googleCallback');
+        this.logger.debug('Google OAuth POST callback processed successfully', 'AuthController#googleCallback', requestId);
         return authResponse;
     }
 }

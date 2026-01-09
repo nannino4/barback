@@ -101,11 +101,12 @@ export class S3StorageService extends StorageService
         this.logger.debug('S3StorageService initialized', 'S3StorageService#constructor');
     }
 
-    async uploadUserProfilePicture(input: UploadUserProfilePictureInput): Promise<UploadUserProfilePictureResult>
+    async uploadUserProfilePicture(input: UploadUserProfilePictureInput, requestId?: string): Promise<UploadUserProfilePictureResult>
     {
         this.logger.debug(
             `Uploading profile picture for user: ${input.userId}`,
-            'S3StorageService#uploadUserProfilePicture'
+            'S3StorageService#uploadUserProfilePicture',
+            requestId,
         );
 
         try
@@ -128,7 +129,8 @@ export class S3StorageService extends StorageService
 
             this.logger.debug(
                 `Profile picture uploaded successfully for user: ${input.userId}`,
-                'S3StorageService#uploadUserProfilePicture'
+                'S3StorageService#uploadUserProfilePicture',
+                requestId,
             );
 
             return {
@@ -142,7 +144,8 @@ export class S3StorageService extends StorageService
             this.logger.error(
                 `Failed to upload profile picture for user ${input.userId}: ${errorMessage}`,
                 error instanceof Error ? error.stack : undefined,
-                'S3StorageService#uploadUserProfilePicture'
+                'S3StorageService#uploadUserProfilePicture',
+                requestId,
             );
 
             if (error instanceof StorageOperationException)

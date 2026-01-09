@@ -23,12 +23,12 @@ export class CategoryService
         private readonly logger: CustomLogger,
     ) {}
 
-    async createCategory(orgId: Types.ObjectId, createCategoryDto: InCreateCategoryDto): Promise<Category> 
+    async createCategory(orgId: Types.ObjectId, createCategoryDto: InCreateCategoryDto, requestId?: string): Promise<Category> 
     {
-        this.logger.debug(`Creating category for org ${orgId}`, 'CategoryService#createCategory');
+        this.logger.debug(`Creating category for org ${orgId}`, 'CategoryService#createCategory', requestId);
         
         // Check for duplicate name in organization
-        if (await this.categoryExistsByName(orgId, createCategoryDto.name)) 
+        if (await this.categoryExistsByName(orgId, createCategoryDto.name, requestId)) 
         {
             throw new CategoryNameConflictException(createCategoryDto.name);
         }
@@ -37,7 +37,7 @@ export class CategoryService
         if (createCategoryDto.parentId) 
         {
             const parentIdObj = new Types.ObjectId(createCategoryDto.parentId);
-            await this.validateParentCategory(orgId, parentIdObj);
+            await this.validateParentCategory(orgId, parentIdObj, requestId);
         }
 
         // Create and save the category
@@ -50,19 +50,19 @@ export class CategoryService
         try 
         {
             const savedCategory = await category.save();
-            this.logger.debug(`Category created with id: ${savedCategory._id}`, 'CategoryService#createCategory');
+            this.logger.debug(`Category created with id: ${savedCategory._id}`, 'CategoryService#createCategory', requestId);
             return savedCategory;
         } 
         catch (error: any) 
         {
-            this.logger.error(`Error saving category: ${error.message}`, 'CategoryService#createCategory');
+            this.logger.error(`Error saving category: ${error.message}`, undefined, 'CategoryService#createCategory', requestId);
             throw new DatabaseOperationException('category creation', error.message);
         }
     }
 
-    async findCategoriesByOrg(orgId: Types.ObjectId): Promise<Category[]> 
+    async findCategoriesByOrg(orgId: Types.ObjectId, requestId?: string): Promise<Category[]> 
     {
-        this.logger.debug(`Finding categories for org ${orgId}`, 'CategoryService#findCategoriesByOrg');
+        this.logger.debug(`Finding categories for org ${orgId}`, 'CategoryService#findCategoriesByOrg', requestId);
         
         try 
         {
@@ -73,14 +73,19 @@ export class CategoryService
         } 
         catch (error: any) 
         {
-            this.logger.error(`Error finding categories for org ${orgId}: ${error.message}`, 'CategoryService#findCategoriesByOrg');
+            this.logger.error(
+                `Error finding categories for org ${orgId}: ${error.message}`,
+                undefined,
+                'CategoryService#findCategoriesByOrg',
+                requestId,
+            );
             throw new DatabaseOperationException('categories retrieval', error.message);
         }
     }
 
-    async findCategoryById(orgId: Types.ObjectId, categoryId: Types.ObjectId): Promise<Category> 
+    async findCategoryById(orgId: Types.ObjectId, categoryId: Types.ObjectId, requestId?: string): Promise<Category> 
     {
-        this.logger.debug(`Finding category ${categoryId} for org ${orgId}`, 'CategoryService#findCategoryById');
+        this.logger.debug(`Finding category ${categoryId} for org ${orgId}`, 'CategoryService#findCategoryById', requestId);
         
         let category;
         try 
@@ -91,13 +96,13 @@ export class CategoryService
         } 
         catch (error: any) 
         {
-            this.logger.error(`Error finding category ${categoryId}: ${error.message}`, 'CategoryService#findCategoryById');
+            this.logger.error(`Error finding category ${categoryId}: ${error.message}`, undefined, 'CategoryService#findCategoryById', requestId);
             throw new DatabaseOperationException('category retrieval', error.message);
         }
             
         if (!category) 
         {
-            this.logger.warn(`Category ${categoryId} not found for org ${orgId}`, 'CategoryService#findCategoryById');
+            this.logger.warn(`Category ${categoryId} not found for org ${orgId}`, 'CategoryService#findCategoryById', requestId);
             throw new CategoryNotFoundException(categoryId.toString());
         }
         
@@ -107,18 +112,19 @@ export class CategoryService
     async updateCategory(
         orgId: Types.ObjectId, 
         categoryId: Types.ObjectId, 
-        updateCategoryDto: InUpdateCategoryDto
+        updateCategoryDto: InUpdateCategoryDto,
+        requestId?: string,
     ): Promise<Category> 
     {
-        this.logger.debug(`Updating category ${categoryId} for org ${orgId}`, 'CategoryService#updateCategory');
+        this.logger.debug(`Updating category ${categoryId} for org ${orgId}`, 'CategoryService#updateCategory', requestId);
 
         // Check if category exists and belongs to the org
-        await this.findCategoryById(orgId, categoryId);
+        await this.findCategoryById(orgId, categoryId, requestId);
 
         // Check for duplicate name if name is being updated
         if (updateCategoryDto.name) 
         {
-            if (await this.categoryExistsByNameExcluding(orgId, updateCategoryDto.name, categoryId)) 
+            if (await this.categoryExistsByNameExcluding(orgId, updateCategoryDto.name, categoryId, requestId)) 
             {
                 throw new CategoryNameConflictException(updateCategoryDto.name);
             }
@@ -137,10 +143,10 @@ export class CategoryService
                     throw new CategorySelfParentException();
                 }
 
-                await this.validateParentCategory(orgId, parentIdObj);
+                await this.validateParentCategory(orgId, parentIdObj, requestId);
                 
                 // Check for circular references
-                await this.checkCircularReference(categoryId, parentIdObj);
+                await this.checkCircularReference(categoryId, parentIdObj, requestId);
             }
         }
 
@@ -163,7 +169,7 @@ export class CategoryService
         } 
         catch (error: any) 
         {
-            this.logger.error(`Error updating category ${categoryId}: ${error.message}`, 'CategoryService#updateCategory');
+            this.logger.error(`Error updating category ${categoryId}: ${error.message}`, undefined, 'CategoryService#updateCategory', requestId);
             throw new DatabaseOperationException('category update', error.message);
         }
 
@@ -172,16 +178,16 @@ export class CategoryService
             throw new CategoryNotFoundException(categoryId.toString());
         }
 
-        this.logger.debug(`Category ${categoryId} updated successfully`, 'CategoryService#updateCategory');
+        this.logger.debug(`Category ${categoryId} updated successfully`, 'CategoryService#updateCategory', requestId);
         return updatedCategory;
     }
 
-    async deleteCategory(orgId: Types.ObjectId, categoryId: Types.ObjectId): Promise<void> 
+    async deleteCategory(orgId: Types.ObjectId, categoryId: Types.ObjectId, requestId?: string): Promise<void> 
     {
-        this.logger.debug(`Deleting category ${categoryId} for org ${orgId}`, 'CategoryService#deleteCategory');
+        this.logger.debug(`Deleting category ${categoryId} for org ${orgId}`, 'CategoryService#deleteCategory', requestId);
 
         // Check if category exists and belongs to the org
-        await this.findCategoryById(orgId, categoryId);
+        await this.findCategoryById(orgId, categoryId, requestId);
 
         // Check if category has child categories
         let childCategories;
@@ -193,7 +199,7 @@ export class CategoryService
         } 
         catch (error: any) 
         {
-            this.logger.error(`Error checking for child categories: ${error.message}`, 'CategoryService#deleteCategory');
+            this.logger.error(`Error checking for child categories: ${error.message}`, undefined, 'CategoryService#deleteCategory', requestId);
             throw new DatabaseOperationException('child categories check', error.message);
         }
 
@@ -211,7 +217,7 @@ export class CategoryService
         } 
         catch (error: any) 
         {
-            this.logger.error(`Error deleting category ${categoryId}: ${error.message}`, 'CategoryService#deleteCategory');
+            this.logger.error(`Error deleting category ${categoryId}: ${error.message}`, undefined, 'CategoryService#deleteCategory', requestId);
             throw new DatabaseOperationException('category deletion', error.message);
         }
 
@@ -220,18 +226,18 @@ export class CategoryService
             throw new CategoryNotFoundException(categoryId.toString());
         }
 
-        this.logger.debug(`Category ${categoryId} deleted successfully`, 'CategoryService#deleteCategory');
+        this.logger.debug(`Category ${categoryId} deleted successfully`, 'CategoryService#deleteCategory', requestId);
     }
 
-    private async validateParentCategory(orgId: Types.ObjectId, parentId: Types.ObjectId): Promise<void> 
+    private async validateParentCategory(orgId: Types.ObjectId, parentId: Types.ObjectId, requestId?: string): Promise<void> 
     {
-        if (!(await this.categoryExists(orgId, parentId))) 
+        if (!(await this.categoryExists(orgId, parentId, requestId))) 
         {
             throw new InvalidParentCategoryException(parentId.toString());
         }
     }
 
-    private async categoryExists(orgId: Types.ObjectId, categoryId: Types.ObjectId): Promise<boolean> 
+    private async categoryExists(orgId: Types.ObjectId, categoryId: Types.ObjectId, requestId?: string): Promise<boolean> 
     {
         try 
         {
@@ -242,12 +248,17 @@ export class CategoryService
         } 
         catch (error: any) 
         {
-            this.logger.error(`Error checking category existence ${categoryId}: ${error.message}`, 'CategoryService#categoryExists');
+            this.logger.error(
+                `Error checking category existence ${categoryId}: ${error.message}`,
+                undefined,
+                'CategoryService#categoryExists',
+                requestId,
+            );
             throw new DatabaseOperationException('category existence check', error.message);
         }
     }
 
-    private async categoryExistsByName(orgId: Types.ObjectId, name: string): Promise<boolean> 
+    private async categoryExistsByName(orgId: Types.ObjectId, name: string, requestId?: string): Promise<boolean> 
     {
         try 
         {
@@ -258,12 +269,22 @@ export class CategoryService
         } 
         catch (error: any) 
         {
-            this.logger.error(`Error checking category name existence: ${error.message}`, 'CategoryService#categoryExistsByName');
+            this.logger.error(
+                `Error checking category name existence: ${error.message}`,
+                undefined,
+                'CategoryService#categoryExistsByName',
+                requestId,
+            );
             throw new DatabaseOperationException('category name existence check', error.message);
         }
     }
 
-    private async categoryExistsByNameExcluding(orgId: Types.ObjectId, name: string, excludeId: Types.ObjectId): Promise<boolean> 
+    private async categoryExistsByNameExcluding(
+        orgId: Types.ObjectId,
+        name: string,
+        excludeId: Types.ObjectId,
+        requestId?: string,
+    ): Promise<boolean> 
     {
         try 
         {
@@ -278,12 +299,17 @@ export class CategoryService
         } 
         catch (error: any) 
         {
-            this.logger.error(`Error checking category name existence excluding ID: ${error.message}`, 'CategoryService#categoryExistsByNameExcluding');
+            this.logger.error(
+                `Error checking category name existence excluding ID: ${error.message}`,
+                undefined,
+                'CategoryService#categoryExistsByNameExcluding',
+                requestId,
+            );
             throw new DatabaseOperationException('category name existence check with exclusion', error.message);
         }
     }
 
-    private async checkCircularReference(categoryId: Types.ObjectId, parentId: Types.ObjectId): Promise<void> 
+    private async checkCircularReference(categoryId: Types.ObjectId, parentId: Types.ObjectId, requestId?: string): Promise<void> 
     {
         const visited = new Set<string>();
         let currentParentId: Types.ObjectId | null = parentId;
@@ -313,7 +339,12 @@ export class CategoryService
             } 
             catch (error: any) 
             {
-                this.logger.error(`Error checking circular reference: ${error.message}`, 'CategoryService#checkCircularReference');
+                this.logger.error(
+                    `Error checking circular reference: ${error.message}`,
+                    undefined,
+                    'CategoryService#checkCircularReference',
+                    requestId,
+                );
                 throw new DatabaseOperationException('circular reference check', error.message);
             }
 

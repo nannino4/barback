@@ -2,6 +2,7 @@ import { AuthTokenManager } from '@/lib/auth-tokens';
 import { logger } from '@/lib/logger';
 import { RefreshTokenResponseSchema } from '@/types/auth';
 import { ValidationError } from '@/lib/errors';
+import { generateRequestId, REQUEST_ID_HEADER } from '@/lib/request-id';
 
 /**
  * TokenRefreshService - Proactive token refresh management
@@ -184,6 +185,7 @@ export class TokenRefreshService
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          [REQUEST_ID_HEADER]: generateRequestId(),
         },
         body: JSON.stringify({ refresh_token: refreshToken }),
       });

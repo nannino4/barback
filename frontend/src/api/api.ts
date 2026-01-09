@@ -1,6 +1,7 @@
 import { ApiError, NetworkError, ValidationError } from '@/lib/errors';
 import { AuthTokenManager, addAuthHeader } from '@/lib/auth-tokens';
 import { logger } from '@/lib/logger';
+import { generateRequestId, REQUEST_ID_HEADER } from '@/lib/request-id';
 import { z } from 'zod';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000/api';
@@ -251,18 +252,22 @@ class ApiClient
     // Build base config
     const hasBody = fetchOptions.body !== undefined;
     const isFormDataBody = typeof FormData !== 'undefined' && fetchOptions.body instanceof FormData;
-    
-    // Check if Content-Type is already set in headers
-    const headers = fetchOptions.headers as Record<string, string> | undefined;
-    const hasContentType = headers && 'Content-Type' in headers;
-    const shouldAddContentType = hasBody && !hasContentType && !isFormDataBody;
-    
+
+    const headers = new Headers(fetchOptions.headers);
+
+    if (hasBody && !isFormDataBody && !headers.has('Content-Type'))
+    {
+      headers.set('Content-Type', 'application/json');
+    }
+
+    if (!headers.has(REQUEST_ID_HEADER))
+    {
+      headers.set(REQUEST_ID_HEADER, generateRequestId());
+    }
+
     let config: RequestInit = {
-      headers: {
-        ...(shouldAddContentType && { 'Content-Type': 'application/json' }),
-        ...fetchOptions.headers,
-      },
       ...fetchOptions,
+      headers,
     };
 
     // Add Authorization header if access token exists

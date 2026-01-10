@@ -59,7 +59,7 @@ export const WizardSteps: React.FC<WizardStepsProps> = ({ steps, className }) =>
                   'sm:w-12 sm:h-12',
                   step.isComplete && 'border-primary bg-primary text-primary-foreground',
                   step.isCurrent && 'border-primary bg-background text-primary',
-                  !step.isComplete && !step.isCurrent && 'border-muted bg-background text-muted-foreground',
+                  !step.isComplete && !step.isCurrent && 'border-border bg-background text-muted-foreground',
                 )}
                 aria-current={step.isCurrent ? 'step' : undefined}
               >
@@ -90,7 +90,7 @@ export const WizardSteps: React.FC<WizardStepsProps> = ({ steps, className }) =>
               <div
                 className={cn(
                   'h-0.5 flex-1 mx-2 sm:mx-4 transition-colors',
-                  step.isComplete ? 'bg-primary' : 'bg-muted',
+                  step.isComplete ? 'bg-primary' : 'bg-border',
                 )}
                 aria-hidden="true"
               />

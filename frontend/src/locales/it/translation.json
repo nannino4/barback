@@ -603,8 +603,16 @@
                 "yearlyPrice": "€299/anno",
                 "yearlySavings": "Risparmia 17%",
                 "savings": "Risparmia {{percent}}%",
+                "bestDeal": "Miglior affare",
+                "card": {
+                    "monthlyPrice": "{{amount}} / mese",
+                    "yearlyPrice": "{{amount}} / mese, fatturato annualmente a {{yearlyAmount}}",
+                    "freeTrialLine": "GRATIS per {{days}} giorni",
+                    "thenLine": "Poi {{price}}",
+                    "youSave": "Risparmi {{percent}}%"
+                },
                 "features": {
-                    "title": "Tutti i Piani Includono",
+                    "title": "Cosa ottieni",
                     "unlimitedProducts": "Prodotti illimitati",
                     "unlimitedMembers": "Membri del team illimitati",
                     "inventoryTracking": "Tracciamento inventario in tempo reale",
@@ -878,7 +886,6 @@
         "add": {
             "title": "Aggiungi Metodo di Pagamento",
             "cardNumber": "Numero Carta",
-            "cardExpiry": "Data di Scadenza",
             "cardCvc": "CVC",
             "setAsDefault": "Imposta come metodo di pagamento predefinito",
             "adding": "Aggiunta metodo di pagamento...",

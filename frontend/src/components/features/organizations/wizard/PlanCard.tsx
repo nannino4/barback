@@ -1,25 +1,18 @@
 import React from 'react';
-import { Check } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Stack } from '@/components/layout';
 import { cn } from '@/lib/utils';
 
 interface PlanCardProps
 {
   interval: 'MONTHLY' | 'YEARLY';
-  title: string;
-  pricePerPeriod: string;
-  periodLabel: string;
-  originalPrice?: string;
-  originalPeriodLabel?: string;
-  savingsPercent?: number;
+  billingPeriodLabel: string;
+  badgeText?: string;
+  priceLines: string[];
   savingsText?: string;
-  fullPriceText?: string;
-  isHighlighted?: boolean;
-  highlightBadgeText?: string;
   isSelected: boolean;
   onSelect: () => void;
-  selectedText: string;
 }
 
 /**
@@ -34,30 +27,25 @@ interface PlanCardProps
  */
 export const PlanCard: React.FC<PlanCardProps> = ({
   interval,
-  title,
-  pricePerPeriod,
-  periodLabel,
-  originalPrice,
-  originalPeriodLabel,
-  savingsPercent,
+  billingPeriodLabel,
+  badgeText,
+  priceLines,
   savingsText,
-  fullPriceText,
-  isHighlighted,
-  highlightBadgeText,
   isSelected,
   onSelect,
-  selectedText,
 }) =>
 {
+  const trialBadgeText = priceLines.length > 1 ? priceLines[0] : null;
+  const displayPriceLines = priceLines.length > 1 ? priceLines.slice(1) : priceLines;
+
   return (
     <Card
+      variant={isSelected ? 'primary' : 'bordered'}
       tabIndex={0}
       role="button"
       className={cn(
-        'w-full cursor-pointer transition-all hover:shadow-md',
+        'w-full cursor-pointer',
         'focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring',
-        'relative border border-border bg-card',
-        isSelected && 'border-primary/50 shadow-lg ring-2 ring-primary/20',
       )}
       onClick={onSelect}
       onKeyDown={(event) =>
@@ -69,53 +57,43 @@ export const PlanCard: React.FC<PlanCardProps> = ({
         }
       }}
     >
-      {isHighlighted && highlightBadgeText && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
-          {highlightBadgeText}
-        </div>
-      )}
-      <CardContent className="pt-8 pb-6">
-        <Stack space="md">
-          <div>
-            <h3 className="text-lg font-semibold">
-              {title}
-            </h3>
-            <div className="mt-3">
-              <div className="flex items-baseline gap-2">
-                <p className="text-3xl font-bold">
-                  {pricePerPeriod}
-                </p>
-                <span className="text-sm text-muted-foreground">
-                  /{periodLabel}
-                </span>
-              </div>
-              {interval === 'YEARLY' && originalPrice && originalPeriodLabel && (
-                <div className="mt-1 flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground line-through">
-                    {originalPrice}/{originalPeriodLabel}
-                  </span>
-                </div>
-              )}
-              {savingsPercent && savingsText && (
-                <p className="text-sm text-success font-medium mt-1">
-                  {savingsText}
-                </p>
-              )}
-              {interval === 'YEARLY' && fullPriceText && (
-                <p className="text-xs text-muted-foreground mt-1">
-                  {fullPriceText}
-                </p>
-              )}
-            </div>
+      <Stack space="xs">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 min-w-0">
+            <p className="text-base font-semibold truncate">
+              {billingPeriodLabel}
+            </p>
           </div>
-          {isSelected && (
-            <div className="flex items-center gap-2 text-primary">
-              <Check className="h-5 w-5" />
-              <span className="text-sm font-medium">{selectedText}</span>
+
+          {interval === 'YEARLY' && badgeText && (
+            <Badge>
+              {badgeText}
+            </Badge>
+          )}
+        </div>
+
+        <Stack space="xs">
+          {trialBadgeText && (
+            <div>
+              <Badge>
+                {trialBadgeText}
+              </Badge>
             </div>
           )}
+
+          {displayPriceLines.map((line) => (
+            <p key={line} className="text-sm text-muted-foreground">
+              {line}
+            </p>
+          ))}
+
+          {interval === 'YEARLY' && savingsText && (
+            <p className="text-xs text-success">
+              {savingsText}
+            </p>
+          )}
         </Stack>
-      </CardContent>
+      </Stack>
     </Card>
   );
 };

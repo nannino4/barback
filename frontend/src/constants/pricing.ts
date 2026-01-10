@@ -33,12 +33,10 @@ export const PRICING_PLANS: PricingPlan[] = [
 ];
 
 export const PLAN_FEATURE_KEYS = [
+  'organizations.create.planStep.features.inventoryTracking',
   'organizations.create.planStep.features.unlimitedProducts',
   'organizations.create.planStep.features.unlimitedMembers',
-  'organizations.create.planStep.features.inventoryTracking',
   'organizations.create.planStep.features.lowStockAlerts',
-  'organizations.create.planStep.features.reports',
-  'organizations.create.planStep.features.mobileApp',
   'organizations.create.planStep.features.support',
 ] as const;
 

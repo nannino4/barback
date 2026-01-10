@@ -5,6 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { ArrowLeft, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageContainer, Stack } from '@/components/layout';
 import { Spinner } from '@/components/ui/spinner';
@@ -58,7 +60,7 @@ export const CreateOrganizationPage: React.FC = () =>
   
   // Wizard state
   const [currentStep, setCurrentStep] = useState<WizardStepType>(WizardStep.NAME);
-  const [billingInterval, setBillingInterval] = useState<BillingInterval>('MONTHLY');
+  const [billingInterval, setBillingInterval] = useState<BillingInterval>('YEARLY');
   
   // Payment state - null means we haven't setup payment yet
   const [paymentSetup, setPaymentSetup] = useState<{
@@ -142,6 +144,20 @@ export const CreateOrganizationPage: React.FC = () =>
     setCurrentStep(WizardStep.PLAN);
   };
 
+  const handleWizardBack = () =>
+  {
+    if (currentStep === WizardStep.PAYMENT)
+    {
+      handleBackFromPayment();
+      return;
+    }
+
+    if (currentStep === WizardStep.PLAN)
+    {
+      handleBackFromPlan();
+    }
+  };
+
   const handleCancel = () =>
   {
     void navigate('/orgs');
@@ -180,13 +196,34 @@ export const CreateOrganizationPage: React.FC = () =>
     <PageContainer className="py-6">
       <Stack space="lg" className="max-w-2xl mx-auto">
         {/* Header */}
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+        <div className="relative flex items-center justify-center">
+          {currentStep !== WizardStep.NAME && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={handleWizardBack}
+              className="absolute left-0"
+              aria-label={t('common.back')}
+            >
+              <ArrowLeft />
+            </Button>
+          )}
+
+          <h1 className="text-lg sm:text-xl font-semibold tracking-tight">
             {t('organizations.create.title')}
           </h1>
-          <p className="text-muted-foreground mt-2">
-            {t('organizations.create.description')}
-          </p>
+
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={handleCancel}
+            className="absolute right-0"
+            aria-label={t('common.close')}
+          >
+            <X />
+          </Button>
         </div>
 
         {/* Progress Indicator */}
@@ -214,27 +251,21 @@ export const CreateOrganizationPage: React.FC = () =>
         <FormProvider {...form}>
           {currentStep === WizardStep.NAME && (
             <Card>
-              <CardContent className="pt-6">
+              <CardContent>
                 <OrgNameStep
                   onNext={handleNextFromName}
-                  onCancel={handleCancel}
                 />
               </CardContent>
             </Card>
           )}
 
           {currentStep === WizardStep.PLAN && (
-            <Card>
-              <CardContent className="pt-6">
-                <PlanSelectionStep
-                  selectedInterval={billingInterval}
-                  onSelectInterval={setBillingInterval}
-                  isTrial={eligibility?.eligible || false}
-                  onNext={() => void handleNextFromPlan()}
-                  onBack={handleBackFromPlan}
-                />
-              </CardContent>
-            </Card>
+            <PlanSelectionStep
+              selectedInterval={billingInterval}
+              onSelectInterval={setBillingInterval}
+              isTrial={eligibility?.eligible || false}
+              onNext={() => void handleNextFromPlan()}
+            />
           )}
         </FormProvider>
 

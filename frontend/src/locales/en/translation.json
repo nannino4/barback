@@ -602,8 +602,16 @@
                 "yearlyPrice": "€299/yr",
                 "yearlySavings": "Save 17%",
                 "savings": "Save {{percent}}%",
+                "bestDeal": "Best deal",
+                "card": {
+                    "monthlyPrice": "{{amount}} / month",
+                    "yearlyPrice": "{{amount}} / month, billed yearly at {{yearlyAmount}}",
+                    "freeTrialLine": "FREE for {{days}} days",
+                    "thenLine": "Then {{price}}",
+                    "youSave": "You save {{percent}}%"
+                },
                 "features": {
-                    "title": "All Plans Include",
+                    "title": "What you get",
                     "unlimitedProducts": "Unlimited products",
                     "unlimitedMembers": "Unlimited team members",
                     "inventoryTracking": "Real-time inventory tracking",

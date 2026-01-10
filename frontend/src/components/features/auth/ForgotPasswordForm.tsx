@@ -21,7 +21,6 @@ import { authApi } from '@/api/auth-api';
 import { useI18n } from '@/hooks/useI18n';
 import { useCooldown } from '@/hooks/useCooldown';
 import { cn } from '@/lib/utils';
-import toast from 'react-hot-toast';
 import { PASSWORD_RESET_COOLDOWN_MS } from '@/constants/constants';
 
 interface ForgotPasswordFormProps
@@ -50,7 +49,6 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
     onSuccess: () =>
     {
       const email = form.getValues('email');
-      toast.success(t('auth.forgotPasswordSent.description'));
       startCooldown();
       void navigate('/auth/forgot-password/sent', { 
         state: { email },
@@ -62,7 +60,6 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
       // Security: Always show success message even on error
       // This prevents email enumeration attacks
       const email = form.getValues('email');
-      toast.success(t('auth.forgotPasswordSent.instructions'));
       startCooldown();
       void navigate('/auth/forgot-password/sent', { 
         state: { email },

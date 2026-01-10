@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { InlineSpinner } from '@/components/ui/spinner';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { authApi } from '@/api/auth-api';
-import toast from 'react-hot-toast';
 import { useI18n } from '@/hooks/useI18n';
+import { notify } from '@/lib/notify';
 
 export const ForgotPasswordSentPage: React.FC = () =>
 {
@@ -39,13 +39,13 @@ export const ForgotPasswordSentPage: React.FC = () =>
     try
     {
       await authApi.forgotPassword(email);
-      toast.success(t('auth.forgotPassword.successMessage'));
+      notify.success(t('auth.forgotPassword.successMessage'));
       setResendCooldown(60); // 1 minute cooldown
     }
     catch
     {
       // Always show generic message for security
-      toast.success(t('auth.forgotPassword.genericSuccessMessage'));
+      notify.success(t('auth.forgotPassword.genericSuccessMessage'));
       setResendCooldown(60);
     }
     finally

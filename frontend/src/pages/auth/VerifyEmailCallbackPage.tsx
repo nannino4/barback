@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+
 import { Spinner } from '@/components/ui/spinner';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -40,7 +40,6 @@ export const VerifyEmailCallbackPage: React.FC = () =>
       }
       
       setVerificationStatus('success');
-      toast.success(t('auth.verifyEmailCallback.success'));
       
       // Start countdown and delay navigation to show success state
       redirectCooldown.startCooldown();
@@ -61,7 +60,6 @@ export const VerifyEmailCallbackPage: React.FC = () =>
         }
         
         setVerificationStatus('success');
-        toast.success(t('auth.errors.emailAlreadyVerified'));
         
         // Start countdown and delay navigation to show success state
         redirectCooldown.startCooldown();
@@ -80,8 +78,7 @@ export const VerifyEmailCallbackPage: React.FC = () =>
         {
         case 401:
           // Unauthorized - session expired, redirect to login
-          toast.error(t('auth.errors.unauthorized'));
-          void navigate('/auth/login', { replace: true });
+          void navigate('/auth/login?reason=sessionExpired', { replace: true });
           return;
           
         case 404:
@@ -124,7 +121,6 @@ export const VerifyEmailCallbackPage: React.FC = () =>
     {
       setVerificationStatus('error');
       setErrorMessage(t('auth.verifyEmailCallback.invalidLink'));
-      toast.error(t('auth.verifyEmailCallback.invalidLink'));
       return;
     }
 

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+import { notify } from '@/lib/notify';
 import { useOrganizationStore } from '@/stores/organizationStore';
 import { organizationApi } from '@/api/organization-api';
 import { useI18n } from '@/hooks/useI18n';
@@ -61,7 +61,7 @@ export const useOrganizations = () =>
       // Invalidate and refetch organizations
       void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.all });
       
-      toast.success(t('organizations.create.success'));
+      notify.success(t('organizations.create.success'));
     },
     // No onError - errors are displayed declaratively in the component
   });
@@ -93,7 +93,7 @@ export const useOrganizations = () =>
         queryKey: queryKeys.organizations.all,
       });
       
-      toast.success(t('orgManagement.overview.edit.success'));
+      notify.success(t('orgManagement.overview.edit.success'));
     },
     // No onError - errors are displayed declaratively in the component
   });
@@ -124,7 +124,7 @@ export const useOrganizations = () =>
   const switchOrganization = (org: OrganizationMembership) =>
   {
     setCurrentOrg(org);
-    toast.success(t('organizations.switch.success', { name: org.org.name }));
+    notify.success(t('organizations.switch.success', { name: org.org.name }));
   };
 
   return {

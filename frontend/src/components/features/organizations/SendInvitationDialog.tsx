@@ -19,7 +19,7 @@ import { Stack } from '@/components/layout';
 import { useI18n } from '@/hooks/useI18n';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { invitationApi } from '@/api/invitation-api';
-import toast from 'react-hot-toast';
+import { notify } from '@/lib/notify';
 import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
 import { queryKeys } from '@/lib/queryKeys';
 import type { OrgRole } from '@/types/organization';
@@ -65,7 +65,7 @@ export const SendInvitationDialog: React.FC<SendInvitationDialogProps> = ({
       void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.invitations(orgId) });
       
       // Show success toast
-      toast.success(t('invitations.send.success'));
+      notify.success(t('invitations.send.success'));
       
       // Reset form and close dialog
       setEmail('');

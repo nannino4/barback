@@ -306,3 +306,19 @@ const loginMutation = useMutation({
 6. **Make errors persistent** - Display in UI so user can read and understand
 7. **Allow retrying** - Keep form state so user can fix and resubmit
 
+## User Feedback
+
+Use these channels (prefer local/contextual over global):
+
+- **Inline validation**: `react-hook-form` + `zod` + `<FormMessage />` for field errors.
+- **Form/page error blocks**: Declarative rendering using mutation/query error state; prefer `getLocalizedErrorMessage`.
+- **Loading**: Skeletons for structured content; `Spinner`/`InlineSpinner` for indeterminate waits (with meaningful text).
+- **Empty / error states**: Use `EmptyState` / `ErrorState` for lists/pages; include retry where possible.
+- **Confirmation dialogs**: Use `ConfirmationDialog` for destructive or high-impact actions.
+- **Toasts (snackbar)**: Use `notify.*` only for transient, non-blocking feedback (success confirmations, session expiry, background failures). Avoid toasts for form validation errors.
+
+Implementation rules:
+
+- Do not import `react-hot-toast` directly. Use `notify` from `src/lib/notify.ts`.
+- Toast styling/positioning is centralized in `AppToaster`.
+

@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+import { notify } from '@/lib/notify';
 import { Button } from '@/components/ui/button';
 import { InlineSpinner } from '@/components/ui/spinner';
 import { authApi } from '@/api/auth-api';
@@ -36,11 +36,11 @@ export const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
       if (ApiError.isApiError(error))
       {
         const message = getLocalizedErrorMessage(error, t);
-        toast.error(message);
+        notify.error(message);
       }
       else
       {
-        toast.error(t('errors.genericError'));
+        notify.error(t('errors.genericError'));
       }
     },
   });

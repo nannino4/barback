@@ -20,7 +20,6 @@ import { resetPasswordSchema, type ResetPasswordData } from '@/types/auth-forms'
 import { authApi } from '@/api/auth-api';
 import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
 import { cn } from '@/lib/utils';
-import toast from 'react-hot-toast';
 import { useI18n } from '@/hooks/useI18n';
 
 type PasswordRequirementKey =
@@ -101,7 +100,6 @@ export const ResetPasswordPage: React.FC = () =>
       authApi.resetPassword(resetToken, newPassword),
     onSuccess: () =>
     {
-      toast.success(t('auth.resetPassword.successMessage'));
       setStatus('success');
     },
     onError: (error: Error) =>

@@ -26,7 +26,7 @@ import { CACHE_TIMES } from '@/constants/cacheTimes';
 import { MIN_LOADING_FEEDBACK_MS } from '@/constants/constants';
 import type { Subscription, SubscriptionStatusOnly } from '@/types/subscription';
 import type { OrgRole } from '@/types/organization';
-import toast from 'react-hot-toast';
+import { notify } from '@/lib/notify';
 
 /** Navigation state passed when navigating to this page */
 interface LocationState
@@ -171,14 +171,14 @@ export const OrganizationManagePage: React.FC = () =>
     },
     onSuccess: () =>
     {
-      toast.success(t('members.remove.success'));
+      notify.success(t('members.remove.success'));
       void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.members(orgId ?? '') });
       setRemoveMemberDialogOpen(false);
       setMemberToRemove(null);
     },
     onError: () =>
     {
-      toast.error(t('members.remove.error'));
+      notify.error(t('members.remove.error'));
     },
   });
 
@@ -190,14 +190,14 @@ export const OrganizationManagePage: React.FC = () =>
     },
     onSuccess: () =>
     {
-      toast.success(t('members.leave.success'));
+      notify.success(t('members.leave.success'));
       // Invalidate all organization queries and navigate away
       void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.all });
       void navigate('/orgs');
     },
     onError: () =>
     {
-      toast.error(t('members.leave.error'));
+      notify.error(t('members.leave.error'));
       setLeaveDialogOpen(false);
     },
   });
@@ -209,12 +209,12 @@ export const OrganizationManagePage: React.FC = () =>
     },
     onSuccess: () =>
     {
-      toast.success(t('invitations.revoke.success'));
+      notify.success(t('invitations.revoke.success'));
       void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.invitations(orgId ?? '') });
     },
     onError: () =>
     {
-      toast.error(t('invitations.revoke.error'));
+      notify.error(t('invitations.revoke.error'));
     },
   });
 
@@ -226,13 +226,13 @@ export const OrganizationManagePage: React.FC = () =>
     },
     onSuccess: () =>
     {
-      toast.success(t('orgManagement.overview.edit.success'));
+      notify.success(t('orgManagement.overview.edit.success'));
       void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.detail(orgId ?? '') });
       void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.all });
     },
     onError: () =>
     {
-      toast.error(t('orgManagement.overview.edit.error'));
+      notify.error(t('orgManagement.overview.edit.error'));
     },
   });
 
@@ -586,7 +586,7 @@ export const OrganizationManagePage: React.FC = () =>
                         {
                           void newCurrency;
                           // TODO: Implement currency update API
-                          toast.error('Currency update not implemented yet');
+                          notify.error(t('errors.genericError'));
                         }}
                         label={t('orgManagement.settings.currency')}
                         canEdit={canEditSettings}

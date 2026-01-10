@@ -1,11 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import toast from 'react-hot-toast';
+
 import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/api/auth-api';
 import type { RegisterData, LoginData } from '@/types/auth-forms';
 import type { RegisterFormData } from '@/types/auth-forms';
 import { useI18n } from '@/hooks/useI18n';
+import { notify } from '@/lib/notify';
 
 export const useAuth = () =>
 {
@@ -36,7 +37,7 @@ export const useAuth = () =>
     {
       // Use user data directly from registration response
       loginToStore(response.user, response.access_token, response.refresh_token);
-      toast.success(t('auth.register.success'));
+      notify.success(t('auth.register.success'));
             
       // Redirect to email verification page instead of home
       if (!response.user.isEmailVerified)
@@ -65,7 +66,7 @@ export const useAuth = () =>
     {
       // Use user data directly from login response
       loginToStore(response.user, response.access_token, response.refresh_token);
-      toast.success(t('auth.login.success'));
+      notify.success(t('auth.login.success'));
       
       // Check email verification status and redirect accordingly
       if (!response.user.isEmailVerified)
@@ -102,7 +103,7 @@ export const useAuth = () =>
   const handleLogout = () =>
   {
     logout();
-    toast.success(t('auth.logout.success'));
+    notify.success(t('auth.logout.success'));
     void navigate('/auth/login');
   };
 

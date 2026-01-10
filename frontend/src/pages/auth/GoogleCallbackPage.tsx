@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+
 import { Spinner } from '@/components/ui/spinner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -35,7 +35,6 @@ export const GoogleCallbackPage: React.FC = () =>
       sessionStorage.removeItem('google_oauth_state');
             
       setCallbackStatus('success');
-      toast.success(t('auth.errors.googleSignInSuccess'));
       
       // Navigate after short delay to show success state
       setTimeout(() =>

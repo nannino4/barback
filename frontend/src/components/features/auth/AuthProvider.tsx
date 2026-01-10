@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
+
 import { apiClient } from '@/api/api';
 import { TokenRefreshService } from '@/lib/token-refresh-service';
+import { notify } from '@/lib/notify';
 import { useAuthStore } from '@/stores/authStore';
 import { useI18n } from '@/hooks/useI18n';
 
@@ -78,7 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) =>
                             !currentPath.startsWith('/auth/');
 
       // Show user-friendly message
-      toast.error(tRef.current('auth.errors.sessionExpired'));
+      notify.error(tRef.current('auth.errors.sessionExpired'));
 
       // Redirect to login with return URL
       if (shouldRedirect)

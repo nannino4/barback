@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react';
@@ -36,7 +36,6 @@ export const SendVerificationEmailPage: React.FC = () =>
   {
     if (user?.isEmailVerified)
     {
-      toast.success(t('auth.emailVerification.success'));
       void navigate('/dashboard', { replace: true });
     }
   }, [user?.isEmailVerified, navigate, t]);
@@ -47,7 +46,6 @@ export const SendVerificationEmailPage: React.FC = () =>
     onSuccess: () =>
     {
       setSendStatus('success');
-      toast.success(t('auth.sendVerificationEmail.emailSentSuccess'));
       startCooldown();
     },
     onError: (error: Error) =>
@@ -66,7 +64,6 @@ export const SendVerificationEmailPage: React.FC = () =>
         // Email already verified - treat as success
         if (error.error === 'EMAIL_ALREADY_VERIFIED')
         {
-          toast.success(t('auth.errors.emailAlreadyVerified'));
           void navigate('/dashboard', { replace: true });
           return;
         }
@@ -75,8 +72,7 @@ export const SendVerificationEmailPage: React.FC = () =>
         
       case 401:
         // Unauthorized - session expired
-        toast.error(t('auth.errors.unauthorized'));
-        void navigate('/auth/login', { replace: true });
+        void navigate('/auth/login?reason=sessionExpired', { replace: true });
         return;
         
       case 404:

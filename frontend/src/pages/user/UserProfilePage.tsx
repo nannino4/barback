@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { Section } from '@/components/layout/Section';
 import { Stack } from '@/components/layout/Stack';
@@ -16,6 +15,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { userApi } from '@/api/user-api';
 import { organizationApi } from '@/api/organization-api';
 import { queryKeys } from '@/lib/queryKeys';
+import { notify } from '@/lib/notify';
 import { CACHE_TIMES } from '@/constants/cacheTimes';
 import { Mail, Phone, Upload } from 'lucide-react';
 import type { Subscription, SubscriptionStatus } from '@/types/subscription';
@@ -70,7 +70,7 @@ export function UserProfilePage()
     onSuccess: (updated) =>
     {
       setUser(updated);
-      toast.success(t('account.updated'));
+      notify.success(t('account.updated'));
     },
   });
 
@@ -79,7 +79,7 @@ export function UserProfilePage()
     onSuccess: (updated) =>
     {
       setUser(updated);
-      toast.success(t('account.profilePictureUpdated'));
+      notify.success(t('account.profilePictureUpdated'));
     },
   });
 

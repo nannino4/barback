@@ -1,7 +1,7 @@
 import { Outlet, ScrollRestoration } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
 
 import { AuthProvider } from '@/components/features/auth/AuthProvider';
+import { AppToaster } from '@/components/feedback/AppToaster';
 import { AppLayout } from '@/components/layout/AppLayout';
 
 /**
@@ -21,13 +21,7 @@ export function AppRouteRoot()
         <Outlet />
       </AppLayout>
 
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          className: 'bg-card border border-border text-card-foreground font-body',
-          duration: 4000,
-        }}
-      />
+      <AppToaster />
     </AuthProvider>
   );
 }

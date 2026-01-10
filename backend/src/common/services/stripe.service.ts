@@ -180,22 +180,8 @@ export class StripeService
                 subscriptionParams.trial_period_days = trialDays;
             }
 
-            // print subscriptionParams for debugging
-            this.logger.debug(
-                `Subscription parameters: ${JSON.stringify(subscriptionParams)}`,
-                'StripeService#createSubscription',
-                requestId,
-            );
-
             const subscription = await this.stripe.subscriptions.create(subscriptionParams);
             
-            // print the full subscription object for debugging
-            this.logger.debug(
-                `Full subscription object: ${JSON.stringify(subscription)}`,
-                'StripeService#createSubscription',
-                requestId,
-            );
-
             this.logger.debug(
                 `${isTrial ? 'Trial' : 'Paid'} subscription created: ${subscription.id}`,
                 'StripeService#createSubscription',

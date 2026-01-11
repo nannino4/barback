@@ -697,20 +697,14 @@ export class UserService
         return user;
     }
 
-    async linkGoogleAccount(user: User, googleId: string, googleProfilePicture?: string, requestId?: string): Promise<User>
+    async linkGoogleAccount(user: User, googleId: string, requestId?: string): Promise<User>
     {
         this.logger.debug(`Linking Google account to user: ${user.email}`, 'UserService#linkGoogleAccount', requestId);
         
-        const updateData: any = {
+        const updateData: { googleId: string; isEmailVerified: boolean } = {
             googleId: googleId,
             isEmailVerified: true, // Google accounts are always email verified
         };
-
-        // Only update profile picture if Google has one and user doesn't have one
-        if (googleProfilePicture && !user.profilePictureUrl) 
-        {
-            updateData.profilePictureUrl = googleProfilePicture;
-        }
 
         const updatedUser = await this.userModel.findByIdAndUpdate(
             user._id,

@@ -255,7 +255,6 @@ export class GoogleService
             user = await this.userService.linkGoogleAccount(
                 existingUserByEmail, 
                 googleUserInfo.id, 
-                googleUserInfo.picture,
                 requestId
             );
 
@@ -274,7 +273,6 @@ export class GoogleService
             email: googleUserInfo.email,
             firstName: googleUserInfo.given_name || googleUserInfo.name?.split(' ')[0] || 'User',
             lastName: googleUserInfo.family_name || googleUserInfo.name?.split(' ').slice(1).join(' ') || '',
-            profilePictureUrl: googleUserInfo.picture,
             authProvider: AuthProvider.GOOGLE,
             isEmailVerified: true, // Google emails are pre-verified
         }, requestId);
@@ -386,7 +384,11 @@ export class GoogleService
 
         if (user.profilePictureUrl && user.profilePictureUrl !== pictureUrl)
         {
-            return false;
+            const normalizedExistingUrl: string | null = this.normalizeAndValidateGooglePictureUrl(user.profilePictureUrl);
+            if (!normalizedExistingUrl)
+            {
+                return false;
+            }
         }
 
         return true;

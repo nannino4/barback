@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Pencil } from 'lucide-react';
+import { ArrowLeft, Pencil } from 'lucide-react';
 
 import { authApi } from '@/api/auth-api';
 import { userApi } from '@/api/user-api';
@@ -9,20 +9,17 @@ import { InlineEditField } from '@/components/forms/InlineEditField';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { Section } from '@/components/layout/Section';
 import { Stack } from '@/components/layout/Stack';
+import { Grid } from '@/components/layout/Grid';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { InlineSpinner } from '@/components/ui/spinner';
 import { useAuth } from '@/hooks/useAuth';
 import { useI18n } from '@/hooks/useI18n';
+import { useCooldown } from '@/hooks/useCooldown';
 import { ROUTES } from '@/constants/routes';
 import { CACHE_TIMES } from '@/constants/cacheTimes';
+import { PASSWORD_RESET_COOLDOWN_MS } from '@/constants/constants';
 import { queryKeys } from '@/lib/queryKeys';
 import { notify } from '@/lib/notify';
 import { UserAvatar } from '@/components/user/UserAvatar';
@@ -43,6 +40,7 @@ export function UserProfilePage()
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isProfilePictureOpen, setIsProfilePictureOpen] = useState(false);
+  const { startCooldown } = useCooldown('password_reset_cooldown', PASSWORD_RESET_COOLDOWN_MS);
 
   const meQuery = useQuery({
     queryKey: queryKeys.users.me,
@@ -85,12 +83,14 @@ export function UserProfilePage()
     mutationFn: () => authApi.forgotPassword(currentUser?.email ?? ''),
     onSuccess: () =>
     {
+      startCooldown();
       void navigate(ROUTES.AUTH.FORGOT_PASSWORD_SENT, {
         state: { email: currentUser?.email ?? '' },
       });
     },
     onError: () =>
     {
+      startCooldown();
       // Security: always navigate to "sent" to avoid email enumeration signals.
       void navigate(ROUTES.AUTH.FORGOT_PASSWORD_SENT, {
         state: { email: currentUser?.email ?? '' },
@@ -131,21 +131,23 @@ export function UserProfilePage()
     }
   };
 
-  const validateFullName = (value: string): string | undefined =>
+  const validateName = (value: string): string | undefined =>
   {
     const trimmed = value.trim();
     if (!trimmed) return t('validation.required');
-    if (!trimmed.includes(' ')) return t('account.fullNameMustIncludeLastName');
     return undefined;
   };
 
-  const saveFullName = async (fullName: string) =>
+  const saveFirstName = async (firstName: string) =>
   {
-    const trimmed = fullName.trim().replace(/\s+/g, ' ');
-    const firstSpace = trimmed.indexOf(' ');
-    const firstName = trimmed.slice(0, firstSpace);
-    const lastName = trimmed.slice(firstSpace + 1);
-    await updateProfileMutation.mutateAsync({ firstName, lastName });
+    const trimmed = firstName.trim();
+    await updateProfileMutation.mutateAsync({ firstName: trimmed });
+  };
+
+  const saveLastName = async (lastName: string) =>
+  {
+    const trimmed = lastName.trim();
+    await updateProfileMutation.mutateAsync({ lastName: trimmed });
   };
 
   const handleOpenProfilePicture = () =>
@@ -168,126 +170,128 @@ export function UserProfilePage()
     resetPasswordMutation.mutate();
   };
 
+  const handleGoBack = () =>
+  {
+    void navigate(-1);
+  };
+
   return (
     <PageContainer>
       <Section>
-        <div className="max-w-2xl mx-auto space-y-6">
-          {/* Personal info */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl">{t('account.title')}</CardTitle>
-              <CardDescription>{t('account.description')}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <Stack direction="horizontal" space="md" align="center" className="justify-between">
-                <Stack direction="horizontal" space="md" align="center">
-                  <div className="relative">
-                    <button
-                      type="button"
-                      className="rounded-full focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-[3px]"
-                      onClick={handleOpenProfilePicture}
-                      aria-label={t('account.openProfilePicture')}
-                      disabled={!currentUser.profilePictureUrl}
-                    >
-                      <UserAvatar
-                        user={currentUser}
-                        size="lg"
-                        className="h-20 w-20 text-2xl"
-                      />
-                    </button>
 
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp"
-                      className="hidden"
-                      onChange={(e) => void handleAvatarFile(e.target.files?.[0] ?? null)}
+        {/* Personal info */}
+        <Card>
+          <CardContent>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={handleGoBack}
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+            </Button>
+            <Stack space='lg'>
+              <Stack align="center">
+                <div className="relative">
+                  <button
+                    type="button"
+                    className="rounded-full focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-[3px]"
+                    onClick={handleOpenProfilePicture}
+                    aria-label={t('account.openProfilePicture')}
+                    disabled={!currentUser.profilePictureUrl}
+                  >
+                    <UserAvatar
+                      user={currentUser}
+                      size="xl"
                     />
+                  </button>
 
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="icon"
-                      className="absolute -bottom-1 -right-1 size-9 rounded-full"
-                      onClick={handlePickAvatar}
-                      disabled={isUploadingAvatar}
-                      aria-label={t('account.changeProfilePicture')}
-                    >
-                      {isUploadingAvatar ? (
-                        <InlineSpinner />
-                      ) : (
-                        <Pencil className="h-4 w-4" />
-                      )}
-                    </Button>
-                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={(e) => void handleAvatarFile(e.target.files?.[0] ?? null)}
+                  />
 
-                  <div>
-                    <h3 className="text-xl font-semibold">{userFullName}</h3>
-                    <p className="text-sm text-muted-foreground">{t('account.personalInformation')}</p>
-                  </div>
-                </Stack>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="absolute -bottom-1 -right-1 size-9 rounded-full"
+                    onClick={handlePickAvatar}
+                    disabled={isUploadingAvatar}
+                    aria-label={t('account.changeProfilePicture')}
+                  >
+                    {isUploadingAvatar ? (
+                      <InlineSpinner />
+                    ) : (
+                      <Pencil className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
               </Stack>
 
-              {/* Full name */}
-              <div className="p-3 rounded-lg bg-muted/50">
-                <p className="text-sm font-medium text-muted-foreground">{t('account.fullName')}</p>
-                <InlineEditField
-                  value={userFullName}
-                  label={t('account.fullName')}
-                  onSave={saveFullName}
-                  validate={validateFullName}
-                  isLoading={updateProfileMutation.isPending}
-                  alwaysShowEdit
-                  textClassName="text-base"
-                />
-              </div>
+              <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }} gap="md">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">{t('common.firstName')}</p>
+                  <InlineEditField
+                    value={currentUser.firstName}
+                    label={t('common.firstName')}
+                    onSave={saveFirstName}
+                    validate={validateName}
+                    isLoading={updateProfileMutation.isPending}
+                    alwaysShowEdit
+                    textClassName="text-base"
+                  />
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">{t('common.lastName')}</p>
+                  <InlineEditField
+                    value={currentUser.lastName}
+                    label={t('common.lastName')}
+                    onSave={saveLastName}
+                    validate={validateName}
+                    isLoading={updateProfileMutation.isPending}
+                    alwaysShowEdit
+                    textClassName="text-base"
+                  />
+                </div>
+              </Grid>
 
               {/* Email (read-only) */}
-              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                <Mail className="h-5 w-5 text-muted-foreground mt-0.5" />
+              <div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-muted-foreground">{t('account.email')}</p>
                   <p className="text-base break-all">{currentUser.email}</p>
-                  {currentUser.isEmailVerified && (
-                    <p className="text-xs text-success mt-1">{t('account.emailVerified')}</p>
-                  )}
                 </div>
               </div>
 
               {/* Password reset */}
-              <div className="p-3 rounded-lg bg-muted/50">
-                <p className="text-sm font-medium text-muted-foreground">{t('account.resetPassword.title')}</p>
-                <p className="text-sm text-muted-foreground mt-1">{t('account.resetPassword.description')}</p>
-                <div className="mt-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleResetPassword}
-                    disabled={resetPasswordMutation.isPending}
-                  >
-                    {resetPasswordMutation.isPending && (
-                      <InlineSpinner className="mr-2" />
-                    )}
-                    {resetPasswordMutation.isPending
-                      ? t('account.resetPassword.sending')
-                      : t('account.resetPassword.button')}
-                  </Button>
-                </div>
+              <div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleResetPassword}
+                  disabled={resetPasswordMutation.isPending}
+                >
+                  {resetPasswordMutation.isPending && (
+                    <InlineSpinner className="mr-2" />
+                  )}
+                  {resetPasswordMutation.isPending
+                    ? t('account.resetPassword.sending')
+                    : t('account.resetPassword.button')}
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            </Stack>
+          </CardContent>
+        </Card>
       </Section>
 
       <Dialog open={isProfilePictureOpen} onOpenChange={setIsProfilePictureOpen}>
         <DialogContent className="max-w-2xl p-0 overflow-hidden">
-          <DialogHeader className="p-6 pb-0">
-            <DialogTitle>{t('account.profilePictureDialog.title')}</DialogTitle>
-            <DialogDescription>{t('account.profilePictureDialog.description')}</DialogDescription>
-          </DialogHeader>
-
           {currentUser.profilePictureUrl && (
-            <div className="p-6 pt-0">
+            <div>
               <img
                 src={currentUser.profilePictureUrl}
                 alt={userFullName}

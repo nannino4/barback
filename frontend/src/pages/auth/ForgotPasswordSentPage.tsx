@@ -1,5 +1,5 @@
-import { Link, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Mail, Clock, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,28 +8,25 @@ import { PageContainer } from '@/components/layout/PageContainer';
 import { authApi } from '@/api/auth-api';
 import { useI18n } from '@/hooks/useI18n';
 import { notify } from '@/lib/notify';
+import { useCooldown } from '@/hooks/useCooldown';
+import { PASSWORD_RESET_COOLDOWN_MS } from '@/constants/constants';
+import { Stack } from '@/components/layout';
 
 export const ForgotPasswordSentPage: React.FC = () =>
 {
   const { t } = useI18n();
+  const navigate = useNavigate();
   const location = useLocation();
   const email = (location.state as { email?: string })?.email || '';
   const [isResending, setIsResending] = useState(false);
-  const [resendCooldown, setResendCooldown] = useState(0);
-
-  useEffect(() =>
-  {
-    let timer: NodeJS.Timeout;
-    if (resendCooldown > 0)
-    {
-      timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
-    }
-    return () => clearTimeout(timer);
-  }, [resendCooldown]);
+  const { seconds: cooldownSeconds, isActive: isCooldownActive, startCooldown } = useCooldown(
+    'password_reset_cooldown',
+    PASSWORD_RESET_COOLDOWN_MS,
+  );
 
   const handleResendEmail = async () =>
   {
-    if (!email || resendCooldown > 0)
+    if (!email || isCooldownActive)
     {
       return;
     }
@@ -40,18 +37,23 @@ export const ForgotPasswordSentPage: React.FC = () =>
     {
       await authApi.forgotPassword(email);
       notify.success(t('auth.forgotPassword.successMessage'));
-      setResendCooldown(60); // 1 minute cooldown
+      startCooldown();
     }
     catch
     {
       // Always show generic message for security
       notify.success(t('auth.forgotPassword.genericSuccessMessage'));
-      setResendCooldown(60);
+      startCooldown();
     }
     finally
     {
       setIsResending(false);
     }
+  };
+
+  const handleGoBack = () =>
+  {
+    void navigate(-1);
   };
 
   return (
@@ -65,7 +67,7 @@ export const ForgotPasswordSentPage: React.FC = () =>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-center space-y-6">
+              <Stack space='md' className="text-center">
                 {/* Email Icon */}
                 <div className="flex justify-center">
                   <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center">
@@ -99,17 +101,17 @@ export const ForgotPasswordSentPage: React.FC = () =>
                     onClick={() => void handleResendEmail()}
                     variant="outline"
                     className="w-full h-touch"
-                    disabled={isResending || resendCooldown > 0}
+                    disabled={isResending || isCooldownActive}
                   >
                     {isResending ? (
                       <>
                         <InlineSpinner className="mr-2" />
                         {t('auth.forgotPasswordSent.resendingEmail')}
                       </>
-                    ) : resendCooldown > 0 ? (
+                    ) : isCooldownActive ? (
                       <>
                         <RefreshCw className="mr-2 h-4 w-4" />
-                        {t('auth.forgotPasswordSent.resendEmailCountdown', { countdown: resendCooldown })}
+                        {t('auth.forgotPasswordSent.resendEmailCountdown', { countdown: cooldownSeconds })}
                       </>
                     ) : (
                       <>
@@ -121,15 +123,16 @@ export const ForgotPasswordSentPage: React.FC = () =>
                 )}
 
                 {/* Back to Login Link */}
-                <div className="pt-4 border-t">
-                  <Link
-                    to="/auth/login"
-                    className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
-                  >
-                    {t('auth.forgotPasswordSent.backToSignIn')}
-                  </Link>
-                </div>
-              </div>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full"
+                  onClick={handleGoBack}
+                >
+                  {t('common.back')}
+                </Button>
+              </Stack>
             </CardContent>
           </Card>
         </div>

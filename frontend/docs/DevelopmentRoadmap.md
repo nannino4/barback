@@ -143,15 +143,7 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
     - user profile picture (editable)
     - user full name (editable)
     - user email (not editable)
-    - user phone (editable)
-  - user owned organizations card displays
-    - number of orgs owned
-    - subscriptions statuses
-      - n venues are active
-      - n venues are in trial
-        - org names with "trial expires in n days"
-      - n venues are inactive and require action
-        - org names
+    - reset password button
 - **fixes needed**
   - [ ] Date formatting doesn't respect user's locale from i18n
   - [X] refresh token service restarts every page load

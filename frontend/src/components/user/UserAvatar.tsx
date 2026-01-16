@@ -4,7 +4,7 @@ import type { User, UserPublic } from '@/types/user';
 interface UserAvatarProps
 {
   user: User | UserPublic;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
 
@@ -12,6 +12,7 @@ const sizeClasses = {
   sm: 'h-5 w-5 text-sm',
   md: 'h-8 w-8 text-base',
   lg: 'h-12 w-12 text-xl',
+  xl: 'h-24 w-24 text-2xl',
 };
 
 /**

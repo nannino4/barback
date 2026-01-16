@@ -93,6 +93,14 @@ Unified guard now restricts authenticated operations until email is verified. Ex
   - [X] Add shared snippet to API docs referencing 403 response & requirement rationale.
 - [X] **Testing (Unit)**:
   - [X] Guard unit tests added (`email-verified.guard.spec.ts`).
+
+#### Timezone Management
+- [X] **User Timezone Preference**:
+  - [X] Add `timezone` field to user profile (IANA timezone string | "auto")
+  - [X] Expose `timezone` in user profile read/update endpoints
+  - [X] Validate timezone against IANA list on update
+- [X] **UTC-Only Storage**:
+  - [X] Ensure all persisted timestamps are stored in UTC
   
 #### Subscription Management
 - [X] **Stripe Setup**:

@@ -1,4 +1,4 @@
-import { IsString, MinLength, MaxLength, ValidateIf, IsNotEmpty, IsMobilePhone } from 'class-validator';
+import { IsString, MinLength, MaxLength, ValidateIf, IsNotEmpty, IsMobilePhone, Matches } from 'class-validator';
 
 export class UpdateUserProfileDto
 {
@@ -20,4 +20,9 @@ export class UpdateUserProfileDto
     @IsNotEmpty({ message: 'validation.phoneNumber.required' })
     @IsMobilePhone(undefined, {}, { message: 'validation.phoneNumber.invalid' })
     phoneNumber?: string;
+
+    @ValidateIf((o, value) => value !== undefined)
+    @IsString({ message: 'validation.timezone.mustBeString' })
+    @Matches(/^[A-Za-z_]+(?:\/[A-Za-z0-9_+\-]+)+$|^auto$/, { message: 'validation.timezone.invalidFormat' })
+    timezone?: string;
 }

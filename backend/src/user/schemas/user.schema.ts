@@ -76,6 +76,9 @@ export class User extends Document
     @Prop({ type: String, required: false })
     stripeCustomerId?: string;
 
+    @Prop({ type: String, required: true, default: 'auto' })
+    timezone!: string;
+
     // createdAt and updatedAt are handled by timestamps: true
 }
 

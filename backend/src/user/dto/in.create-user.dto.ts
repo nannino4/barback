@@ -1,4 +1,4 @@
-import { IsEmail, IsString, IsEnum, IsBoolean, IsUrl, IsNotEmpty, ValidateIf, IsMobilePhone, MinLength, MaxLength } from 'class-validator';
+import { IsEmail, IsString, IsEnum, IsBoolean, IsUrl, IsNotEmpty, ValidateIf, IsMobilePhone, MinLength, MaxLength, Matches } from 'class-validator';
 import { AuthProvider, UserRole } from '../schemas/user.schema';
 
 /**
@@ -67,4 +67,10 @@ export class CreateUserDto
     @IsNotEmpty()
     @IsBoolean()
     isEmailVerified?: boolean;
+
+    @ValidateIf((o, value) => value !== undefined)
+    @IsNotEmpty()
+    @IsString()
+    @Matches(/^[A-Za-z_]+(?:\/[A-Za-z0-9_+\-]+)+$|^auto$/)
+    timezone?: string;
 }

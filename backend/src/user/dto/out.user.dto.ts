@@ -26,4 +26,7 @@ export class OutUserDto
     
     @Expose()
     isEmailVerified!: boolean;
+
+    @Expose()
+    timezone!: string;
 }

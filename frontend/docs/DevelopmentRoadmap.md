@@ -153,11 +153,11 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
     - [X] Ensure all date formatting uses timezone-aware helpers
   - [X] refresh token service restarts every page load
 - **good to have**
-  - [ ] routes consolidation
-  - [ ] update toasters style and position
+  - [X] routes consolidation
+  - [X] update toasters style and position
   - [ ] consolidate type names for requests/responses schemas to/from backend
-  - [ ] autofocus first input on modals and forms
-  - [ ] `enter` key goes to next input or submits form
+  - [X] autofocus first input on modals and forms
+  - [X] `enter` key goes to next input or submits form
   - [ ] consolidate loading states (skeletons, spinners)
 
 ### **Sprint 5-6: Core Inventory Management**

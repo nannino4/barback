@@ -283,5 +283,9 @@ Unified guard now restricts authenticated operations until email is verified. Ex
 - [ ] Fix timeouts in integration tests (probably linked to mongodb memory server setup)
 - [ ] standardize tests. Determine best practices.
 
+### Extra
+- [ ] Anonymize user data in logs (PII compliance)
+- [ ] Localize email templates
+
 ---
 This roadmap will be updated as development progresses.

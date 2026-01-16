@@ -10,6 +10,24 @@ export const ROUTES = {
   
   // Dashboard (protected)
   DASHBOARD: '/dashboard',
+
+  // Organizations
+  ORGS: {
+    ROOT: '/orgs',
+    CREATE: '/orgs/create',
+    DETAIL: '/orgs/:orgId',
+  },
+
+  // Users
+  USERS: {
+    ME: '/users/me',
+  },
+
+  // Inventory
+  INVENTORY: '/inventory',
+
+  // Orders
+  ORDERS: '/orders',
   
   // Auth routes
   AUTH: {

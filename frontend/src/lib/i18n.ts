@@ -4,6 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import enTranslations from '@/locales/en/translation.json';
 import itTranslations from '@/locales/it/translation.json';
+import { SUPPORTED_LANGUAGES } from '@/constants/i18n';
 
 // Use 'as const' to enable stricter type inference
 // This helps TypeScript understand the exact shape of our translations
@@ -23,6 +24,7 @@ void i18n
     resources,
     fallbackLng: 'en',
     debug: process.env.NODE_ENV === 'development',
+    supportedLngs: SUPPORTED_LANGUAGES,
         
     interpolation: {
       escapeValue: false, // React already escapes values

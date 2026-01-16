@@ -3,9 +3,10 @@ import { CreditCard, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Stack } from '@/components/layout';
-import { SubscriptionStatusBadge } from './SubscriptionStatusBadge';
 import { useI18n } from '@/hooks/useI18n';
 import { formatDate } from '@/lib/date';
+import { useAuthStore } from '@/stores/authStore';
+import { SubscriptionStatusBadge } from './SubscriptionStatusBadge';
 import type { Subscription, SubscriptionStatus, SubscriptionStatusOnly } from '@/types/subscription';
 
 /**
@@ -70,11 +71,12 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 }) =>
 {
   const { t, currentLanguage } = useI18n();
+  const currentUser = useAuthStore((state) => state.user);
   const statusMessage = useStatusMessage(subscriptionData.status, t);
   const hasFullData = isFullSubscription(subscriptionData);
 
   const formattedDate = hasFullData && subscriptionData.nextBillingDate
-    ? formatDate(subscriptionData.nextBillingDate, currentLanguage)
+    ? formatDate(subscriptionData.nextBillingDate, currentLanguage, undefined, currentUser?.timezone)
     : null;
 
   return (

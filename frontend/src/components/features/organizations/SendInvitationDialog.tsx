@@ -115,6 +115,7 @@ export const SendInvitationDialog: React.FC<SendInvitationDialogProps> = ({
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={sendInvitationMutation.isPending}
+                autoFocus
               />
             </Stack>
 

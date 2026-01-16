@@ -21,6 +21,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useI18n } from '@/hooks/useI18n';
 import { getLocalizedErrorMessage, isKnownError } from '@/lib/errors';
 import { cn } from '@/lib/utils';
+import { ROUTES } from '@/constants/routes';
 
 interface RegisterFormProps
 {
@@ -105,7 +106,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form 
+          <form
             onSubmit={(e) =>
             {
               e.preventDefault();
@@ -139,6 +140,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                         autoComplete="given-name"
                         className="h-touch"
                         {...field}
+                        autoFocus
                       />
                     </FormControl>
                     <FormMessage />
@@ -341,7 +343,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ className }) =>
                   {t('auth.register.hasAccount')}{' '}
                 </span>
                 <Link
-                  to="/auth/login"
+                  to={ROUTES.AUTH.LOGIN}
                   className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
                 >
                   {t('auth.register.signIn')}

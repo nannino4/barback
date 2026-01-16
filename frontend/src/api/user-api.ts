@@ -13,7 +13,7 @@ export const userApi = {
     );
   },
 
-  updateMe: (data: { firstName?: string; lastName?: string; phoneNumber?: string }): Promise<User> =>
+  updateMe: (data: { firstName?: string; lastName?: string; phoneNumber?: string; timezone?: string }): Promise<User> =>
   {
     return apiClient.request<User>(
       '/users/me',

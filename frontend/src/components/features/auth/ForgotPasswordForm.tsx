@@ -22,6 +22,7 @@ import { useI18n } from '@/hooks/useI18n';
 import { useCooldown } from '@/hooks/useCooldown';
 import { cn } from '@/lib/utils';
 import { PASSWORD_RESET_COOLDOWN_MS } from '@/constants/constants';
+import { ROUTES } from '@/constants/routes';
 
 interface ForgotPasswordFormProps
 {
@@ -50,7 +51,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
     {
       const email = form.getValues('email');
       startCooldown();
-      void navigate('/auth/forgot-password/sent', { 
+      void navigate(ROUTES.AUTH.FORGOT_PASSWORD_SENT, {
         state: { email },
         replace: true,
       });
@@ -61,7 +62,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
       // This prevents email enumeration attacks
       const email = form.getValues('email');
       startCooldown();
-      void navigate('/auth/forgot-password/sent', { 
+      void navigate(ROUTES.AUTH.FORGOT_PASSWORD_SENT, {
         state: { email },
         replace: true,
       });
@@ -141,7 +142,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
                 <p className="text-sm text-muted-foreground">
                   {t('auth.register.hasAccount')}{' '}
                   <Link
-                    to="/auth/login"
+                    to={ROUTES.AUTH.LOGIN}
                     className="text-primary hover:text-primary/80 font-medium transition-colors"
                   >
                     {t('auth.forgotPassword.backToLogin')}

@@ -23,6 +23,7 @@ import { GoogleLoginButton } from '@/components/features/auth/GoogleLoginButton'
 import { getLocalizedErrorMessage, isKnownError } from '@/lib/errors';
 import { cn } from '@/lib/utils';
 import { Icon } from '@/components/ui/icon';
+import { ROUTES } from '@/constants/routes';
 
 interface LoginFormProps
 {
@@ -57,7 +58,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
 
   const handleGoToDashboard = () =>
   {
-    void navigate('/dashboard');
+    void navigate(ROUTES.DASHBOARD);
   };
 
   const handleLogout = () =>
@@ -182,6 +183,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
                           placeholder={t('auth.login.emailPlaceholder')}
                           disabled={isLoggingIn}
                           autoComplete="email"
+                          autoFocus
                         />
                       </FormControl>
                       <FormMessage />
@@ -235,7 +237,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
                 {/* Forgot Password Link */}
                 <div className="flex justify-end">
                   <Link
-                    to="/auth/forgot-password"
+                    to={ROUTES.AUTH.FORGOT_PASSWORD}
                     className="text-sm text-primary hover:text-primary/80 transition-colors"
                   >
                     {t('auth.login.forgotPassword')}

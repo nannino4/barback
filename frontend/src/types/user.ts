@@ -19,6 +19,7 @@ export const UserSchema = z.object({
   phoneNumber: z.string().optional(),
   profilePictureUrl: z.string().url().optional(),
   isEmailVerified: z.boolean(),
+  timezone: z.string().min(1),
 });
 
 /**

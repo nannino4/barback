@@ -21,6 +21,7 @@ import { authApi } from '@/api/auth-api';
 import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
 import { cn } from '@/lib/utils';
 import { useI18n } from '@/hooks/useI18n';
+import { ROUTES } from '@/constants/routes';
 
 type PasswordRequirementKey =
   | 'auth.resetPassword.requirementLength'
@@ -202,7 +203,7 @@ export const ResetPasswordPage: React.FC = () =>
                 className="w-full h-touch"
                 asChild
               >
-                <Link to="/auth/forgot-password">
+                <Link to={ROUTES.AUTH.FORGOT_PASSWORD}>
                   {t('auth.resetPasswordError.requestNewLinkButton')}
                 </Link>
               </Button>
@@ -211,7 +212,7 @@ export const ResetPasswordPage: React.FC = () =>
                 className="w-full h-touch"
                 asChild
               >
-                <Link to="/auth/login">
+                <Link to={ROUTES.AUTH.LOGIN}>
                   {t('auth.resetPasswordError.backToSignIn')}
                 </Link>
               </Button>
@@ -247,7 +248,7 @@ export const ResetPasswordPage: React.FC = () =>
               className="w-full h-touch"
               asChild
             >
-              <Link to="/auth/login">
+              <Link to={ROUTES.AUTH.LOGIN}>
                 {t('auth.resetPasswordSuccess.signInButton')}
               </Link>
             </Button>
@@ -269,7 +270,11 @@ export const ResetPasswordPage: React.FC = () =>
           </CardHeader>
           <CardContent className="space-y-4">
             <Form {...form}>
-              <form onSubmit={handleFormSubmit} className="space-y-4" noValidate>
+              <form
+                onSubmit={handleFormSubmit}
+                className="space-y-4"
+                noValidate
+              >
                 {/* New Password Field */}
                 <FormField
                   control={form.control}
@@ -315,7 +320,6 @@ export const ResetPasswordPage: React.FC = () =>
                   )}
                 />
 
-                {/* Confirm Password Field */}
                 <FormField
                   control={form.control}
                   name="confirmPassword"
@@ -423,7 +427,7 @@ export const ResetPasswordPage: React.FC = () =>
             {/* Back to Sign In Link */}
             <div className="text-center pt-4">
               <Link
-                to="/auth/login"
+                to={ROUTES.AUTH.LOGIN}
                 className="text-sm text-primary hover:text-primary/80 font-medium transition-colors"
               >
                 {t('auth.resetPassword.backToSignIn')}

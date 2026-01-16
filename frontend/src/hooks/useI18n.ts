@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useLanguageStore } from '@/stores/languageStore';
+import type { SupportedLanguage } from '@/constants/i18n';
 
 /**
  * Type-safe i18n hook
@@ -25,9 +26,9 @@ export const useI18n = () =>
   const { t, i18n } = useTranslation();
   const { setLanguage } = useLanguageStore();
     
-  const changeLanguage = (language: string) =>
+  const changeLanguage = (language: SupportedLanguage) =>
   {
-    setLanguage(language as 'en' | 'it');
+    setLanguage(language);
     void i18n.changeLanguage(language);
   };
     

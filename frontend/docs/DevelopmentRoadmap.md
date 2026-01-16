@@ -138,14 +138,19 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [X] `OrganizationSwitcherPopover` - desktop popover
   - [X] `InvitationsBadge` - notification badge component
 - [X] Create organization switching functionality (basic)
-- [ ] User Profile Management
+- [X] User Profile Management
   - user personal info card
     - user profile picture (editable)
     - user full name (editable)
     - user email (not editable)
     - reset password button
 - **fixes needed**
-  - [ ] Date formatting doesn't respect user's locale from i18n
+  - [X] Date formatting doesn't respect user's locale from i18n
+  - [X] Timezone management foundation
+    - [X] Add timezone preference setting (auto + IANA list)
+    - [X] Use `Intl.DateTimeFormat().resolvedOptions().timeZone` for auto detection
+    - [X] Persist timezone preference in user profile
+    - [X] Ensure all date formatting uses timezone-aware helpers
   - [X] refresh token service restarts every page load
 - **good to have**
   - [ ] routes consolidation

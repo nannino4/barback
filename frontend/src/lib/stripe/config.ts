@@ -7,6 +7,7 @@ import type {
 } from '@stripe/stripe-js';
 import { formatHex, formatRgb, parse } from 'culori';
 import type { ResolvedTheme } from '@/types/theme';
+import { getStripeLocaleFromLanguage } from '@/constants/i18n';
 
 const BUSINESS_NAME = import.meta.env.VITE_APP_NAME as string || 'Barback';
 
@@ -302,16 +303,5 @@ export const paymentElementOptions: StripePaymentElementOptions = {
 
 export const getStripeLocale = (language: string): StripeElementLocale =>
 {
-  switch (language)
-  {
-  case 'it':
-  {
-    return 'it';
-  }
-  case 'en':
-  default:
-  {
-    return 'en';
-  }
-  }
+  return getStripeLocaleFromLanguage(language);
 };

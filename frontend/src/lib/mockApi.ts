@@ -68,6 +68,7 @@ export const mockData = {
     firstName,
     lastName,
     email: `${firstName.toLowerCase()}@example.com`,
+    timezone: 'auto',
   }),
 
   product: (id: string, name: string, category: string) => ({

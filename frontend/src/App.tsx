@@ -26,6 +26,7 @@ import { NotFoundPage } from '@/pages/NotFoundPage'
 import DesignSystemPage from '@/pages/DesignSystemPage'
 import { ApiError } from '@/lib/errors'
 import { logger } from '@/lib/logger'
+import { ROUTES } from '@/constants/routes'
 
 // Create a client
 const queryClient = new QueryClient({
@@ -77,53 +78,72 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<AppRouteRoot />}>
       {/* Public Routes */}
-      <Route path="/" element={<LandingPage />} />
+      <Route path={ROUTES.HOME} element={<LandingPage />} />
 
       {/* Auth routes */}
-      <Route path="/auth">
-        <Route path="register" element={<RegisterPage />} />
-        <Route path="login" element={<LoginPage />} />
+      <Route
+        path={ROUTES.AUTH.REGISTER}
+        element={<RegisterPage />}
+      />
+      <Route
+        path={ROUTES.AUTH.LOGIN}
+        element={<LoginPage />}
+      />
 
-        <Route
-          path="send-verification-email"
-          element={
-            <ProtectedRoute>
-              <SendVerificationEmailPage />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="verify-email" element={<VerifyEmailCallbackPage />} />
+      <Route
+        path={ROUTES.AUTH.SEND_VERIFICATION_EMAIL}
+        element={
+          <ProtectedRoute>
+            <SendVerificationEmailPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.AUTH.VERIFY_EMAIL}
+        element={<VerifyEmailCallbackPage />}
+      />
 
-        <Route path="forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="forgot-password/sent" element={<ForgotPasswordSentPage />} />
-        <Route path="reset-password" element={<ResetPasswordPage />} />
+      <Route
+        path={ROUTES.AUTH.FORGOT_PASSWORD}
+        element={<ForgotPasswordPage />}
+      />
+      <Route
+        path={ROUTES.AUTH.FORGOT_PASSWORD_SENT}
+        element={<ForgotPasswordSentPage />}
+      />
+      <Route
+        path={ROUTES.AUTH.RESET_PASSWORD}
+        element={<ResetPasswordPage />}
+      />
 
-        <Route path="oauth/google/callback" element={<GoogleCallbackPage />} />
-      </Route>
+      <Route
+        path={ROUTES.AUTH.GOOGLE_CALLBACK}
+        element={<GoogleCallbackPage />}
+      />
 
       {/* Design System Showcase */}
-      <Route path="/design-system" element={<DesignSystemPage />} />
+      <Route path={ROUTES.DESIGN_SYSTEM} element={<DesignSystemPage />} />
 
       {/* Requires authentication AND email verification */}
       <Route element={<VerifiedRoute />}>
         {/* Organization management */}
-        <Route path="/orgs" element={<OrganizationsPage />} />
-        <Route path="/orgs/create" element={<CreateOrganizationPage />} />
-        <Route path="/orgs/:orgId" element={<OrganizationManagePage />} />
+        <Route path={ROUTES.ORGS.ROOT} element={<OrganizationsPage />} />
+        <Route path={ROUTES.ORGS.CREATE} element={<CreateOrganizationPage />} />
+        <Route path={ROUTES.ORGS.DETAIL} element={<OrganizationManagePage />} />
 
         {/* User Profile */}
-        <Route path="/users/me" element={<UserProfilePage />} />
+        <Route path={ROUTES.USERS.ME} element={<UserProfilePage />} />
 
         {/* Requires organization selection */}
         <Route element={<HasCurrentOrgRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/inventory" element={<InventoryPage />} />
-          <Route path="/orders" element={<OrdersPage />} />
+          <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+          <Route path={ROUTES.INVENTORY} element={<InventoryPage />} />
+          <Route path={ROUTES.ORDERS} element={<OrdersPage />} />
         </Route>
       </Route>
 
       {/* 404 Not Found - Catch-all route */}
-      <Route path="*" element={<NotFoundPage />} />
+      <Route path={ROUTES.NOT_FOUND} element={<NotFoundPage />} />
     </Route>,
   ),
 );

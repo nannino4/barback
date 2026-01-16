@@ -95,7 +95,8 @@ describe('AuthController - Integration Tests', () =>
                 {
                     provide: StorageService,
                     useValue: {
-                        uploadUserProfilePicture: jest.fn(),
+                        updateProfilePicture: jest.fn(),
+                        deleteFiles: jest.fn(),
                     },
                 },
                 {

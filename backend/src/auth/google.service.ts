@@ -329,10 +329,12 @@ export class GoogleService
 
             const { bytes, contentType }: { bytes: Buffer; contentType: string } = await this.downloadImageFromUrl(safeUrl);
 
-            const uploadResult = await this.storageService.uploadUserProfilePicture({
+            const uploadResult = await this.storageService.updateProfilePicture({
                 userId: user.id,
                 contentType,
                 bytes,
+                oldPictureKey: user.profilePictureKey,
+                oldThumbnailKey: user.profilePictureThumbnailKey,
             }, requestId);
 
             const updated = await this.userService.updateProfilePicture(

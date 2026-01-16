@@ -124,6 +124,8 @@ Unified guard now restricts authenticated operations until email is verified. Ex
   - [ ] Trial expiration warnings (7-day, 3-day, 1-day reminders).
   - [ ] Automatic billing activation notification when trial ends.
   - [ ] Payment failure notifications.
+- [ ] handle failed payments and retries
+  - [ ] "need action" state (?)
 
 **📋 Deployment Checklist:**
 - [ ] Set up actual Stripe account and get production API keys
@@ -257,27 +259,29 @@ Unified guard now restricts authenticated operations until email is verified. Ex
   - [ ] Integration tests for stock adjustment transactions
 
 **📋 MongoDB Requirements:**
-- [ ] Ensure MongoDB deployment supports replica sets (required for transactions)
-- [ ] Verify MongoDB version 4.0+ for single replica set transactions
 - [ ] Configure connection pool settings for optimal transaction performance
 
-### Extras**:
-  - [X] **Rate Limiting** (COMPLETED)
-    - [X] Install `@nestjs/throttler` package
-    - [X] Configure `ThrottlerModule` in app.module
-    - [X] Apply rate limits to critical authentication endpoints:
-      - [X] `POST /auth/register/email` (3 per 5 minutes)
-      - [X] `POST /auth/login/email` (5 per minute)
-      - [X] `POST /auth/send-verification-email` (3 per minute) - Now requires authentication
-      - [X] `POST /auth/forgot-password` (3 per minute)
-    - [X] Update `send-verification-email` to require authentication (prevents email bombing)
-    - [X] Fix logger injection using APP_FILTER provider token
-    - [X] Add rate limit response headers (X-RateLimit-Limit, Retry-After, etc.)
-    - [X] Simplify TTL configuration to use seconds instead of milliseconds
-    - [X] Write integration tests for rate limiting
-    - [X] Create comprehensive API documentation for rate limiting
-    - [X] Test rate limiting manually
-    - [ ] (Optional - Future) Consider Redis storage for distributed systems
+#### Rate Limiting
+  - [X] Install `@nestjs/throttler` package
+  - [X] Configure `ThrottlerModule` in app.module
+  - [X] Apply rate limits to critical authentication endpoints:
+    - [X] `POST /auth/register/email` (3 per 5 minutes)
+    - [X] `POST /auth/login/email` (5 per minute)
+    - [X] `POST /auth/send-verification-email` (3 per minute) - Now requires authentication
+    - [X] `POST /auth/forgot-password` (3 per minute)
+  - [X] Update `send-verification-email` to require authentication (prevents email bombing)
+  - [X] Fix logger injection using APP_FILTER provider token
+  - [X] Add rate limit response headers (X-RateLimit-Limit, Retry-After, etc.)
+  - [X] Simplify TTL configuration to use seconds instead of milliseconds
+  - [X] Write integration tests for rate limiting
+  - [X] Create comprehensive API documentation for rate limiting
+  - [X] Test rate limiting manually
+  - [ ] (Optional - Future) Consider Redis storage for distributed systems
+
+
+### Tests
+- [ ] Fix timeouts in integration tests (probably linked to mongodb memory server setup)
+- [ ] standardize tests. Determine best practices.
 
 ---
 This roadmap will be updated as development progresses.

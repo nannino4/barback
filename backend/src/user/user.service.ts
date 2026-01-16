@@ -92,7 +92,7 @@ export class UserService
             throw new UserNotFoundByIdException(id.toString());
         }
         
-        this.logger.debug(`User found: ${user.email} with ID: ${id}`, 'UserService#findById', requestId);
+        this.logger.debug(`User found: ${user.id} with ID: ${id}`, 'UserService#findById', requestId);
         return user;
     }
 
@@ -105,7 +105,7 @@ export class UserService
             this.logger.debug(`User with email "${email}" not found`, 'UserService#findByEmail', requestId);
             return null;
         }
-        this.logger.debug(`User found: ${user.email}`, 'UserService#findByEmail', requestId);
+        this.logger.debug(`User found: ${user.id}`, 'UserService#findByEmail', requestId);
         return user;
     }
 
@@ -140,7 +140,7 @@ export class UserService
                 throw new UserNotFoundByIdException(id.toString());
             }
             
-            this.logger.debug(`Profile updated successfully for user: ${user.email}`, 'UserService#updateProfile', requestId);
+            this.logger.debug(`Profile updated successfully for user: ${user.id}`, 'UserService#updateProfile', requestId);
             return user;
         }
         catch (error)
@@ -219,7 +219,7 @@ export class UserService
                 throw new UserNotFoundByIdException(id.toString());
             }
             
-            this.logger.debug(`Profile picture updated successfully for user: ${user.email}`, 'UserService#updateProfilePicture', requestId);
+            this.logger.debug(`Profile picture updated successfully for user: ${user.id}`, 'UserService#updateProfilePicture', requestId);
             return { user, oldPictureKey, oldThumbnailKey };
         }
         catch (error)
@@ -250,7 +250,7 @@ export class UserService
             throw new UserNotFoundByIdException(id.toString());
         }
 
-        this.logger.debug(`Role updated successfully for user: ${user.email} to role: ${role}`, 'UserService#updateRole', requestId);
+        this.logger.debug(`Role updated successfully for user: ${user.id} to role: ${role}`, 'UserService#updateRole', requestId);
         return user;
     }
 
@@ -268,7 +268,7 @@ export class UserService
             throw new UserNotFoundByIdException(id.toString());
         }
 
-        this.logger.debug(`Status updated successfully for user: ${user.email} to active: ${isActive}`, 'UserService#updateStatus', requestId);
+        this.logger.debug(`Status updated successfully for user: ${user.id} to active: ${isActive}`, 'UserService#updateStatus', requestId);
         return user;
     }
 
@@ -319,13 +319,13 @@ export class UserService
         
         if (user.authProvider !== AuthProvider.EMAIL)
         {
-            this.logger.warn(`User ${user.email} is not using EMAIL authentication`, 'UserService#changePassword', requestId);
+            this.logger.warn(`User ${user.id} is not using EMAIL authentication`, 'UserService#changePassword', requestId);
             throw new PasswordChangeNotAllowedException(user.authProvider);
         }
         
         if (!user.hashedPassword || !(await bcrypt.compare(currentPassword, user.hashedPassword)))
         {
-            this.logger.warn(`Invalid current password for user: ${user.email}`, 'UserService#changePassword', requestId);
+            this.logger.warn(`Invalid current password for user: ${user.id}`, 'UserService#changePassword', requestId);
             throw new UnauthorizedException('Current password is incorrect');
         }
         
@@ -357,7 +357,7 @@ export class UserService
             if (!result)
             {
                 // Password was changed by another request or user was deleted
-                this.logger.warn(`Password update failed - password changed concurrently for user: ${user.email}`, 'UserService#changePassword', requestId);
+                this.logger.warn(`Password update failed - password changed concurrently for user: ${user.id}`, 'UserService#changePassword', requestId);
                 throw new PasswordConcurrentChangeException();
             }
         }
@@ -370,11 +370,11 @@ export class UserService
             
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
             const errorStack = error instanceof Error ? error.stack : undefined;
-            this.logger.error(`Database error while updating password for user: ${user.email}`, errorStack, 'UserService#changePassword', requestId);
+            this.logger.error(`Database error while updating password for user: ${user.id}`, errorStack, 'UserService#changePassword', requestId);
             throw new DatabaseOperationException('password update', errorMessage);
         }
         
-        this.logger.debug(`Password changed successfully for user: ${user.email}`, 'UserService#changePassword', requestId);
+        this.logger.debug(`Password changed successfully for user: ${user.id}`, 'UserService#changePassword', requestId);
         return;
     }
 
@@ -391,7 +391,7 @@ export class UserService
             this.logger.warn(`User with ID "${userId}" not found for Stripe customer ID update`, 'UserService#updateStripeCustomerId', requestId);
             throw new UserNotFoundByIdException(userId.toString());
         }
-        this.logger.debug(`Stripe customer ID updated successfully for user: ${user.email}`, 'UserService#updateStripeCustomerId', requestId);
+        this.logger.debug(`Stripe customer ID updated successfully for user: ${user.id}`, 'UserService#updateStripeCustomerId', requestId);
         return user;
     }
 
@@ -485,7 +485,7 @@ export class UserService
         // Check if email is already verified (business logic validation)
         if (user.isEmailVerified)
         {
-            this.logger.warn(`Email already verified for user: ${user.email}`, 'UserService#verifyEmail', requestId);
+            this.logger.warn(`Email already verified for user: ${user.id}`, 'UserService#verifyEmail', requestId);
             throw new EmailAlreadyVerifiedException(user.email);
         }
 
@@ -537,7 +537,7 @@ export class UserService
             return null;
         }
 
-        this.logger.debug(`User found with email verification token: ${user.email}`, 'UserService#findByEmailVerificationToken', requestId);
+        this.logger.debug(`User found with email verification token: ${user.id}`, 'UserService#findByEmailVerificationToken', requestId);
         return user;
     }
 
@@ -589,11 +589,11 @@ export class UserService
         catch (error)
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
-            this.logger.error(`Database error while updating password reset token for user: ${user.email}`, error instanceof Error ? error.stack : undefined, 'UserService#generatePasswordResetToken', requestId);
+            this.logger.error(`Database error while updating password reset token for user: ${user.id}`, error instanceof Error ? error.stack : undefined, 'UserService#generatePasswordResetToken', requestId);
             throw new DatabaseOperationException('password reset token update', errorMessage);
         }
 
-        this.logger.debug(`Password reset token generated for user: ${user.email}`, 'UserService#generatePasswordResetToken', requestId);
+        this.logger.debug(`Password reset token generated for user: ${user.id}`, 'UserService#generatePasswordResetToken', requestId);
         return token;
     }
 
@@ -693,13 +693,13 @@ export class UserService
             return null;
         }
 
-        this.logger.debug(`User found with password reset token: ${user.email}`, 'UserService#findByPasswordResetToken', requestId);
+        this.logger.debug(`User found with password reset token: ${user.id}`, 'UserService#findByPasswordResetToken', requestId);
         return user;
     }
 
     async linkGoogleAccount(user: User, googleId: string, requestId?: string): Promise<User>
     {
-        this.logger.debug(`Linking Google account to user: ${user.email}`, 'UserService#linkGoogleAccount', requestId);
+        this.logger.debug(`Linking Google account to user: ${user.id}`, 'UserService#linkGoogleAccount', requestId);
         
         const updateData: { googleId: string; isEmailVerified: boolean } = {
             googleId: googleId,

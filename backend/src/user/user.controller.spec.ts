@@ -40,8 +40,8 @@ describe('UserController (Integration)', () =>
         } as any;
 
         mockStorageService = {
-            uploadUserProfilePicture: jest.fn(),
-            deleteUserProfilePicture: jest.fn(),
+            updateProfilePicture: jest.fn(),
+            deleteFiles: jest.fn(),
         } as any;
 
         const moduleFixture: TestingModule = await Test.createTestingModule({

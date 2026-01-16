@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import * as crypto from 'crypto';
 import * as sharp from 'sharp';
 import { 
     StorageService, 
-    UploadUserProfilePictureInput, 
     UploadUserProfilePictureResult,
+    UpdateProfilePictureInput,
     StorageUploadResult,
 } from './storage.service';
 import { CustomLogger } from '../common/logger/custom.logger';
@@ -101,37 +102,47 @@ export class S3StorageService extends StorageService
         this.logger.log('S3StorageService initialized', 'S3StorageService#constructor');
     }
 
-    async uploadUserProfilePicture(input: UploadUserProfilePictureInput, requestId?: string): Promise<UploadUserProfilePictureResult>
+    async updateProfilePicture(input: UpdateProfilePictureInput, requestId?: string): Promise<UploadUserProfilePictureResult>
     {
         this.logger.debug(
-            `Uploading profile picture for user: ${input.userId}`,
-            'S3StorageService#uploadUserProfilePicture',
+            `Updating profile picture for user: ${input.userId}`,
+            'S3StorageService#updateProfilePicture',
             requestId,
         );
 
         try
         {
-            // Process images in parallel
             const [processedImage, thumbnailImage] = await Promise.all([
                 this.processProfilePicture(input.bytes),
                 this.generateThumbnail(input.bytes),
             ]);
 
-            // Generate S3 keys
-            const pictureKey = this.generateProfilePictureKey(input.userId);
-            const thumbnailKey = this.generateThumbnailKey(input.userId);
+            const keySuffix = this.generateKeySuffix();
+            const pictureKey = this.generateProfilePictureKey(input.userId, keySuffix);
+            const thumbnailKey = this.generateThumbnailKey(input.userId, keySuffix);
 
-            // Upload both images in parallel
             const [pictureResult, thumbnailResult] = await Promise.all([
                 this.uploadToS3(pictureKey, processedImage, 'image/webp'),
                 this.uploadToS3(thumbnailKey, thumbnailImage, 'image/webp'),
             ]);
 
-            this.logger.debug(
-                `Profile picture uploaded successfully for user: ${input.userId}`,
-                'S3StorageService#uploadUserProfilePicture',
-                requestId,
-            );
+            try
+            {
+                await this.deleteFiles(
+                    [input.oldPictureKey, input.oldThumbnailKey].filter(Boolean) as string[],
+                    requestId,
+                );
+                }
+                catch (error)
+                {
+                    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                    this.logger.error(
+                        `Failed to delete old profile picture files for user ${input.userId}: ${errorMessage}`,
+                        error instanceof Error ? error.stack : undefined,
+                        'S3StorageService#updateProfilePicture',
+                        requestId,
+                    );
+            }
 
             return {
                 picture: pictureResult,
@@ -142,9 +153,9 @@ export class S3StorageService extends StorageService
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             this.logger.error(
-                `Failed to upload profile picture for user ${input.userId}: ${errorMessage}`,
+                `Failed to update profile picture for user ${input.userId}: ${errorMessage}`,
                 error instanceof Error ? error.stack : undefined,
-                'S3StorageService#uploadUserProfilePicture',
+                'S3StorageService#updateProfilePicture',
                 requestId,
             );
 
@@ -153,7 +164,33 @@ export class S3StorageService extends StorageService
                 throw error;
             }
 
-            throw new StorageOperationException('upload profile picture', errorMessage);
+            throw new StorageOperationException('update profile picture', errorMessage);
+        }
+    }
+
+    async deleteFiles(keys: string[], requestId?: string): Promise<void>
+    {
+        const filteredKeys = Array.from(new Set(keys.filter((key) => !!key)));
+
+        if (filteredKeys.length === 0)
+        {
+            return;
+        }
+
+        this.logger.debug(
+            `Deleting ${filteredKeys.length} files from storage`,
+            'S3StorageService#deleteFiles',
+            requestId,
+        );
+
+        try
+        {
+            await Promise.all(filteredKeys.map((key) => this.deleteFromS3(key)));
+        }
+        catch (error)
+        {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            throw new StorageOperationException('delete files', errorMessage);
         }
     }
 
@@ -203,19 +240,25 @@ export class S3StorageService extends StorageService
 
     /**
      * Generate S3 key for profile picture
-     * Using a consistent key allows automatic replacement of old images
      */
-    private generateProfilePictureKey(userId: string): string
+    private generateProfilePictureKey(userId: string, keySuffix: string): string
     {
-        return `users/${userId}/profile-picture.webp`;
+        return `users/${userId}/profile-picture-${keySuffix}.webp`;
     }
 
     /**
      * Generate S3 key for profile picture thumbnail
      */
-    private generateThumbnailKey(userId: string): string
+    private generateThumbnailKey(userId: string, keySuffix: string): string
     {
-        return `users/${userId}/profile-picture-thumb.webp`;
+        return `users/${userId}/profile-picture-thumb-${keySuffix}.webp`;
+    }
+
+    private generateKeySuffix(): string
+    {
+        const timestamp = Date.now();
+        const random = crypto.randomBytes(3).toString('hex');
+        return `${timestamp}-${random}`;
     }
 
     /**
@@ -244,6 +287,24 @@ export class S3StorageService extends StorageService
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown S3 error';
             throw new StorageOperationException(`upload to S3 (key: ${key})`, errorMessage);
+        }
+    }
+
+    private async deleteFromS3(key: string): Promise<void>
+    {
+        try
+        {
+            const command = new DeleteObjectCommand({
+                Bucket: this.bucket,
+                Key: key,
+            });
+
+            await this.s3Client.send(command);
+        }
+        catch (error)
+        {
+            const errorMessage = error instanceof Error ? error.message : 'Unknown S3 error';
+            throw new StorageOperationException(`delete from S3 (key: ${key})`, errorMessage);
         }
     }
 }

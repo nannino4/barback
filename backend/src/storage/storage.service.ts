@@ -4,11 +4,13 @@ export interface StorageUploadResult
     key: string;
 }
 
-export interface UploadUserProfilePictureInput
+export interface UpdateProfilePictureInput
 {
     userId: string;
     contentType: string;
     bytes: Buffer;
+    oldPictureKey?: string;
+    oldThumbnailKey?: string;
 }
 
 export interface UploadUserProfilePictureResult
@@ -20,13 +22,18 @@ export interface UploadUserProfilePictureResult
 export abstract class StorageService
 {
     /**
-     * Uploads a user's profile picture and generates a thumbnail.
-     * Both the processed image and thumbnail are stored.
-     * Uses deterministic keys based on userId, so re-uploading automatically
-     * replaces the old files.
+     * Updates a user's profile picture and deletes the old files.
+     * If deletion fails, the new upload still succeeds and is returned.
      * 
-     * @param input - The input containing userId, contentType, and image bytes
-     * @returns Upload results for both the picture and thumbnail
+     * @param input - The input containing userId, contentType, image bytes, and optional old keys
+     * @returns Upload results for both the picture and the thumbnail
      */
-    abstract uploadUserProfilePicture(input: UploadUserProfilePictureInput, requestId?: string): Promise<UploadUserProfilePictureResult>;
+    abstract updateProfilePicture(input: UpdateProfilePictureInput, requestId?: string): Promise<UploadUserProfilePictureResult>;
+
+    /**
+     * Deletes files from storage by their keys.
+     * 
+     * @param keys - The storage keys to delete
+     */
+    abstract deleteFiles(keys: string[], requestId?: string): Promise<void>;
 }

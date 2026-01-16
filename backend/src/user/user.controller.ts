@@ -71,16 +71,16 @@ export class UserController
     {
         this.logger.log(`User uploading profile picture: ${user.id}`, 'UserController#uploadProfilePicture', requestId);
 
-        // Upload to storage (processes image and generates thumbnail)
-        const uploadResult = await this.storageService.uploadUserProfilePicture({
+        // Upload to storage (processes image, generates thumbnail, deletes old files)
+        const uploadResult = await this.storageService.updateProfilePicture({
             userId: user.id.toString(),
             contentType: file.mimetype,
             bytes: file.buffer,
+            oldPictureKey: user.profilePictureKey,
+            oldThumbnailKey: user.profilePictureThumbnailKey,
         }, requestId);
 
         // Update user with new picture URLs and keys
-        // Note: S3 keys are deterministic based on userId, so uploading with
-        // the same key automatically replaces the old object - no deletion needed.
         const { user: updatedUser } = await this.userService.updateProfilePicture(
             user.id,
             uploadResult.picture.url,

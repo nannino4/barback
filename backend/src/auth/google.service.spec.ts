@@ -88,7 +88,8 @@ describe('GoogleService', () =>
         };
 
         const mockStorageService = {
-            uploadUserProfilePicture: jest.fn(),
+            updateProfilePicture: jest.fn(),
+            deleteFiles: jest.fn(),
         };
 
         testingModule = await Test.createTestingModule({
@@ -334,7 +335,6 @@ describe('GoogleService', () =>
             expect(userService.linkGoogleAccount).toHaveBeenCalledWith(
                 emailUser,
                 'google-123',
-                'https://example.com/pic.jpg',
                 undefined,
             );
         });
@@ -365,7 +365,6 @@ describe('GoogleService', () =>
                 email: 'test@example.com',
                 firstName: 'Test',
                 lastName: 'User',
-                profilePictureUrl: 'https://example.com/pic.jpg',
                 authProvider: AuthProvider.GOOGLE,
                 isEmailVerified: true,
             }, undefined);

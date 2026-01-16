@@ -40,6 +40,8 @@ export class EmailService
         
         // Store EMAIL_FROM (already validated in initializeTransporter)
         this.emailFrom = this.configService.get<string>('EMAIL_FROM')!;
+
+        this.logger.log('EmailService initialized', 'EmailService#constructor');
     }
 
     private initializeTransporter(): void 
@@ -82,7 +84,7 @@ export class EmailService
             },
         });
 
-        this.logger.log('Email transporter initialized successfully', 'EmailService#initializeTransporter');
+        this.logger.log('Email transporter initialized', 'EmailService#initializeTransporter');
     }
 
     async sendEmail(options: EmailOptions): Promise<void> 

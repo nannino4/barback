@@ -1,25 +1,32 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useMutation, useQueries, useQuery } from '@tanstack/react-query';
+import { useEffect, useRef, useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
+import { Mail, Pencil } from 'lucide-react';
+
+import { authApi } from '@/api/auth-api';
+import { userApi } from '@/api/user-api';
+import { InlineEditField } from '@/components/forms/InlineEditField';
 import { PageContainer } from '@/components/layout/PageContainer';
 import { Section } from '@/components/layout/Section';
 import { Stack } from '@/components/layout/Stack';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { InlineEditField } from '@/components/forms/InlineEditField';
-import { UserAvatar } from '@/components/user/UserAvatar';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { InlineSpinner } from '@/components/ui/spinner';
 import { useAuth } from '@/hooks/useAuth';
-import { useOrganizations } from '@/hooks/useOrganizations';
 import { useI18n } from '@/hooks/useI18n';
-import { useAuthStore } from '@/stores/authStore';
-import { userApi } from '@/api/user-api';
-import { organizationApi } from '@/api/organization-api';
+import { ROUTES } from '@/constants/routes';
+import { CACHE_TIMES } from '@/constants/cacheTimes';
 import { queryKeys } from '@/lib/queryKeys';
 import { notify } from '@/lib/notify';
-import { CACHE_TIMES } from '@/constants/cacheTimes';
-import { Mail, Phone, Upload } from 'lucide-react';
-import type { Subscription, SubscriptionStatus } from '@/types/subscription';
-import type { OrganizationMembership } from '@/types/organization';
+import { UserAvatar } from '@/components/user/UserAvatar';
+import { useAuthStore } from '@/stores/authStore';
 
 /**
  * UserProfilePage - User account information display
@@ -30,10 +37,12 @@ export function UserProfilePage()
 {
   const { user } = useAuth();
   const { t } = useI18n();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const setUser = useAuthStore((state) => state.setUser);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
-  const { useOrganizationsByRole } = useOrganizations();
+  const [isProfilePictureOpen, setIsProfilePictureOpen] = useState(false);
 
   const meQuery = useQuery({
     queryKey: queryKeys.users.me,
@@ -52,23 +61,11 @@ export function UserProfilePage()
 
   const currentUser = meQuery.data ?? user;
 
-  const ownedOrgsQuery = useOrganizationsByRole('OWNER');
-
-  const ownedOrgs = ownedOrgsQuery.data ?? [];
-
-  const ownedOrgSubscriptionQueries = useQueries({
-    queries: ownedOrgs.map((membership) => ({
-      queryKey: queryKeys.organizations.subscription(membership.org.id),
-      queryFn: () => organizationApi.getOrganizationSubscription(membership.org.id),
-      staleTime: CACHE_TIMES.SUBSCRIPTIONS,
-      enabled: Boolean(membership.org.id),
-    })),
-  });
-
   const updateProfileMutation = useMutation({
     mutationFn: (data: { firstName?: string; lastName?: string; phoneNumber?: string }) => userApi.updateMe(data),
     onSuccess: (updated) =>
     {
+      queryClient.setQueryData(queryKeys.users.me, updated);
       setUser(updated);
       notify.success(t('account.updated'));
     },
@@ -78,8 +75,26 @@ export function UserProfilePage()
     mutationFn: (file: File) => userApi.uploadProfilePicture(file),
     onSuccess: (updated) =>
     {
+      queryClient.setQueryData(queryKeys.users.me, updated);
       setUser(updated);
       notify.success(t('account.profilePictureUpdated'));
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: () => authApi.forgotPassword(currentUser?.email ?? ''),
+    onSuccess: () =>
+    {
+      void navigate(ROUTES.AUTH.FORGOT_PASSWORD_SENT, {
+        state: { email: currentUser?.email ?? '' },
+      });
+    },
+    onError: () =>
+    {
+      // Security: always navigate to "sent" to avoid email enumeration signals.
+      void navigate(ROUTES.AUTH.FORGOT_PASSWORD_SENT, {
+        state: { email: currentUser?.email ?? '' },
+      });
     },
   });
 
@@ -90,68 +105,6 @@ export function UserProfilePage()
 
   const userFullName = `${currentUser.firstName} ${currentUser.lastName}`.trim();
 
-  const subscriptionByOrgId = useMemo(() =>
-  {
-    const map = new Map<string, Subscription>();
-    for (let i = 0; i < ownedOrgs.length; i++)
-    {
-      const orgId = ownedOrgs[i]?.org?.id;
-      const data = ownedOrgSubscriptionQueries[i]?.data;
-      if (orgId && data)
-      {
-        map.set(orgId, data);
-      }
-    }
-    return map;
-  }, [ownedOrgs, ownedOrgSubscriptionQueries]);
-
-  const ownedOrgStatusBuckets = useMemo(() =>
-  {
-    const active: OrganizationMembership[] = [];
-    const trialing: Array<{ membership: OrganizationMembership; subscription: Subscription; daysLeft: number | null }> = [];
-    const inactive: OrganizationMembership[] = [];
-
-    const now = Date.now();
-
-    const isInactive = (status: SubscriptionStatus) =>
-    {
-      return status !== 'ACTIVE' && status !== 'TRIALING';
-    };
-
-    for (const membership of ownedOrgs)
-    {
-      const sub = subscriptionByOrgId.get(membership.org.id);
-      if (!sub)
-      {
-        // If we can't load subscription yet, treat as inactive/unknown for now.
-        inactive.push(membership);
-        continue;
-      }
-
-      if (sub.status === 'ACTIVE')
-      {
-        active.push(membership);
-        continue;
-      }
-
-      if (sub.status === 'TRIALING')
-      {
-        const end = new Date(sub.nextBillingDate).getTime();
-        const diffMs = end - now;
-        const daysLeft = Number.isFinite(end) ? Math.max(0, Math.ceil(diffMs / (24 * 60 * 60 * 1000))) : null;
-        trialing.push({ membership, subscription: sub, daysLeft });
-        continue;
-      }
-
-      if (isInactive(sub.status))
-      {
-        inactive.push(membership);
-      }
-    }
-
-    return { active, trialing, inactive };
-  }, [ownedOrgs, subscriptionByOrgId]);
-
   const handlePickAvatar = () =>
   {
     fileInputRef.current?.click();
@@ -160,6 +113,12 @@ export function UserProfilePage()
   const handleAvatarFile = async (file: File | null) =>
   {
     if (!file) return;
+
+    // Allow picking the same file again.
+    if (fileInputRef.current)
+    {
+      fileInputRef.current.value = '';
+    }
 
     setIsUploadingAvatar(true);
     try
@@ -189,10 +148,24 @@ export function UserProfilePage()
     await updateProfileMutation.mutateAsync({ firstName, lastName });
   };
 
-  const savePhone = async (phoneNumber: string) =>
+  const handleOpenProfilePicture = () =>
   {
-    // Allow clearing by submitting an empty value
-    await updateProfileMutation.mutateAsync({ phoneNumber: phoneNumber.trim() });
+    if (!currentUser.profilePictureUrl)
+    {
+      return;
+    }
+
+    setIsProfilePictureOpen(true);
+  };
+
+  const handleResetPassword = () =>
+  {
+    if (!currentUser.email)
+    {
+      return;
+    }
+
+    resetPasswordMutation.mutate();
   };
 
   return (
@@ -208,36 +181,51 @@ export function UserProfilePage()
             <CardContent className="space-y-6">
               <Stack direction="horizontal" space="md" align="center" className="justify-between">
                 <Stack direction="horizontal" space="md" align="center">
-                  <UserAvatar
-                    user={currentUser}
-                    size="lg"
-                    className="h-20 w-20 text-2xl"
-                  />
+                  <div className="relative">
+                    <button
+                      type="button"
+                      className="rounded-full focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-[3px]"
+                      onClick={handleOpenProfilePicture}
+                      aria-label={t('account.openProfilePicture')}
+                      disabled={!currentUser.profilePictureUrl}
+                    >
+                      <UserAvatar
+                        user={currentUser}
+                        size="lg"
+                        className="h-20 w-20 text-2xl"
+                      />
+                    </button>
+
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      onChange={(e) => void handleAvatarFile(e.target.files?.[0] ?? null)}
+                    />
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="absolute -bottom-1 -right-1 size-9 rounded-full"
+                      onClick={handlePickAvatar}
+                      disabled={isUploadingAvatar}
+                      aria-label={t('account.changeProfilePicture')}
+                    >
+                      {isUploadingAvatar ? (
+                        <InlineSpinner />
+                      ) : (
+                        <Pencil className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </div>
+
                   <div>
                     <h3 className="text-xl font-semibold">{userFullName}</h3>
                     <p className="text-sm text-muted-foreground">{t('account.personalInformation')}</p>
                   </div>
                 </Stack>
-
-                <div>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    className="hidden"
-                    onChange={(e) => void handleAvatarFile(e.target.files?.[0] ?? null)}
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={handlePickAvatar}
-                    disabled={isUploadingAvatar}
-                  >
-                    <Upload className="h-4 w-4 mr-2" />
-                    {t('account.changeProfilePicture')}
-                  </Button>
-                </div>
               </Stack>
 
               {/* Full name */}
@@ -266,88 +254,49 @@ export function UserProfilePage()
                 </div>
               </div>
 
-              {/* Phone */}
-              <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                <Phone className="h-5 w-5 text-muted-foreground mt-0.5" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-muted-foreground">{t('account.phoneNumber')}</p>
-                  <InlineEditField
-                    value={currentUser.phoneNumber ?? ''}
-                    placeholder={t('account.addPhoneNumber')}
-                    label={t('account.phoneNumber')}
-                    onSave={savePhone}
-                    isLoading={updateProfileMutation.isPending}
-                    alwaysShowEdit
-                    textClassName="text-base"
-                  />
+              {/* Password reset */}
+              <div className="p-3 rounded-lg bg-muted/50">
+                <p className="text-sm font-medium text-muted-foreground">{t('account.resetPassword.title')}</p>
+                <p className="text-sm text-muted-foreground mt-1">{t('account.resetPassword.description')}</p>
+                <div className="mt-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleResetPassword}
+                    disabled={resetPasswordMutation.isPending}
+                  >
+                    {resetPasswordMutation.isPending && (
+                      <InlineSpinner className="mr-2" />
+                    )}
+                    {resetPasswordMutation.isPending
+                      ? t('account.resetPassword.sending')
+                      : t('account.resetPassword.button')}
+                  </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
-
-          {/* Owned organizations summary */}
-          <Card>
-            <CardHeader>
-              <CardTitle>{t('account.ownedOrganizations.title')}</CardTitle>
-              <CardDescription>{t('account.ownedOrganizations.description')}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {ownedOrgsQuery.isLoading ? (
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-40" />
-                  <Skeleton className="h-4 w-56" />
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    {t('account.ownedOrganizations.count', { count: ownedOrgs.length })}
-                  </p>
-
-                  <div className="space-y-2">
-                    <p className="text-sm">
-                      {t('account.ownedOrganizations.activeCount', { count: ownedOrgStatusBuckets.active.length })}
-                    </p>
-                    <p className="text-sm">
-                      {t('account.ownedOrganizations.trialCount', { count: ownedOrgStatusBuckets.trialing.length })}
-                    </p>
-                    {ownedOrgStatusBuckets.trialing.length > 0 && (
-                      <div className="pl-3 space-y-1">
-                        {ownedOrgStatusBuckets.trialing.map(({ membership, daysLeft }) => (
-                          <p key={membership.org.id} className="text-sm text-muted-foreground">
-                            {membership.org.name}{' '}
-                            {daysLeft === null
-                              ? `(${t('account.ownedOrganizations.trialExpiresUnknown')})`
-                              : `(${t('account.ownedOrganizations.trialExpiresInDays', { days: daysLeft })})`}
-                          </p>
-                        ))}
-                      </div>
-                    )}
-
-                    <p className="text-sm">
-                      {t('account.ownedOrganizations.inactiveCount', { count: ownedOrgStatusBuckets.inactive.length })}
-                    </p>
-                    {ownedOrgStatusBuckets.inactive.length > 0 && (
-                      <div className="pl-3 space-y-1">
-                        {ownedOrgStatusBuckets.inactive.map((membership) => (
-                          <p key={membership.org.id} className="text-sm text-muted-foreground">
-                            {membership.org.name}
-                          </p>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {ownedOrgSubscriptionQueries.some((q) => q.isLoading) && (
-                    <p className="text-xs text-muted-foreground">
-                      {t('common.loading')}
-                    </p>
-                  )}
-                </div>
-              )}
-            </CardContent>
-          </Card>
         </div>
       </Section>
+
+      <Dialog open={isProfilePictureOpen} onOpenChange={setIsProfilePictureOpen}>
+        <DialogContent className="max-w-2xl p-0 overflow-hidden">
+          <DialogHeader className="p-6 pb-0">
+            <DialogTitle>{t('account.profilePictureDialog.title')}</DialogTitle>
+            <DialogDescription>{t('account.profilePictureDialog.description')}</DialogDescription>
+          </DialogHeader>
+
+          {currentUser.profilePictureUrl && (
+            <div className="p-6 pt-0">
+              <img
+                src={currentUser.profilePictureUrl}
+                alt={userFullName}
+                className="w-full max-h-[70vh] object-contain rounded-lg border border-border"
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </PageContainer>
   );
 }

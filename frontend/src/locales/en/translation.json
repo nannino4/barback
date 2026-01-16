@@ -942,6 +942,7 @@
         "title": "Account",
         "description": "View and manage your account information",
         "personalInformation": "Personal Information",
+        "openProfilePicture": "Open profile picture",
         "fullName": "Full Name",
         "email": "Email Address",
         "emailVerified": "✓ Verified",
@@ -951,6 +952,16 @@
         "updated": "Profile updated",
         "profilePictureUpdated": "Profile picture updated",
         "changeProfilePicture": "Change profile picture",
+        "profilePictureDialog": {
+            "title": "Profile picture",
+            "description": "Preview your current profile picture"
+        },
+        "resetPassword": {
+            "title": "Password",
+            "description": "We will email you a password reset link.",
+            "button": "Reset password",
+            "sending": "Sending reset link..."
+        },
         "addPhoneNumber": "Add phone number",
         "fullNameMustIncludeLastName": "Please include a last name",
         "ownedOrganizations": {

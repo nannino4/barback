@@ -940,6 +940,7 @@
         "title": "Account",
         "description": "Visualizza e gestisci le informazioni del tuo account",
         "personalInformation": "Informazioni Personali",
+        "openProfilePicture": "Apri immagine profilo",
         "fullName": "Nome Completo",
         "email": "Indirizzo Email",
         "emailVerified": "✓ Verificata",
@@ -949,6 +950,16 @@
         "updated": "Profilo aggiornato",
         "profilePictureUpdated": "Immagine profilo aggiornata",
         "changeProfilePicture": "Cambia immagine profilo",
+        "profilePictureDialog": {
+            "title": "Immagine profilo",
+            "description": "Anteprima dell'immagine profilo corrente"
+        },
+        "resetPassword": {
+            "title": "Password",
+            "description": "Ti invieremo via email un link per reimpostare la password.",
+            "button": "Reimposta password",
+            "sending": "Invio link in corso..."
+        },
         "addPhoneNumber": "Aggiungi numero di telefono",
         "fullNameMustIncludeLastName": "Inserisci anche il cognome",
         "ownedOrganizations": {

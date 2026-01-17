@@ -9,7 +9,6 @@ import { CACHE_TIMES } from '@/constants/cacheTimes';
 import type {
   OrganizationMembership,
   OrgRole,
-  CreateOrganizationRequest,
   EditOrganizationFormData,
 } from '@/types/organization';
 
@@ -48,23 +47,6 @@ export const useOrganizations = () =>
       staleTime: CACHE_TIMES.ORGANIZATIONS,
     });
   };
-
-  /**
-   * Mutation to create a new organization
-   * Note: Subscription must already exist before calling this
-   */
-  const createOrganizationMutation = useMutation({
-    mutationFn: (data: CreateOrganizationRequest) =>
-      organizationApi.createOrganization(data),
-    onSuccess: () =>
-    {
-      // Invalidate and refetch organizations
-      void queryClient.invalidateQueries({ queryKey: queryKeys.organizations.all });
-      
-      notify.success(t('organizations.create.success'));
-    },
-    // No onError - errors are displayed declaratively in the component
-  });
 
   /**
    * Mutation to update an organization
@@ -138,14 +120,11 @@ export const useOrganizations = () =>
     error: organizationsQuery.error,
     
     // Actions
-    createOrganization: createOrganizationMutation.mutate,
     updateOrganization: updateOrganizationMutation.mutate,
     switchOrganization,
     useOrganizationsByRole,
     
     // Mutation states
-    isCreating: createOrganizationMutation.isPending,
-    createError: createOrganizationMutation.error,
     isUpdating: updateOrganizationMutation.isPending,
     updateError: updateOrganizationMutation.error,
   };

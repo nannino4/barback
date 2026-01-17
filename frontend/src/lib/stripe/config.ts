@@ -143,7 +143,7 @@ export const stripeFonts: NonNullable<StripeElementsOptions['fonts']> = [
 ];
 
 export const buildStripeAppearance = (
-  theme: ResolvedTheme = 'light',
+  theme: ResolvedTheme = 'dark',
   options: BuildAppearanceOptions = {},
 ): Appearance =>
 {
@@ -156,7 +156,7 @@ export const buildStripeAppearance = (
 
   return {
     theme: 'flat',
-    inputs: 'spaced',
+    inputs: 'condensed',
     labels: 'floating',
     disableAnimations,
     variables: {
@@ -175,7 +175,7 @@ export const buildStripeAppearance = (
       colorWarningText: palette.warningText,
       borderRadius: '12px',
       fontSizeBase: '16px',
-      spacingUnit: '10px',
+      spacingUnit: '4px',
       fontFamily:
         "Inter, 'Playfair Display', 'SF Pro Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI'",
     },
@@ -185,7 +185,7 @@ export const buildStripeAppearance = (
         boxShadow: 'none',
         padding: '12px 14px',
         color: palette.text,
-        backgroundColor: palette.card,
+        backgroundColor: palette.input,
       },
       '.Input::placeholder': {
         color: placeholderColor,
@@ -228,7 +228,14 @@ export const buildStripeAppearance = (
       },
       '.Block': {
         backgroundColor: palette.card,
+        border: `1px solid ${palette.border}`,
         boxShadow: 'none',
+      },
+      '.Block--selected': {
+        borderColor: palette.primary,
+      },
+      '.Block--invalid': {
+        borderColor: palette.danger,
       },
       '.BlockDivider': {
         borderColor: palette.border,
@@ -239,6 +246,13 @@ export const buildStripeAppearance = (
       '.BlockAction:hover': {
         color: palette.primaryText,
         backgroundColor: selectionColor,
+      },
+      '.AccordionItem': {
+        backgroundColor: palette.card,
+        borderColor: palette.border,
+      },
+      '.AccordionItem--selected': {
+        borderColor: palette.primary,
       },
       '.Label': {
         color: palette.textMuted,
@@ -271,33 +285,14 @@ export const buildStripeAppearance = (
 };
 
 export const expressCheckoutOptions: StripeExpressCheckoutElementOptions = {
-  paymentMethods: {
-    applePay: 'always',
-    googlePay: 'always',
-    amazonPay: 'never',
-    link: 'never',
-  },
   business: {
     name: BUSINESS_NAME,
   },
 };
 
 export const paymentElementOptions: StripePaymentElementOptions = {
-  layout: 'tabs',
   business: {
     name: BUSINESS_NAME,
-  },
-  wallets: {
-    applePay: 'auto',
-    googlePay: 'auto',
-  },
-  fields: {
-    billingDetails: {
-      name: 'auto',
-      email: 'auto',
-      phone: 'auto',
-      address: 'auto',
-    },
   },
 };
 

@@ -48,7 +48,6 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
       - [X] test over https (using ngrok)
     - [X] consolidate payment methods
       - [X] card payments
-        - [ ] is it possible to accept card but without link payment method?
       - [X] google pay
       - [X] apple pay
     - [X] consolidate stripe elements appearance

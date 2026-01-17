@@ -4,7 +4,7 @@ import { logger } from '@/lib/logger';
 import { generateRequestId, REQUEST_ID_HEADER } from '@/lib/request-id';
 import { z } from 'zod';
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string) || 'http://localhost:8000/api';
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL as string);
 
 /**
  * Backend error response structure

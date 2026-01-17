@@ -22,10 +22,10 @@ async function bootstrap()
     }));
 
     const configService = app.get(ConfigService);
-    const corsOrigin = configService.get<string>('FRONTEND_URL') || 'http://localhost:5173';
+    const corsOrigin = configService.getOrThrow<string>('FRONTEND_URL');
 
     app.enableCors({
-        origin: [corsOrigin, 'https://reconstructionary-marylou-solubly.ngrok-free.dev'],
+        origin: [corsOrigin],
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
         credentials: true,
     });

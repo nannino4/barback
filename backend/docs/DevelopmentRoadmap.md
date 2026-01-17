@@ -292,7 +292,6 @@ Unified guard now restricts authenticated operations until email is verified. Ex
 - [ ] standardize tests. Determine best practices.
 
 ### Extra
-- [ ] Anonymize user data in logs (PII compliance)
 - [ ] Localize email templates
 
 ---

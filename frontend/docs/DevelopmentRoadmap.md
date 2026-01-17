@@ -57,7 +57,6 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
       - [X] local subscription created by webhook with initial INCOMPLETE status
       - [X] organization created immediately after payment confirmation
       - [X] redirect to organization page showing subscription status
-      - [ ] on failure state, surface actions on organization page to retry/change payment method or cancel organization
     - [X] consolidate plans/pricing
 - [X] Implement Organizations Hub Page (`/orgs`)
   - [X] Refactor `OrganizationsPage` with sections layout

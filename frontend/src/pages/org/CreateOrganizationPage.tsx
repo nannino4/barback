@@ -19,6 +19,7 @@ import type { BillingInterval } from '@/types/subscription';
 import { OrgNameStep, PlanSelectionStep, PaymentStep } from '@/components/features/organizations/wizard';
 import { buildStripeAppearance, getStripeLocale, stripeFonts } from '@/lib/stripe/config';
 import { ResolvedThemeContext } from '@/contexts/ThemeContext';
+import { ROUTES } from '@/constants/routes';
 
 // Initialize Stripe - cast env var to string to satisfy TypeScript
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string);
@@ -160,7 +161,7 @@ export const CreateOrganizationPage: React.FC = () =>
 
   const handleCancel = () =>
   {
-    void navigate('/orgs');
+    void navigate(ROUTES.ORGS.ROOT);
   };
 
   /**
@@ -170,7 +171,7 @@ export const CreateOrganizationPage: React.FC = () =>
    */
   const handleSuccess = (orgId: string) =>
   {
-    void navigate(`/orgs/${orgId}`, { state: { userOrgRole: 'OWNER' } });
+    void navigate(`${ROUTES.ORGS.DETAIL.replace(':orgId', orgId)}`, { state: { userOrgRole: 'OWNER' } });
   };
 
   /**

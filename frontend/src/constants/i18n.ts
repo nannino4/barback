@@ -20,10 +20,10 @@ export const getLocaleFromLanguage = (language: string): string =>
   return supported ? LOCALE_BY_LANGUAGE[supported] : language;
 };
 
-export const getStripeLocaleFromLanguage = (language: string): 'en' | 'it' =>
+export const getStripeLocaleFromLanguage = (language: string): 'auto' | 'en' | 'it' =>
 {
   const normalized = language.toLowerCase();
   const supported = SUPPORTED_LANGUAGES.find((item) => normalized.startsWith(item));
 
-  return supported ? STRIPE_LOCALE_BY_LANGUAGE[supported] : 'en';
+  return supported ? STRIPE_LOCALE_BY_LANGUAGE[supported] : 'auto';
 };

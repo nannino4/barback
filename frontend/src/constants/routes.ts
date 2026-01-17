@@ -23,12 +23,6 @@ export const ROUTES = {
     ME: '/users/me',
   },
 
-  // Inventory
-  INVENTORY: '/inventory',
-
-  // Orders
-  ORDERS: '/orders',
-  
   // Auth routes
   AUTH: {
     LOGIN: '/auth/login',

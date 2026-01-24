@@ -2,7 +2,7 @@
 
 ## Overview
 
-Essential UX flows and patterns for Barback inventory management app MVP. Mobile-first design for bar environments with role-based access (Owner, Manager, Staff).
+Essential UX flows and patterns for Barback inventory management MVP. Mobile-first design for bar environments with role-based access (Owner, Manager, Staff). Inventory is the primary workspace; minimize navigation and keep high-frequency actions within 1–2 taps.
 
 ## App Architecture
 
@@ -14,15 +14,14 @@ Barback MVP Structure
 │   └── Password Reset
 ├── 🏢 Organization Setup
 │   ├── Organization Creation (Owner only)
-│   ├──     Plan Selection (Free Trial/Paid)
-│   ├──     Payment Processing
+│   ├── Plan Selection (Free Trial/Paid)
+│   ├── Payment Processing
 │   ├── Team Invitations (Owner/Manager)
 │   └── Role Management
 └── 📱 Core App
-    ├── 🏠 Dashboard (Alerts, Quick Actions)
-    ├── 📦 Inventory (Products, Stock Adjustments)
-    ├── 📊 Reports & Analytics
-    └── ⚙️ Settings
+    ├── 📦 Inventory (Overview, Products, Categories)
+    ├── 🚨 Alerts (Low stock, critical items)
+    └── ⚙️ Organization Settings (Members, Categories, Products)
 ```
 
 ## User Roles & Key Behaviors
@@ -60,7 +59,7 @@ Total: 5-10 minutes to productivity
 
 ### 3. Daily Inventory Management
 ```
-Dashboard Review → Address Alerts → Stock Adjustments → 
+Inventory Overview → Address Alerts → Stock Adjustments → 
 Product Updates → Team Coordination
 Total: 5-15 minutes per session
 ```
@@ -86,10 +85,12 @@ Total: 5-15 minutes per session
 4. **Role Assignment**: Owner, Manager, Staff permissions
 
 ### Inventory Management Flow
-1. **Product Creation**: Name, category, unit, par level, quantity
-2. **Stock Adjustments**: +/- buttons with reason codes
-3. **Product Search**: Quick find with category filters
-4. **Bulk Operations**: Multi-select for efficiency
+1. **Inventory Overview**: Low-stock summary, quick actions
+2. **Products**: Create/edit products (name, category, unit, par level, quantity)
+3. **Stock Adjustments**: +/- buttons with reason codes
+4. **Product Search**: Quick find with category filters
+5. **Categories**: Create/edit categories, view product counts
+6. **Bulk Operations**: Multi-select for efficiency
 
 ### Alert System Flow
 1. **Threshold Setting**: Custom low-stock alerts per product
@@ -97,7 +98,7 @@ Total: 5-15 minutes per session
 3. **Alert Response**: Direct link to product for quick action
 4. **Alert Resolution**: Auto-clear when stock restored
 
-### Reports & Analytics Flow
+### Reports & Analytics Flow (Deferred)
 1. **Report Generation**: Date range selection
 2. **Consumption Analysis**: By time period, category, product
 3. **Export Options**: PDF, CSV formats
@@ -113,9 +114,10 @@ Total: 5-15 minutes per session
 - **Pull to Refresh**: Sync latest data
 
 ### Navigation
-- **Bottom Tabs**: Primary navigation (Dashboard, Inventory, Settings)
-- **Header Search**: Global product search
-- **Floating Action Button**: Add new product (Inventory screen)
+- **Bottom Tabs**: Primary navigation (Inventory, Alerts, More)
+- **Top Bar**: Organization switcher visible at all times
+- **Header Search**: Product search inside Inventory
+- **Floating Action Button**: Add product (Inventory screen)
 - **Back Button**: Consistent navigation hierarchy
 
 ### Feedback
@@ -132,7 +134,7 @@ Total: 5-15 minutes per session
 - **Offline Capability**: Basic functionality when connectivity poor
 
 ### Role-Based Experience
-- **Owner**: Analytics focus, team management, strategic view
+- **Owner**: Inventory oversight, member management, strategic view
 - **Manager**: Operational focus, alerts priority, team coordination
 - **Staff**: Task focus, minimal interface, quick updates
 
@@ -141,3 +143,44 @@ Total: 5-15 minutes per session
 - **Auto-save**: Draft changes during connectivity issues
 - **Input Validation**: Real-time feedback on forms
 - **Undo Actions**: Recent stock adjustments
+
+## Updated MVP UX Decisions
+
+### Navigation & IA
+- **Inventory is the default home** for all roles (no standalone dashboard).
+- **Bottom navigation** (mobile): Inventory, Alerts, More.
+- **Top bar organization switcher** is always visible to keep context explicit.
+- **User menu** is for account + preferences only.
+
+### Inventory Hub (Primary Workspace)
+- **Top section: Inventory Overview**
+    - Low-stock summary, critical items, quick actions.
+- **Tabs/Segments** within Inventory:
+    - **Products** (default)
+    - **Categories**
+- **Products view**
+    - Search, category filter, low-stock filter.
+    - Inline quick adjust (+/-) and row actions (edit/archive).
+    - Primary action: Add product (FAB on mobile).
+- **Categories view**
+    - Simple list with product counts.
+    - Add/edit category inline or modal.
+    - Category detail shows products in that category.
+
+### Organization Settings
+- Single settings area for org-level tasks, role-gated:
+    - **Overview** (name, timezone)
+    - **Members**
+    - **Categories**
+    - **Products**
+- Rationale: org admin tasks are not personal account actions and should not live in the user menu.
+
+### Alerts
+- Separate view for low-stock items and critical alerts.
+- Quick actions: adjust stock, mark resolved.
+
+## Role-Based Defaults
+
+- **Owner**: Inventory Overview + Alerts summary + Member tools.
+- **Manager**: Inventory Overview + Alerts + quick adjustments.
+- **Staff**: Inventory + quick adjustments, minimal admin actions.

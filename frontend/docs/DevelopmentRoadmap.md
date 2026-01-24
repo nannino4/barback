@@ -150,6 +150,7 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
     - [X] Persist timezone preference in user profile
     - [X] Ensure all date formatting uses timezone-aware helpers
   - [X] refresh token service restarts every page load
+  - [ ] problem with toaster style (bg color is white even though in dark mode)
 - **good to have**
   - [X] routes consolidation
   - [X] update toasters style and position
@@ -158,13 +159,65 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [X] `enter` key goes to next input or submits form
   - [ ] consolidate loading states (skeletons, spinners)
 
-### **Sprint 5-6: Core Inventory Management**
+### **Sprint 4.5: UX Alignment & Architecture Fixes (New UX)**
 
 #### **Sprint Goals**
-- [ ] Build product management (CRUD operations)
-- [ ] Implement stock adjustment system
-- [ ] Create inventory dashboard
-- [ ] Add low stock alerts
+- [ ] Align navigation with Inventory-first UX (remove Orders entry from nav)
+- [ ] Make Inventory the default landing route after auth/org selection
+- [ ] Move organization switcher into TopNav (always visible)
+- [ ] Simplify UserMenu to account + preferences only
+- [ ] Add "Organization Settings" entry point (role-gated)
+- [ ] Update bottom navigation to: Inventory, Alerts, More
+- [ ] Update desktop nav to: Inventory (+ Alerts when implemented)
+- [ ] Replace dashboard usage with Inventory Overview section
+- [ ] Ensure route redirects and deep links work with new IA
+
+#### **Architecture Fixes**
+- [ ] Refactor `TopNav` to include org switcher and role-aware org actions
+- [ ] Refactor `BottomNav` items and routes to match new IA
+- [ ] Remove Orders page (route and nav link)
+- [ ] Set authenticated root redirect to Inventory
+- [ ] Update i18n keys for nav labels and menu strings
+- [ ] Update UX docs references and any onboarding text
+
+### **Sprint 5-6: Inventory Hub (Products + Categories)**
+
+#### **Sprint Goals**
+- [ ] Build Inventory Hub layout with tabs/segments
+- [ ] Implement Inventory Overview header (low stock summary + quick actions)
+- [ ] Build Products tab (CRUD operations)
+- [ ] Build Categories tab (CRUD operations)
+- [ ] Implement stock adjustment system (inline quick adjust)
+
+#### **Inventory Hub Tasks**
+- [ ] Create Inventory layout with **Products** (default) and **Categories** tabs
+- [ ] Add search + filters (category, low-stock) to Products view
+- [ ] Add primary action (Add Product) with FAB on mobile
+- [ ] Add empty states for no products / no categories
+- [ ] Add loading states (skeletons) for list views
+
+#### **Products Tab Tasks**
+- [ ] Products list: name, category, unit, par level, current quantity
+- [ ] Row actions: edit, archive, quick adjust (+/-)
+- [ ] Product create/edit form (modal or sheet)
+- [ ] Validation: name required, unit required, par level numeric
+- [ ] Low stock indicator styling
+- [ ] Bulk actions (optional for MVP, can be deferred)
+
+#### **Categories Tab Tasks**
+- [ ] Categories list with product counts
+- [ ] Inline add/edit category (modal or inline row edit)
+- [ ] Category detail view or filtered products list
+- [ ] Validation: name required, unique per org
+
+#### **Adjustments Tasks**
+- [ ] Stock adjustment dialog with reason codes
+- [ ] Adjustment log list (deferred if needed)
+- [ ] Inline quick adjust buttons on product rows (+/-)
+- [ ] Require reason code for every adjustment
+- [ ] Confirmation step shows delta and final quantity
+- [ ] Role rules: Staff can adjust; Manager/Owner can edit or delete adjustments
+- [ ] Undo toast for recent adjustments
 
 ---
 

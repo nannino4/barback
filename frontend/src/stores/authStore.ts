@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { User } from '@/types/user';
+import type { UserResponse } from '@/types/user';
 import { AuthTokenManager } from '@/lib/auth-tokens';
 
 /**
@@ -9,10 +9,10 @@ import { AuthTokenManager } from '@/lib/auth-tokens';
  * This store only manages the authenticated user state and token storage.
  */
 interface AuthStore {
-    user: User | null;
+  user: UserResponse | null;
     isAuthenticated: boolean;
-    setUser: (user: User | null) => void;
-    login: (user: User, accessToken: string, refreshToken: string) => void;
+  setUser: (user: UserResponse | null) => void;
+  login: (user: UserResponse, accessToken: string, refreshToken: string) => void;
     logout: () => void;
 }
 
@@ -28,7 +28,7 @@ export const useAuthStore = create<AuthStore>()(
           isAuthenticated: !!user,
         }),
 
-      login: (user: User, accessToken: string, refreshToken: string) =>
+      login: (user: UserResponse, accessToken: string, refreshToken: string) =>
       {
         // Store tokens using AuthTokenManager
         AuthTokenManager.setTokens(accessToken, refreshToken);

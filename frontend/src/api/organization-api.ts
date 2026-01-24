@@ -1,15 +1,15 @@
 import { apiClient } from '@/api/api';
 import { z } from 'zod';
 import {
-  OrganizationMembershipSchema,
-  OrganizationSchema,
-  type OrganizationMembership,
-  type Organization,
+  OrganizationMembershipResponseSchema,
+  OrganizationResponseSchema,
+  type OrganizationMembershipResponse,
+  type OrganizationResponse,
   type CreateOrganizationRequest,
   type UpdateOrganizationRequest,
   type OrgRole,
 } from '@/types/organization';
-import { SubscriptionSchema, SubscriptionStatusOnlySchema, type Subscription, type SubscriptionStatusOnly } from '@/types/subscription';
+import { SubscriptionResponseSchema, SubscriptionStatusOnlyResponseSchema, type SubscriptionResponse, type SubscriptionStatusOnlyResponse } from '@/types/subscription';
 
 // ============================================================================
 // API Methods
@@ -21,16 +21,16 @@ export const organizationApi = {
    * @param orgRole Optional filter by user's role in organizations (OWNER, MANAGER, STAFF)
    * @returns List of organization memberships
    */
-  getOrganizations: (orgRole?: OrgRole): Promise<OrganizationMembership[]> =>
+  getOrganizations: (orgRole?: OrgRole): Promise<OrganizationMembershipResponse[]> =>
   {
     const params = orgRole ? `?orgRole=${orgRole}` : '';
     
-    return apiClient.request<OrganizationMembership[]>(
+    return apiClient.request<OrganizationMembershipResponse[]>(
       `/orgs${params}`,
       {
         method: 'GET',
       },
-      z.array(OrganizationMembershipSchema),
+      z.array(OrganizationMembershipResponseSchema),
     );
   },
 
@@ -41,15 +41,15 @@ export const organizationApi = {
    */
   createOrganization: (
     data: CreateOrganizationRequest,
-  ): Promise<Organization> =>
+  ): Promise<OrganizationResponse> =>
   {
-    return apiClient.request<Organization>(
+    return apiClient.request<OrganizationResponse>(
       '/orgs',
       {
         method: 'POST',
         body: JSON.stringify(data),
       },
-      OrganizationSchema,
+      OrganizationResponseSchema,
     );
   },
 
@@ -58,14 +58,14 @@ export const organizationApi = {
    * @param orgId Organization ID
    * @returns The organization details
    */
-  getOrganizationById: (orgId: string): Promise<Organization> =>
+  getOrganizationById: (orgId: string): Promise<OrganizationResponse> =>
   {
-    return apiClient.request<Organization>(
+    return apiClient.request<OrganizationResponse>(
       `/orgs/${orgId}`,
       {
         method: 'GET',
       },
-      OrganizationSchema,
+      OrganizationResponseSchema,
     );
   },
 
@@ -74,14 +74,14 @@ export const organizationApi = {
    * @param orgId Organization ID
    * @returns List of organization memberships
    */
-  getOrganizationMembers: (orgId: string): Promise<OrganizationMembership[]> =>
+  getOrganizationMembers: (orgId: string): Promise<OrganizationMembershipResponse[]> =>
   {
-    return apiClient.request<OrganizationMembership[]>(
+    return apiClient.request<OrganizationMembershipResponse[]>(
       `/orgs/${orgId}/members`,
       {
         method: 'GET',
       },
-      z.array(OrganizationMembershipSchema),
+      z.array(OrganizationMembershipResponseSchema),
     );
   },
 
@@ -90,14 +90,14 @@ export const organizationApi = {
    * @param orgId Organization ID
    * @returns The organization's full subscription details
    */
-  getOrganizationSubscription: (orgId: string): Promise<Subscription> =>
+  getOrganizationSubscription: (orgId: string): Promise<SubscriptionResponse> =>
   {
-    return apiClient.request<Subscription>(
+    return apiClient.request<SubscriptionResponse>(
       `/orgs/${orgId}/subscription`,
       {
         method: 'GET',
       },
-      SubscriptionSchema,
+      SubscriptionResponseSchema,
     );
   },
 
@@ -106,14 +106,14 @@ export const organizationApi = {
    * @param orgId Organization ID
    * @returns The organization's subscription status
    */
-  getOrganizationSubscriptionStatus: (orgId: string): Promise<SubscriptionStatusOnly> =>
+  getOrganizationSubscriptionStatus: (orgId: string): Promise<SubscriptionStatusOnlyResponse> =>
   {
-    return apiClient.request<SubscriptionStatusOnly>(
+    return apiClient.request<SubscriptionStatusOnlyResponse>(
       `/orgs/${orgId}/subscription/status`,
       {
         method: 'GET',
       },
-      SubscriptionStatusOnlySchema,
+      SubscriptionStatusOnlyResponseSchema,
     );
   },
 
@@ -126,15 +126,15 @@ export const organizationApi = {
   updateOrganization: (
     orgId: string,
     data: UpdateOrganizationRequest,
-  ): Promise<Organization> =>
+  ): Promise<OrganizationResponse> =>
   {
-    return apiClient.request<Organization>(
+    return apiClient.request<OrganizationResponse>(
       `/orgs/${orgId}`,
       {
         method: 'PUT',
         body: JSON.stringify(data),
       },
-      OrganizationSchema,
+      OrganizationResponseSchema,
     );
   },
 

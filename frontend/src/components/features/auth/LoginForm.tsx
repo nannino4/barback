@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Stack } from '@/components/layout/Stack';
-import { loginSchema, type LoginData } from '@/types/auth-forms';
+import { loginSchema, type LoginFormData } from '@/types/auth-forms';
 import { useAuth } from '@/hooks/useAuth';
 import { useI18n } from '@/hooks/useI18n';
 import { GoogleLoginButton } from '@/components/features/auth/GoogleLoginButton';
@@ -37,7 +37,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
   const { t } = useI18n();
   const navigate = useNavigate();
 
-  const form = useForm<LoginData>({
+  const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
@@ -45,7 +45,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
     },
   });
 
-  const onSubmit = (data: LoginData) =>
+  const onSubmit = (data: LoginFormData) =>
   {
     login(data);
   };

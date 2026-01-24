@@ -4,7 +4,7 @@ import { useOrganizationStore } from '@/stores/organizationStore';
 import { invitationApi } from '@/api/invitation-api';
 import { queryKeys } from '@/lib/queryKeys';
 import { CACHE_TIMES } from '@/constants/cacheTimes';
-import type { Invitation } from '@/types/invitation';
+import type { InvitationResponse } from '@/types/invitation';
 
 /**
  * Hook for managing user's pending invitations
@@ -36,7 +36,7 @@ export const useInvitations = () =>
    */
   const acceptInvitationMutation = useMutation({
     mutationFn: (invitationId: string) => invitationApi.acceptInvitation(invitationId),
-    onSuccess: (acceptedInvitation: Invitation) =>
+    onSuccess: (acceptedInvitation: InvitationResponse) =>
     {
       // Remove from pending invitations
       setPendingInvitations(
@@ -55,7 +55,7 @@ export const useInvitations = () =>
    */
   const declineInvitationMutation = useMutation({
     mutationFn: (invitationId: string) => invitationApi.declineInvitation(invitationId),
-    onSuccess: (declinedInvitation: Invitation) =>
+    onSuccess: (declinedInvitation: InvitationResponse) =>
     {
       // Remove from pending invitations
       setPendingInvitations(

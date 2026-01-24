@@ -16,7 +16,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Stack } from '@/components/layout/Stack';
-import { forgotPasswordSchema, type ForgotPasswordData } from '@/types/auth-forms';
+import { forgotPasswordSchema, type ForgotPasswordFormData } from '@/types/auth-forms';
 import { authApi } from '@/api/auth-api';
 import { useI18n } from '@/hooks/useI18n';
 import { useCooldown } from '@/hooks/useCooldown';
@@ -38,7 +38,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
     PASSWORD_RESET_COOLDOWN_MS,
   );
 
-  const form = useForm<ForgotPasswordData>({
+  const form = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: '',
@@ -69,7 +69,7 @@ export const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({ classNam
     },
   });
 
-  const onSubmit = (data: ForgotPasswordData) =>
+  const onSubmit = (data: ForgotPasswordFormData) =>
   {
     forgotPasswordMutation.mutate(data.email);
   };

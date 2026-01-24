@@ -14,7 +14,7 @@ import { Search, X } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 import { useOrganizations } from '@/hooks/useOrganizations';
 import { useInvitations } from '@/hooks/useInvitations';
-import type { OrgRole, OrganizationMembership } from '@/types/organization';
+import type { OrgRole, OrganizationMembershipResponse } from '@/types/organization';
 
 /**
  * OrganizationsPage - Hub for organization management
@@ -85,7 +85,7 @@ export const OrganizationsPage: React.FC = () =>
   /**
    * Handle organization selection
    */
-  const handleSelectOrganization = (orgMembership: OrganizationMembership) =>
+  const handleSelectOrganization = (orgMembership: OrganizationMembershipResponse) =>
   {
     switchOrganization(orgMembership);
   };

@@ -1,42 +1,42 @@
 import { apiClient } from '@/api/api';
-import { UserSchema, type User } from '@/types/user';
+import { UserResponseSchema, type UserResponse } from '@/types/user';
 
 export const userApi = {
-  getMe: (): Promise<User> =>
+  getMe: (): Promise<UserResponse> =>
   {
-    return apiClient.request<User>(
+    return apiClient.request<UserResponse>(
       '/users/me',
       {
         method: 'GET',
       },
-      UserSchema,
+      UserResponseSchema,
     );
   },
 
-  updateMe: (data: { firstName?: string; lastName?: string; phoneNumber?: string; timezone?: string }): Promise<User> =>
+  updateMe: (data: { firstName?: string; lastName?: string; phoneNumber?: string; timezone?: string }): Promise<UserResponse> =>
   {
-    return apiClient.request<User>(
+    return apiClient.request<UserResponse>(
       '/users/me',
       {
         method: 'PUT',
         body: JSON.stringify(data),
       },
-      UserSchema,
+      UserResponseSchema,
     );
   },
 
-  uploadProfilePicture: (file: File): Promise<User> =>
+  uploadProfilePicture: (file: File): Promise<UserResponse> =>
   {
     const formData = new FormData();
     formData.append('file', file);
 
-    return apiClient.request<User>(
+    return apiClient.request<UserResponse>(
       '/users/me/profile-picture',
       {
         method: 'PUT',
         body: formData,
       },
-      UserSchema,
+      UserResponseSchema,
     );
   },
 };

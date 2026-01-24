@@ -1,4 +1,4 @@
-import type { User, UserPublic } from '@/types/user';
+import type { UserResponse, UserPublicResponse } from '@/types/user';
 import { UserAvatar } from './UserAvatar';
 import { Stack } from '@/components/layout';
 import { useI18n } from '@/hooks/useI18n';
@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 
 interface UserInfoProps
 {
-  user: User | UserPublic;
+  user: UserResponse | UserPublicResponse;
   size?: 'sm' | 'md' | 'lg';
   showName?: boolean;
   className?: string;

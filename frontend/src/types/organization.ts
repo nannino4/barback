@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { UserPublicSchema } from './user';
+import { UserPublicResponseSchema } from './user';
 
 // ============================================================================
 // Zod Schemas - Single Source of Truth
@@ -25,17 +25,17 @@ export const OrgSettingsSchema = z.object({
  * Organization public schema - minimal org info (used in lists, invitations)
  * Owner is mandatory - all public org responses include populated owner data
  */
-export const OrganizationPublicSchema = z.object({
+export const OrganizationPublicResponseSchema = z.object({
   id: z.string(),
   name: z.string(),
-  owner: UserPublicSchema, // Owner is mandatory (always populated by backend)
+  owner: UserPublicResponseSchema, // Owner is mandatory (always populated by backend)
 });
 
 /**
  * Organization full schema - complete org info including settings
  * Note: DTOs do not include createdAt/updatedAt timestamps
  */
-export const OrganizationSchema = z.object({
+export const OrganizationResponseSchema = z.object({
   id: z.string(),
   name: z.string(),
   settings: OrgSettingsSchema,
@@ -44,12 +44,12 @@ export const OrganizationSchema = z.object({
 /**
  * Organization membership schema - represents a user's relationship with an org
  * This is what the backend returns from GET /api/orgs
- * Uses OrganizationPublicSchema because the membership endpoint returns public org info
- * Uses UserPublicSchema because we only need public user info (not private fields like isEmailVerified)
+ * Uses OrganizationPublicResponseSchema because the membership endpoint returns public org info
+ * Uses UserPublicResponseSchema because we only need public user info (not private fields like isEmailVerified)
  */
-export const OrganizationMembershipSchema = z.object({
-  user: UserPublicSchema,
-  org: OrganizationPublicSchema, // Uses public schema which includes owner
+export const OrganizationMembershipResponseSchema = z.object({
+  user: UserPublicResponseSchema,
+  org: OrganizationPublicResponseSchema, // Uses public schema which includes owner
   role: OrgRoleSchema,
 });
 
@@ -95,9 +95,9 @@ export const CreateOrganizationFormSchema = z.object({
 
 export type OrgRole = z.infer<typeof OrgRoleSchema>;
 export type OrgSettings = z.infer<typeof OrgSettingsSchema>;
-export type OrganizationPublic = z.infer<typeof OrganizationPublicSchema>;
-export type Organization = z.infer<typeof OrganizationSchema>;
-export type OrganizationMembership = z.infer<typeof OrganizationMembershipSchema>;
+export type OrganizationPublicResponse = z.infer<typeof OrganizationPublicResponseSchema>;
+export type OrganizationResponse = z.infer<typeof OrganizationResponseSchema>;
+export type OrganizationMembershipResponse = z.infer<typeof OrganizationMembershipResponseSchema>;
 export type CreateOrganizationRequest = z.infer<typeof CreateOrganizationRequestSchema>;
 export type UpdateOrganizationRequest = z.infer<typeof UpdateOrganizationRequestSchema>;
 export type EditOrganizationFormData = z.infer<typeof EditOrganizationFormSchema>;

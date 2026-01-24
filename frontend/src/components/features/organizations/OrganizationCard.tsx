@@ -8,12 +8,12 @@ import { UserInfo } from '@/components/user';
 import { OrgRoleBadge } from './OrgRoleBadge';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
-import type { OrganizationMembership } from '@/types/organization';
+import type { OrganizationMembershipResponse } from '@/types/organization';
 
 interface OrganizationCardProps
 {
-  organization: OrganizationMembership;
-  onSelect: (org: OrganizationMembership) => void;
+  organization: OrganizationMembershipResponse;
+  onSelect: (org: OrganizationMembershipResponse) => void;
   isSelected?: boolean;
   isLoading?: boolean;
 }

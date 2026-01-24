@@ -29,7 +29,7 @@ export const BillingIntervalSchema = z.enum(['MONTHLY', 'YEARLY']);
 /**
  * Subscription schema - validates subscription object structure from API
  */
-export const SubscriptionSchema = z.object({
+export const SubscriptionResponseSchema = z.object({
   id: z.string(),
   status: SubscriptionStatusSchema,
   autoRenew: z.boolean(),
@@ -62,12 +62,12 @@ export const CreateSubscriptionRequestSchema = z.object({
  * Note: Local subscription is NOT created yet - it will be created by webhook
  * after payment confirmation
  */
-export const SubscriptionSetupSchema = z.object({
+export const SubscriptionSetupResponseSchema = z.object({
   stripeSubscriptionId: z.string(),
   clientSecret: z.string(),
 });
 
-export const StripeSubscriptionStatusSchema = z.object({
+export const StripeSubscriptionStatusResponseSchema = z.object({
   stripeSubscriptionId: z.string(),
   status: SubscriptionStatusSchema,
 });
@@ -76,7 +76,7 @@ export const StripeSubscriptionStatusSchema = z.object({
  * Subscription status only schema - for non-owner members viewing subscription status
  * GET /api/orgs/:orgId/subscription/status
  */
-export const SubscriptionStatusOnlySchema = z.object({
+export const SubscriptionStatusOnlyResponseSchema = z.object({
   status: SubscriptionStatusSchema,
 });
 
@@ -86,9 +86,9 @@ export const SubscriptionStatusOnlySchema = z.object({
 
 export type SubscriptionStatus = z.infer<typeof SubscriptionStatusSchema>;
 export type BillingInterval = z.infer<typeof BillingIntervalSchema>;
-export type Subscription = z.infer<typeof SubscriptionSchema>;
+export type SubscriptionResponse = z.infer<typeof SubscriptionResponseSchema>;
 export type TrialEligibilityResponse = z.infer<typeof TrialEligibilityResponseSchema>;
 export type CreateSubscriptionRequest = z.infer<typeof CreateSubscriptionRequestSchema>;
-export type SubscriptionSetup = z.infer<typeof SubscriptionSetupSchema>;
-export type StripeSubscriptionStatus = z.infer<typeof StripeSubscriptionStatusSchema>;
-export type SubscriptionStatusOnly = z.infer<typeof SubscriptionStatusOnlySchema>;
+export type SubscriptionSetupResponse = z.infer<typeof SubscriptionSetupResponseSchema>;
+export type StripeSubscriptionStatusResponse = z.infer<typeof StripeSubscriptionStatusResponseSchema>;
+export type SubscriptionStatusOnlyResponse = z.infer<typeof SubscriptionStatusOnlyResponseSchema>;

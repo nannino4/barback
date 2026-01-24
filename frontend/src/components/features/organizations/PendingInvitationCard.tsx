@@ -6,11 +6,11 @@ import { Stack } from '@/components/layout';
 import { OrgRoleBadge } from '@/components/features/organizations/OrgRoleBadge';
 import { UserInfo } from '@/components/user';
 import { useI18n } from '@/hooks/useI18n';
-import type { Invitation } from '@/types/invitation';
+import type { InvitationResponse } from '@/types/invitation';
 
 interface PendingInvitationCardProps
 {
-  invitation: Invitation;
+  invitation: InvitationResponse;
   onRevoke: (invitationId: string) => void;
   isRevoking?: boolean;
 }

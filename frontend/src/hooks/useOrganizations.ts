@@ -7,7 +7,7 @@ import { useI18n } from '@/hooks/useI18n';
 import { queryKeys } from '@/lib/queryKeys';
 import { CACHE_TIMES } from '@/constants/cacheTimes';
 import type {
-  OrganizationMembership,
+  OrganizationMembershipResponse,
   OrgRole,
   EditOrganizationFormData,
 } from '@/types/organization';
@@ -103,7 +103,7 @@ export const useOrganizations = () =>
   /**
    * Switch to a different organization
    */
-  const switchOrganization = (org: OrganizationMembership) =>
+  const switchOrganization = (org: OrganizationMembershipResponse) =>
   {
     setCurrentOrg(org);
     notify.success(t('organizations.switch.success', { name: org.org.name }));

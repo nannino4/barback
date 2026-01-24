@@ -1,8 +1,8 @@
 import { apiClient } from '@/api/api';
 import { z } from 'zod';
 import {
-  PaymentMethodSchema,
-  type PaymentMethod,
+  PaymentMethodResponseSchema,
+  type PaymentMethodResponse,
   type AddPaymentMethodRequest,
 } from '@/types/payment';
 
@@ -15,14 +15,14 @@ export const paymentApi = {
    * Get user's payment methods
    * @returns List of payment methods
    */
-  getPaymentMethods: (): Promise<PaymentMethod[]> =>
+  getPaymentMethods: (): Promise<PaymentMethodResponse[]> =>
   {
-    return apiClient.request<PaymentMethod[]>(
+    return apiClient.request<PaymentMethodResponse[]>(
       '/payment/methods',
       {
         method: 'GET',
       },
-      z.array(PaymentMethodSchema),
+      z.array(PaymentMethodResponseSchema),
     );
   },
 
@@ -31,15 +31,15 @@ export const paymentApi = {
    * @param data Payment method data (Stripe paymentMethodId)
    * @returns Created payment method
    */
-  addPaymentMethod: (data: AddPaymentMethodRequest): Promise<PaymentMethod> =>
+  addPaymentMethod: (data: AddPaymentMethodRequest): Promise<PaymentMethodResponse> =>
   {
-    return apiClient.request<PaymentMethod>(
+    return apiClient.request<PaymentMethodResponse>(
       '/payment/methods',
       {
         method: 'POST',
         body: JSON.stringify(data),
       },
-      PaymentMethodSchema,
+      PaymentMethodResponseSchema,
     );
   },
 

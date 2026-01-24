@@ -120,9 +120,10 @@ export const resetPasswordSchema = z
 // ============================================================================
 
 export type RegisterFormData = z.infer<typeof registerSchema>;
-export type LoginData = z.infer<typeof loginSchema>;
-export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
-export type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
+export type LoginFormData = z.infer<typeof loginSchema>;
+export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 
-// API data type (RegisterFormData without confirmPassword)
-export type RegisterData = Omit<RegisterFormData, 'confirmPassword'>;
+// API request types (client -> server)
+export type RegisterRequest = Omit<RegisterFormData, 'confirmPassword'>;
+export type LoginRequest = LoginFormData;

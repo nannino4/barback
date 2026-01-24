@@ -1,15 +1,15 @@
 import { apiClient } from '@/api/api';
 import { z } from 'zod';
 import {
-  SubscriptionSchema,
+  SubscriptionResponseSchema,
   TrialEligibilityResponseSchema,
-  SubscriptionSetupSchema,
-  StripeSubscriptionStatusSchema,
-  type Subscription,
+  SubscriptionSetupResponseSchema,
+  StripeSubscriptionStatusResponseSchema,
+  type SubscriptionResponse,
   type TrialEligibilityResponse,
   type CreateSubscriptionRequest,
-  type SubscriptionSetup,
-  type StripeSubscriptionStatus,
+  type SubscriptionSetupResponse,
+  type StripeSubscriptionStatusResponse,
 } from '@/types/subscription';
 
 // ============================================================================
@@ -42,15 +42,15 @@ export const subscriptionApi = {
    * @param data Subscription creation data (billingInterval, isTrial)
    * @returns Stripe subscription ID and clientSecret for Payment Element
    */
-  setupSubscriptionPayment: (data: CreateSubscriptionRequest): Promise<SubscriptionSetup> =>
+  setupSubscriptionPayment: (data: CreateSubscriptionRequest): Promise<SubscriptionSetupResponse> =>
   {
-    return apiClient.request<SubscriptionSetup>(
+    return apiClient.request<SubscriptionSetupResponse>(
       '/subscriptions',
       {
         method: 'POST',
         body: JSON.stringify(data),
       },
-      SubscriptionSetupSchema,
+      SubscriptionSetupResponseSchema,
     );
   },
 
@@ -59,28 +59,28 @@ export const subscriptionApi = {
    * Only returns subscriptions that have been confirmed and saved to local database
    * @returns List of user's subscriptions
    */
-  getSubscriptions: (): Promise<Subscription[]> =>
+  getSubscriptions: (): Promise<SubscriptionResponse[]> =>
   {
-    return apiClient.request<Subscription[]>(
+    return apiClient.request<SubscriptionResponse[]>(
       '/subscriptions',
       {
         method: 'GET',
       },
-      z.array(SubscriptionSchema),
+      z.array(SubscriptionResponseSchema),
     );
   },
 
   /**
    * Poll subscription status by Stripe subscription ID
    */
-  getStripeSubscriptionStatus: (stripeSubscriptionId: string): Promise<StripeSubscriptionStatus> =>
+  getStripeSubscriptionStatus: (stripeSubscriptionId: string): Promise<StripeSubscriptionStatusResponse> =>
   {
-    return apiClient.request<StripeSubscriptionStatus>(
+    return apiClient.request<StripeSubscriptionStatusResponse>(
       `/subscriptions/stripe/${stripeSubscriptionId}`,
       {
         method: 'GET',
       },
-      StripeSubscriptionStatusSchema,
+      StripeSubscriptionStatusResponseSchema,
     );
   },
 };

@@ -11,7 +11,7 @@ import { z } from 'zod';
  * User schema - validates user object structure from API
  * Full user information including private fields
  */
-export const UserSchema = z.object({
+export const UserResponseSchema = z.object({
   id: z.string(),
   email: z.string().email().min(1),
   firstName: z.string().min(1),
@@ -27,7 +27,7 @@ export const UserSchema = z.object({
  * Used for public displays (inviter info, member lists, etc.)
  * Corresponds to OutUserPublicDto on the backend
  */
-export const UserPublicSchema = z.object({
+export const UserPublicResponseSchema = z.object({
   id: z.string(),
   email: z.string().email(),
   firstName: z.string(),
@@ -39,5 +39,5 @@ export const UserPublicSchema = z.object({
 // TypeScript Types - Derived from Zod Schemas
 // ============================================================================
 
-export type User = z.infer<typeof UserSchema>;
-export type UserPublic = z.infer<typeof UserPublicSchema>;
+export type UserResponse = z.infer<typeof UserResponseSchema>;
+export type UserPublicResponse = z.infer<typeof UserPublicResponseSchema>;

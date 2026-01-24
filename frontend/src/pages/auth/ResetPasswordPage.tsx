@@ -16,7 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { resetPasswordSchema, type ResetPasswordData } from '@/types/auth-forms';
+import { resetPasswordSchema, type ResetPasswordFormData } from '@/types/auth-forms';
 import { authApi } from '@/api/auth-api';
 import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
 import { cn } from '@/lib/utils';
@@ -72,7 +72,7 @@ export const ResetPasswordPage: React.FC = () =>
     },
   ];
 
-  const form = useForm<ResetPasswordData>({
+  const form = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
       password: '',
@@ -137,7 +137,7 @@ export const ResetPasswordPage: React.FC = () =>
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
-  const onSubmit = (data: ResetPasswordData) =>
+  const onSubmit = (data: ResetPasswordFormData) =>
   {
     if (!token) return;
     

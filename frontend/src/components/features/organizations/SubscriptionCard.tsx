@@ -7,12 +7,12 @@ import { useI18n } from '@/hooks/useI18n';
 import { formatDate } from '@/lib/date';
 import { useAuthStore } from '@/stores/authStore';
 import { SubscriptionStatusBadge } from './SubscriptionStatusBadge';
-import type { Subscription, SubscriptionStatus, SubscriptionStatusOnly } from '@/types/subscription';
+import type { SubscriptionResponse, SubscriptionStatus, SubscriptionStatusOnlyResponse } from '@/types/subscription';
 
 /**
  * Type guard to check if we have full subscription data
  */
-const isFullSubscription = (data: Subscription | SubscriptionStatusOnly): data is Subscription =>
+const isFullSubscription = (data: SubscriptionResponse | SubscriptionStatusOnlyResponse): data is SubscriptionResponse =>
 {
   return 'billingInterval' in data;
 };
@@ -20,7 +20,7 @@ const isFullSubscription = (data: Subscription | SubscriptionStatusOnly): data i
 interface SubscriptionCardProps
 {
   /** Full subscription data (owner) or status-only data (non-owner) */
-  subscriptionData: Subscription | SubscriptionStatusOnly;
+  subscriptionData: SubscriptionResponse | SubscriptionStatusOnlyResponse;
   /** Whether the current user is the organization owner */
   isOwner: boolean;
 }

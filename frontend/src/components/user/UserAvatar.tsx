@@ -1,9 +1,9 @@
 import { cn } from '@/lib/utils';
-import type { User, UserPublic } from '@/types/user';
+import type { UserResponse, UserPublicResponse } from '@/types/user';
 
 interface UserAvatarProps
 {
-  user: User | UserPublic;
+  user: UserResponse | UserPublicResponse;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }

@@ -1,8 +1,8 @@
 import { apiClient } from '@/api/api';
 import { z } from 'zod';
 import {
-  InvitationSchema,
-  type Invitation,
+  InvitationResponseSchema,
+  type InvitationResponse,
   type CreateInvitationRequest,
 } from '@/types/invitation';
 
@@ -16,14 +16,14 @@ export const invitationApi = {
    * Returns populated data with organization and inviter details
    * @returns List of pending invitations with populated fields
    */
-  getPendingInvitations: (): Promise<Invitation[]> =>
+  getPendingInvitations: (): Promise<InvitationResponse[]> =>
   {
-    return apiClient.request<Invitation[]>(
+    return apiClient.request<InvitationResponse[]>(
       '/invites',
       {
         method: 'GET',
       },
-      z.array(InvitationSchema),
+      z.array(InvitationResponseSchema),
     );
   },
 
@@ -32,14 +32,14 @@ export const invitationApi = {
    * @param invitationId The invitation ID to accept
    * @returns The updated invitation
    */
-  acceptInvitation: (invitationId: string): Promise<Invitation> =>
+  acceptInvitation: (invitationId: string): Promise<InvitationResponse> =>
   {
-    return apiClient.request<Invitation>(
+    return apiClient.request<InvitationResponse>(
       `/invites/${invitationId}/accept`,
       {
         method: 'POST',
       },
-      InvitationSchema,
+      InvitationResponseSchema,
     );
   },
 
@@ -48,14 +48,14 @@ export const invitationApi = {
    * @param invitationId The invitation ID to decline
    * @returns The updated invitation
    */
-  declineInvitation: (invitationId: string): Promise<Invitation> =>
+  declineInvitation: (invitationId: string): Promise<InvitationResponse> =>
   {
-    return apiClient.request<Invitation>(
+    return apiClient.request<InvitationResponse>(
       `/invites/${invitationId}/decline`,
       {
         method: 'POST',
       },
-      InvitationSchema,
+      InvitationResponseSchema,
     );
   },
 
@@ -64,14 +64,14 @@ export const invitationApi = {
    * @param orgId Organization ID
    * @returns List of pending invitations
    */
-  getOrganizationInvitations: (orgId: string): Promise<Invitation[]> =>
+  getOrganizationInvitations: (orgId: string): Promise<InvitationResponse[]> =>
   {
-    return apiClient.request<Invitation[]>(
+    return apiClient.request<InvitationResponse[]>(
       `/orgs/${orgId}/invitations`,
       {
         method: 'GET',
       },
-      z.array(InvitationSchema),
+      z.array(InvitationResponseSchema),
     );
   },
 
@@ -84,15 +84,15 @@ export const invitationApi = {
   sendInvitation: (
     orgId: string,
     data: CreateInvitationRequest,
-  ): Promise<Invitation> =>
+  ): Promise<InvitationResponse> =>
   {
-    return apiClient.request<Invitation>(
+    return apiClient.request<InvitationResponse>(
       `/orgs/${orgId}/invitations`,
       {
         method: 'POST',
         body: JSON.stringify(data),
       },
-      InvitationSchema,
+      InvitationResponseSchema,
     );
   },
 
@@ -102,14 +102,14 @@ export const invitationApi = {
    * @param invitationId Invitation ID
    * @returns Updated invitation
    */
-  revokeInvitation: (orgId: string, invitationId: string): Promise<Invitation> =>
+  revokeInvitation: (orgId: string, invitationId: string): Promise<InvitationResponse> =>
   {
-    return apiClient.request<Invitation>(
+    return apiClient.request<InvitationResponse>(
       `/orgs/${orgId}/invitations/${invitationId}`,
       {
         method: 'DELETE',
       },
-      InvitationSchema,
+      InvitationResponseSchema,
     );
   },
 };

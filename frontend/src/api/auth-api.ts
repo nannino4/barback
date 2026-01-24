@@ -1,31 +1,31 @@
 import { apiClient } from '@/api/api';
 import {
-  AuthResponseSchema,
+  AuthTokensResponseSchema,
   GoogleAuthUrlResponseSchema,
-  type AuthResponse,
+  type AuthTokensResponse,
   type GoogleAuthUrlResponse,
 } from '@/types/auth';
-import type { RegisterData, LoginData } from '@/types/auth-forms';
+import type { RegisterRequest, LoginRequest } from '@/types/auth-forms';
 
 // ============================================================================
 // API Methods
 // ============================================================================
 
 export const authApi = {
-  register: (data: RegisterData): Promise<AuthResponse> =>
+  register: (data: RegisterRequest): Promise<AuthTokensResponse> =>
   {
-    return apiClient.request<AuthResponse>('/auth/register/email', {
+    return apiClient.request<AuthTokensResponse>('/auth/register/email', {
       method: 'POST',
       body: JSON.stringify(data),
-    }, AuthResponseSchema);
+    }, AuthTokensResponseSchema);
   },
 
-  login: (data: LoginData): Promise<AuthResponse> =>
+  login: (data: LoginRequest): Promise<AuthTokensResponse> =>
   {
-    return apiClient.request<AuthResponse>('/auth/login/email', {
+    return apiClient.request<AuthTokensResponse>('/auth/login/email', {
       method: 'POST',
       body: JSON.stringify(data),
-    }, AuthResponseSchema);
+    }, AuthTokensResponseSchema);
   },
 
   verifyEmailByUrl: (token: string): Promise<void> =>
@@ -74,11 +74,11 @@ export const authApi = {
     }, GoogleAuthUrlResponseSchema);
   },
 
-  handleGoogleCallback: (code: string, state: string): Promise<AuthResponse> =>
+  handleGoogleCallback: (code: string, state: string): Promise<AuthTokensResponse> =>
   {
-    return apiClient.request<AuthResponse>('/auth/oauth/google/callback', {
+    return apiClient.request<AuthTokensResponse>('/auth/oauth/google/callback', {
       method: 'POST',
       body: JSON.stringify({ code, state }),
-    }, AuthResponseSchema);
+    }, AuthTokensResponseSchema);
   },
 };

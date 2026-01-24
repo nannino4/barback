@@ -1,6 +1,6 @@
 import { AuthTokenManager } from '@/lib/auth-tokens';
 import { logger } from '@/lib/logger';
-import { RefreshTokenResponseSchema } from '@/types/auth';
+import { RefreshTokensResponseSchema } from '@/types/auth';
 import { ValidationError } from '@/lib/errors';
 import { generateRequestId, REQUEST_ID_HEADER } from '@/lib/request-id';
 
@@ -207,7 +207,7 @@ export class TokenRefreshService
       
       try
       {
-        const data = RefreshTokenResponseSchema.parse(rawData);
+        const data = RefreshTokensResponseSchema.parse(rawData);
         
         // Store new tokens
         AuthTokenManager.setTokens(data.access_token, data.refresh_token);

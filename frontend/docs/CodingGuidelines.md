@@ -21,6 +21,15 @@ Use Allman style braces (braces on their own line). Single-line blocks are allow
 - **Explicit Types**: Define types when inference isn't clear
 - **Null/Undefined Handling**: Explicit handling required
 
+### API & Type Naming (Zod + TS)
+- **API payloads**: Suffix with `Request` (request/body) and `Response` (response).
+  - Zod: `CreateOrganizationRequestSchema`, `OrganizationResponseSchema`
+  - TS: `CreateOrganizationRequest`, `OrganizationResponse`
+- **Shared enums**: Use neutral names (no suffix) when used by both sides (`OrgRole`, `SubscriptionStatus`).
+- **Forms**: `*FormSchema` + `*FormData` (client-only). Example: `RegisterFormData`.
+- **Location**: Keep API contracts in src/types/<domain>.ts; keep form schemas in src/types/<domain>-forms.ts.
+- **No mixing**: UI-only types must not use `Request`/`Response` suffixes.
+
 ## Import Patterns
 
 ### Consistent Import Strategy

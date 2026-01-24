@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { organizationApi } from '@/api/organization-api';
 import { ApiError } from '@/lib/errors';
 import { queryKeys } from '@/lib/queryKeys';
-import type { Organization } from '@/types/organization';
+import type { OrganizationResponse } from '@/types/organization';
 
 type CreateOrganizationWithRetryOptions = {
   organizationName: string;
@@ -52,7 +52,7 @@ export const useCreateOrganizationWithRetry = () =>
 
   const createOrganizationWithRetry = async (
     options: CreateOrganizationWithRetryOptions,
-  ): Promise<Organization> =>
+  ): Promise<OrganizationResponse> =>
   {
     for (let attempt = 1; attempt <= CREATE_ORG_MAX_ATTEMPTS; attempt += 1)
     {

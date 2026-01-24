@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { OrgRoleSchema, OrganizationPublicSchema } from './organization';
-import { UserPublicSchema } from './user';
+import { OrgRoleSchema, OrganizationPublicResponseSchema } from './organization';
+import { UserPublicResponseSchema } from './user';
 
 // ============================================================================
 // Zod Schemas - Single Source of Truth
@@ -27,13 +27,13 @@ export const InvitationStatusSchema = z.enum([
  * The backend always returns fully populated objects with nested user and org info,
  * never unpopulated ObjectId strings. This aligns with OutInvitationDto on the backend.
  */
-export const InvitationSchema = z.object({
+export const InvitationResponseSchema = z.object({
   id: z.string(),
   invitedEmail: z.string().email(),
   role: OrgRoleSchema,
   status: InvitationStatusSchema,
-  invitedBy: UserPublicSchema, // Populated user object (OutUserPublicDto)
-  organization: OrganizationPublicSchema, // Populated org object (OutOrgPublicDto)
+  invitedBy: UserPublicResponseSchema, // Populated user object (OutUserPublicDto)
+  organization: OrganizationPublicResponseSchema, // Populated org object (OutOrgPublicDto)
   createdAt: z.string().datetime(),
   expiresAt: z.string().datetime(),
 });
@@ -51,5 +51,5 @@ export const CreateInvitationRequestSchema = z.object({
 // ============================================================================
 
 export type InvitationStatus = z.infer<typeof InvitationStatusSchema>;
-export type Invitation = z.infer<typeof InvitationSchema>;
+export type InvitationResponse = z.infer<typeof InvitationResponseSchema>;
 export type CreateInvitationRequest = z.infer<typeof CreateInvitationRequestSchema>;

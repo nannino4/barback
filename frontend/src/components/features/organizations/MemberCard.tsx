@@ -7,11 +7,11 @@ import { OrgRoleBadge } from '@/components/features/organizations/OrgRoleBadge';
 import { UserInfo } from '@/components/user';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
-import type { OrganizationMembership } from '@/types/organization';
+import type { OrganizationMembershipResponse } from '@/types/organization';
 
 interface MemberCardProps
 {
-  member: OrganizationMembership;
+  member: OrganizationMembershipResponse;
   currentUserId: string;
   isOwner: boolean; // Is the viewing user the owner?
   onRemove?: (userId: string) => void;

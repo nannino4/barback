@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { UserSchema } from './user';
+import { UserResponseSchema } from './user';
 
 // ============================================================================
 // Zod Schemas - Single Source of Truth
@@ -11,17 +11,17 @@ import { UserSchema } from './user';
 /**
  * Auth response schema - validates login/register/refresh token responses
  */
-export const AuthResponseSchema = z.object({
+export const AuthTokensResponseSchema = z.object({
   access_token: z.string(),
   refresh_token: z.string(),
-  user: UserSchema,
+  user: UserResponseSchema,
 });
 
 /**
  * Refresh token response schema - validates token refresh responses
  * (No user object, just new tokens)
  */
-export const RefreshTokenResponseSchema = z.object({
+export const RefreshTokensResponseSchema = z.object({
   access_token: z.string(),
   refresh_token: z.string(),
 });
@@ -38,5 +38,6 @@ export const GoogleAuthUrlResponseSchema = z.object({
 // TypeScript Types - Derived from Zod Schemas
 // ============================================================================
 
-export type AuthResponse = z.infer<typeof AuthResponseSchema>;
+export type AuthTokensResponse = z.infer<typeof AuthTokensResponseSchema>;
+export type RefreshTokensResponse = z.infer<typeof RefreshTokensResponseSchema>;
 export type GoogleAuthUrlResponse = z.infer<typeof GoogleAuthUrlResponseSchema>;

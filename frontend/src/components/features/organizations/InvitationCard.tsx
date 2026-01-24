@@ -8,11 +8,11 @@ import { UserInfo } from '@/components/user';
 import { OrgRoleBadge } from './OrgRoleBadge';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
-import type { Invitation } from '@/types/invitation';
+import type { InvitationResponse } from '@/types/invitation';
 
 interface InvitationCardProps
 {
-  invitation: Invitation;
+  invitation: InvitationResponse;
   onAccept: (id: string) => void;
   onDecline: (id: string) => void;
   isAccepting?: boolean;

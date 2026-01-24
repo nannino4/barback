@@ -7,7 +7,7 @@ import { z } from 'zod';
 /**
  * Payment method card details schema
  */
-export const PaymentMethodCardSchema = z.object({
+export const PaymentMethodCardResponseSchema = z.object({
   brand: z.string(), // visa, mastercard, amex, etc.
   last4: z.string().length(4),
   expMonth: z.number().int().min(1).max(12),
@@ -17,10 +17,10 @@ export const PaymentMethodCardSchema = z.object({
 /**
  * Payment method schema
  */
-export const PaymentMethodSchema = z.object({
+export const PaymentMethodResponseSchema = z.object({
   id: z.string(), // Stripe payment method ID
   type: z.string(), // 'card', etc.
-  card: PaymentMethodCardSchema.optional(),
+  card: PaymentMethodCardResponseSchema.optional(),
   isDefault: z.boolean(),
 });
 
@@ -35,6 +35,6 @@ export const AddPaymentMethodRequestSchema = z.object({
 // TypeScript Types - Derived from Zod Schemas
 // ============================================================================
 
-export type PaymentMethodCard = z.infer<typeof PaymentMethodCardSchema>;
-export type PaymentMethod = z.infer<typeof PaymentMethodSchema>;
+export type PaymentMethodCardResponse = z.infer<typeof PaymentMethodCardResponseSchema>;
+export type PaymentMethodResponse = z.infer<typeof PaymentMethodResponseSchema>;
 export type AddPaymentMethodRequest = z.infer<typeof AddPaymentMethodRequestSchema>;

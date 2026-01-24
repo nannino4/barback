@@ -3,8 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/api/auth-api';
-import type { RegisterData, LoginData } from '@/types/auth-forms';
-import type { RegisterFormData } from '@/types/auth-forms';
+import type { RegisterRequest, LoginRequest, RegisterFormData, LoginFormData } from '@/types/auth-forms';
 import { useI18n } from '@/hooks/useI18n';
 import { notify } from '@/lib/notify';
 
@@ -24,7 +23,7 @@ export const useAuth = () =>
     mutationFn: (formData: RegisterFormData) =>
     {
       // Transform form data to API data (remove confirmPassword)
-      const apiData: RegisterData = {
+      const apiData: RegisterRequest = {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
@@ -61,7 +60,7 @@ export const useAuth = () =>
   });
 
   const loginMutation = useMutation({
-    mutationFn: (data: LoginData) => authApi.login(data),
+    mutationFn: (data: LoginRequest) => authApi.login(data),
     onSuccess: (response) =>
     {
       // Use user data directly from login response
@@ -95,7 +94,7 @@ export const useAuth = () =>
     registerMutation.mutate(data);
   };
 
-  const handleLogin = (data: LoginData) =>
+  const handleLogin = (data: LoginFormData) =>
   {
     loginMutation.mutate(data);
   };

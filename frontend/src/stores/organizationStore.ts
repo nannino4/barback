@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { OrganizationMembership } from '@/types/organization';
-import type { Invitation } from '@/types/invitation';
+import type { OrganizationMembershipResponse } from '@/types/organization';
+import type { InvitationResponse } from '@/types/invitation';
 
 /**
  * Organization store state interface
@@ -17,16 +17,16 @@ import type { Invitation } from '@/types/invitation';
 interface OrganizationStore
 {
   // Persisted state
-  currentOrg: OrganizationMembership | null;
+  currentOrg: OrganizationMembershipResponse | null;
 
   // In-memory state (refreshed on mount)
-  organizations: OrganizationMembership[];
-  pendingInvitations: Invitation[];
+  organizations: OrganizationMembershipResponse[];
+  pendingInvitations: InvitationResponse[];
 
   // Actions
-  setCurrentOrg: (org: OrganizationMembership | null) => void;
-  setOrganizations: (orgs: OrganizationMembership[]) => void;
-  setPendingInvitations: (invites: Invitation[]) => void;
+  setCurrentOrg: (org: OrganizationMembershipResponse | null) => void;
+  setOrganizations: (orgs: OrganizationMembershipResponse[]) => void;
+  setPendingInvitations: (invites: InvitationResponse[]) => void;
   clearOrganizationData: () => void;
 }
 

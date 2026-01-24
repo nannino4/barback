@@ -24,7 +24,7 @@ import { invitationApi } from '@/api/invitation-api';
 import { queryKeys } from '@/lib/queryKeys';
 import { CACHE_TIMES } from '@/constants/cacheTimes';
 import { MIN_LOADING_FEEDBACK_MS } from '@/constants/constants';
-import type { Subscription, SubscriptionStatusOnly } from '@/types/subscription';
+import type { SubscriptionResponse, SubscriptionStatusOnlyResponse } from '@/types/subscription';
 import type { OrgRole } from '@/types/organization';
 import { notify } from '@/lib/notify';
 
@@ -159,7 +159,7 @@ export const OrganizationManagePage: React.FC = () =>
   });
 
   // Combined subscription data - full subscription for owners, status only for others
-  const subscriptionData: Subscription | SubscriptionStatusOnly | undefined = isOwner 
+  const subscriptionData: SubscriptionResponse | SubscriptionStatusOnlyResponse | undefined = isOwner 
     ? subscription 
     : subscriptionStatus;
 

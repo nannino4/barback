@@ -225,7 +225,7 @@ class ApiClient
    * await apiClient.request('/auth/logout', { method: 'POST' });
    * 
    * // Typed response with validation
-   * const user = await apiClient.request('/users/me', { method: 'GET' }, UserSchema);
+  * const user = await apiClient.request('/users/me', { method: 'GET' }, UserResponseSchema);
    * 
    * // Custom timeout for long-running request
    * const report = await apiClient.request(

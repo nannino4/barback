@@ -154,7 +154,7 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 - **good to have**
   - [X] routes consolidation
   - [X] update toasters style and position
-  - [ ] consolidate type names for requests/responses schemas to/from backend
+  - [X] consolidate type names for requests/responses schemas to/from backend
   - [X] autofocus first input on modals and forms
   - [X] `enter` key goes to next input or submits form
   - [ ] consolidate loading states (skeletons, spinners)

@@ -221,6 +221,11 @@ Unified guard now restricts authenticated operations until email is verified. Ex
   - [X] `POST /api/orgs/:orgId/products` - Create product
   - [X] `PUT /api/orgs/:orgId/products/:id` - Update product
   - [X] `DELETE /api/orgs/:orgId/products/:id` - Delete product
+- [ ] **Preset Product Images**:
+  - [ ] Upload preset product images to cloud storage (organized by category: spirits, wine, beer, mixers, other)
+  - [ ] Create API endpoint to list available preset images: `GET /api/preset-images`
+  - [ ] Store image references as preset image IDs (not custom URLs) in Product schema
+  - [ ] Update Product DTOs to use `imageId` instead of `imageUrl`
 
 #### Inventory Management
 - [X] **Data Layer Setup**:

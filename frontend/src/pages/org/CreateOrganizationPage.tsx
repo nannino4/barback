@@ -171,7 +171,7 @@ export const CreateOrganizationPage: React.FC = () =>
    */
   const handleSuccess = (orgId: string) =>
   {
-    void navigate(`${ROUTES.ORGS.DETAIL.replace(':orgId', orgId)}`, { state: { userOrgRole: 'OWNER' } });
+    void navigate(ROUTES.ORGS.detail(orgId), { state: { userOrgRole: 'OWNER' } });
   };
 
   /**

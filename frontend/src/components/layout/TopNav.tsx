@@ -124,7 +124,7 @@ export const TopNav: React.FC = () =>
                 {/* Organization Settings - Role-gated (owner/manager only) */}
                 {canAccessOrgSettings && (
                   <Link
-                    to={ROUTES.ORGS.DETAIL.replace(':orgId', currentOrg.org.id)}
+                    to={ROUTES.ORGS.detail(currentOrg.org.id)}
                     className={cn(
                       'flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                       'hover:bg-muted',

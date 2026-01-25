@@ -209,6 +209,18 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [ ] Inline category creation option
   - [ ] Validation: name required, unit required
 
+###### Checkpoints
+
+| Checkpoint | Description |
+|------------|-------------|
+| [X] **1** | **Inventory Page Layout** - Page structure, header with title/count, Add Product button, toolbar (search + filters as placeholders) |
+| [ ] **2** | **Product List Skeleton & Empty State** - Loading skeletons, empty state when no products |
+| [ ] **3** | **Product Row Component** - Display product info, low-stock indicator, adjust button |
+| [ ] **4** | **Products Hook & API Integration** - `useProducts` hook, connect to real API, display products |
+| [ ] **5** | **Search & Category Filter** - Client-side filtering implementation |
+| [ ] **6** | **Stock Adjustment Sheet** - Full adjustment sheet with smart default behavior |
+| [ ] **7** | **Product Create/Edit Form** - Form for creating/editing products |
+
 ##### **Organization Settings - Products & Categories**
 - [ ] Add Products section to Organization Settings
   - [ ] Products list card/expandable section

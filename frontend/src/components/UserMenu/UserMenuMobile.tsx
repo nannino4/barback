@@ -169,7 +169,7 @@ export const UserMenuMobile: React.FC = () =>
                   )}
                 >
                   <Link
-                    to={ROUTES.ORGS.DETAIL.replace(':orgId', currentOrg.org.id)}
+                    to={ROUTES.ORGS.detail(currentOrg.org.id)}
                     onClick={() =>
                     {
                       setSheetOpen(false);

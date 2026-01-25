@@ -18,9 +18,21 @@ export const ROUTES = {
   ORGS: {
     ROOT: '/orgs',
     CREATE: '/orgs/create',
+    // Route patterns (for <Route path={...}>)
     DETAIL: '/orgs/:orgId',
-    // Organization settings - accessible via org detail page (role-gated)
     SETTINGS: '/orgs/:orgId/settings',
+    // Typed builders (for navigation)
+    detail: (orgId: string) => `/orgs/${orgId}` as const,
+    settings: (orgId: string) => `/orgs/${orgId}/settings` as const,
+    // Products within organization
+    PRODUCTS: {
+      // Route patterns
+      ROOT: '/orgs/:orgId/products',
+      DETAIL: '/orgs/:orgId/products/:productId',
+      // Typed builders
+      root: (orgId: string) => `/orgs/${orgId}/products` as const,
+      detail: (orgId: string, productId: string) => `/orgs/${orgId}/products/${productId}` as const,
+    },
   },
 
   // Users

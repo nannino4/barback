@@ -43,7 +43,7 @@ export function MorePage()
       label: t('nav.orgSettings'),
       description: t('more.orgSettingsDescription'),
       to: currentOrg 
-        ? ROUTES.ORGS.DETAIL.replace(':orgId', currentOrg.org.id)
+        ? ROUTES.ORGS.detail(currentOrg.org.id)
         : ROUTES.ORGS.ROOT,
       show: !!canAccessOrgSettings,
     },

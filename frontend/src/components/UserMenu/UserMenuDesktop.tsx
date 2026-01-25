@@ -87,7 +87,7 @@ export const UserMenuDesktop: React.FC = () =>
         {/* Organization Settings - Role-gated (owner/manager only) */}
         {canAccessOrgSettings && (
           <DropdownMenuItem asChild className="cursor-pointer">
-            <Link to={ROUTES.ORGS.DETAIL.replace(':orgId', currentOrg.org.id)}>
+            <Link to={ROUTES.ORGS.detail(currentOrg.org.id)}>
               <Icon mode="inline" size="sm" className="mr-2">
                 <Settings />
               </Icon>

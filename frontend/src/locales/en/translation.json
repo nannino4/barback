@@ -28,7 +28,9 @@
         "no": "No",
         "showAll": "Show all",
         "showLess": "Show less",
-        "dangerZone": "Danger Zone"
+        "dangerZone": "Danger Zone",
+        "add": "Add",
+        "clear": "Clear"
     },
     "auth": {
         "login": {
@@ -495,7 +497,26 @@
     },
     "inventory": {
         "title": "Inventory",
-        "placeholder": "Inventory management features coming soon!"
+        "placeholder": "Inventory management features coming soon!",
+        "addProduct": "Add Product",
+        "productCount": "products",
+        "productCount_one": "product",
+        "productCount_other": "products",
+        "searchPlaceholder": "Search products...",
+        "allCategories": "All Categories",
+        "filterStatus": "Showing {{showing}} of {{total}} products",
+        "clearFilters": "Clear filters",
+        "adjustStock": "Adjust stock",
+        "category": "Category",
+        "uncategorized": "Uncategorized",
+        "empty": {
+            "title": "No products yet",
+            "description": "Add your first product to start tracking inventory"
+        },
+        "noResults": {
+            "title": "No products found",
+            "description": "Try adjusting your search or filters"
+        }
     },
     "alerts": {
         "title": "Alerts",

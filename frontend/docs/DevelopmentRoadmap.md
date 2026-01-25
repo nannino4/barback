@@ -180,44 +180,62 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 - [X] Update i18n keys for nav labels and menu strings
 - [X] Update UX docs references and any onboarding text
 
-### **Sprint 5-6: Inventory Hub (Products + Categories)**
+### **Sprint 5-6: Inventory Hub & Organization Products/Categories Management**
 
 #### **Sprint Goals**
-- [ ] Build Inventory Hub layout with tabs/segments
-- [ ] Implement Inventory Overview header (low stock summary + quick actions)
-- [ ] Build Products tab (CRUD operations)
-- [ ] Build Categories tab (CRUD operations)
-- [ ] Implement stock adjustment system (inline quick adjust)
 
-#### **Inventory Hub Tasks**
-- [ ] Create Inventory layout with **Products** (default) and **Categories** tabs
-- [ ] Add search + filters (category, low-stock) to Products view
-- [ ] Add primary action (Add Product) with FAB on mobile
-- [ ] Add empty states for no products / no categories
-- [ ] Add loading states (skeletons) for list views
+##### **Inventory Page (Operative)**
+- [ ] Build Inventory Page layout (operative, no tabs)
+  - [ ] Product list with search + filters (category, low-stock)
+  - [ ] Add Product button above the list (no FAB)
+  - [ ] Empty state for no products
+  - [ ] Loading states (skeletons) for list view
+  - [ ] All products loaded at once (no pagination for MVP)
+- [ ] Build Product List (with stock adjustment)
+  - [ ] Products list: name, brand, category, unit, current quantity
+  - [ ] Row actions: quick adjust stock (opens adjustment sheet)
+  - [ ] Low stock indicator styling
+  - [ ] Product count calculated client-side per category
+- [ ] Build Stock Adjustment Sheet/Dialog
+  - [ ] Complete but compact single component for all use cases
+  - [ ] One-click access from product row
+  - [ ] Default reason that changes dynamically (increase/decrease)
+  - [ ] Manual reason selection locks auto-change
+  - [ ] Visual feedback for invalid reason/operation type combination
+  - [ ] Quantity input with preview of new stock level
+- [ ] Build Product Create/Edit Form (sheet/dialog)
+  - [ ] Full form with all product fields
+  - [ ] Inline category creation option
+  - [ ] Validation: name required, unit required
 
-#### **Products Tab Tasks**
-- [ ] Products list: name, category, unit, par level, current quantity
-- [ ] Row actions: edit, archive, quick adjust (+/-)
-- [ ] Product create/edit form (modal or sheet)
-- [ ] Validation: name required, unit required, par level numeric
-- [ ] Low stock indicator styling
-- [ ] Bulk actions (optional for MVP, can be deferred)
+##### **Organization Settings - Products & Categories**
+- [ ] Add Products section to Organization Settings
+  - [ ] Products list card/expandable section
+  - [ ] Full CRUD: create, edit, delete products
+  - [ ] Delete product only from product detail
+- [ ] Add Categories section to Organization Settings
+  - [ ] Categories tree/list card/expandable section
+  - [ ] Full CRUD: create, edit, delete categories
+  - [ ] Product count per category (calculated client-side)
+  - [ ] Validation: name required, unique per org
 
-#### **Categories Tab Tasks**
-- [ ] Categories list with product counts
-- [ ] Inline add/edit category (modal or inline row edit)
-- [ ] Category detail view or filtered products list
-- [ ] Validation: name required, unique per org
+##### **Stock Adjustment System**
+- [ ] Single Stock Adjustment Sheet/Dialog component
+  - [ ] Complete but compact - serves all use cases
+  - [ ] Adjustment types: Purchase, Consumption, Adjustment, Stocktake
+  - [ ] Smart default reason (auto-changes with +/- until manual selection)
+  - [ ] Visual feedback for reason/operation type mismatch
+  - [ ] Quantity input with preview of new stock level
+  - [ ] Note field for additional context
+  - [ ] Role rules: All roles can adjust stock
 
-#### **Adjustments Tasks**
-- [ ] Stock adjustment dialog with reason codes
-- [ ] Adjustment log list (deferred if needed)
-- [ ] Inline quick adjust buttons on product rows (+/-)
-- [ ] Require reason code for every adjustment
-- [ ] Confirmation step shows delta and final quantity
-- [ ] Role rules: Staff can adjust; Manager/Owner can edit or delete adjustments
-- [ ] Undo toast for recent adjustments
+##### **Architecture Decisions (Sprint 5-6)**
+- **No pagination**: All products loaded at once (assume < 1000 products for MVP)
+- **No FAB**: Add Product button above the list (saves screen space)
+- **No archive**: Delete only, and only from product detail page
+- **No tabs in Inventory**: Operative view only
+- **Categories in Org Settings**: Not in Inventory page
+- **Client-side product counts**: No backend changes needed for MVP
 
 ---
 

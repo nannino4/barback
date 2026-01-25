@@ -1,23 +1,50 @@
-# Category Management
+# Category Management (Organization Settings)
 
 ## Feature Overview
 
 Category management enables organization members to organize products into hierarchical groups for better inventory organization. Categories support parent-child relationships, allowing for nested structures like "Spirits > Whiskey > Bourbon". All category operations are scoped to the user's current organization.
 
+## Location
+
+```
+Organization Settings
+├── Overview (name, timezone)
+├── Members
+├── Products
+└── Categories ← THIS DOCUMENT
+```
+
+**Note**: Category management is only available in Organization Settings, not in the Inventory page. The Inventory page is operative-only (focused on daily stock operations).
+
+## Access Control
+
+```
+Role Permissions:
+├── Owner: Full access (create, edit, delete)
+├── Manager: Full access (create, edit, delete)
+└── Staff: View only (no CRUD)
+```
+
+## Key Features
+
+- **Hierarchical structure**: Parent-child relationships for nested categories
+- **Product count**: Displayed per category (calculated client-side)
+- **Used in**: Product filtering, product assignment
+- **Inline creation**: Categories can also be created from the product form
+
 ## User Experience Flows
 
 ### Category List View Flow
 
-#### Initial Category Loading Journey
 ```
 1. User Navigates to Categories
-   ├── From sidebar navigation
-   ├── From products page
-   └── Deep link /orgs/:orgId/categories
+   ├── From Organization Settings (primary path)
+   └── Categories section/card in org settings
    ↓
-2. Categories Page (/orgs/:orgId/categories)
+2. Categories Section in Org Settings
    ├── Loading state with skeleton
    ├── API call: GET /api/orgs/:orgId/categories
+   ├── Product count calculated client-side
    └── Cache check for existing data
    ↓
 3. Category List Display
@@ -29,13 +56,13 @@ Category management enables organization members to organize products into hiera
    └── Empty state if no categories
    ↓
 4. User Interaction Ready
-   ├── Click category to view details
    ├── Add new category button
    ├── Edit/delete actions (owners/managers)
-   └── Search/filter categories
+   └── Search/filter categories (optional)
 ```
 
-#### Category Tree Interaction
+### Category Tree Interaction
+
 ```
 Tree Structure Display:
 ├── Spirits (expandable)
@@ -52,17 +79,16 @@ Tree Structure Display:
 │   └── Sparkling
 ├── Beer
 └── Mixers
-```
 
 Interaction States:
-- Collapsed: Shows only parent, + icon
-- Expanded: Shows all children, - icon
-- Loading: Spinner while fetching children
-- Selected: Highlighted background
+├── Collapsed: Shows only parent, + icon
+├── Expanded: Shows all children, - icon
+├── Loading: Spinner while fetching children
+└── Selected: Highlighted background
+```
 
 ### Create Category Flow
 
-#### New Category Creation Journey
 ```
 1. User Initiates Category Creation
    ├── Click "Add Category" button
@@ -98,39 +124,12 @@ Interaction States:
        └── Focus on problematic field
 ```
 
-#### Category Form Validation Details
-```
-Field Validation Rules:
-
-Name Field:
-├── Required
-├── Max length: 255 characters
-├── Trim whitespace
-├── Show character count
-└── Unique within organization (server-side)
-
-Description Field:
-├── Optional
-├── Max length: 500 characters
-├── Multiline text area
-└── Show character count when typing
-
-Parent Category Field:
-├── Optional dropdown/select
-├── Searchable for large lists
-├── Shows category hierarchy
-├── Excludes current category (on edit)
-└── Excludes descendants (on edit - prevents circular)
-```
-
 ### Edit Category Flow
 
-#### Category Update Journey
 ```
 1. User Initiates Edit
    ├── Click edit icon on category row
-   ├── Click category → Edit button
-   └── Right-click context menu → Edit
+   └── Click category → Edit button
    ↓
 2. Edit Form Display
    ├── Pre-filled with current values
@@ -157,12 +156,13 @@ Parent Category Field:
        └── Form remains open
 ```
 
-#### Parent Category Change Validation
+### Parent Category Change Validation
+
 ```
 When Changing Parent Category:
-1. Cannot set parent to itself
-2. Cannot set parent to a descendant
-3. Backend validates circular reference prevention
+├── Cannot set parent to itself
+├── Cannot set parent to a descendant
+└── Backend validates circular reference prevention
 
 Visual Feedback:
 ├── Invalid parents disabled in dropdown
@@ -172,12 +172,10 @@ Visual Feedback:
 
 ### Delete Category Flow
 
-#### Category Deletion Journey
 ```
 1. User Initiates Delete
    ├── Click delete icon on category
-   ├── Category details → Delete button
-   └── Context menu → Delete
+   └── Category row → Delete button
    ↓
 2. Deletion Check
    ├── Check for child categories
@@ -211,54 +209,62 @@ Visual Feedback:
        └── Category remains in place
 ```
 
-### Category Search and Filter Flow
+## Form Validation Rules
 
-#### Filtering Categories
 ```
-1. Search Input
-   ├── Search bar at top of category list
-   ├── Filter by name (partial match)
-   └── Debounced search (300ms)
-   ↓
-2. Filter Application
-   ├── Client-side filtering (small lists)
-   │   ├── Filter categories by name
-   │   ├── Show matching parents expanded
-   │   └── Highlight matching text
-   └── Server-side filtering (large lists)
-       ├── API call with search parameter
-       └── Return matching categories
-   ↓
-3. Filter Results
-   ├── Matching categories displayed
-   ├── "No results" state if empty
-   └── Clear filter button
+Name Field:
+├── Required
+├── Max length: 255 characters
+├── Trim whitespace
+├── Show character count
+└── Unique within organization (server-side)
+
+Description Field:
+├── Optional
+├── Max length: 500 characters
+├── Multiline text area
+└── Show character count when typing
+
+Parent Category Field:
+├── Optional dropdown/select
+├── Searchable for large lists
+├── Shows category hierarchy
+├── Excludes current category (on edit)
+└── Excludes descendants (on edit - prevents circular)
 ```
 
 ## UI Components
 
 ### Category List Component
+
 ```
 CategoryList
 ├── Header
 │   ├── Title: "Categories"
-│   ├── Search input
-│   └── Add Category button (if authorized)
-├── View Toggle
+│   ├── Search input (optional)
+│   └── Add Category button (Owner/Manager)
+├── View Toggle (optional)
 │   ├── Tree view (default)
 │   └── Flat list view
 ├── Category Tree/List
 │   ├── CategoryTreeItem (recursive)
 │   │   ├── Expand/collapse control
 │   │   ├── Category name
-│   │   ├── Product count badge
-│   │   └── Action buttons (edit/delete)
+│   │   ├── Product count badge (calculated client-side)
+│   │   └── Action buttons (edit/delete) - Owner/Manager only
 │   └── Loading/Empty states
 └── Footer
     └── Category count
+
+Product Count Calculation:
+├── All products loaded in memory
+├── Count products per category client-side
+├── Include products in child categories (optional)
+└── Update counts when products change
 ```
 
 ### Category Form Component
+
 ```
 CategoryForm
 ├── Modal/Panel Container
@@ -287,33 +293,28 @@ CategoryForm
 
 ## Mobile Considerations
 
-### Mobile Category List
 ```
-Mobile Optimizations:
-├── Full-width list items
-├── Swipe actions (edit, delete)
+Mobile Category List (in Org Settings):
+├── Full-width list items within settings section
 ├── Touch-friendly expand/collapse
 ├── Bottom sheet for category form
 ├── Pull-to-refresh
-└── Floating action button for add
+├── Add category button at top of section
+└── Product count badge on each category
 
 Touch Targets:
 ├── Min 44px height for list items
 ├── Expand button: 44x44px minimum
 ├── Action buttons: adequate spacing
 └── Clear tap feedback
-```
 
-### Mobile Category Form
-```
-Mobile Form Adaptations:
+Mobile Category Form:
 ├── Full-screen modal or bottom sheet
 └── Auto-focus on first field
 ```
 
 ## Error Handling
 
-### Common Error Scenarios
 ```
 Category Fetch Errors:
 ├── Network error → Retry button + cached data
@@ -337,3 +338,8 @@ Category Delete Errors:
 ├── 409 Has dependencies → Show dependency info
 └── 500 Server error → Generic error + retry
 ```
+
+## Related Documentation
+
+- [Products (Org Settings)](products.md) - Product CRUD with category assignment
+- [Product List (Inventory)](../inventory/product-list.md) - Category filter in operative view

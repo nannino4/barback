@@ -19,9 +19,14 @@ Barback MVP Structure
 │   ├── Team Invitations (Owner/Manager)
 │   └── Role Management
 └── 📱 Core App
-    ├── 📦 Inventory (Overview, Products, Categories)
+    ├── 📦 Inventory (Operative: Product list + Stock adjustments)
     ├── 🚨 Alerts (Low stock, critical items)
-    └── ⚙️ Organization Settings (Members, Categories, Products)
+    ├── ⚙️ Organization Settings
+    │   ├── Overview (name, timezone)
+    │   ├── Members
+    │   ├── Products (full CRUD, admin view)
+    │   └── Categories (full CRUD, tree/list)
+    └── 👤 User Profile
 ```
 
 ## User Roles & Key Behaviors
@@ -152,28 +157,44 @@ Total: 5-15 minutes per session
 - **Top bar organization switcher** is always visible to keep context explicit.
 - **User menu** is for account + preferences only.
 
-### Inventory Hub (Primary Workspace)
-- **Top section: Inventory Overview**
-    - Low-stock summary, critical items, quick actions.
-- **Tabs/Segments** within Inventory:
-    - **Products** (default)
-    - **Categories**
+### Inventory Page (Operative Workspace)
+- **Single operative view** - no tabs, focused on daily stock operations.
+- **Product list** with search, category filter, low-stock filter.
+- **Stock adjustment** accessible with one click from any product row.
+- **Add Product button** above the list (no FAB to save screen space).
 - **Products view**
-    - Search, category filter, low-stock filter.
-    - Inline quick adjust (+/-) and row actions (edit/archive).
-    - Primary action: Add product (FAB on mobile).
-- **Categories view**
-    - Simple list with product counts.
-    - Add/edit category inline or modal.
-    - Category detail shows products in that category.
+    - All products loaded at once (no pagination for MVP).
+    - Product count per category calculated client-side.
+    - Inline quick adjust opens stock adjustment sheet.
+    - Row actions: adjust stock (primary), view details.
+    - Low stock indicator on product rows.
 
-### Organization Settings
+### Stock Adjustment Sheet/Dialog
+- **Single, complete but compact component** for all stock operations.
+- **One-click access** from product row in inventory list.
+- **Adjustment types**: Purchase, Consumption, Adjustment, Stocktake.
+- **Smart default reasons**:
+    - Default reason changes dynamically based on increase/decrease.
+    - Once user manually selects a reason, auto-change stops.
+    - Visual feedback when reason doesn't match operation type.
+- **Quantity input** with real-time preview of new stock level.
+- **Note field** for additional context.
+
+### Organization Settings (Admin Workspace)
 - Single settings area for org-level tasks, role-gated:
     - **Overview** (name, timezone)
     - **Members**
-    - **Categories**
-    - **Products**
+    - **Products** (full CRUD, admin list view)
+    - **Categories** (full CRUD, tree/list view)
+- Products and Categories sections as cards or expandable sheets.
+- **Product deletion** only available from product detail view.
+- **Category management** includes product count (calculated client-side).
 - Rationale: org admin tasks are not personal account actions and should not live in the user menu.
+
+### Product Creation
+- Available from both Inventory page and Organization Settings.
+- **Inline category creation** option within product form.
+- Full form with all product fields.
 
 ### Alerts
 - Separate view for low-stock items and critical alerts.

@@ -186,7 +186,8 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 
 ##### **Inventory Page (Operative)**
 - [ ] Build Inventory Page layout (operative, no tabs)
-  - [ ] Product list with search + filters (category, low-stock)
+  - [ ] Product list with search + filters (category)
+  - [ ] (DEFERRED) Low-stock filter - requires parLevel field in backend
   - [ ] Add Product button above the list (no FAB)
   - [ ] Empty state for no products
   - [ ] Loading states (skeletons) for list view
@@ -194,7 +195,7 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 - [ ] Build Product List (with stock adjustment)
   - [ ] Products list: name, brand, category, unit, current quantity
   - [ ] Row actions: quick adjust stock (opens adjustment sheet)
-  - [ ] Low stock indicator styling
+  - [ ] (DEFERRED) Low stock indicator styling - requires parLevel field
   - [ ] Product count calculated client-side per category
 - [ ] Build Stock Adjustment Sheet/Dialog
   - [ ] Complete but compact single component for all use cases
@@ -236,6 +237,8 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 - **No tabs in Inventory**: Operative view only
 - **Categories in Org Settings**: Not in Inventory page
 - **Client-side product counts**: No backend changes needed for MVP
+- **Low-stock deferred**: Requires parLevel field in backend (future sprint)
+- **Product images**: Preset library + custom upload (upload requires existing product)
 
 ---
 

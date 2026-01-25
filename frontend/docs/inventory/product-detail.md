@@ -30,6 +30,7 @@ Access Points:
 3. Product Information Display
    ├── Header Section
    │   ├── Product image (large)
+   │   │   └── Preset image or custom uploaded image
    │   ├── Name and brand
    │   ├── Edit button (Owner/Manager only)
    │   └── Delete button (Owner/Manager only)
@@ -41,7 +42,7 @@ Access Points:
    ├── Stock Section
    │   ├── Current quantity (prominent)
    │   ├── Adjust stock button
-   │   └── Low stock warning (if applicable)
+   │   └── (DEFERRED) Low stock warning - requires parLevel field
    └── History Section
        ├── Recent inventory logs preview
        └── "View all history" link
@@ -91,7 +92,7 @@ ProductDetails
 
 ```
 Mobile Details Layout:
-├── Large hero image (preset image)
+├── Large hero image (preset or custom uploaded)
 ├── Prominent stock display with adjust button
 ├── Collapsible info sections
 ├── Bottom sheet for actions menu

@@ -72,13 +72,15 @@ Mobile Row Layout (Compact):
 └───────────────────────────────────────────────────┘
 
 Visible columns:
-├── Product image (thumbnail from preset pool)
+├── Product image (preset or custom uploaded image)
+│   └── Preset: searchable image library
+│   └── Custom: user uploads after product creation
 ├── Product name (primary text)
 ├── Brand (secondary text, if available)
 ├── Category (badge or text)
 ├── Current Quantity (PROMINENT - key info)
 ├── Unit of measure
-├── Low stock indicator (when below threshold)
+├── Low stock indicator (DEFERRED - parLevel not yet in backend)
 └── Adjust stock button (±) - opens adjustment sheet
 
 Row interactions:
@@ -155,8 +157,8 @@ ProductList
 │   └── Add Product button (always visible, above list)
 ├── Toolbar
 │   ├── Search input
-│   ├── Category filter (dropdown or chips)
-│   └── Low-stock filter toggle
+│   └── Category filter (dropdown or chips)
+│   └── (DEFERRED) Low-stock filter toggle - requires parLevel field in backend
 ├── Product List
 │   ├── ProductRow (for each product)
 │   └── Loading/Empty states
@@ -170,7 +172,8 @@ ProductList
 ProductRow
 ├── Image Section (left)
 │   ├── Product image thumbnail (40x40 or 48x48)
-│   └── Default placeholder if no image
+│   │   └── From preset library or custom uploaded image
+│   └── Default placeholder if no image (category icon or generic)
 ├── Info Section (center, flexible)
 │   ├── Product name (primary text, bold)
 │   ├── Brand (secondary text, muted)
@@ -178,7 +181,7 @@ ProductRow
 ├── Stock Section (right-aligned)
 │   ├── Current quantity (large/bold)
 │   ├── Unit of measure
-│   └── Low stock indicator (⚠️ icon or color)
+│   └── (DEFERRED) Low stock indicator - requires parLevel field
 └── Actions Section (far right)
     └── Adjust stock button (± icon)
         └── Opens stock adjustment sheet (one click)

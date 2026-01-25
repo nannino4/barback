@@ -43,7 +43,9 @@ Role Permissions:
    │   ├── Name (required)
    │   ├── Brand (optional)
    │   ├── Description (optional)
-   │   └── Product Image (select from presets)
+   │   └── Product Image
+   │       ├── Option 1: Select from preset library (searchable)
+   │       └── Option 2: Upload custom image (after product creation)
    ├── Inventory Settings
    │   ├── Unit of measure (required)
    │   ├── Initial quantity (optional, default 0)
@@ -175,8 +177,11 @@ Initial Quantity Field:
 
 Product Image Field:
 ├── Optional
-├── Select from preset image pool (not custom URLs)
-├── Image picker UI with category-organized presets
+├── Two options:
+│   ├── Select from preset image library (searchable by name/category)
+│   └── Upload custom image (only available AFTER product creation)
+├── Preset images: stored as URL in imageUrl field
+├── Custom images: uploaded via separate API call, then imageUrl updated
 └── Default placeholder when no image selected
 
 Categories Field:
@@ -203,10 +208,11 @@ ProductForm
 │   ├── Name input
 │   ├── Brand input
 │   ├── Description textarea
-│   └── Image picker (select from presets)
+│   └── Image picker
 │       ├── Current image preview
-│       ├── "Change image" button
-│       └── Opens ImagePickerDialog
+│       ├── "Choose from library" button → Opens ImagePickerDialog
+│       ├── "Upload custom" button (edit mode only) → File upload
+│       └── "Remove image" button (if image set)
 ├── Inventory Section
 │   ├── Section header
 │   ├── Unit of measure input
@@ -229,19 +235,28 @@ ProductForm
 ImagePickerDialog
 ├── Dialog/Sheet Container
 ├── Header: "Select Product Image"
+├── Search Input (search by image name)
 ├── Category Tabs (to organize preset images)
+│   ├── All
 │   ├── Spirits
 │   ├── Wine
 │   ├── Beer
 │   ├── Mixers
 │   └── Other
-├── Image Grid (preset images)
+├── Image Grid (preset images from API)
 │   ├── Selectable image thumbnails
 │   ├── Selected state highlight
 │   └── "No image" option
 └── Actions
     ├── Cancel button
     └── Select button
+
+Custom Image Upload (Edit Mode Only):
+├── File picker (images only)
+├── Client-side validation (size, format)
+├── Upload progress indicator
+├── API: POST /api/orgs/:orgId/products/:productId/image
+└── Success: imageUrl updated, preview refreshed
 ```
 
 ## Mobile Considerations

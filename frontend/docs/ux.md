@@ -122,7 +122,7 @@ Total: 5-15 minutes per session
 - **Bottom Tabs**: Primary navigation (Inventory, Alerts, More)
 - **Top Bar**: Organization switcher visible at all times
 - **Header Search**: Product search inside Inventory
-- **Floating Action Button**: Add product (Inventory screen)
+- **Add Product Button**: Above the list in Inventory screen (not a FAB)
 - **Back Button**: Consistent navigation hierarchy
 
 ### Feedback
@@ -159,7 +159,8 @@ Total: 5-15 minutes per session
 
 ### Inventory Page (Operative Workspace)
 - **Single operative view** - no tabs, focused on daily stock operations.
-- **Product list** with search, category filter, low-stock filter.
+- **Product list** with search, category filter.
+- **(DEFERRED) Low-stock filter** - requires parLevel field in backend.
 - **Stock adjustment** accessible with one click from any product row.
 - **Add Product button** above the list (no FAB to save screen space).
 - **Products view**
@@ -167,7 +168,7 @@ Total: 5-15 minutes per session
     - Product count per category calculated client-side.
     - Inline quick adjust opens stock adjustment sheet.
     - Row actions: adjust stock (primary), view details.
-    - Low stock indicator on product rows.
+    - (DEFERRED) Low stock indicator on product rows - requires parLevel field.
 
 ### Stock Adjustment Sheet/Dialog
 - **Single, complete but compact component** for all stock operations.

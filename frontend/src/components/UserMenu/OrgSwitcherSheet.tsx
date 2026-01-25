@@ -6,6 +6,7 @@ import { Icon } from '@/components/ui/icon';
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -68,6 +69,9 @@ export const OrgSwitcherSheet: React.FC = () =>
               <InvitationsBadge showIcon />
             </Stack>
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            {t('organizations.selectDescription')}
+          </SheetDescription>
         </SheetHeader>
 
         {/* Organization List */}

@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingCart } from 'lucide-react';
+import { Package, Bell, MoreHorizontal } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 import { useAuthStore } from '@/stores/authStore';
 import { cn } from '@/lib/utils';
 import { useOrganizationStore } from '@/stores/organizationStore';
+import { ROUTES } from '@/constants/routes';
 
 interface NavItem
 {
@@ -16,12 +17,17 @@ interface NavItem
 /**
  * BottomNav - Mobile-only bottom navigation bar
  * 
+ * Updated IA (Sprint 4.5):
+ * - Inventory (default landing) 
+ * - Alerts (low stock, critical items)
+ * - More (additional actions, settings)
+ * 
  * Features:
  * - Only visible on mobile devices (hidden on md+ screens)
- * - Only visible when user is authenticated
+ * - Only visible when user is authenticated with org context
  * - Fixed to bottom of viewport
  * - Active state indication with primary color
- * - Touch-friendly spacing
+ * - Touch-friendly spacing (44px minimum touch targets)
  */
 export const BottomNav: React.FC = () =>
 {
@@ -36,6 +42,7 @@ export const BottomNav: React.FC = () =>
     return null;
   }
 
+  // Don't render if no organization is selected
   if (!currentOrg)
   {
     return null;
@@ -43,19 +50,19 @@ export const BottomNav: React.FC = () =>
 
   const navItems: NavItem[] = [
     {
-      label: t('nav.dashboard'),
-      path: '/dashboard',
-      icon: LayoutDashboard,
-    },
-    {
       label: t('nav.inventory'),
-      path: '/inventory',
+      path: ROUTES.INVENTORY,
       icon: Package,
     },
     {
-      label: t('nav.orders'),
-      path: '/orders',
-      icon: ShoppingCart,
+      label: t('nav.alerts'),
+      path: ROUTES.ALERTS,
+      icon: Bell,
+    },
+    {
+      label: t('nav.more'),
+      path: ROUTES.MORE,
+      icon: MoreHorizontal,
     },
   ];
 
@@ -72,8 +79,8 @@ export const BottomNav: React.FC = () =>
               key={item.path}
               to={item.path}
               className={cn(
-                'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors min-w-[4.5rem]',
-                'hover:bg-muted',
+                'flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-lg transition-colors min-w-[4.5rem] min-h-touch',
+                'hover:bg-muted active:bg-muted',
                 isActive
                   ? 'text-primary'
                   : 'text-muted-foreground',

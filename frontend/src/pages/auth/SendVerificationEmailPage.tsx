@@ -13,6 +13,7 @@ import { useI18n } from '@/hooks/useI18n';
 import { useCooldown } from '@/hooks/useCooldown';
 import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
 import { EMAIL_RESEND_COOLDOWN_MS } from '@/constants/constants';
+import { ROUTES } from '@/constants/routes';
 
 type SendStatus = 'idle' | 'success' | 'error';
 
@@ -36,7 +37,7 @@ export const SendVerificationEmailPage: React.FC = () =>
   {
     if (user?.isEmailVerified)
     {
-      void navigate('/dashboard', { replace: true });
+      void navigate(ROUTES.INVENTORY, { replace: true });
     }
   }, [user?.isEmailVerified, navigate, t]);
 
@@ -64,7 +65,7 @@ export const SendVerificationEmailPage: React.FC = () =>
         // Email already verified - treat as success
         if (error.error === 'EMAIL_ALREADY_VERIFIED')
         {
-          void navigate('/dashboard', { replace: true });
+          void navigate(ROUTES.INVENTORY, { replace: true });
           return;
         }
         // Other 400 errors fall through to default

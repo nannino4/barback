@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Home, LogIn, LayoutDashboard, ArrowLeft } from 'lucide-react';
+import { Home, LogIn, Package, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
 import { useAuthStore } from '@/stores/authStore';
 import { useSmartBack } from '@/hooks/useSmartBack';
+import { ROUTES } from '@/constants/routes';
 
 /**
  * NotFoundPage - 404 error page
@@ -60,9 +61,9 @@ export const NotFoundPage: React.FC = () =>
           {/* Conditional navigation based on auth status */}
           {isAuthenticated ? (
             <Button asChild className="w-full">
-              <Link to="/dashboard">
-                <LayoutDashboard className="mr-2 h-4 w-4" />
-                {t('errors.notFound.goDashboard')}
+              <Link to={ROUTES.INVENTORY}>
+                <Package className="mr-2 h-4 w-4" />
+                {t('errors.notFound.goInventory')}
               </Link>
             </Button>
           ) : (

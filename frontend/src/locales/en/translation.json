@@ -233,7 +233,7 @@
             "suggestions": "Here are some helpful links:",
             "goBack": "Go Back",
             "goHome": "Go to Home",
-            "goDashboard": "Go to Dashboard",
+            "goInventory": "Go to Inventory",
             "goLogin": "Sign In"
         }
     },
@@ -445,9 +445,10 @@
         "login": "Login",
         "logout": "Logout",
         "home": "Home",
-        "dashboard": "Dashboard",
         "inventory": "Inventory",
-        "orders": "Orders"
+        "alerts": "Alerts",
+        "more": "More",
+        "orgSettings": "Organization Settings"
     },
     "landing": {
         "hero": {
@@ -496,9 +497,18 @@
         "title": "Inventory",
         "placeholder": "Inventory management features coming soon!"
     },
-    "orders": {
-        "title": "Orders",
-        "placeholder": "Order management features coming soon!"
+    "alerts": {
+        "title": "Alerts",
+        "placeholder": "Low stock alerts and notifications coming soon!"
+    },
+    "more": {
+        "title": "More",
+        "profile": "Profile",
+        "profileDescription": "View and edit your account information",
+        "myVenuesDescription": "Manage your venues and invitations",
+        "orgSettingsDescription": "Manage members, settings, and subscription",
+        "help": "Help & Support",
+        "helpDescription": "Get help and contact support"
     },
     "home": {
         "welcome": "Welcome to Barback",

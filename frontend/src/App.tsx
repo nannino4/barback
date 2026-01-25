@@ -6,9 +6,9 @@ import { AppRouteRoot } from '@/components/routing/AppRouteRoot'
 import { VerifiedRoute } from '@/components/features/auth/VerifiedRoute'
 import { HasCurrentOrgRoute } from '@/components/features/organizations/HasCurrentOrgRoute'
 import { ProtectedRoute } from '@/components/features/auth/ProtectedRoute'
-import { Dashboard } from '@/pages/Dashboard'
 import { InventoryPage } from '@/pages/inventory/InventoryPage'
-import { OrdersPage } from '@/pages/OrdersPage'
+import { AlertsPage } from '@/pages/AlertsPage'
+import { MorePage } from '@/pages/MorePage'
 import { LandingPage } from '@/pages/LandingPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
@@ -136,9 +136,10 @@ const router = createBrowserRouter(
 
         {/* Requires organization selection */}
         <Route element={<HasCurrentOrgRoute />}>
-          <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+          {/* Inventory is the default landing page (Sprint 4.5) */}
           <Route path={ROUTES.INVENTORY} element={<InventoryPage />} />
-          <Route path={ROUTES.ORDERS} element={<OrdersPage />} />
+          <Route path={ROUTES.ALERTS} element={<AlertsPage />} />
+          <Route path={ROUTES.MORE} element={<MorePage />} />
         </Route>
       </Route>
 

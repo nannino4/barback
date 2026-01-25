@@ -56,9 +56,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
     void form.handleSubmit(onSubmit)(e);
   };
 
-  const handleGoToDashboard = () =>
+  const handleGoToApp = () =>
   {
-    void navigate(ROUTES.DASHBOARD);
+    void navigate(ROUTES.INVENTORY);
   };
 
   const handleLogout = () =>
@@ -105,7 +105,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ className }) =>
             {/* Action Buttons */}
             <Stack>
               <Button
-                onClick={handleGoToDashboard}
+                onClick={handleGoToApp}
                 className="w-full h-touch"
                 variant="default"
               >

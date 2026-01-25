@@ -12,6 +12,7 @@ import { useI18n } from '@/hooks/useI18n';
 import { useCooldown } from '@/hooks/useCooldown';
 import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
 import { SUCCESS_REDIRECT_DELAY } from '@/constants/constants';
+import { ROUTES } from '@/constants/routes';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
 
@@ -45,7 +46,7 @@ export const VerifyEmailCallbackPage: React.FC = () =>
       redirectCooldown.startCooldown();
       setTimeout(() =>
       {
-        void navigate(user ? '/dashboard' : '/auth/login', { replace: true });
+        void navigate(user ? ROUTES.INVENTORY : '/auth/login', { replace: true });
       }, SUCCESS_REDIRECT_DELAY);
     },
     onError: (error: Error) =>
@@ -65,7 +66,7 @@ export const VerifyEmailCallbackPage: React.FC = () =>
         redirectCooldown.startCooldown();
         setTimeout(() =>
         {
-          void navigate(user ? '/dashboard' : '/auth/login', { replace: true });
+          void navigate(user ? ROUTES.INVENTORY : '/auth/login', { replace: true });
         }, SUCCESS_REDIRECT_DELAY);
         return;
       }

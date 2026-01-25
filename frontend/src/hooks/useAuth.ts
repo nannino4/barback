@@ -6,6 +6,7 @@ import { authApi } from '@/api/auth-api';
 import type { RegisterRequest, LoginRequest, RegisterFormData, LoginFormData } from '@/types/auth-forms';
 import { useI18n } from '@/hooks/useI18n';
 import { notify } from '@/lib/notify';
+import { ROUTES } from '@/constants/routes';
 
 export const useAuth = () =>
 {
@@ -53,7 +54,7 @@ export const useAuth = () =>
         }
         else
         {
-          void navigate('/dashboard');
+          void navigate(ROUTES.INVENTORY);
         }
       }
     },
@@ -83,7 +84,7 @@ export const useAuth = () =>
         }
         else
         {
-          void navigate('/dashboard');
+          void navigate(ROUTES.INVENTORY);
         }
       }
     },

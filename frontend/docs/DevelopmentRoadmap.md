@@ -162,23 +162,23 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 ### **Sprint 4.5: UX Alignment & Architecture Fixes (New UX)**
 
 #### **Sprint Goals**
-- [ ] Align navigation with Inventory-first UX (remove Orders entry from nav)
-- [ ] Make Inventory the default landing route after auth/org selection
-- [ ] Move organization switcher into TopNav (always visible)
-- [ ] Simplify UserMenu to account + preferences only
-- [ ] Add "Organization Settings" entry point (role-gated)
-- [ ] Update bottom navigation to: Inventory, Alerts, More
-- [ ] Update desktop nav to: Inventory (+ Alerts when implemented)
-- [ ] Replace dashboard usage with Inventory Overview section
-- [ ] Ensure route redirects and deep links work with new IA
+- [X] Align navigation with Inventory-first UX (remove Orders entry from nav)
+- [X] Make Inventory the default landing route after auth/org selection
+- [X] Move organization switcher into TopNav (always visible)
+- [X] Simplify UserMenu to account + preferences only
+- [X] Add "Organization Settings" entry point (role-gated)
+- [X] Update bottom navigation to: Inventory, Alerts, More
+- [X] Update desktop nav to: Inventory (+ Alerts when implemented)
+- [X] Replace dashboard usage with Inventory Overview section
+- [X] Ensure route redirects and deep links work with new IA
 
 #### **Architecture Fixes**
-- [ ] Refactor `TopNav` to include org switcher and role-aware org actions
-- [ ] Refactor `BottomNav` items and routes to match new IA
-- [ ] Remove Orders page (route and nav link)
-- [ ] Set authenticated root redirect to Inventory
-- [ ] Update i18n keys for nav labels and menu strings
-- [ ] Update UX docs references and any onboarding text
+- [X] Refactor `TopNav` to include org switcher and role-aware org actions
+- [X] Refactor `BottomNav` items and routes to match new IA
+- [X] Remove Orders page (route and nav link)
+- [X] Set authenticated root redirect to Inventory
+- [X] Update i18n keys for nav labels and menu strings
+- [X] Update UX docs references and any onboarding text
 
 ### **Sprint 5-6: Inventory Hub (Products + Categories)**
 

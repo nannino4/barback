@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { LogOut, Settings, Building2, Check } from 'lucide-react';
+import { LogOut, Settings, Building2, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
@@ -18,27 +17,35 @@ import { useI18n } from '@/hooks/useI18n';
 import { useOrganizations } from '@/hooks/useOrganizations';
 import { useThemeStore } from '@/stores/themeStore';
 import { UserAvatar, UserInfo } from '@/components/user';
-import { OrgRoleBadge } from '@/components/features/organizations/OrgRoleBadge';
 import { InvitationsBadge } from '@/components/features/invitations/InvitationsBadge';
 import { ThemeSelector } from './ThemeSelector';
 import { LanguageSelector } from './LanguageSelector';
-import { Stack } from '@/components/layout';
-import { cn } from '@/lib/utils';
+import { ROUTES } from '@/constants/routes';
 
 /**
  * UserMenuDesktop - Desktop dropdown menu implementation
  * 
- * Compact dropdown menu with user info, organization switcher, account, preferences submenu, and logout.
+ * Updated IA (Sprint 4.5):
+ * - User profile link
+ * - My Venues link (with invitations badge)
+ * - Organization Settings (role-gated: owner/manager only)
+ * - Preferences submenu (theme + language)
+ * - Logout
+ * 
+ * Organization switching is now handled by OrganizationSwitcherPopover in TopNav.
  */
 export const UserMenuDesktop: React.FC = () =>
 {
   const { user, logout } = useAuth();
   const { t, changeLanguage, currentLanguage } = useI18n();
-  const { currentOrg, organizations, switchOrganization } = useOrganizations();
+  const { currentOrg } = useOrganizations();
   const { theme, setTheme } = useThemeStore();
-  const [isOrgSwitcherOpen, setIsOrgSwitcherOpen] = useState(false);
 
   if (!user) return null;
+
+  // Check if user can access org settings (owner or manager)
+  const canAccessOrgSettings = currentOrg && 
+    (currentOrg.role === 'OWNER' || currentOrg.role === 'MANAGER');
 
   return (
     <DropdownMenu>
@@ -59,92 +66,16 @@ export const UserMenuDesktop: React.FC = () =>
       <DropdownMenuContent align="end" className="w-72">
         {/* User Info - navigates to profile */}
         <DropdownMenuItem asChild className="cursor-pointer" aria-label={t('menu.viewAccount')}>
-          <Link to="/users/me">
+          <Link to={ROUTES.USERS.ME}>
             <UserInfo user={user} size="md" className="w-full" />
           </Link>
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
-        {/* Organization Quick Switch Submenu */}
-        <DropdownMenuSub open={isOrgSwitcherOpen} onOpenChange={setIsOrgSwitcherOpen}>
-          <DropdownMenuSubTrigger className="cursor-pointer">
-            {currentOrg ? (
-              <Stack space="xs" className="flex-1 min-w-0">
-                <p className="text-xs text-muted-foreground">
-                  {t('menu.currentVenue')}
-                </p>
-                <p className="text-sm font-medium truncate">
-                  {currentOrg.org.name}
-                </p>
-              </Stack>
-            ) : (
-              <span className="flex-1 text-sm text-muted-foreground">
-                {t('menu.noVenueSelected')}
-              </span>
-            )}
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent className="w-72">
-            {/* Organization List - current org first */}
-            {organizations.length === 0 ? (
-              <div className="px-2 py-4 text-center">
-                <Building2 className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">
-                  {t('organizations.noOrganizations')}
-                </p>
-              </div>
-            ) : (
-              <div className="max-h-96 overflow-y-auto">
-                {[...organizations]
-                  .sort((a, b) =>
-                  {
-                    if (a.org.id === currentOrg?.org.id) return -1;
-                    if (b.org.id === currentOrg?.org.id) return 1;
-                    return 0;
-                  })
-                  .map((orgMembership) =>
-                  {
-                    const isSelected = currentOrg?.org.id === orgMembership.org.id;
-                    return (
-                      <DropdownMenuItem
-                        key={orgMembership.org.id}
-                        onClick={() =>
-                        {
-                          switchOrganization(orgMembership);
-                          setIsOrgSwitcherOpen(false);
-                        }}
-                        className={cn(
-                          'cursor-pointer py-3',
-                          isSelected && 'bg-muted',
-                        )}
-                      >
-                        <Stack direction="horizontal" space="md" align="center" className="w-full">
-                          <Icon size="sm" variant="default">
-                            <Building2 />
-                          </Icon>
-                          <Stack space="xs" className="flex-1 min-w-0">
-                            <span className="font-medium text-sm truncate">
-                              {orgMembership.org.name}
-                            </span>
-                            <OrgRoleBadge role={orgMembership.role} size="sm" />
-                          </Stack>
-                          {isSelected && (
-                            <Icon mode="inline" size="sm" variant="primary" className="flex-shrink-0">
-                              <Check />
-                            </Icon>
-                          )}
-                        </Stack>
-                      </DropdownMenuItem>
-                    );
-                  })}
-              </div>
-            )}
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-
         {/* My Venues - direct link */}
         <DropdownMenuItem asChild className="cursor-pointer">
-          <Link to="/orgs">
+          <Link to={ROUTES.ORGS.ROOT}>
             <Icon mode="inline" size="sm" className="mr-2">
               <Building2 />
             </Icon>
@@ -153,13 +84,25 @@ export const UserMenuDesktop: React.FC = () =>
           </Link>
         </DropdownMenuItem>
 
+        {/* Organization Settings - Role-gated (owner/manager only) */}
+        {canAccessOrgSettings && (
+          <DropdownMenuItem asChild className="cursor-pointer">
+            <Link to={ROUTES.ORGS.DETAIL.replace(':orgId', currentOrg.org.id)}>
+              <Icon mode="inline" size="sm" className="mr-2">
+                <Settings />
+              </Icon>
+              <span>{t('nav.orgSettings')}</span>
+            </Link>
+          </DropdownMenuItem>
+        )}
+
         <DropdownMenuSeparator />
 
         {/* Preferences Submenu */}
         <DropdownMenuSub>
           <DropdownMenuSubTrigger aria-label={t('menu.openPreferences')}>
             <Icon mode="inline" size="sm" className="mr-2">
-              <Settings />
+              <User />
             </Icon>
             <span>{t('menu.preferences')}</span>
           </DropdownMenuSubTrigger>

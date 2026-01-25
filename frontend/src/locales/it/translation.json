@@ -234,7 +234,7 @@
             "suggestions": "Ecco alcuni link utili:",
             "goBack": "Torna Indietro",
             "goHome": "Vai alla Home",
-            "goDashboard": "Vai alla Dashboard",
+            "goInventory": "Vai all'Inventario",
             "goLogin": "Accedi"
         }
     },
@@ -446,9 +446,10 @@
         "login": "Accedi",
         "logout": "Logout",
         "home": "Home",
-        "dashboard": "Dashboard",
         "inventory": "Inventario",
-        "orders": "Ordini"
+        "alerts": "Avvisi",
+        "more": "Altro",
+        "orgSettings": "Impostazioni Locale"
     },
     "landing": {
         "hero": {
@@ -497,9 +498,18 @@
         "title": "Inventario",
         "placeholder": "Funzionalità di gestione inventario in arrivo!"
     },
-    "orders": {
-        "title": "Ordini",
-        "placeholder": "Funzionalità di gestione ordini in arrivo!"
+    "alerts": {
+        "title": "Avvisi",
+        "placeholder": "Avvisi di scorte basse e notifiche in arrivo!"
+    },
+    "more": {
+        "title": "Altro",
+        "profile": "Profilo",
+        "profileDescription": "Visualizza e modifica le informazioni del tuo account",
+        "myVenuesDescription": "Gestisci i tuoi locali e gli inviti",
+        "orgSettingsDescription": "Gestisci membri, impostazioni e abbonamento",
+        "help": "Aiuto e Supporto",
+        "helpDescription": "Ottieni aiuto e contatta il supporto"
     },
     "home": {
         "welcome": "Benvenuto in Barback",

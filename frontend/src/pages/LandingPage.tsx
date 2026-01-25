@@ -7,13 +7,14 @@ import { Stack } from '@/components/layout/Stack';
 import { Grid } from '@/components/layout/Grid';
 import { useI18n } from '@/hooks/useI18n';
 import { useAuthStore } from '@/stores/authStore';
+import { ROUTES } from '@/constants/routes';
 
 export function LandingPage()
 {
   const { t } = useI18n();
   const user = useAuthStore((state) => state.user);
 
-  const getStartedTo = user ? '/dashboard' : '/auth/register';
+  const getStartedTo = user ? ROUTES.INVENTORY : ROUTES.AUTH.REGISTER;
 
   return (
     <PageContainer>
@@ -43,7 +44,7 @@ export function LandingPage()
                   asChild
                   className="text-lg px-8"
                 >
-                  <Link to="/auth/login">{t('landing.hero.signIn')}</Link>
+                  <Link to={ROUTES.AUTH.LOGIN}>{t('landing.hero.signIn')}</Link>
                 </Button>
               )}
             </div>

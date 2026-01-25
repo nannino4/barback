@@ -12,7 +12,7 @@ import { ProductList } from '@/components/features/inventory/ProductList';
 import { CategoryFilterPlaceholder } from '@/components/features/inventory/CategoryFilterPlaceholder';
 import { ROUTES } from '@/constants/routes';
 
-import type { ProductResponse } from '@/types/product';
+import type { ProductResponse, CategoryResponse } from '@/types/product';
 
 /**
  * InventoryPage - Main operative view for inventory management
@@ -36,7 +36,7 @@ export function InventoryPage()
   // TODO: Replace with real data from useProducts hook (Checkpoint 4)
   const isLoading = false;
   const products = React.useMemo<ProductResponse[]>(() => [], []);
-  const categories = React.useMemo<{ id: string; name: string }[]>(() => [], []);
+  const categories = React.useMemo<CategoryResponse[]>(() => [], []);
 
   // ==========================================================================
   // Computed Values
@@ -243,6 +243,7 @@ export function InventoryPage()
         ) : (
           <ProductList
             products={filteredProducts}
+            categories={categories}
             onProductClick={handleProductClick}
             onAdjustStock={handleAdjustStock}
           />

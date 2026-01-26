@@ -45,14 +45,25 @@ export class ProductController
     @OrgRoles(OrgRole.OWNER, OrgRole.MANAGER, OrgRole.STAFF)
     async getProducts(
         @Param('orgId', ObjectIdValidationPipe) orgId: Types.ObjectId,
-        @Query('categoryId') categoryId?: string,
         @RequestId() requestId?: string,
     ): Promise<OutProductDto[]> 
     {
-        this.logger.debug(`Getting products for org ${orgId}`, 'ProductController#getProducts', requestId);
+        this.logger.debug(
+            `Getting products for org ${orgId}`,
+            'ProductController#getProducts',
+            requestId,
+        );
         
-        const products = await this.productService.findProductsByOrg(orgId, categoryId, requestId);
-        return plainToInstance(OutProductDto, products, { excludeExtraneousValues: true });
+        const products = await this.productService.findProductsByOrg(orgId, requestId);
+        const result = plainToInstance(OutProductDto, products, { excludeExtraneousValues: true });
+        
+        this.logger.debug(
+            `Returning ${result.length} products for org ${orgId}`,
+            'ProductController#getProducts',
+            requestId,
+        );
+        
+        return result;
     }
 
     @Get(':id')
@@ -66,7 +77,15 @@ export class ProductController
         this.logger.debug(`Getting product ${productId} for org ${orgId}`, 'ProductController#getProduct', requestId);
         
         const product = await this.productService.findProductById(orgId, productId, requestId);
-        return plainToInstance(OutProductDto, product, { excludeExtraneousValues: true });
+        const result = plainToInstance(OutProductDto, product, { excludeExtraneousValues: true });
+        
+        this.logger.debug(
+            `Returning product ${result.id} (name=${result.name}) for org ${orgId}`,
+            'ProductController#getProduct',
+            requestId,
+        );
+        
+        return result;
     }
 
     @Post()
@@ -208,6 +227,14 @@ export class ProductController
             requestId,
         );
         
-        return plainToInstance(OutInventoryLogDto, logs, { excludeExtraneousValues: true });
+        const result = plainToInstance(OutInventoryLogDto, logs, { excludeExtraneousValues: true });
+        
+        this.logger.debug(
+            `Returning ${result.length} inventory logs for product ${productId} in org ${orgId}`,
+            'ProductController#getProductInventoryLogs',
+            requestId,
+        );
+        
+        return result;
     }
 }

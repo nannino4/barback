@@ -48,11 +48,22 @@ export class InventoryService
         catch (error) 
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            this.logger.error(
+                `Error looking up product ${productId} for stock adjustment: ${errorMessage}`,
+                undefined,
+                'InventoryService#adjustStock',
+                requestId,
+            );
             throw new DatabaseOperationException('product lookup for stock adjustment', errorMessage);
         }
 
         if (!product) 
         {
+            this.logger.warn(
+                `Product ${productId} not found for stock adjustment in org ${orgId}`,
+                'InventoryService#adjustStock',
+                requestId,
+            );
             throw new ProductNotFoundException(productId.toString());
         }
 
@@ -114,9 +125,21 @@ export class InventoryService
         {
             if (error instanceof DatabaseOperationException)
             {
+                this.logger.error(
+                    `Database operation error during stock adjustment: ${error.message}`,
+                    undefined,
+                    'InventoryService#adjustStock',
+                    requestId,
+                );
                 throw error;
             }
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            this.logger.error(
+                `Transaction error during stock adjustment for product ${productId}: ${errorMessage}`,
+                undefined,
+                'InventoryService#adjustStock',
+                requestId,
+            );
             throw new DatabaseOperationException('inventory stock adjustment transaction', errorMessage);
         }
         finally
@@ -155,11 +178,22 @@ export class InventoryService
         catch (error) 
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            this.logger.error(
+                `Error looking up product ${productId} for logs: ${errorMessage}`,
+                undefined,
+                'InventoryService#getProductInventoryLogs',
+                requestId,
+            );
             throw new DatabaseOperationException('product lookup for logs', errorMessage);
         }
 
         if (!product) 
         {
+            this.logger.warn(
+                `Product ${productId} not found for logs in org ${orgId}`,
+                'InventoryService#getProductInventoryLogs',
+                requestId,
+            );
             throw new ProductNotFoundException(productId.toString());
         }
 
@@ -190,6 +224,12 @@ export class InventoryService
         catch (error) 
         {
             const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+            this.logger.error(
+                `Error retrieving inventory logs for product ${productId}: ${errorMessage}`,
+                undefined,
+                'InventoryService#getProductInventoryLogs',
+                requestId,
+            );
             throw new DatabaseOperationException('inventory logs retrieval', errorMessage);
         }
     }

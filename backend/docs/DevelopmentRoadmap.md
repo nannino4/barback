@@ -221,11 +221,21 @@ Unified guard now restricts authenticated operations until email is verified. Ex
   - [X] `POST /api/orgs/:orgId/products` - Create product
   - [X] `PUT /api/orgs/:orgId/products/:id` - Update product
   - [X] `DELETE /api/orgs/:orgId/products/:id` - Delete product
-- [ ] **Preset Product Images**:
-  - [ ] Upload preset product images to cloud storage (organized by category: spirits, wine, beer, mixers, other)
-  - [ ] Create API endpoint to list available preset images: `GET /api/preset-images`
-  - [ ] Store image references as preset image IDs (not custom URLs) in Product schema
-  - [ ] Update Product DTOs to use `imageId` instead of `imageUrl`
+- [ ] **Product Images**:
+  - [ ] **Preset Images**:
+    - [ ] Upload preset product images to cloud storage (organized by category: spirits, wine, beer, mixers, other)
+    - [ ] Create API endpoint to list available preset images: `GET /api/preset-images`
+    - [ ] Return preset image URLs that can be stored directly in Product `imageUrl` field
+  - [ ] **Custom Image Upload**:
+    - [ ] Create endpoint to upload custom product image: `POST /api/orgs/:orgId/products/:productId/image`
+    - [ ] Reuse existing storage service (same as profile picture upload)
+    - [ ] Handle image processing (resize, format conversion)
+    - [ ] Update product `imageUrl` field with uploaded image URL
+    - [ ] Create endpoint to remove product image: `DELETE /api/orgs/:orgId/products/:productId/image`
+  - [ ] **Image Strategy**:
+    - [ ] User can choose preset image (stored as URL in `imageUrl`)
+    - [ ] User can upload custom image (requires product to be created first, then upload)
+    - [ ] Keep existing `imageUrl` field in Product schema (no `imageId` needed)
 
 #### Inventory Management
 - [X] **Data Layer Setup**:

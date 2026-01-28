@@ -3,14 +3,14 @@ import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Stack } from '@/components/layout';
 import { useI18n } from '@/hooks/useI18n';
-import { CategoryFilterPlaceholder } from '@/components/features/inventory/CategoryFilterPlaceholder';
+import { CategoryFilter } from '@/components/features/inventory/CategoryFilter';
 
 interface InventoryToolbarProps
 {
   searchQuery: string;
   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClearSearch: () => void;
-  categories: { id: string; name: string }[];
+  categories: { id: string; name: string; parentId?: string | null }[];
   selectedCategoryId: string | null;
   onCategoryChange: (categoryId: string | null) => void;
   categoryProductCounts: Record<string, number>;
@@ -34,12 +34,12 @@ export function InventoryToolbar({
   const { t } = useI18n();
 
   return (
-    <Stack direction="horizontal" space="sm" className="flex-wrap">
+    <Stack space="sm">
       {/* Search input */}
-      <div className="relative flex-1 min-w-[200px]">
+      <div className="relative">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          type="search"
+          type="text"
           placeholder={t('inventory.searchPlaceholder')}
           value={searchQuery}
           onChange={onSearchChange}
@@ -60,13 +60,15 @@ export function InventoryToolbar({
       </div>
 
       {/* Category filter */}
-      <CategoryFilterPlaceholder
-        categories={categories}
-        selectedCategoryId={selectedCategoryId}
-        onCategoryChange={onCategoryChange}
-        categoryProductCounts={categoryProductCounts}
-        isLoading={isLoading}
-      />
+      <Stack direction="horizontal" space="sm">
+        <CategoryFilter
+          categories={categories}
+          selectedCategoryId={selectedCategoryId}
+          onCategoryChange={onCategoryChange}
+          categoryProductCounts={categoryProductCounts}
+          isLoading={isLoading}
+        />
+      </Stack>
     </Stack>
   );
 }

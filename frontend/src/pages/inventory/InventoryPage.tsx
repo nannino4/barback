@@ -40,6 +40,54 @@ export function InventoryPage()
   const { categories, isLoading: isLoadingCategories } = useCategories();
   const isLoading = isLoadingProducts || isLoadingCategories;
 
+  const categoryChildrenMap = React.useMemo(() =>
+  {
+    const map: Record<string, string[]> = {};
+
+    categories.forEach((category) =>
+    {
+      if (!category.parentId)
+      {
+        return;
+      }
+
+      if (!map[category.parentId])
+      {
+        map[category.parentId] = [];
+      }
+
+      map[category.parentId].push(category.id);
+    });
+
+    return map;
+  }, [categories]);
+
+  const getCategoryAndDescendants = React.useCallback((categoryId: string) =>
+  {
+    const ids = new Set<string>();
+    const stack = [categoryId];
+
+    while (stack.length > 0)
+    {
+      const currentId = stack.pop();
+      if (!currentId)
+      {
+        continue;
+      }
+
+      if (ids.has(currentId))
+      {
+        continue;
+      }
+
+      ids.add(currentId);
+      const children = categoryChildrenMap[currentId] || [];
+      children.forEach((childId) => stack.push(childId));
+    }
+
+    return ids;
+  }, [categoryChildrenMap]);
+
   // ==========================================================================
   // Computed Values
   // ==========================================================================
@@ -55,8 +103,9 @@ export function InventoryPage()
     // Filter by category
     if (selectedCategoryId)
     {
+      const categoryIds = getCategoryAndDescendants(selectedCategoryId);
       filtered = filtered.filter((product) =>
-        product.categoryIds.includes(selectedCategoryId),
+        product.categoryIds.some((categoryId) => categoryIds.has(categoryId)),
       );
     }
 
@@ -71,7 +120,7 @@ export function InventoryPage()
     }
 
     return filtered;
-  }, [products, selectedCategoryId, searchQuery]);
+  }, [products, selectedCategoryId, searchQuery, getCategoryAndDescendants]);
 
   /**
    * Calculate product counts per category (for filter badges)

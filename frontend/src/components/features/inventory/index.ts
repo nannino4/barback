@@ -6,3 +6,4 @@ export { CategoryFilter } from './CategoryFilter';
 export { InventoryHeader } from './InventoryHeader';
 export { InventoryToolbar } from './InventoryToolbar';
 export { FilterStatus } from './FilterStatus';
+export { StockAdjustmentSheet } from './StockAdjustmentSheet';

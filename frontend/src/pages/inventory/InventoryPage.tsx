@@ -13,6 +13,7 @@ import {
   InventoryHeader,
   InventoryToolbar,
   FilterStatus,
+  StockAdjustmentSheet,
 } from '@/components/features/inventory';
 import { ROUTES } from '@/constants/routes';
 
@@ -34,6 +35,8 @@ export function InventoryPage()
   // UI state
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<string | null>(null);
+  const [isAdjustmentOpen, setIsAdjustmentOpen] = React.useState(false);
+  const [adjustmentProductId, setAdjustmentProductId] = React.useState<string | null>(null);
 
   // Fetch products and categories from API
   const { products, isLoading: isLoadingProducts } = useProducts();
@@ -141,6 +144,16 @@ export function InventoryPage()
   const hasFilters = searchQuery.trim() !== '' || selectedCategoryId !== null;
   const showingFilteredResults = hasFilters && filteredProducts.length !== products.length;
 
+  const selectedProduct = React.useMemo(() =>
+  {
+    if (!adjustmentProductId)
+    {
+      return null;
+    }
+
+    return products.find((product) => product.id === adjustmentProductId) ?? null;
+  }, [adjustmentProductId, products]);
+
   // ==========================================================================
   // Event Handlers
   // ==========================================================================
@@ -174,8 +187,17 @@ export function InventoryPage()
 
   const handleAdjustStock = (productId: string) =>
   {
-    // TODO: Open stock adjustment sheet (Checkpoint 6)
-    console.log('Adjust stock for product:', productId);
+    setAdjustmentProductId(productId);
+    setIsAdjustmentOpen(true);
+  };
+
+  const handleAdjustmentOpenChange = (nextOpen: boolean) =>
+  {
+    setIsAdjustmentOpen(nextOpen);
+    if (!nextOpen)
+    {
+      setAdjustmentProductId(null);
+    }
   };
 
   const handleProductClick = (productId: string) =>
@@ -300,6 +322,12 @@ export function InventoryPage()
           />
         )}
       </Stack>
+
+      <StockAdjustmentSheet
+        open={isAdjustmentOpen}
+        onOpenChange={handleAdjustmentOpenChange}
+        product={selectedProduct}
+      />
     </PageContainer>
   );
 }

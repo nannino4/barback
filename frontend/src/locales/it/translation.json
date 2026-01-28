@@ -388,11 +388,18 @@
                 "invalid": "Tipo di registro inventario non valido"
             },
             "quantity": {
-                "mustBeNumber": "La quantità deve essere un numero"
+                "mustBeNumber": "La quantità deve essere un numero",
+                "required": "La quantità è richiesta",
+                "invalid": "La quantità deve essere un numero",
+                "nonZero": "La quantità non può essere zero",
+                "noChange": "Nessuna variazione di scorte rilevata",
+                "negativeStocktake": "Il conteggio reale non può essere negativo",
+                "negativeResult": "Non puoi scendere sotto zero. Attuale: {{current}}, riduzione max: {{maxReduction}}"
             },
             "note": {
                 "required": "Nota è richiesta per le modifiche di stock",
-                "mustBeString": "La nota deve essere testo"
+                "mustBeString": "La nota deve essere testo",
+                "maxLength": "La nota deve avere al massimo {{max}} caratteri"
             }
         },
         "invitation": {
@@ -522,6 +529,47 @@
         "noResults": {
             "title": "Nessun prodotto trovato",
             "description": "Prova a modificare la ricerca o i filtri"
+        },
+        "adjustment": {
+            "title": "Modifica Scorte",
+            "currentStock": "Scorte attuali",
+            "quantityLabel": "Variazione quantità",
+            "newStockLevelLabel": "Scorte aggiornate",
+            "actualCountLabel": "Conteggio reale",
+            "quantityPlaceholder": "es. +3 o -2",
+            "newStockLevelPlaceholder": "Inserisci il nuovo livello",
+            "actualCountPlaceholder": "es. 12",
+            "reasonLabel": "Motivo",
+            "decrease": "Riduci quantità",
+            "increase": "Aumenta quantità",
+            "save": "Salva modifica",
+            "saving": "Salvataggio...",
+            "noteLabel": "Nota (opzionale)",
+            "notePlaceholder": "Aggiungi contesto (opzionale)",
+            "noteCount": "{{count}} / {{max}}",
+            "preview": {
+                "title": "Nuovo livello di scorte",
+                "helper": "Inserisci una quantità per visualizzare il nuovo livello"
+            },
+            "stocktakeInfo": {
+                "title": "Inventario con conteggio reale",
+                "description": "Inserisci il conteggio reale delle scorte. Calcoleremo automaticamente la modifica."
+            },
+            "types": {
+                "purchase": "Acquisto",
+                "consumption": "Consumo",
+                "adjustment": "Correzione",
+                "stocktake": "Inventario"
+            },
+            "mismatch": {
+                "title": "Controlla il motivo",
+                "purchase": "L'acquisto è di solito usato per aumenti.",
+                "consumption": "Il consumo è di solito usato per riduzioni."
+            },
+            "errors": {
+                "title": "Impossibile salvare la modifica",
+                "saveFailed": "Non siamo riusciti a salvare. Riprova."
+            }
         }
     },
     "product": {

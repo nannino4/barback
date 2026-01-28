@@ -142,5 +142,7 @@ export const useProducts = () =>
     isUpdating: updateProductMutation.isPending,
     isDeleting: deleteProductMutation.isPending,
     isAdjusting: adjustStockMutation.isPending,
+    adjustStockError: adjustStockMutation.error,
+    resetAdjustStockError: adjustStockMutation.reset,
   };
 };

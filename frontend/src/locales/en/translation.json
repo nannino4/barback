@@ -387,11 +387,18 @@
                 "invalid": "Invalid inventory log type"
             },
             "quantity": {
-                "mustBeNumber": "Quantity must be a number"
+                "mustBeNumber": "Quantity must be a number",
+                "required": "Quantity is required",
+                "invalid": "Quantity must be a number",
+                "nonZero": "Quantity cannot be zero",
+                "noChange": "No stock change detected",
+                "negativeStocktake": "Actual count cannot be negative",
+                "negativeResult": "Cannot reduce below zero. Current: {{current}}, max reduction: {{maxReduction}}"
             },
             "note": {
                 "required": "Note is required for stock adjustments",
-                "mustBeString": "Note must be text"
+                "mustBeString": "Note must be text",
+                "maxLength": "Note must be {{max}} characters or less"
             }
         },
         "invitation": {
@@ -521,6 +528,47 @@
         "noResults": {
             "title": "No products found",
             "description": "Try adjusting your search or filters"
+        },
+        "adjustment": {
+            "title": "Adjust Stock",
+            "currentStock": "Current stock",
+            "quantityLabel": "Quantity change",
+            "newStockLevelLabel": "Updated stock",
+            "actualCountLabel": "Actual count",
+            "quantityPlaceholder": "e.g. +3 or -2",
+            "newStockLevelPlaceholder": "Enter new stock level",
+            "actualCountPlaceholder": "e.g. 12",
+            "reasonLabel": "Reason",
+            "decrease": "Decrease quantity",
+            "increase": "Increase quantity",
+            "save": "Save adjustment",
+            "saving": "Saving...",
+            "noteLabel": "Note (optional)",
+            "notePlaceholder": "Add context (optional)",
+            "noteCount": "{{count}} / {{max}}",
+            "preview": {
+                "title": "New stock level",
+                "helper": "Enter a quantity to preview the new stock level"
+            },
+            "stocktakeInfo": {
+                "title": "Stocktake uses actual count",
+                "description": "Enter the real stock count. We'll calculate the adjustment for you."
+            },
+            "types": {
+                "purchase": "Purchase",
+                "consumption": "Consumption",
+                "adjustment": "Adjustment",
+                "stocktake": "Stocktake"
+            },
+            "mismatch": {
+                "title": "Check adjustment reason",
+                "purchase": "Purchase is typically used for increases.",
+                "consumption": "Consumption is typically used for decreases."
+            },
+            "errors": {
+                "title": "Unable to save adjustment",
+                "saveFailed": "We couldn't save your changes. Please try again."
+            }
         }
     },
     "product": {

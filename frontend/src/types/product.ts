@@ -29,10 +29,10 @@ export const ProductResponseSchema = z.object({
  * Stock adjustment type enum
  */
 export const StockAdjustmentTypeSchema = z.enum([
-  'purchase',
-  'consumption',
-  'adjustment',
-  'stocktake',
+  'PURCHASE',
+  'CONSUMPTION',
+  'ADJUSTMENT',
+  'STOCKTAKE',
 ]);
 
 /**

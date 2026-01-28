@@ -14,7 +14,7 @@ interface ProductListSkeletonProps
 /**
  * ProductListSkeleton - Loading placeholder for product list
  * 
- * Matches the ProductRow layout for visual consistency during loading.
+ * Matches the ProductCard layout for visual consistency during loading.
  */
 export const ProductListSkeleton: React.FC<ProductListSkeletonProps> = ({
   count = 6,
@@ -29,7 +29,7 @@ export const ProductListSkeleton: React.FC<ProductListSkeletonProps> = ({
   return (
     <Stack space="sm">
       {skeletonItems.map((key) => (
-        <ProductRowSkeleton key={key} />
+        <ProductCardSkeleton key={key} />
       ))}
     </Stack>
   );
@@ -38,7 +38,7 @@ export const ProductListSkeleton: React.FC<ProductListSkeletonProps> = ({
 /**
  * Single product row skeleton
  */
-function ProductRowSkeleton()
+function ProductCardSkeleton()
 {
   return (
     <div className="flex items-center gap-3 p-3 rounded-lg bg-card border border-border">

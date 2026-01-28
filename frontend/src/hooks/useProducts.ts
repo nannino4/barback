@@ -3,7 +3,6 @@ import { notify } from '@/lib/notify';
 import { productApi } from '@/api/product-api';
 import { useI18n } from '@/hooks/useI18n';
 import { useOrganizations } from '@/hooks/useOrganizations';
-import { useCategories } from '@/hooks/useCategories';
 import { queryKeys } from '@/lib/queryKeys';
 import { CACHE_TIMES } from '@/constants/cacheTimes';
 
@@ -20,7 +19,6 @@ import type {
  * 
  * Provides:
  * - Query for all products
- * - Categories from useCategories hook
  * - Mutations for CRUD operations
  * - Stock adjustment mutation
  */
@@ -32,12 +30,6 @@ export const useProducts = () =>
   
   // Assume org exists - this hook should only be used in org-scoped pages
   const orgId = currentOrg!.org.id;
-
-  // Get categories from dedicated hook
-  const { 
-    categories, 
-    isLoading: isLoadingCategories,
-  } = useCategories();
 
   // ==========================================================================
   // Queries
@@ -129,12 +121,9 @@ export const useProducts = () =>
   return {
     // Data
     products: productsQuery.data ?? [],
-    categories,
     
     // Loading states
-    isLoadingProducts: productsQuery.isLoading,
-    isLoadingCategories,
-    isLoading: productsQuery.isLoading || isLoadingCategories,
+    isLoading: productsQuery.isLoading,
     
     // Error states
     productsError: productsQuery.error,

@@ -43,6 +43,11 @@ Organize imports in this order:
 
 ## Naming Conventions
 
+## Component Reuse
+- Before writing new UI code, check for existing components in src/components and feature folders.
+- Prefer reusing existing components over custom markup.
+- If a component is close but not exact, update or extend it instead of duplicating.
+
 ### Files and Directories
 - **Components**: PascalCase (`ProductForm.tsx`, `UserProfile.tsx`)
 - **Hooks**: camelCase starting with 'use' (`useAuth.ts`, `useProducts.ts`)
@@ -214,39 +219,10 @@ Use spinners for indeterminate or small, focused waits.
   - Form submission: `void form.handleSubmit(fn)()` - errors handled in callbacks
   - Background tasks: `void someAsyncTask()` - fire and forget patterns
 
-```typescript
-// ✅ CORRECT - Intentionally ignoring promise with void
-void navigate('/dashboard');
-void form.handleSubmit(onSubmit)(e);
-
-// ✅ CORRECT - Handling promise errors explicitly
-try {
-  await apiCall();
-} catch (error) {
-  handleError(error);
-}
-
-// ❌ WRONG - Floating promise without void or error handling
-navigate('/dashboard'); // ESLint error
-someAsyncTask(); // Potential unhandled rejection
-```
-
 ## Internationalization (i18n)
 
 ### Mandatory Localization
 **All user-facing text must use the localization system.** Never use hardcoded strings.
-
-```typescript
-// ❌ WRONG - Hardcoded text
-<button>Sign In</button>
-<p>Welcome back!</p>
-
-// ✅ CORRECT - Using translation keys
-const { t } = useI18n();
-
-<button>{t('auth.login.signIn')}</button>
-<p>{t('auth.login.welcomeBack')}</p>
-```
 
 ### Key Requirements
 - **Always import** `useI18n` hook in components with text
@@ -258,39 +234,6 @@ const { t } = useI18n();
 
 ### Declarative Error Display Pattern
 **Always display form errors declaratively using mutation error state.** Never use imperative `onError` callbacks with toasts for form validation or API errors.
-
-```typescript
-// ❌ WRONG - Imperative error handling with toasts
-const loginMutation = useMutation({
-  mutationFn: authApi.login,
-  onError: (error) => {
-    toast.error(getLocalizedErrorMessage(error, t)); // Don't do this!
-  }
-});
-
-// ✅ CORRECT - Declarative error handling
-const loginMutation = useMutation({
-  mutationFn: authApi.login,
-  onSuccess: (response) => {
-    // Success toasts and redirects are OK in onSuccess
-    toast.success(t('auth.login.success'));
-    navigate('/dashboard');
-  }
-  // No onError - let component handle errors declaratively
-});
-
-// In component JSX - display error state
-{loginMutation.error && (
-  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-2">
-    <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
-    <p className="text-sm text-destructive">
-      {isKnownError(loginMutation.error)
-        ? getLocalizedErrorMessage(loginMutation.error, t)
-        : t('errors.genericError')}
-    </p>
-  </div>
-)}
-```
 
 ### When to Use Each Pattern
 

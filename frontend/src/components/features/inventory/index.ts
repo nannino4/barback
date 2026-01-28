@@ -1,5 +1,8 @@
 // Inventory feature components
 export { ProductList } from './ProductList';
-export { ProductRow } from './ProductRow';
+export { ProductCard } from './ProductCard';
 export { ProductListSkeleton } from './ProductListSkeleton';
 export { CategoryFilterPlaceholder } from './CategoryFilterPlaceholder';
+export { InventoryHeader } from './InventoryHeader';
+export { InventoryToolbar } from './InventoryToolbar';
+export { FilterStatus } from './FilterStatus';

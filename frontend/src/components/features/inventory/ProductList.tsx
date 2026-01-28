@@ -1,6 +1,6 @@
 import React from 'react';
 import { Stack } from '@/components/layout';
-import { ProductRow } from './ProductRow';
+import { ProductCard } from './ProductCard';
 
 import type { ProductResponse } from '@/types/product';
 import type { CategoryResponse } from '@/types/category';
@@ -45,7 +45,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   return (
     <Stack space="sm">
       {products.map((product) => (
-        <ProductRow
+        <ProductCard
           key={product.id}
           product={product}
           categories={categories}

@@ -1,13 +1,14 @@
 import React from 'react';
 import { Package, PlusCircle, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
 
 import type { ProductResponse } from '@/types/product';
 import type { CategoryResponse } from '@/types/category';
 
-interface ProductRowProps
+interface ProductCardProps
 {
   /**
    * Product to display
@@ -18,7 +19,7 @@ interface ProductRowProps
    */
   categories: CategoryResponse[];
   /**
-   * Callback when row is clicked (navigate to details)
+   * Callback when card is clicked (navigate to details)
    */
   onClick: () => void;
   /**
@@ -28,12 +29,12 @@ interface ProductRowProps
 }
 
 /**
- * ProductRow - Single product item in the inventory list
+ * ProductCard - Single product item in the inventory list
  * 
  * Displays:
  * - Product image (or placeholder icon)
  * - Name and brand
- * - Category badge (first category only for simplicity)
+ * - Category breadcrumbs
  * - Current quantity with unit
  * - Adjust stock button (±)
  * 
@@ -42,7 +43,7 @@ interface ProductRowProps
  * - Touch-friendly hit target
  * - Stock adjustment button stops propagation
  */
-export const ProductRow: React.FC<ProductRowProps> = ({
+export const ProductCard: React.FC<ProductCardProps> = ({
   product,
   categories,
   onClick,
@@ -96,7 +97,7 @@ export const ProductRow: React.FC<ProductRowProps> = ({
 
   const handleAdjustClick = (e: React.MouseEvent) =>
   {
-    e.stopPropagation(); // Prevent row click
+    e.stopPropagation(); // Prevent card click
     onAdjustStock();
   };
 
@@ -110,21 +111,22 @@ export const ProductRow: React.FC<ProductRowProps> = ({
   };
 
   return (
-    <div
+    <Card
       onClick={onClick}
       onKeyDown={handleKeyDown}
       role="button"
       tabIndex={0}
+      variant="bordered"
       className={cn(
         // Layout
-        'flex items-center gap-3 p-3',
-        // Styling
-        'rounded-lg bg-card border border-border',
+        'flex-row items-center gap-3 p-3',
         // Interactive
         'cursor-pointer',
         'hover:bg-accent/50 transition-colors',
         // Focus state
         'focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-ring',
+        // Card defaults override
+        'shadow-none',
       )}
     >
       {/* Product image */}
@@ -191,6 +193,6 @@ export const ProductRow: React.FC<ProductRowProps> = ({
       >
         <PlusCircle className="h-4 w-4" />
       </Button>
-    </div>
+    </Card>
   );
 };

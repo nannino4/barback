@@ -1,16 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, Filter, Package } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Search, Package } from 'lucide-react';
 import { PageContainer, Stack } from '@/components/layout';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { useI18n } from '@/hooks/useI18n';
 import { useOrganizations } from '@/hooks/useOrganizations';
 import { useProducts } from '@/hooks/useProducts';
-import { ProductListSkeleton } from '@/components/features/inventory/ProductListSkeleton';
-import { ProductList } from '@/components/features/inventory/ProductList';
-import { CategoryFilterPlaceholder } from '@/components/features/inventory/CategoryFilterPlaceholder';
+import { useCategories } from '@/hooks/useCategories';
+import {
+  ProductListSkeleton,
+  ProductList,
+  InventoryHeader,
+  InventoryToolbar,
+  FilterStatus,
+} from '@/components/features/inventory';
 import { ROUTES } from '@/constants/routes';
 
 /**
@@ -33,7 +36,9 @@ export function InventoryPage()
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<string | null>(null);
 
   // Fetch products and categories from API
-  const { products, categories, isLoading } = useProducts();
+  const { products, isLoading: isLoadingProducts } = useProducts();
+  const { categories, isLoading: isLoadingCategories } = useCategories();
+  const isLoading = isLoadingProducts || isLoadingCategories;
 
   // ==========================================================================
   // Computed Values
@@ -250,142 +255,3 @@ export function InventoryPage()
   );
 }
 
-// =============================================================================
-// Sub-components
-// =============================================================================
-
-interface InventoryHeaderProps
-{
-  productCount: number;
-  onAddProduct: () => void;
-  isLoading?: boolean;
-}
-
-/**
- * Header with title, product count, and Add Product button
- */
-function InventoryHeader({
-  productCount,
-  onAddProduct,
-  isLoading = false,
-}: InventoryHeaderProps)
-{
-  const { t } = useI18n();
-
-  return (
-    <Stack direction="horizontal" space="sm" align="center" justify="between">
-      <Stack direction="horizontal" space="sm" align="center">
-        <h1 className="text-2xl font-bold">{t('inventory.title')}</h1>
-        {!isLoading && productCount > 0 && (
-          <span className="text-sm text-muted-foreground">
-            ({productCount} {t('inventory.productCount', { count: productCount })})
-          </span>
-        )}
-      </Stack>
-
-      <Button onClick={onAddProduct} disabled={isLoading}>
-        <Plus className="mr-2 h-4 w-4" />
-        <span className="hidden sm:inline">{t('inventory.addProduct')}</span>
-        <span className="sm:hidden">{t('common.add')}</span>
-      </Button>
-    </Stack>
-  );
-}
-
-interface InventoryToolbarProps
-{
-  searchQuery: string;
-  onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  onClearSearch: () => void;
-  categories: { id: string; name: string }[];
-  selectedCategoryId: string | null;
-  onCategoryChange: (categoryId: string | null) => void;
-  categoryProductCounts: Record<string, number>;
-  isLoading?: boolean;
-}
-
-/**
- * Toolbar with search input and category filter
- */
-function InventoryToolbar({
-  searchQuery,
-  onSearchChange,
-  onClearSearch,
-  categories,
-  selectedCategoryId,
-  onCategoryChange,
-  categoryProductCounts,
-  isLoading = false,
-}: InventoryToolbarProps)
-{
-  const { t } = useI18n();
-
-  return (
-    <Stack direction="horizontal" space="sm" className="flex-wrap">
-      {/* Search input */}
-      <div className="relative flex-1 min-w-[200px]">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder={t('inventory.searchPlaceholder')}
-          value={searchQuery}
-          onChange={onSearchChange}
-          className="pl-9 pr-9"
-          disabled={isLoading}
-        />
-        {searchQuery && (
-          <button
-            type="button"
-            onClick={onClearSearch}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-            aria-label={t('common.clear')}
-          >
-            <span className="sr-only">{t('common.clear')}</span>
-            ×
-          </button>
-        )}
-      </div>
-
-      {/* Category filter */}
-      <CategoryFilterPlaceholder
-        categories={categories}
-        selectedCategoryId={selectedCategoryId}
-        onCategoryChange={onCategoryChange}
-        categoryProductCounts={categoryProductCounts}
-        isLoading={isLoading}
-      />
-    </Stack>
-  );
-}
-
-interface FilterStatusProps
-{
-  showing: number;
-  total: number;
-  onClearFilters: () => void;
-}
-
-/**
- * Shows filter status when results are filtered
- */
-function FilterStatus({ showing, total, onClearFilters }: FilterStatusProps)
-{
-  const { t } = useI18n();
-
-  return (
-    <Stack direction="horizontal" space="sm" align="center" className="text-sm text-muted-foreground">
-      <Filter className="h-4 w-4" />
-      <span>
-        {t('inventory.filterStatus', { showing, total })}
-      </span>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onClearFilters}
-        className="h-auto p-0 text-primary hover:text-primary/80"
-      >
-        {t('inventory.clearFilters')}
-      </Button>
-    </Stack>
-  );
-}

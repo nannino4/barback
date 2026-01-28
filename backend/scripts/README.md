@@ -43,3 +43,38 @@ docker exec -it <container_name> mongosh barback_dev /tmp/seed-sample-organizati
 - It's safe to run multiple times (idempotent)
 - Uses predefined ObjectIds for consistency
 - All sample subscriptions use the `sub_sample_*` prefix in their Stripe IDs
+
+---
+
+## Seed Nested Categories
+
+The `seed-nested-categories.js` script ensures nested category trees exist for inventory testing.
+
+### What it creates:
+
+**Category hierarchy:**
+- Spirits → Whiskey, Gin, Vodka, Rum, Tequila, Brandy
+- Wines → Red Wine, White Wine, Sparkling Wine, Vermouth
+- Mixers → Soda, Juice, Syrups, Ginger Beer
+- Bitters → Aromatic Bitters, Citrus Bitters, Herbal Bitters
+
+### How to run:
+
+```bash
+# From the backend directory
+node scripts/seed-nested-categories.js
+
+# Use a specific env file
+node scripts/seed-nested-categories.js .env.development
+
+# Target a specific organization
+ORG_ID=<orgId> node scripts/seed-nested-categories.js
+
+# Target multiple organizations
+ORG_IDS=<id1,id2> node scripts/seed-nested-categories.js
+```
+
+### Notes:
+
+- The script is idempotent (won't create duplicates)
+- If no ORG_ID/ORG_IDS is provided, it seeds all organizations

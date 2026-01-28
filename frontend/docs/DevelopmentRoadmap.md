@@ -185,41 +185,27 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 #### **Sprint Goals**
 
 ##### **Inventory Page (Operative)**
-- [ ] Build Inventory Page layout (operative, no tabs)
-  - [ ] Product list with search + filters (category)
+- [X] Build Inventory Page layout (operative, no tabs)
+  - [X] Product list with search + filters (category)
   - [ ] (DEFERRED) Low-stock filter - requires parLevel field in backend
-  - [ ] Add Product button above the list (no FAB)
-  - [ ] Empty state for no products
-  - [ ] Loading states (skeletons) for list view
-  - [ ] All products loaded at once (no pagination for MVP)
-- [ ] Build Product List (with stock adjustment)
-  - [ ] Products list: name, brand, category, unit, current quantity
-  - [ ] Row actions: quick adjust stock (opens adjustment sheet)
+  - [X] Add Product button above the list (no FAB)
+  - [X] Empty state for no products
+  - [X] Loading states (skeletons) for list view
+  - [X] All products loaded at once (no pagination for MVP)
+- [X] Build Product List (with stock adjustment)
+  - [X] Products list: name, brand, category, unit, current quantity
+  - [X] Row actions: quick adjust stock (opens adjustment sheet)
   - [ ] (DEFERRED) Low stock indicator styling - requires parLevel field
-  - [ ] Product count calculated client-side per category
-- [ ] Build Stock Adjustment Sheet/Dialog
-  - [ ] Complete but compact single component for all use cases
-  - [ ] One-click access from product row
-  - [ ] Default reason that changes dynamically (increase/decrease)
-  - [ ] Manual reason selection locks auto-change
-  - [ ] Visual feedback for invalid reason/operation type combination
-  - [ ] Quantity input with preview of new stock level
+  - [X] Product count calculated client-side per category
+- [X] Build Stock Adjustment Sheet/Dialog
+  - [X] Complete but compact single component for all use cases
+  - [X] One-click access from product row
+  - [X] Default reason that changes dynamically (increase/decrease)
+  - [X] Quantity input with preview of new stock level
 - [ ] Build Product Create/Edit Form (sheet/dialog)
   - [ ] Full form with all product fields
   - [ ] Inline category creation option
   - [ ] Validation: name required, unit required
-
-###### Checkpoints
-
-| Checkpoint | Description |
-|------------|-------------|
-| [X] **1** | **Inventory Page Layout** - Page structure, header with title/count, Add Product button, toolbar (search + filters as placeholders) |
-| [X] **2** | **Product List Skeleton & Empty State** - Loading skeletons, empty state when no products |
-| [X] **3** | **Product Row Component** - Display product info, low-stock indicator, adjust button |
-| [X] **4** | **Products Hook & API Integration** - `useProducts` hook, connect to real API, display products |
-| [X] **5** | **Search & Category Filter** - Client-side filtering implementation |
-| [X] **6** | **Stock Adjustment Sheet** - Full adjustment sheet with smart default behavior |
-| [ ] **7** | **Product Create/Edit Form** - Form for creating/editing products |
 
 ##### **Organization Settings - Products & Categories**
 - [ ] Add Products section to Organization Settings

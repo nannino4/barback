@@ -2,7 +2,8 @@ import React from 'react';
 import { Stack } from '@/components/layout';
 import { ProductRow } from './ProductRow';
 
-import type { ProductResponse, CategoryResponse } from '@/types/product';
+import type { ProductResponse } from '@/types/product';
+import type { CategoryResponse } from '@/types/category';
 
 interface ProductListProps
 {

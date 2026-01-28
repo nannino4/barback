@@ -7,12 +7,11 @@ import { PageContainer, Stack } from '@/components/layout';
 import { EmptyState } from '@/components/feedback/EmptyState';
 import { useI18n } from '@/hooks/useI18n';
 import { useOrganizations } from '@/hooks/useOrganizations';
+import { useProducts } from '@/hooks/useProducts';
 import { ProductListSkeleton } from '@/components/features/inventory/ProductListSkeleton';
 import { ProductList } from '@/components/features/inventory/ProductList';
 import { CategoryFilterPlaceholder } from '@/components/features/inventory/CategoryFilterPlaceholder';
 import { ROUTES } from '@/constants/routes';
-
-import type { ProductResponse, CategoryResponse } from '@/types/product';
 
 /**
  * InventoryPage - Main operative view for inventory management
@@ -33,10 +32,8 @@ export function InventoryPage()
   const [searchQuery, setSearchQuery] = React.useState('');
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<string | null>(null);
 
-  // TODO: Replace with real data from useProducts hook (Checkpoint 4)
-  const isLoading = false;
-  const products = React.useMemo<ProductResponse[]>(() => [], []);
-  const categories = React.useMemo<CategoryResponse[]>(() => [], []);
+  // Fetch products and categories from API
+  const { products, categories, isLoading } = useProducts();
 
   // ==========================================================================
   // Computed Values

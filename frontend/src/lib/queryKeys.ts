@@ -69,4 +69,26 @@ export const queryKeys = {
     /** Trial eligibility check */
     trialEligibility: ['trial-eligibility'] as const,
   },
+
+  /**
+   * Product-related queries
+   */
+  products: {
+    /** All products for an organization */
+    all: (orgId: string) => ['products', orgId] as const,
+    
+    /** Single product by ID */
+    detail: (orgId: string, productId: string) => ['products', orgId, productId] as const,
+  },
+
+  /**
+   * Category-related queries
+   */
+  categories: {
+    /** All categories for an organization */
+    all: (orgId: string) => ['categories', orgId] as const,
+    
+    /** Single category by ID */
+    detail: (orgId: string, categoryId: string) => ['categories', orgId, categoryId] as const,
+  },
 } as const;

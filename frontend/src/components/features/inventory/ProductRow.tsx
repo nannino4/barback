@@ -1,11 +1,11 @@
 import React from 'react';
-import { Package, PlusCircle } from 'lucide-react';
+import { Package, PlusCircle, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
 
-import type { ProductResponse, CategoryResponse } from '@/types/product';
+import type { ProductResponse } from '@/types/product';
+import type { CategoryResponse } from '@/types/category';
 
 interface ProductRowProps
 {
@@ -51,8 +51,11 @@ export const ProductRow: React.FC<ProductRowProps> = ({
 {
   const { t } = useI18n();
 
-  // Get category name for display (show first category)
-  const categoryName = React.useMemo(() =>
+  /**
+   * Build category breadcrumb path from root to leaf
+   * If 4+ levels, shows: root > ... > second-to-last > last
+   */
+  const categoryBreadcrumbs = React.useMemo(() =>
   {
     if (product.categoryIds.length === 0)
     {
@@ -60,7 +63,35 @@ export const ProductRow: React.FC<ProductRowProps> = ({
     }
     
     const category = categories.find((c) => c.id === product.categoryIds[0]);
-    return category?.name || null;
+    if (!category)
+    {
+      return null;
+    }
+
+    // Build path from leaf to root
+    const path: CategoryResponse[] = [category];
+    let current = category;
+    
+    while (current.parentId)
+    {
+      const parent = categories.find((c) => c.id === current.parentId);
+      if (!parent) break;
+      path.unshift(parent);
+      current = parent;
+    }
+
+    // If 4+ levels, collapse middle: root > ... > second-to-last > last
+    if (path.length >= 4)
+    {
+      return [
+        path[0],                    // root
+        { id: 'ellipsis', name: '...' } as CategoryResponse, // ellipsis placeholder
+        path[path.length - 2],      // second-to-last
+        path[path.length - 1],      // last
+      ];
+    }
+
+    return path;
   }, [product.categoryIds, categories]);
 
   const handleAdjustClick = (e: React.MouseEvent) =>
@@ -111,29 +142,33 @@ export const ProductRow: React.FC<ProductRowProps> = ({
 
       {/* Info section */}
       <div className="flex-1 min-w-0 space-y-1">
-        {/* Name */}
-        <p className="font-medium truncate leading-tight">
-          {product.name}
-        </p>
-        
-        {/* Brand and category */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          {product.brand && (
-            <span className="truncate">{product.brand}</span>
-          )}
-          {product.brand && categoryName && (
-            <span className="shrink-0">·</span>
-          )}
-          {categoryName ? (
-            <Badge variant="secondary" className="shrink-0 text-xs">
-              {categoryName}
-            </Badge>
+        {/* Category breadcrumbs */}
+        <div className="flex items-center gap-0.5 text-xs text-muted-foreground">
+          {categoryBreadcrumbs ? (
+            categoryBreadcrumbs.map((cat, index) => (
+              <React.Fragment key={cat.id}>
+                {index > 0 && (
+                  <ChevronRight className="h-3 w-3 shrink-0" />
+                )}
+                <span className="truncate">{cat.name}</span>
+              </React.Fragment>
+            ))
           ) : (
-            <span className="text-xs text-muted-foreground/70 italic">
+            <span className="italic text-muted-foreground/70">
               {t('inventory.uncategorized')}
             </span>
           )}
         </div>
+        
+        {/* Name and brand */}
+        <p className="font-medium truncate leading-tight">
+          {product.name}
+        </p>
+        {product.brand && (
+          <span className="text-sm text-muted-foreground truncate">
+            {product.brand}
+          </span>
+        )}
       </div>
 
       {/* Stock section */}

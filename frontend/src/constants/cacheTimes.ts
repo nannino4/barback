@@ -58,4 +58,16 @@ export const CACHE_TIMES = {
    * This value never changes during a session
    */
   TRIAL_ELIGIBILITY: Infinity,
+
+  /**
+   * Products - 2 minutes
+   * Products can change frequently due to stock adjustments
+   */
+  PRODUCTS: 2 * MINUTE,
+
+  /**
+   * Categories - 5 minutes
+   * Categories change infrequently
+   */
+  CATEGORIES: 5 * MINUTE,
 } as const;

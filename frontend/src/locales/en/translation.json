@@ -507,6 +507,7 @@
         "filterStatus": "Showing {{showing}} of {{total}} products",
         "clearFilters": "Clear filters",
         "adjustStock": "Adjust stock",
+        "adjustStockSuccess": "Stock adjusted successfully",
         "category": "Category",
         "uncategorized": "Uncategorized",
         "empty": {
@@ -517,6 +518,16 @@
             "title": "No products found",
             "description": "Try adjusting your search or filters"
         }
+    },
+    "product": {
+        "createSuccess": "Product created successfully",
+        "updateSuccess": "Product updated successfully",
+        "deleteSuccess": "Product deleted successfully"
+    },
+    "category": {
+        "createSuccess": "Category created successfully",
+        "updateSuccess": "Category updated successfully",
+        "deleteSuccess": "Category deleted successfully"
     },
     "alerts": {
         "title": "Alerts",

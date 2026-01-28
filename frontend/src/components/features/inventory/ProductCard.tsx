@@ -1,5 +1,5 @@
 import React from 'react';
-import { Package, PlusCircle, ChevronRight } from 'lucide-react';
+import { Package, ChevronRight, Diff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { useI18n } from '@/hooks/useI18n';
@@ -191,7 +191,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         className="shrink-0"
         aria-label={t('inventory.adjustStock')}
       >
-        <PlusCircle className="h-4 w-4" />
+        <Diff className="h-4 w-4" />
       </Button>
     </Card>
   );

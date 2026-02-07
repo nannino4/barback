@@ -10,6 +10,8 @@ import type {
   CreateProductRequest,
   UpdateProductRequest,
   StockAdjustmentRequest,
+  ProductResponse,
+  StockAdjustmentResponse,
 } from '@/types/product';
 
 /**
@@ -22,14 +24,41 @@ import type {
  * - Mutations for CRUD operations
  * - Stock adjustment mutation
  */
-export const useProducts = () =>
+interface UseProductsOptions
+{
+  orgId?: string;
+}
+
+interface UseProductsResult
+{
+  products: ProductResponse[];
+  isLoading: boolean;
+  refetchProducts: () => Promise<unknown>;
+  createProduct: (data: CreateProductRequest) => Promise<ProductResponse>;
+  updateProduct: (payload: { productId: string; data: UpdateProductRequest }) => Promise<ProductResponse>;
+  deleteProduct: (productId: string) => Promise<void>;
+  adjustStock: (payload: { productId: string; data: StockAdjustmentRequest }) => Promise<StockAdjustmentResponse>;
+  isCreating: boolean;
+  isUpdating: boolean;
+  isDeleting: boolean;
+  isAdjusting: boolean;
+  productsError: unknown;
+  createProductError: unknown;
+  updateProductError: unknown;
+  deleteProductError: unknown;
+  adjustStockError: unknown;
+  resetAdjustStockError: () => void;
+  resetCreateProductError: () => void;
+  resetUpdateProductError: () => void;
+  resetDeleteProductError: () => void;
+}
+
+export const useProducts = (options: UseProductsOptions = {}): UseProductsResult =>
 {
   const queryClient = useQueryClient();
   const { t } = useI18n();
   const { currentOrg } = useOrganizations();
-  
-  // Assume org exists - this hook should only be used in org-scoped pages
-  const orgId = currentOrg!.org.id;
+  const orgId = options.orgId ?? currentOrg!.org.id;
 
   // ==========================================================================
   // Queries
@@ -127,6 +156,9 @@ export const useProducts = () =>
     
     // Error states
     productsError: productsQuery.error,
+    createProductError: createProductMutation.error,
+    updateProductError: updateProductMutation.error,
+    deleteProductError: deleteProductMutation.error,
     
     // Refetch functions
     refetchProducts: productsQuery.refetch,
@@ -144,5 +176,8 @@ export const useProducts = () =>
     isAdjusting: adjustStockMutation.isPending,
     adjustStockError: adjustStockMutation.error,
     resetAdjustStockError: adjustStockMutation.reset,
+    resetCreateProductError: createProductMutation.reset,
+    resetUpdateProductError: updateProductMutation.reset,
+    resetDeleteProductError: deleteProductMutation.reset,
   };
 };

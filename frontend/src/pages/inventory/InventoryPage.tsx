@@ -15,6 +15,7 @@ import {
   FilterStatus,
   StockAdjustmentSheet,
 } from '@/components/features/inventory';
+import { ProductFormSheet } from '@/components/features/products/ProductFormSheet';
 import { ROUTES } from '@/constants/routes';
 
 /**
@@ -37,6 +38,7 @@ export function InventoryPage()
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<string | null>(null);
   const [isAdjustmentOpen, setIsAdjustmentOpen] = React.useState(false);
   const [adjustmentProductId, setAdjustmentProductId] = React.useState<string | null>(null);
+  const [isProductFormOpen, setIsProductFormOpen] = React.useState(false);
 
   // Fetch products and categories from API
   const { products, isLoading: isLoadingProducts } = useProducts();
@@ -181,8 +183,7 @@ export function InventoryPage()
 
   const handleAddProduct = () =>
   {
-    // TODO: Navigate to product creation or open sheet (Checkpoint 7)
-    console.log('Add product clicked');
+    setIsProductFormOpen(true);
   };
 
   const handleAdjustStock = (productId: string) =>
@@ -327,6 +328,11 @@ export function InventoryPage()
         open={isAdjustmentOpen}
         onOpenChange={handleAdjustmentOpenChange}
         product={selectedProduct}
+      />
+      <ProductFormSheet
+        open={isProductFormOpen}
+        onOpenChange={setIsProductFormOpen}
+        mode="create"
       />
     </PageContainer>
   );

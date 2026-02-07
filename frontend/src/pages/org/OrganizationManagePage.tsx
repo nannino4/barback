@@ -13,9 +13,12 @@ import { MemberCard } from '@/components/features/organizations/MemberCard';
 import { MemberCardSkeleton } from '@/components/features/organizations/MemberCardSkeleton';
 import { PendingInvitationCard } from '@/components/features/organizations/PendingInvitationCard';
 import { SendInvitationDialog } from '@/components/features/organizations/SendInvitationDialog';
+import { ProductsSection } from '@/components/features/products/ProductsSection';
+import { CategoriesSection } from '@/components/features/categories/CategoriesSection';
 import { InlineEditField } from '@/components/forms/InlineEditField';
 import { InlineEditSelect } from '@/components/forms/InlineEditSelect';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useI18n } from '@/hooks/useI18n';
 import { useSmartBack } from '@/hooks/useSmartBack';
 import { useAuthStore } from '@/stores/authStore';
@@ -112,6 +115,7 @@ export const OrganizationManagePage: React.FC = () =>
   const isManager = userOrgRole === 'MANAGER';
   const canManageMembers = isOwner || isManager;
   const canEditSettings = isOwner;
+  const canManageInventory = isOwner || isManager;
 
   // Fetch pending invitations for this organization (owner/manager only)
   const {
@@ -299,6 +303,7 @@ export const OrganizationManagePage: React.FC = () =>
 
   // Non-owners can leave
   const canLeave = !isOwner && isRoleKnown;
+  const showSettingsTab = canEditSettings || canLeave;
 
   // Skeleton loading state
   const renderSkeletonLoading = () => (
@@ -450,191 +455,220 @@ export const OrganizationManagePage: React.FC = () =>
           </Stack>
         </Section>
 
-        {/* Subscription Section */}
+        {/* Management Tabs */}
         <Section>
-          <SubscriptionCard subscriptionData={subscriptionData} isOwner={isOwner} />
-        </Section>
+          <Tabs defaultValue="subscription" className="w-full">
+            <TabsList className="flex w-full flex-wrap justify-start gap-2 h-auto">
+              <TabsTrigger value="subscription">{t('orgManagement.tabs.subscription')}</TabsTrigger>
+              <TabsTrigger value="members">{t('orgManagement.members.title')}</TabsTrigger>
+              {orgId && (
+                <TabsTrigger value="products">{t('orgManagement.products.title')}</TabsTrigger>
+              )}
+              {orgId && (
+                <TabsTrigger value="categories">{t('orgManagement.categories.title')}</TabsTrigger>
+              )}
+              {showSettingsTab && (
+                <TabsTrigger value="settings">{t('orgManagement.settings.title')}</TabsTrigger>
+              )}
+            </TabsList>
 
-        {/* Members Section */}
-        <Section>
-          <Card>
-            <CardHeader>
-              <Stack direction="horizontal" space="sm" align="center">
-                <Users className="w-5 h-5 text-muted-foreground" />
-                <CardTitle>
-                  {t('orgManagement.members.title')}{' '}
-                  <span className="text-muted-foreground font-normal">
-                    ({members?.length ?? 0})
-                  </span>
-                </CardTitle>
-              </Stack>
+            <TabsContent value="subscription" className="mt-4">
+              <SubscriptionCard subscriptionData={subscriptionData} isOwner={isOwner} />
+            </TabsContent>
+
+            <TabsContent value="members" className="mt-4">
+              <Card>
+                <CardHeader>
+                  <Stack direction="horizontal" space="sm" align="center">
+                    <Users className="w-5 h-5 text-muted-foreground" />
+                    <CardTitle>
+                      {t('orgManagement.members.title')}{' '}
+                      <span className="text-muted-foreground font-normal">
+                        ({members?.length ?? 0})
+                      </span>
+                    </CardTitle>
+                  </Stack>
+
+                  {canManageMembers && (
+                    <CardAction>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setInviteDialogOpen(true)}
+                        aria-label={t('invitations.send.sendButton')}
+                      >
+                        <UserPlus className="w-4 h-4" />
+                        <span className="hidden sm:inline">{t('invitations.send.sendButton')}</span>
+                      </Button>
+                    </CardAction>
+                  )}
+                </CardHeader>
+                <CardContent>
+                  <Stack space="md">
+                    {isLoadingMembers ? (
+                      <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
+                        <MemberCardSkeleton />
+                        <MemberCardSkeleton />
+                      </Grid>
+                    ) : members && members.length > 0 ? (
+                      <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
+                        {members.map((member) => (
+                          <MemberCard
+                            key={member.user.id}
+                            member={member}
+                            currentUserId={currentUser?.id ?? ''}
+                            isOwner={isOwner}
+                            onRemove={canManageMembers ? handleRemoveMember : undefined}
+                            isRemoving={removeMemberMutation.isPending && memberToRemove === member.user.id}
+                          />
+                        ))}
+                      </Grid>
+                    ) : (
+                      <p className="text-sm text-muted-foreground text-center py-8">
+                        {t('orgManagement.members.noMembers')}
+                      </p>
+                    )}
+                  </Stack>
+                </CardContent>
+              </Card>
 
               {canManageMembers && (
-                <CardAction>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setInviteDialogOpen(true)}
-                    aria-label={t('invitations.send.sendButton')}
-                  >
-                    <UserPlus className="w-4 h-4" />
-                    <span className="hidden sm:inline">{t('invitations.send.sendButton')}</span>
-                  </Button>
-                </CardAction>
+                <div className="mt-6">
+                  <Card>
+                    <CardHeader>
+                      <Stack direction="horizontal" space="sm" align="center">
+                        <Mail className="w-5 h-5 text-muted-foreground" />
+                        <CardTitle>
+                          {t('invitations.pendingInvitations')}{' '}
+                          <span className="text-muted-foreground font-normal">
+                            ({visibleOrganizationInvitations.length})
+                          </span>
+                        </CardTitle>
+                      </Stack>
+                    </CardHeader>
+                    <CardContent>
+                      {invitationsError ? (
+                        <p className="text-sm text-muted-foreground text-center py-8">
+                          {t('invitations.errors.loadFailed')}
+                        </p>
+                      ) : isLoadingInvitations ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <Skeleton className="h-28 w-full rounded-xl" />
+                          <Skeleton className="h-28 w-full rounded-xl" />
+                        </div>
+                      ) : visibleOrganizationInvitations.length > 0 ? (
+                        <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
+                          {visibleOrganizationInvitations.map((invitation) => (
+                            <PendingInvitationCard
+                              key={invitation.id}
+                              invitation={invitation}
+                              onRevoke={(invitationId) => revokeInvitationMutation.mutate(invitationId)}
+                              isRevoking={revokeInvitationMutation.isPending}
+                            />
+                          ))}
+                        </Grid>
+                      ) : (
+                        <p className="text-sm text-muted-foreground text-center py-8">
+                          {t('invitations.noPendingInvitations')}
+                        </p>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
               )}
-            </CardHeader>
-            <CardContent>
-              <Stack space="md">
-                {isLoadingMembers ? (
-                  <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
-                    <MemberCardSkeleton />
-                    <MemberCardSkeleton />
-                  </Grid>
-                ) : members && members.length > 0 ? (
-                  <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
-                    {members.map((member) => (
-                      <MemberCard
-                        key={member.user.id}
-                        member={member}
-                        currentUserId={currentUser?.id ?? ''}
-                        isOwner={isOwner}
-                        onRemove={canManageMembers ? handleRemoveMember : undefined}
-                        isRemoving={removeMemberMutation.isPending && memberToRemove === member.user.id}
-                      />
-                    ))}
-                  </Grid>
-                ) : (
-                  <p className="text-sm text-muted-foreground text-center py-8">
-                    {t('orgManagement.members.noMembers')}
-                  </p>
+            </TabsContent>
+
+            {orgId && (
+              <TabsContent value="products" className="mt-4">
+                <ProductsSection orgId={orgId} canManage={canManageInventory} />
+              </TabsContent>
+            )}
+
+            {orgId && (
+              <TabsContent value="categories" className="mt-4">
+                <CategoriesSection orgId={orgId} canManage={canManageInventory} />
+              </TabsContent>
+            )}
+
+
+            {showSettingsTab && (
+              <TabsContent value="settings" className="mt-4">
+                {canEditSettings && (
+                  <Card>
+                    <CardHeader>
+                      <Stack direction="horizontal" space="sm" align="center">
+                        <Settings className="w-5 h-5 text-muted-foreground" />
+                        <CardTitle>{t('orgManagement.settings.title')}</CardTitle>
+                      </Stack>
+                      <CardDescription>
+                        {t('orgManagement.settings.description')}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Stack space="md">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-1">
+                            <span className="text-sm text-muted-foreground">
+                              {t('orgManagement.settings.currency')}
+                            </span>
+                            <InlineEditSelect
+                              value={organization.settings.defaultCurrency}
+                              options={currencyOptions}
+                              onSave={(newCurrency) =>
+                              {
+                                void newCurrency;
+                                // TODO: Implement currency update API
+                                notify.error(t('errors.genericError'));
+                              }}
+                              label={t('orgManagement.settings.currency')}
+                              canEdit={canEditSettings}
+                              alwaysShowEdit
+                            />
+                          </div>
+                        </div>
+                      </Stack>
+                    </CardContent>
+                  </Card>
                 )}
-              </Stack>
-            </CardContent>
-          </Card>
+
+                {canLeave && (
+                  <div className="mt-6">
+                    <Card className="border-destructive/50">
+                      <CardHeader>
+                        <Stack direction="horizontal" space="sm" align="center">
+                          <AlertTriangle className="w-5 h-5 text-destructive" />
+                          <CardTitle className="text-destructive">{t('common.dangerZone')}</CardTitle>
+                        </Stack>
+                        <CardDescription>
+                          {t('members.leave.description')}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <Button
+                          variant="destructive"
+                          onClick={handleLeaveOrganization}
+                          disabled={leaveOrgMutation.isPending}
+                        >
+                          {leaveOrgMutation.isPending ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              {t('members.leave.leaving')}
+                            </>
+                          ) : (
+                            <>
+                              <LogOut className="w-4 h-4 mr-2" />
+                              {t('members.leave.button')}
+                            </>
+                          )}
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+              </TabsContent>
+            )}
+          </Tabs>
         </Section>
-
-        {/* Pending Invitations Section (Owner/Manager only) */}
-        {canManageMembers && (
-          <Section>
-            <Card>
-              <CardHeader>
-                <Stack direction="horizontal" space="sm" align="center">
-                  <Mail className="w-5 h-5 text-muted-foreground" />
-                  <CardTitle>
-                    {t('invitations.pendingInvitations')}{' '}
-                    <span className="text-muted-foreground font-normal">
-                      ({visibleOrganizationInvitations.length})
-                    </span>
-                  </CardTitle>
-                </Stack>
-              </CardHeader>
-              <CardContent>
-                {invitationsError ? (
-                  <p className="text-sm text-muted-foreground text-center py-8">
-                    {t('invitations.errors.loadFailed')}
-                  </p>
-                ) : isLoadingInvitations ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <Skeleton className="h-28 w-full rounded-xl" />
-                    <Skeleton className="h-28 w-full rounded-xl" />
-                  </div>
-                ) : visibleOrganizationInvitations.length > 0 ? (
-                  <Grid cols={{ mobile: 1, tablet: 2, desktop: 2 }}>
-                    {visibleOrganizationInvitations.map((invitation) => (
-                      <PendingInvitationCard
-                        key={invitation.id}
-                        invitation={invitation}
-                        onRevoke={(invitationId) => revokeInvitationMutation.mutate(invitationId)}
-                        isRevoking={revokeInvitationMutation.isPending}
-                      />
-                    ))}
-                  </Grid>
-                ) : (
-                  <p className="text-sm text-muted-foreground text-center py-8">
-                    {t('invitations.noPendingInvitations')}
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          </Section>
-        )}
-
-        {/* Organization Settings Section (Owner only) */}
-        {canEditSettings && (
-          <Section>
-            <Card>
-              <CardHeader>
-                <Stack direction="horizontal" space="sm" align="center">
-                  <Settings className="w-5 h-5 text-muted-foreground" />
-                  <CardTitle>{t('orgManagement.settings.title')}</CardTitle>
-                </Stack>
-                <CardDescription>
-                  {t('orgManagement.settings.description')}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Stack space="md">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <span className="text-sm text-muted-foreground">
-                        {t('orgManagement.settings.currency')}
-                      </span>
-                      <InlineEditSelect
-                        value={organization.settings.defaultCurrency}
-                        options={currencyOptions}
-                        onSave={(newCurrency) =>
-                        {
-                          void newCurrency;
-                          // TODO: Implement currency update API
-                          notify.error(t('errors.genericError'));
-                        }}
-                        label={t('orgManagement.settings.currency')}
-                        canEdit={canEditSettings}
-                        alwaysShowEdit
-                      />
-                    </div>
-                  </div>
-                </Stack>
-              </CardContent>
-            </Card>
-          </Section>
-        )}
-
-        {/* Danger Zone - Leave Organization (non-owners only) */}
-        {canLeave && (
-          <Section>
-            <Card className="border-destructive/50">
-              <CardHeader>
-                <Stack direction="horizontal" space="sm" align="center">
-                  <AlertTriangle className="w-5 h-5 text-destructive" />
-                  <CardTitle className="text-destructive">{t('common.dangerZone')}</CardTitle>
-                </Stack>
-                <CardDescription>
-                  {t('members.leave.description')}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button
-                  variant="destructive"
-                  onClick={handleLeaveOrganization}
-                  disabled={leaveOrgMutation.isPending}
-                >
-                  {leaveOrgMutation.isPending ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      {t('members.leave.leaving')}
-                    </>
-                  ) : (
-                    <>
-                      <LogOut className="w-4 h-4 mr-2" />
-                      {t('members.leave.button')}
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-          </Section>
-        )}
       </Stack>
 
       {/* Dialogs */}

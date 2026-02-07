@@ -340,19 +340,23 @@
         "product": {
             "name": {
                 "required": "Nome del prodotto è richiesto",
-                "mustBeString": "Il nome del prodotto deve essere testo"
+                "mustBeString": "Il nome del prodotto deve essere testo",
+                "maxLength": "Il nome del prodotto non può superare {{max}} caratteri"
             },
             "description": {
                 "required": "Descrizione del prodotto è richiesta",
-                "mustBeString": "La descrizione del prodotto deve essere testo"
+                "mustBeString": "La descrizione del prodotto deve essere testo",
+                "maxLength": "La descrizione non può superare {{max}} caratteri"
             },
             "brand": {
                 "required": "Marca del prodotto è richiesta",
-                "mustBeString": "La marca del prodotto deve essere testo"
+                "mustBeString": "La marca del prodotto deve essere testo",
+                "maxLength": "La marca non può superare {{max}} caratteri"
             },
             "defaultUnit": {
                 "required": "Unità predefinita è richiesta",
-                "mustBeString": "L'unità predefinita deve essere testo"
+                "mustBeString": "L'unità predefinita deve essere testo",
+                "maxLength": "L'unità non può superare {{max}} caratteri"
             },
             "defaultPurchasePrice": {
                 "mustBeNumber": "Il prezzo d'acquisto predefinito deve essere un numero",
@@ -373,11 +377,13 @@
         "category": {
             "name": {
                 "required": "Nome della categoria è richiesto",
-                "mustBeString": "Il nome della categoria deve essere testo"
+                "mustBeString": "Il nome della categoria deve essere testo",
+                "maxLength": "Il nome della categoria non può superare {{max}} caratteri"
             },
             "description": {
                 "required": "Descrizione della categoria è richiesta",
-                "mustBeString": "La descrizione della categoria deve essere testo"
+                "mustBeString": "La descrizione della categoria deve essere testo",
+                "maxLength": "La descrizione non può superare {{max}} caratteri"
             },
             "parentId": {
                 "invalidObjectId": "Formato ID categoria padre non valido"
@@ -575,12 +581,49 @@
     "product": {
         "createSuccess": "Prodotto creato con successo",
         "updateSuccess": "Prodotto aggiornato con successo",
-        "deleteSuccess": "Prodotto eliminato con successo"
+        "deleteSuccess": "Prodotto eliminato con successo",
+        "form": {
+            "createTitle": "Nuovo Prodotto",
+            "editTitle": "Modifica Prodotto",
+            "nameLabel": "Nome prodotto",
+            "namePlaceholder": "es. Johnnie Walker Black",
+            "brandLabel": "Brand",
+            "brandPlaceholder": "es. Johnnie Walker",
+            "descriptionLabel": "Descrizione",
+            "descriptionPlaceholder": "Note, formato o dettagli",
+            "unitLabel": "Unità di misura",
+            "unitPlaceholder": "es. bottiglia, ml, oz",
+            "purchasePriceLabel": "Prezzo di acquisto",
+            "purchasePricePlaceholder": "es. 18,50",
+            "initialQuantityLabel": "Quantità iniziale",
+            "initialQuantityPlaceholder": "es. 12",
+            "categoriesLabel": "Categorie",
+            "categoriesPlaceholder": "Seleziona categorie",
+            "categoriesSearchPlaceholder": "Cerca categorie...",
+            "categoriesEmpty": "Nessuna categoria trovata",
+            "categoriesAdd": "Aggiungi categoria",
+            "saveCreate": "Crea prodotto",
+            "saveUpdate": "Salva modifiche",
+            "saving": "Salvataggio..."
+        }
     },
     "category": {
         "createSuccess": "Categoria creata con successo",
         "updateSuccess": "Categoria aggiornata con successo",
-        "deleteSuccess": "Categoria eliminata con successo"
+        "deleteSuccess": "Categoria eliminata con successo",
+        "form": {
+            "createTitle": "Nuova Categoria",
+            "editTitle": "Modifica Categoria",
+            "nameLabel": "Nome categoria",
+            "namePlaceholder": "es. Whiskey",
+            "descriptionLabel": "Descrizione",
+            "descriptionPlaceholder": "Dettagli opzionali",
+            "parentLabel": "Categoria padre",
+            "parentPlaceholder": "Nessuna categoria padre",
+            "saveCreate": "Crea categoria",
+            "saveUpdate": "Salva modifiche",
+            "saving": "Salvataggio..."
+        }
     },
     "alerts": {
         "title": "Avvisi",
@@ -894,6 +937,36 @@
             "title": "Membri del Team",
             "description": "Visualizza e gestisci i membri del tuo team",
             "noMembers": "Nessun membro del team"
+        },
+        "products": {
+            "title": "Prodotti",
+            "description": "Gestisci i dettagli dei prodotti e le impostazioni di inventario",
+            "searchPlaceholder": "Cerca prodotti...",
+            "addButton": "Aggiungi Prodotto",
+            "editButton": "Modifica",
+            "emptyTitle": "Nessun prodotto",
+            "emptyDescription": "Aggiungi il primo prodotto per iniziare a tracciare l'inventario.",
+            "errorTitle": "Impossibile caricare i prodotti",
+            "errorDescription": "Non siamo riusciti a caricare i prodotti. Riprova."
+        },
+        "categories": {
+            "title": "Categorie",
+            "description": "Organizza i prodotti in categorie",
+            "searchPlaceholder": "Cerca categorie...",
+            "addButton": "Aggiungi Categoria",
+            "addSubcategory": "Aggiungi sottocategoria",
+            "editButton": "Modifica",
+            "deleteButton": "Elimina",
+            "expandLabel": "Espandi categoria",
+            "collapseLabel": "Comprimi categoria",
+            "emptyTitle": "Nessuna categoria",
+            "emptyDescription": "Crea categorie per organizzare i prodotti.",
+            "deleteConfirm": "Eliminare la categoria \"{{name}}\"? Questa azione non può essere annullata.",
+            "deleteWithChildren": "\"{{name}}\" ha {{count}} sottocategorie. Eliminandola verranno rimosse anche le sottocategorie.",
+            "deleteWithProducts": "\"{{name}}\" ha {{count}} prodotti assegnati. Verranno rimossi dalla categoria.",
+            "deleteWithProductsAndChildren": "\"{{name}}\" ha {{childCount}} sottocategorie e {{productCount}} prodotti. Verranno rimossi dalla categoria.",
+            "errorTitle": "Impossibile caricare le categorie",
+            "errorDescription": "Non siamo riusciti a caricare le categorie. Riprova."
         },
         "settings": {
             "title": "Impostazioni",

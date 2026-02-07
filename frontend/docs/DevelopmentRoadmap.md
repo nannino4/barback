@@ -202,31 +202,26 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [X] One-click access from product row
   - [X] Default reason that changes dynamically (increase/decrease)
   - [X] Quantity input with preview of new stock level
-- [ ] Build Product Create/Edit Form (sheet/dialog)
-  - [ ] Full form with all product fields
-  - [ ] Inline category creation option
-  - [ ] Validation: name required, unit required
+- [X] Build Product Create/Edit Form (sheet/dialog)
+  - [X] Full form with all product fields
+  - [X] Inline category creation option
+  - [X] Validation: name required, unit required
+- [ ] Product detail page
+  - [ ] Full product info
+  - [ ] Stock adjustment history
+  - [ ] Edit product button (opens form)
+  - [ ] Delete product button (with confirmation)
 
 ##### **Organization Settings - Products & Categories**
-- [ ] Add Products section to Organization Settings
-  - [ ] Products list card/expandable section
-  - [ ] Full CRUD: create, edit, delete products
-  - [ ] Delete product only from product detail
-- [ ] Add Categories section to Organization Settings
-  - [ ] Categories tree/list card/expandable section
-  - [ ] Full CRUD: create, edit, delete categories
-  - [ ] Product count per category (calculated client-side)
-  - [ ] Validation: name required, unique per org
-
-##### **Stock Adjustment System**
-- [ ] Single Stock Adjustment Sheet/Dialog component
-  - [ ] Complete but compact - serves all use cases
-  - [ ] Adjustment types: Purchase, Consumption, Adjustment, Stocktake
-  - [ ] Smart default reason (auto-changes with +/- until manual selection)
-  - [ ] Visual feedback for reason/operation type mismatch
-  - [ ] Quantity input with preview of new stock level
-  - [ ] Note field for additional context
-  - [ ] Role rules: All roles can adjust stock
+- [X] Add Products section to Organization Settings
+  -X[X] Products list card/expandable section
+  -X[X] Full CRUD: create, edit, delete products
+  -X[X] Delete product only from product detail
+- [X]XAdd Categories section to Organization Settings
+  -X[X] Categories tree/list card/expandable section
+  -X[X] Full CRUD: create, edit, delete categories
+  -X[X] Product count per category (calculated client-side)
+  - [X] Validation: name required, unique per org
 
 ##### **Architecture Decisions (Sprint 5-6)**
 - **No pagination**: All products loaded at once (assume < 1000 products for MVP)

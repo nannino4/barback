@@ -339,19 +339,23 @@
         "product": {
             "name": {
                 "required": "Product name is required",
-                "mustBeString": "Product name must be text"
+                "mustBeString": "Product name must be text",
+                "maxLength": "Product name cannot exceed {{max}} characters"
             },
             "description": {
                 "required": "Product description is required",
-                "mustBeString": "Product description must be text"
+                "mustBeString": "Product description must be text",
+                "maxLength": "Description cannot exceed {{max}} characters"
             },
             "brand": {
                 "required": "Product brand is required",
-                "mustBeString": "Product brand must be text"
+                "mustBeString": "Product brand must be text",
+                "maxLength": "Brand cannot exceed {{max}} characters"
             },
             "defaultUnit": {
                 "required": "Default unit is required",
-                "mustBeString": "Default unit must be text"
+                "mustBeString": "Default unit must be text",
+                "maxLength": "Unit cannot exceed {{max}} characters"
             },
             "defaultPurchasePrice": {
                 "mustBeNumber": "Default purchase price must be a number",
@@ -372,11 +376,13 @@
         "category": {
             "name": {
                 "required": "Category name is required",
-                "mustBeString": "Category name must be text"
+                "mustBeString": "Category name must be text",
+                "maxLength": "Category name cannot exceed {{max}} characters"
             },
             "description": {
                 "required": "Category description is required",
-                "mustBeString": "Category description must be text"
+                "mustBeString": "Category description must be text",
+                "maxLength": "Description cannot exceed {{max}} characters"
             },
             "parentId": {
                 "invalidObjectId": "Invalid parent category ID format"
@@ -574,12 +580,49 @@
     "product": {
         "createSuccess": "Product created successfully",
         "updateSuccess": "Product updated successfully",
-        "deleteSuccess": "Product deleted successfully"
+        "deleteSuccess": "Product deleted successfully",
+        "form": {
+            "createTitle": "New Product",
+            "editTitle": "Edit Product",
+            "nameLabel": "Product name",
+            "namePlaceholder": "e.g. Johnnie Walker Black",
+            "brandLabel": "Brand",
+            "brandPlaceholder": "e.g. Johnnie Walker",
+            "descriptionLabel": "Description",
+            "descriptionPlaceholder": "Notes, size, or details",
+            "unitLabel": "Unit of measure",
+            "unitPlaceholder": "e.g. bottle, ml, oz",
+            "purchasePriceLabel": "Purchase price",
+            "purchasePricePlaceholder": "e.g. 18.50",
+            "initialQuantityLabel": "Initial quantity",
+            "initialQuantityPlaceholder": "e.g. 12",
+            "categoriesLabel": "Categories",
+            "categoriesPlaceholder": "Select categories",
+            "categoriesSearchPlaceholder": "Search categories...",
+            "categoriesEmpty": "No categories found",
+            "categoriesAdd": "Add category",
+            "saveCreate": "Create product",
+            "saveUpdate": "Save changes",
+            "saving": "Saving..."
+        }
     },
     "category": {
         "createSuccess": "Category created successfully",
         "updateSuccess": "Category updated successfully",
-        "deleteSuccess": "Category deleted successfully"
+        "deleteSuccess": "Category deleted successfully",
+        "form": {
+            "createTitle": "New Category",
+            "editTitle": "Edit Category",
+            "nameLabel": "Category name",
+            "namePlaceholder": "e.g. Whiskey",
+            "descriptionLabel": "Description",
+            "descriptionPlaceholder": "Optional details",
+            "parentLabel": "Parent category",
+            "parentPlaceholder": "No parent",
+            "saveCreate": "Create category",
+            "saveUpdate": "Save changes",
+            "saving": "Saving..."
+        }
     },
     "alerts": {
         "title": "Alerts",
@@ -895,6 +938,36 @@
             "title": "Team Members",
             "description": "View and manage your team members",
             "noMembers": "No team members yet"
+        },
+        "products": {
+            "title": "Products",
+            "description": "Manage product details and inventory settings",
+            "searchPlaceholder": "Search products...",
+            "addButton": "Add Product",
+            "editButton": "Edit",
+            "emptyTitle": "No products yet",
+            "emptyDescription": "Add your first product to start tracking inventory.",
+            "errorTitle": "Unable to load products",
+            "errorDescription": "We couldn't load products. Please try again."
+        },
+        "categories": {
+            "title": "Categories",
+            "description": "Organize products into categories",
+            "searchPlaceholder": "Search categories...",
+            "addButton": "Add Category",
+            "addSubcategory": "Add subcategory",
+            "editButton": "Edit",
+            "deleteButton": "Delete",
+            "expandLabel": "Expand category",
+            "collapseLabel": "Collapse category",
+            "emptyTitle": "No categories yet",
+            "emptyDescription": "Create categories to organize your products.",
+            "deleteConfirm": "Delete category \"{{name}}\"? This cannot be undone.",
+            "deleteWithChildren": "\"{{name}}\" has {{count}} subcategories. Deleting it will also remove all subcategories.",
+            "deleteWithProducts": "\"{{name}}\" has {{count}} products assigned. They will be removed from this category.",
+            "deleteWithProductsAndChildren": "\"{{name}}\" has {{childCount}} subcategories and {{productCount}} products. They will be removed from this category.",
+            "errorTitle": "Unable to load categories",
+            "errorDescription": "We couldn't load categories. Please try again."
         },
         "settings": {
             "title": "Settings",

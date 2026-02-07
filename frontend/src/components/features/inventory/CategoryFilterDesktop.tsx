@@ -13,8 +13,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Stack } from '@/components/layout';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
 import { filterCategoryTree } from '@/components/features/inventory/categoryFilterUtils';
+import {
+  ChildCategoryRowContent,
+  ParentCategoryRowContent,
+} from '@/components/features/categories/CategoryRowContent';
+import { CategoryTree } from '@/components/features/categories/CategoryTree';
 import { useI18n } from '@/hooks/useI18n';
 
 import type { CategoryTreeNode } from '@/components/features/inventory/categoryFilterUtils';
@@ -53,11 +57,13 @@ export const CategoryFilterDesktop: React.FC<CategoryFilterDesktopProps> = ({
   }, [categoryTree, searchQuery]);
 
   const hasResults = filteredTree.length > 0;
+  const isSearchActive = searchQuery.trim().length > 0;
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) =>
   {
     setSearchQuery(event.target.value);
   };
+
 
   return (
     <DropdownMenu>
@@ -98,54 +104,42 @@ export const CategoryFilterDesktop: React.FC<CategoryFilterDesktopProps> = ({
           value={selectedCategoryId ?? ALL_CATEGORIES_VALUE}
           onValueChange={onSelectValue}
         >
-          <DropdownMenuRadioItem value={ALL_CATEGORIES_VALUE}>
-            <span className="flex items-center justify-between w-full">
-              <span>{t('inventory.allCategories')}</span>
-              <Badge variant="secondary" className="text-xs">
-                {totalCount}
-              </Badge>
-            </span>
-          </DropdownMenuRadioItem>
+          <div className="px-2">
+            <DropdownMenuRadioItem value={ALL_CATEGORIES_VALUE} className="rounded-md">
+              <ParentCategoryRowContent
+                name={t('inventory.allCategories')}
+                count={totalCount}
+              />
+            </DropdownMenuRadioItem>
+          </div>
           {!hasResults && (
             <div className="px-3 py-3 text-sm text-muted-foreground">
               {t('inventory.categorySearchEmpty')}
             </div>
           )}
-          {filteredTree.map((parent) => (
-            <div key={parent.id} className="px-2 pb-2">
-              <div className="rounded-lg border border-border bg-background">
-                <DropdownMenuRadioItem
-                  value={parent.id}
-                  className={cn('rounded-t-lg', parent.children.length === 0 && 'rounded-b-lg')}
-                >
-                  <span className="flex items-center justify-between w-full">
-                    <span className="truncate font-medium">{parent.name}</span>
-                    <Badge variant="secondary" className="text-xs">
-                      {getSubtreeCount(parent.id)}
-                    </Badge>
-                  </span>
-                </DropdownMenuRadioItem>
-                {parent.children.length > 0 && (
-                  <div className="border-t border-border">
-                    {parent.children.map((child) => (
-                      <DropdownMenuRadioItem
-                        key={child.id}
-                        value={child.id}
-                        className="pl-8"
-                      >
-                        <span className="flex items-center justify-between w-full">
-                          <span className="truncate">{child.name}</span>
-                          <Badge variant="secondary" className="text-xs">
-                            {getSubtreeCount(child.id)}
-                          </Badge>
-                        </span>
-                      </DropdownMenuRadioItem>
-                    ))}
-                  </div>
+          <CategoryTree
+            nodes={filteredTree}
+            isSearchActive={isSearchActive}
+            expandLabel={t('orgManagement.categories.expandLabel')}
+            collapseLabel={t('orgManagement.categories.collapseLabel')}
+            renderRow={({ node, depth, leadingIcon }) => (
+              <DropdownMenuRadioItem value={node.id} className="rounded-md">
+                {depth === 0 ? (
+                  <ParentCategoryRowContent
+                    name={node.name}
+                    count={getSubtreeCount(node.id)}
+                    leadingIcon={leadingIcon}
+                  />
+                ) : (
+                  <ChildCategoryRowContent
+                    name={node.name}
+                    count={getSubtreeCount(node.id)}
+                    leadingIcon={leadingIcon}
+                  />
                 )}
-              </div>
-            </div>
-          ))}
+              </DropdownMenuRadioItem>
+            )}
+          />
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

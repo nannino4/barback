@@ -9,6 +9,7 @@ import { CACHE_TIMES } from '@/constants/cacheTimes';
 import type {
   CreateCategoryRequest,
   UpdateCategoryRequest,
+  CategoryResponse,
 } from '@/types/category';
 
 /**
@@ -20,14 +21,37 @@ import type {
  * - Query for all categories
  * - Mutations for CRUD operations
  */
-export const useCategories = () =>
+interface UseCategoriesOptions
+{
+  orgId?: string;
+}
+
+interface UseCategoriesResult
+{
+  categories: CategoryResponse[];
+  isLoading: boolean;
+  error: unknown;
+  refetch: () => Promise<unknown>;
+  createCategory: (data: CreateCategoryRequest) => Promise<CategoryResponse>;
+  updateCategory: (payload: { categoryId: string; data: UpdateCategoryRequest }) => Promise<CategoryResponse>;
+  deleteCategory: (categoryId: string) => Promise<void>;
+  isCreating: boolean;
+  isUpdating: boolean;
+  isDeleting: boolean;
+  createCategoryError: unknown;
+  updateCategoryError: unknown;
+  deleteCategoryError: unknown;
+  resetCreateCategoryError: () => void;
+  resetUpdateCategoryError: () => void;
+  resetDeleteCategoryError: () => void;
+}
+
+export const useCategories = (options: UseCategoriesOptions = {}): UseCategoriesResult =>
 {
   const queryClient = useQueryClient();
   const { t } = useI18n();
   const { currentOrg } = useOrganizations();
-  
-  // Assume org exists - this hook should only be used in org-scoped pages
-  const orgId = currentOrg!.org.id;
+  const orgId = options.orgId ?? currentOrg!.org.id;
 
   // ==========================================================================
   // Queries
@@ -107,6 +131,9 @@ export const useCategories = () =>
     
     // Error states
     error: categoriesQuery.error,
+    createCategoryError: createCategoryMutation.error,
+    updateCategoryError: updateCategoryMutation.error,
+    deleteCategoryError: deleteCategoryMutation.error,
     
     // Refetch
     refetch: categoriesQuery.refetch,
@@ -120,5 +147,8 @@ export const useCategories = () =>
     isCreating: createCategoryMutation.isPending,
     isUpdating: updateCategoryMutation.isPending,
     isDeleting: deleteCategoryMutation.isPending,
+    resetCreateCategoryError: createCategoryMutation.reset,
+    resetUpdateCategoryError: updateCategoryMutation.reset,
+    resetDeleteCategoryError: deleteCategoryMutation.reset,
   };
 };

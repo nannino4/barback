@@ -14,6 +14,11 @@ import { Stack } from '@/components/layout';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { filterCategoryTree } from '@/components/features/inventory/categoryFilterUtils';
+import {
+  ChildCategoryRowContent,
+  ParentCategoryRowContent,
+} from '@/components/features/categories/CategoryRowContent';
+import { CategoryTree } from '@/components/features/categories/CategoryTree';
 import { useI18n } from '@/hooks/useI18n';
 
 import type { CategoryTreeNode } from '@/components/features/inventory/categoryFilterUtils';
@@ -53,6 +58,7 @@ export const CategoryFilterMobile: React.FC<CategoryFilterMobileProps> = ({
   }, [categoryTree, searchQuery]);
 
   const hasResults = filteredTree.length > 0;
+  const isSearchActive = searchQuery.trim().length > 0;
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) =>
   {
@@ -64,6 +70,7 @@ export const CategoryFilterMobile: React.FC<CategoryFilterMobileProps> = ({
     onSelectValue(value);
     setIsSheetOpen(false);
   };
+
 
   return (
     <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
@@ -85,7 +92,7 @@ export const CategoryFilterMobile: React.FC<CategoryFilterMobileProps> = ({
           </Stack>
         </Button>
       </SheetTrigger>
-      <SheetContent side="bottom" className="max-h-[85vh] overflow-y-auto">
+      <SheetContent side="bottom" className="h-[100dvh] rounded-none overflow-y-auto">
         <SheetHeader className="text-left">
           <SheetTitle>{t('inventory.categoryFilterTitle')}</SheetTitle>
           <SheetDescription>{t('inventory.categoryFilterDescription')}</SheetDescription>
@@ -110,18 +117,13 @@ export const CategoryFilterMobile: React.FC<CategoryFilterMobileProps> = ({
               selectedCategoryId === null ? 'bg-muted' : 'bg-background',
             )}
           >
-            <span className="flex items-center gap-3">
-              <Tag className="h-4 w-4 text-muted-foreground" />
-              <span className="font-medium">{t('inventory.allCategories')}</span>
-            </span>
-            <span className="flex items-center gap-2">
-              <Badge variant="secondary" className="text-xs">
-                {totalCount}
-              </Badge>
-              {selectedCategoryId === null && (
+            <ParentCategoryRowContent
+              name={t('inventory.allCategories')}
+              count={totalCount}
+              rightSlot={selectedCategoryId === null ? (
                 <Check className="h-4 w-4 text-primary" />
-              )}
-            </span>
+              ) : null}
+            />
           </button>
 
           {!hasResults && (
@@ -130,73 +132,47 @@ export const CategoryFilterMobile: React.FC<CategoryFilterMobileProps> = ({
             </div>
           )}
 
-          {filteredTree.map((parent) => (
-            <div
-              key={parent.id}
-              className="rounded-xl border border-border bg-background overflow-hidden"
-            >
-              <button
-                type="button"
-                onClick={() => handleSelect(parent.id)}
-                className={cn(
-                  'w-full px-3 py-3 text-left',
-                  'flex items-center justify-between gap-3',
-                  selectedCategoryId === parent.id ? 'bg-muted' : 'bg-background',
-                  parent.children.length > 0 ? 'border-b border-border' : 'rounded-xl',
-                )}
-              >
-                <span className="flex items-center gap-3 min-w-0">
-                  <Tag className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium truncate">{parent.name}</span>
-                </span>
-                <span className="flex items-center gap-2">
-                  <Badge variant="secondary" className="text-xs">
-                    {getSubtreeCount(parent.id)}
-                  </Badge>
-                  {selectedCategoryId === parent.id && (
-                    <Check className="h-4 w-4 text-primary" />
+          <CategoryTree
+            nodes={filteredTree}
+            isSearchActive={isSearchActive}
+            expandLabel={t('orgManagement.categories.expandLabel')}
+            collapseLabel={t('orgManagement.categories.collapseLabel')}
+            renderRow={({ node, depth, leadingIcon }) =>
+            {
+              const isSelected = selectedCategoryId === node.id;
+              return (
+                <button
+                  type="button"
+                  onClick={() => handleSelect(node.id)}
+                  className={cn(
+                    'w-full rounded-lg border border-border px-3 py-3 text-left',
+                    'flex items-center justify-between gap-3',
+                    isSelected ? 'bg-muted' : 'bg-background',
                   )}
-                </span>
-              </button>
-
-              {parent.children.length > 0 && (
-                <div>
-                  {parent.children.map((child, index) =>
-                  {
-                    const isSelected = selectedCategoryId === child.id;
-                    const isLastChild = index === parent.children.length - 1;
-                    return (
-                      <button
-                        key={child.id}
-                        type="button"
-                        onClick={() => handleSelect(child.id)}
-                        className={cn(
-                          'w-full px-4 py-3 text-left',
-                          'flex items-center justify-between gap-3',
-                          isSelected ? 'bg-muted' : 'bg-background',
-                          isLastChild && 'rounded-b-xl',
-                          !isLastChild && 'border-b border-border',
-                        )}
-                      >
-                        <span className="flex items-center gap-3 min-w-0">
-                          <span className="h-2 w-2 rounded-full bg-muted-foreground/40" />
-                          <span className="truncate">{child.name}</span>
-                        </span>
-                        <span className="flex items-center gap-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {getSubtreeCount(child.id)}
-                          </Badge>
-                          {isSelected && (
-                            <Check className="h-4 w-4 text-primary" />
-                          )}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          ))}
+                >
+                  {depth === 0 ? (
+                    <ParentCategoryRowContent
+                      name={node.name}
+                      count={getSubtreeCount(node.id)}
+                      leadingIcon={leadingIcon}
+                      rightSlot={isSelected ? (
+                        <Check className="h-4 w-4 text-primary" />
+                      ) : null}
+                    />
+                  ) : (
+                    <ChildCategoryRowContent
+                      name={node.name}
+                      count={getSubtreeCount(node.id)}
+                      leadingIcon={leadingIcon}
+                      rightSlot={isSelected ? (
+                        <Check className="h-4 w-4 text-primary" />
+                      ) : null}
+                    />
+                  )}
+                </button>
+              );
+            }}
+          />
         </Stack>
       </SheetContent>
     </Sheet>

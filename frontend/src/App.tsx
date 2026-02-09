@@ -7,6 +7,7 @@ import { VerifiedRoute } from '@/components/features/auth/VerifiedRoute'
 import { HasCurrentOrgRoute } from '@/components/features/organizations/HasCurrentOrgRoute'
 import { ProtectedRoute } from '@/components/features/auth/ProtectedRoute'
 import { InventoryPage } from '@/pages/inventory/InventoryPage'
+import { ProductDetailPage } from '@/pages/inventory/ProductDetailPage'
 import { AlertsPage } from '@/pages/AlertsPage'
 import { MorePage } from '@/pages/MorePage'
 import { LandingPage } from '@/pages/LandingPage'
@@ -138,6 +139,7 @@ const router = createBrowserRouter(
         <Route element={<HasCurrentOrgRoute />}>
           {/* Inventory is the default landing page (Sprint 4.5) */}
           <Route path={ROUTES.INVENTORY} element={<InventoryPage />} />
+          <Route path={ROUTES.ORGS.PRODUCTS.DETAIL} element={<ProductDetailPage />} />
           <Route path={ROUTES.ALERTS} element={<AlertsPage />} />
           <Route path={ROUTES.MORE} element={<MorePage />} />
         </Route>

@@ -582,6 +582,41 @@
         "createSuccess": "Prodotto creato con successo",
         "updateSuccess": "Prodotto aggiornato con successo",
         "deleteSuccess": "Prodotto eliminato con successo",
+        "detail": {
+            "actionsButton": "Azioni",
+            "actionsTitle": "Azioni prodotto",
+            "editButton": "Modifica",
+            "deleteButton": "Elimina",
+            "notFound": "Prodotto non trovato",
+            "errorTitle": "Impossibile caricare il prodotto",
+            "errorDescription": "Non siamo riusciti a caricare questo prodotto. Riprova.",
+            "info": {
+                "title": "Dettagli prodotto",
+                "descriptionLabel": "Descrizione",
+                "categoriesLabel": "Categorie",
+                "unitLabel": "Unità di misura",
+                "purchasePriceLabel": "Prezzo di acquisto",
+                "notProvided": "Non specificato"
+            },
+            "stock": {
+                "title": "Scorte",
+                "currentLabel": "Quantità attuale"
+            },
+            "history": {
+                "title": "Storico recente",
+                "viewAll": "Vedi tutto lo storico",
+                "fullTitle": "Storico inventario",
+                "emptyTitle": "Nessuno storico",
+                "emptyDescription": "Le modifiche di inventario appariranno qui.",
+                "errorTitle": "Impossibile caricare lo storico",
+                "errorDescription": "Non siamo riusciti a caricare lo storico inventario. Riprova."
+            },
+            "delete": {
+                "confirmTitle": "Eliminare {{name}}?",
+                "confirmDescription": "Questo eliminerà definitivamente il prodotto e il suo storico di inventario.",
+                "confirmButton": "Elimina prodotto"
+            }
+        },
         "form": {
             "createTitle": "Nuovo Prodotto",
             "editTitle": "Modifica Prodotto",

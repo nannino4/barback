@@ -3,11 +3,13 @@ import { z } from 'zod';
 import {
   ProductResponseSchema,
   StockAdjustmentResponseSchema,
+  InventoryLogResponseSchema,
   type ProductResponse,
   type CreateProductRequest,
   type UpdateProductRequest,
   type StockAdjustmentRequest,
   type StockAdjustmentResponse,
+  type InventoryLogResponse,
 } from '@/types/product';
 
 // ============================================================================
@@ -121,6 +123,42 @@ export const productApi = {
         body: JSON.stringify(data),
       },
       StockAdjustmentResponseSchema,
+    );
+  },
+
+  /**
+   * Get inventory logs for a product
+   * @param orgId Organization ID
+   * @param productId Product ID
+   * @param params Optional date range filters
+   */
+  getProductLogs: (
+    orgId: string,
+    productId: string,
+    params?: { startDate?: string; endDate?: string },
+  ): Promise<InventoryLogResponse[]> =>
+  {
+    const searchParams = new URLSearchParams();
+
+    if (params?.startDate)
+    {
+      searchParams.set('startDate', params.startDate);
+    }
+
+    if (params?.endDate)
+    {
+      searchParams.set('endDate', params.endDate);
+    }
+
+    const queryString = searchParams.toString();
+    const endpoint = queryString
+      ? `/orgs/${orgId}/products/${productId}/logs?${queryString}`
+      : `/orgs/${orgId}/products/${productId}/logs`;
+
+    return apiClient.request<InventoryLogResponse[]>(
+      endpoint,
+      { method: 'GET' },
+      z.array(InventoryLogResponseSchema),
     );
   },
 };

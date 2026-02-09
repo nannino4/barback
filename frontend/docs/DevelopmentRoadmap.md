@@ -206,21 +206,21 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [X] Full form with all product fields
   - [X] Inline category creation option
   - [X] Validation: name required, unit required
-- [ ] Product detail page
-  - [ ] Full product info
-  - [ ] Stock adjustment history
-  - [ ] Edit product button (opens form)
-  - [ ] Delete product button (with confirmation)
+- [X] Product detail page
+  - [X] Full product info
+  - [X] Stock adjustment history
+  - [X] Edit product button (opens form)
+  - [X] Delete product button (with confirmation)
 
 ##### **Organization Settings - Products & Categories**
 - [X] Add Products section to Organization Settings
-  -X[X] Products list card/expandable section
-  -X[X] Full CRUD: create, edit, delete products
-  -X[X] Delete product only from product detail
+  - [X] Products list card/expandable section
+  - [X] Full CRUD: create, edit, delete products
+  - [X] Delete product only from product detail
 - [X]XAdd Categories section to Organization Settings
-  -X[X] Categories tree/list card/expandable section
-  -X[X] Full CRUD: create, edit, delete categories
-  -X[X] Product count per category (calculated client-side)
+  - [X] Categories tree/list card/expandable section
+  - [X] Full CRUD: create, edit, delete categories
+  - [X] Product count per category (calculated client-side)
   - [X] Validation: name required, unique per org
 
 ##### **Architecture Decisions (Sprint 5-6)**

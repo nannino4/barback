@@ -79,6 +79,9 @@ export const queryKeys = {
     
     /** Single product by ID */
     detail: (orgId: string, productId: string) => ['products', orgId, productId] as const,
+
+    /** Inventory logs for a product */
+    logs: (orgId: string, productId: string) => ['products', orgId, productId, 'logs'] as const,
   },
 
   /**

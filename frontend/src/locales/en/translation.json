@@ -581,6 +581,41 @@
         "createSuccess": "Product created successfully",
         "updateSuccess": "Product updated successfully",
         "deleteSuccess": "Product deleted successfully",
+        "detail": {
+            "actionsButton": "Actions",
+            "actionsTitle": "Product Actions",
+            "editButton": "Edit",
+            "deleteButton": "Delete",
+            "notFound": "Product not found",
+            "errorTitle": "Unable to load product",
+            "errorDescription": "We couldn't load this product. Please try again.",
+            "info": {
+                "title": "Product details",
+                "descriptionLabel": "Description",
+                "categoriesLabel": "Categories",
+                "unitLabel": "Unit of measure",
+                "purchasePriceLabel": "Purchase price",
+                "notProvided": "Not provided"
+            },
+            "stock": {
+                "title": "Stock",
+                "currentLabel": "Current quantity"
+            },
+            "history": {
+                "title": "Recent history",
+                "viewAll": "View all history",
+                "fullTitle": "Inventory history",
+                "emptyTitle": "No history yet",
+                "emptyDescription": "Inventory changes will appear here.",
+                "errorTitle": "Unable to load history",
+                "errorDescription": "We couldn't load inventory history. Please try again."
+            },
+            "delete": {
+                "confirmTitle": "Delete {{name}}?",
+                "confirmDescription": "This will permanently delete the product and its inventory history.",
+                "confirmButton": "Delete product"
+            }
+        },
         "form": {
             "createTitle": "New Product",
             "editTitle": "Edit Product",

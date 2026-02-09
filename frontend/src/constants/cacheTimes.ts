@@ -66,6 +66,12 @@ export const CACHE_TIMES = {
   PRODUCTS: 2 * MINUTE,
 
   /**
+   * Inventory logs - 2 minutes
+   * Logs update with stock adjustments
+   */
+  INVENTORY_LOGS: 2 * MINUTE,
+
+  /**
    * Categories - 5 minutes
    * Categories change infrequently
    */

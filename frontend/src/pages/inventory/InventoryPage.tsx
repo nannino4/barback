@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Search, Package } from 'lucide-react';
 import { PageContainer, Stack } from '@/components/layout';
 import { EmptyState } from '@/components/feedback/EmptyState';
@@ -31,6 +31,7 @@ export function InventoryPage()
 {
   const { t } = useI18n();
   const navigate = useNavigate();
+  const location = useLocation();
   const { currentOrg } = useOrganizations();
 
   // UI state
@@ -40,10 +41,29 @@ export function InventoryPage()
   const [adjustmentProductId, setAdjustmentProductId] = React.useState<string | null>(null);
   const [isProductFormOpen, setIsProductFormOpen] = React.useState(false);
 
+  const hasAppliedLocationState = React.useRef(false);
+
   // Fetch products and categories from API
   const { products, isLoading: isLoadingProducts } = useProducts();
   const { categories, isLoading: isLoadingCategories } = useCategories();
   const isLoading = isLoadingProducts || isLoadingCategories;
+
+  React.useEffect(() =>
+  {
+    if (hasAppliedLocationState.current)
+    {
+      return;
+    }
+
+    const state = location.state as { categoryId?: string } | null;
+    if (state?.categoryId)
+    {
+      setSelectedCategoryId(state.categoryId);
+      void navigate(ROUTES.INVENTORY, { replace: true, state: null });
+    }
+
+    hasAppliedLocationState.current = true;
+  }, [location.state, navigate]);
 
   const categoryChildrenMap = React.useMemo(() =>
   {

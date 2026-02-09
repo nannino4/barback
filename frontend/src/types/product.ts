@@ -48,6 +48,19 @@ export const StockAdjustmentResponseSchema = z.object({
   createdAt: z.string(),
 });
 
+/**
+ * Inventory log response schema
+ */
+export const InventoryLogResponseSchema = z.object({
+  id: z.string(),
+  type: StockAdjustmentTypeSchema,
+  quantity: z.number(),
+  previousQuantity: z.number(),
+  newQuantity: z.number(),
+  note: z.string().optional(),
+  createdAt: z.string(),
+});
+
 // =============================================================================
 // API Response Types (inferred from schemas)
 // =============================================================================
@@ -109,3 +122,8 @@ export interface StockAdjustmentRequest
  * Stock adjustment response (inventory log)
  */
 export type StockAdjustmentResponse = z.infer<typeof StockAdjustmentResponseSchema>;
+
+/**
+ * Inventory log response
+ */
+export type InventoryLogResponse = z.infer<typeof InventoryLogResponseSchema>;

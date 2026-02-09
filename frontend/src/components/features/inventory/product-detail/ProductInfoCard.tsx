@@ -2,7 +2,7 @@ import React from 'react';
 import { Package } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Stack, Divider } from '@/components/layout';
+import { Stack } from '@/components/layout';
 import { formatCurrency } from '@/lib/formatters/formatCurrency';
 
 import type { useI18n } from '@/hooks/useI18n';
@@ -55,11 +55,9 @@ export const ProductInfoCard: React.FC<ProductInfoCardProps> = ({
               <p className="text-sm">
                 {product.description?.trim()
                   ? product.description
-                  : t('product.detail.info.notProvided')}
+                  : '-'}
               </p>
             </div>
-
-            <Divider />
 
             <div>
               <p className="text-sm text-muted-foreground">
@@ -94,8 +92,6 @@ export const ProductInfoCard: React.FC<ProductInfoCardProps> = ({
                 </span>
               )}
             </div>
-
-            <Divider />
 
             <Stack space="sm">
               <div>

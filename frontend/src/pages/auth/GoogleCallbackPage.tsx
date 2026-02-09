@@ -10,6 +10,7 @@ import { useAuthStore } from '@/stores/authStore';
 import { authApi } from '@/api/auth-api';
 import { isKnownError, getLocalizedErrorMessage } from '@/lib/errors';
 import { useI18n } from '@/hooks/useI18n';
+import { ROUTES } from '@/constants/routes';
 
 type CallbackStatus = 'processing' | 'success' | 'error';
 
@@ -39,7 +40,13 @@ export const GoogleCallbackPage: React.FC = () =>
       // Navigate after short delay to show success state
       setTimeout(() =>
       {
-        void navigate('/', { replace: true });
+        const redirectTarget =
+          searchParams.get('redirect') ??
+          sessionStorage.getItem('post_auth_redirect') ??
+          ROUTES.INVENTORY;
+
+        sessionStorage.removeItem('post_auth_redirect');
+        void navigate(redirectTarget, { replace: true });
       }, 1000);
     },
     onError: (error: Error) =>

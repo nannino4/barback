@@ -76,11 +76,12 @@ export const ProductDetailHeader: React.FC<ProductDetailHeaderProps> = ({
 
       <Button
         variant="outline"
-        className="h-touch sm:hidden"
+        size="icon"
+        className="h-touch w-touch sm:hidden"
         onClick={onOpenActions}
+        aria-label={t('product.detail.actionsButton')}
       >
         <MoreHorizontal className="w-4 h-4" />
-        {t('product.detail.actionsButton')}
       </Button>
     </Stack>
   );

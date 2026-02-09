@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
 import { notify } from '@/lib/notify';
 import { Button } from '@/components/ui/button';
 import { InlineSpinner } from '@/components/ui/spinner';
@@ -6,6 +7,7 @@ import { authApi } from '@/api/auth-api';
 import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
 import { useI18n } from '@/hooks/useI18n';
 import { cn } from '@/lib/utils';
+import { ROUTES } from '@/constants/routes';
 
 interface GoogleLoginButtonProps
 {
@@ -19,6 +21,7 @@ export const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
 }) =>
 {
   const { t } = useI18n();
+  const [searchParams] = useSearchParams();
   const googleAuthMutation = useMutation({
     mutationFn: () => authApi.getGoogleAuthUrl(),
     onSuccess: (data) =>
@@ -28,6 +31,8 @@ export const GoogleLoginButton: React.FC<GoogleLoginButtonProps> = ({
       {
         sessionStorage.setItem('google_oauth_state', data.state);
       }
+      const redirectTarget = searchParams.get('redirect') ?? ROUTES.INVENTORY;
+      sessionStorage.setItem('post_auth_redirect', redirectTarget);
       // Redirect to Google OAuth
       window.location.href = data.authUrl;
     },

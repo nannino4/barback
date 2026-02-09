@@ -157,7 +157,6 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
   - [X] consolidate type names for requests/responses schemas to/from backend
   - [X] autofocus first input on modals and forms
   - [X] `enter` key goes to next input or submits form
-  - [ ] consolidate loading states (skeletons, spinners)
 
 ### **Sprint 4.5: UX Alignment & Architecture Fixes (New UX)**
 

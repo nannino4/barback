@@ -8,43 +8,52 @@ import { configDefaults } from 'vitest/config'
 const httpsKeyPath = fileURLToPath(new URL('../barback.it-key.pem', import.meta.url));
 const httpsCertPath = fileURLToPath(new URL('../barback.it.pem', import.meta.url));
 
+const getDevServerHttps = () => ({
+    key: fs.readFileSync(httpsKeyPath),
+    cert: fs.readFileSync(httpsCertPath),
+});
+
 // https://vite.dev/config/
-export default defineConfig({
-    plugins: [
-        react(),
-        tailwindcss(),
-    ],
-    resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url)),
-        },
-    },
-    server: {
-        host: 'barback.it',
-        port: 5173,
-        https: {
-            key: fs.readFileSync(httpsKeyPath),
-            cert: fs.readFileSync(httpsCertPath),
-        },
-        proxy: {
-            '/api': {
-                target: 'http://localhost:3000',
-                changeOrigin: true,
+export default defineConfig(({ command }) =>
+{
+    const isDevServer = command === 'serve';
+
+    return {
+        plugins: [
+            react(),
+            tailwindcss(),
+        ],
+        resolve: {
+            alias: {
+                '@': fileURLToPath(new URL('./src', import.meta.url)),
             },
         },
-        allowedHosts: [
-            'localhost',
-            'barback.it',
-        ]
-    },
-    test: {
-        environment: 'jsdom',
-        globals: true,
-        setupFiles: './src/test/setup.ts',
-        css: true,
-        coverage: {
-            reporter: ['text', 'lcov']
+        server: isDevServer
+            ? {
+                host: 'barback.it',
+                port: 5173,
+                https: getDevServerHttps(),
+                proxy: {
+                    '/api': {
+                        target: 'http://localhost:3000',
+                        changeOrigin: true,
+                    },
+                },
+                allowedHosts: [
+                    'localhost',
+                    'barback.it',
+                ],
+            }
+            : undefined,
+        test: {
+            environment: 'jsdom',
+            globals: true,
+            setupFiles: './src/test/setup.ts',
+            css: true,
+            coverage: {
+                reporter: ['text', 'lcov'],
+            },
+            exclude: [...configDefaults.exclude, 'e2e/**'],
         },
-        exclude: [...configDefaults.exclude, 'e2e/**']
-    }
-})
+    };
+});

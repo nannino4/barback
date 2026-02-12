@@ -121,3 +121,62 @@ Components are copied to `src/components/ui/` and become part of your codebase. 
 2. **Leverage shadcn/ui components** for consistent design system
 3. **Create custom variants** by modifying shadcn/ui components
 4. **Use CSS custom properties** for theming and dynamic styles
+
+## Deployment & Infrastructure
+
+This section defines the MVP deployment approach for the Barback frontend and its supporting infrastructure.
+
+### Hosting Strategy (Single EC2)
+- **Single EC2 instance** runs:
+  - **Nginx** (TLS termination + reverse proxy)
+  - **Backend** (Docker container)
+  - **Frontend** (static build served by Nginx)
+- **Backend URL**: https://[domain]/api
+- **Frontend URL**: https://[domain]
+
+### Assets (Images)
+- **Storage**: AWS S3
+- **CDN**: AWS CloudFront (single distribution for images)
+- **Access**: Public read via CloudFront distribution (S3 bucket private with Origin Access Control)
+
+### DNS (Route 53)
+Create or update the following records:
+- **A/AAAA Alias** for apex domain → EC2 Elastic IP
+- **CNAME** for www → apex domain (optional)
+- **A/AAAA Alias** for assets subdomain → CloudFront distribution (images)
+
+### SSL Certificates
+- **Nginx on EC2** should terminate TLS for https://[domain]
+- Recommended: **Let’s Encrypt (certbot)** for free certificates and automated renewal
+- **CloudFront** (assets) requires ACM certificates in **us-east-1**
+
+### Secrets Management
+- **Never** store secrets in the frontend build output
+- Backend secrets (JWT, OAuth, SMTP, etc.) should be stored in **EC2 environment variables** (via docker-compose)
+
+### Free Tier Guidance (MVP)
+- **EC2**: Use a free-tier eligible instance (t3.micro or t2.micro)
+- **MongoDB Atlas**: Free tier cluster
+- **S3 + CloudFront**: Minimal costs for low traffic
+- **Let’s Encrypt**: Free certificates
+
+## Environment-specific Setup
+
+### Dev (Local)
+- **Frontend**: Vite dev server (https://barback.it:5173)
+- **Backend**: Local NestJS dev server (http://localhost:3000)
+- **DB**: MongoDB Atlas (free tier)
+- **TLS**: Local certificates
+- **Networking**: /etc/hosts entry for barback.it → 127.0.0.1
+
+### Test (Single EC2)
+- **Nginx**: EC2 (reverse proxy + static hosting)
+- **Frontend**: Static build files copied from a frontend Docker image and served by Nginx
+- **Backend**: Docker image on the same EC2 instance
+- **DB**: MongoDB Atlas (same as dev)
+- **TLS termination**: Nginx
+- **Certificates**: Let’s Encrypt + certbot in Docker (automatic renewal via a `certbot` service)
+- **Initial issuance**: Run a one-off `certbot-init` service to create the first certificates
+
+### Prod (TBD)
+- Skip for now. Define when scaling or compliance requirements change.

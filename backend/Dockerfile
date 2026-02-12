@@ -8,20 +8,14 @@ RUN npm ci --silent && \
 COPY . .
 RUN npm run build
 
-# Test stage
+# Test stage (for CI/CD)
 FROM node:18.19.0-alpine AS test
-# Install security updates and utilities
-RUN apk add --no-cache \
-    dumb-init \
-    curl \
-    && addgroup -g 1001 -S nodejs \
-    && adduser -S nodejs -u 1001
 WORKDIR /usr/src/app
-COPY --from=builder --chown=nodejs:nodejs /usr/src/app ./
-USER nodejs
-EXPOSE 3000
-ENTRYPOINT ["dumb-init", "--"]
-CMD ["node", "dist/main"]
+COPY package*.json ./
+RUN npm ci --silent && npm cache clean --force
+COPY . .
+ENV NODE_ENV=test
+RUN npm test
 
 # Production stage
 FROM node:18.19.0-alpine AS prod

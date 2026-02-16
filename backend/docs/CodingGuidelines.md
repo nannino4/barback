@@ -131,3 +131,18 @@ export class OutUserPublicDto
 
 - Add JSDoc comments for public APIs
 - Document only non-obvious decisions with inline comments
+
+## Git Branching Strategy
+
+- `main`: stable branch, production-ready code only
+- `develop`: integration branch for shared non-production environment (`dev`)
+- `feature/<short-name>`: new features, branch from and merge into `develop`
+- `hotfix/<short-name>`: urgent production fixes, branch from `main`, merge into both `main` and `develop`
+- `release/<version>` (optional): stabilization before a production release
+
+### Pull Request Rules
+
+- No direct pushes to `main` or `develop`
+- Require CI checks to pass before merge
+- Require at least one code review
+- Prefer squash or rebase merge to keep history clean

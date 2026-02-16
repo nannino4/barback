@@ -1,0 +1,59 @@
+services:
+  backend:
+    image: ${DOCKER_HUB_USERNAME}/barback-backend:${BACKEND_IMAGE_TAG:-dev}
+    container_name: barback-backend-dev
+    env_file:
+      - ${BACKEND_ENV_FILE:-./backend.env}
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    restart: unless-stopped
+
+  nginx:
+    image: ${DOCKER_HUB_USERNAME}/barback-frontend:${FRONTEND_IMAGE_TAG:-dev}
+    container_name: barback-nginx-dev
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ${LETSENCRYPT_LIVE_PATH:-/etc/letsencrypt/live/barback.it}:/etc/nginx/certs:ro
+      - certbot-webroot:/var/www/certbot
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot:latest
+    container_name: barback-certbot
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - certbot-webroot:/var/www/certbot
+    entrypoint: ["/bin/sh", "-c", "trap exit TERM; while :; do certbot renew --quiet --webroot -w /var/www/certbot; sleep 12h; done"]
+    restart: unless-stopped
+
+  certbot-init:
+    image: certbot/certbot:latest
+    container_name: barback-certbot-init
+    profiles: ["init"]
+    depends_on:
+      - nginx
+    environment:
+      CERTBOT_DOMAIN: ${CERTBOT_DOMAIN}
+      CERTBOT_WWW_DOMAIN: ${CERTBOT_WWW_DOMAIN}
+      CERTBOT_EMAIL: ${CERTBOT_EMAIL}
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/lib/letsencrypt:/var/lib/letsencrypt
+      - certbot-webroot:/var/www/certbot
+    entrypoint: ["/bin/sh", "-c", "certbot certonly --webroot -w /var/www/certbot -d ${CERTBOT_DOMAIN} -d ${CERTBOT_WWW_DOMAIN} --email ${CERTBOT_EMAIL} --agree-tos --non-interactive"]
+    restart: "no"
+
+volumes:
+  certbot-webroot:

@@ -1,5 +1,5 @@
 # Build stage
-FROM node:18.19.0-alpine AS builder
+FROM node:25-alpine AS builder
 WORKDIR /usr/src/app
 COPY package*.json ./
 # Install ALL dependencies (needed for building TypeScript)
@@ -9,7 +9,7 @@ COPY . .
 RUN npm run build
 
 # Test stage (for CI/CD)
-FROM node:18.19.0-alpine AS test
+FROM node:25-alpine AS test
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm ci --silent && npm cache clean --force
@@ -18,7 +18,7 @@ ENV NODE_ENV=test
 RUN npm test
 
 # Production stage
-FROM node:18.19.0-alpine AS prod
+FROM node:25-alpine AS prod
 # Install security updates and utilities
 RUN apk add --no-cache \
     dumb-init \

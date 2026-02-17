@@ -11,9 +11,6 @@ services:
   nginx:
     image: ${DOCKER_HUB_USERNAME}/barback-frontend:${FRONTEND_IMAGE_TAG:-dev}
     container_name: barback-nginx-dev
-    depends_on:
-      backend:
-        condition: service_healthy
     ports:
       - "80:80"
       - "443:443"

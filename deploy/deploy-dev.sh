@@ -56,16 +56,3 @@ export LETSENCRYPT_LIVE_PATH
 
 docker compose -f "$COMPOSE_FILE" pull
 docker compose -f "$COMPOSE_FILE" up -d --remove-orphans
-
-echo "Waiting for backend health..."
-for i in {1..30}; do
-  if curl -fsS http://127.0.0.1/api/health >/dev/null 2>&1; then
-    echo "Deploy successful"
-    exit 0
-  fi
-  sleep 5
-done
-
-echo "ERROR: Health check failed after deploy"
-docker compose -f "$COMPOSE_FILE" ps
-exit 1

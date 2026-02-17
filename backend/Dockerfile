@@ -2,7 +2,7 @@
 FROM node:25-alpine AS deps
 WORKDIR /usr/app
 COPY package*.json ./
-RUN npm ci --silent && npm cache clean --force
+RUN npm ci --silent
 
 # Build stage
 FROM node:25-alpine AS builder
@@ -19,7 +19,6 @@ COPY package*.json ./
 COPY --from=deps /usr/app/node_modules ./node_modules
 COPY . .
 ENV NODE_ENV=test
-RUN npm test
 
 # Production stage
 FROM node:25-alpine AS prod

@@ -3,15 +3,9 @@ services:
     image: ${DOCKER_HUB_USERNAME}/barback-backend:${BACKEND_IMAGE_TAG:-dev}
     container_name: barback-backend-dev
     env_file:
-      - ${BACKEND_ENV_FILE:-./backend.env}
+      - ${BACKEND_ENV_FILE:-./secrets/backend.dev.env}
     expose:
       - "3000"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
     restart: unless-stopped
 
   nginx:

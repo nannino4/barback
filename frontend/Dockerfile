@@ -1,11 +1,11 @@
 # Base dependencies
-FROM node:18.19.0-alpine AS deps
+FROM node:25-alpine AS deps
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm ci --silent && npm cache clean --force
 
 # Test stage (for CI/CD)
-FROM node:18.19.0-alpine AS test
+FROM node:25-alpine AS test
 WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm ci --silent && npm cache clean --force
@@ -18,7 +18,7 @@ COPY . .
 RUN npm run build
 
 # Nginx stage
-FROM nginx:1.27-alpine AS nginx
+FROM nginx:1.29-alpine AS nginx
 COPY --from=builder /usr/src/app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80 443

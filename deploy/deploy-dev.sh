@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT_DIR="${ROOT_DIR:-/home/ec2-user/barback-deploy}"
-COMPOSE_FILE="${COMPOSE_FILE:-$ROOT_DIR/docker-compose.dev.yml}"
+COMPOSE_FILE="${COMPOSE_FILE:-$ROOT_DIR/docker-compose.yml}"
 ENV_FILE="${ENV_FILE:-$ROOT_DIR/.env.deploy.dev}"
 
 if [[ -f "$ENV_FILE" ]]; then
@@ -21,7 +21,6 @@ required_vars=(
   "CERTBOT_DOMAIN"
   "CERTBOT_WWW_DOMAIN"
   "CERTBOT_EMAIL"
-  "LETSENCRYPT_LIVE_PATH"
 )
 
 for var in "${required_vars[@]}"; do
@@ -52,7 +51,6 @@ export BACKEND_ENV_FILE
 export CERTBOT_DOMAIN
 export CERTBOT_WWW_DOMAIN
 export CERTBOT_EMAIL
-export LETSENCRYPT_LIVE_PATH
 
 docker compose -f "$COMPOSE_FILE" pull
 docker compose -f "$COMPOSE_FILE" up -d --remove-orphans

@@ -15,7 +15,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ${LETSENCRYPT_LIVE_PATH:-/etc/letsencrypt/live/barback.it}:/etc/nginx/certs:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
       - certbot-webroot:/var/www/certbot
     restart: unless-stopped
 

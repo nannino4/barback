@@ -14,7 +14,7 @@ This guide covers:
 
 ## Files in this folder
 
-- `docker-compose.dev.yml`: runtime stack definition
+- `docker-compose.yml`: runtime stack definition
 - `deploy-dev.sh`: manual full-stack deploy script
 - `.env.deploy.dev.example`: example deploy env file template
 - `nginx.bootstrap.conf`: temporary HTTP-only Nginx config for first certificate issuance
@@ -48,13 +48,13 @@ Normal `nginx` expects certificate files to already exist. On a fresh host, thos
 3. Start init profile services:
 
 ```bash
-docker compose --env-file .env.deploy.dev -f docker-compose.dev.yml --profile init up -d nginx-bootstrap
+docker compose --env-file .env.deploy.dev -f docker-compose.yml --profile init up -d nginx-bootstrap
 ```
 
 4. Run one-time certificate issuance:
 
 ```bash
-docker compose --env-file .env.deploy.dev -f docker-compose.dev.yml --profile init up certbot-init
+docker compose --env-file .env.deploy.dev -f docker-compose.yml --profile init up certbot-init
 ```
 
 5. Verify certificate files exist:
@@ -64,7 +64,7 @@ docker compose --env-file .env.deploy.dev -f docker-compose.dev.yml --profile in
 6. Stop/remove bootstrap service:
 
 ```bash
-docker compose --env-file .env.deploy.dev -f docker-compose.dev.yml --profile init down
+docker compose --env-file .env.deploy.dev -f docker-compose.yml --profile init down
 ```
 
 7. Start normal stack via deploy script (see next section)
@@ -117,13 +117,13 @@ Deploy can choose either:
 
 1. DNS mismatch: verify domain resolves to correct EC2 IP
 2. Port 80 blocked: ACME HTTP challenge cannot complete
-3. Missing cert path mount: `LETSENCRYPT_LIVE_PATH` must point to `/etc/letsencrypt/live/<domain>`
+3. Missing cert files: verify `/etc/letsencrypt/live/<domain>/fullchain.pem` and `privkey.pem` exist on the EC2 host
 4. Wrong image tag: ensure selected tag exists in Docker Hub
 5. Backend unhealthy: check container logs and app env file path
 
 Useful commands:
 
 ```bash
-docker compose --env-file .env.deploy.dev -f docker-compose.dev.yml ps
-docker compose --env-file .env.deploy.dev -f docker-compose.dev.yml logs --tail=200
+docker compose --env-file .env.deploy.dev -f docker-compose.yml ps
+docker compose --env-file .env.deploy.dev -f docker-compose.yml logs --tail=200
 ```

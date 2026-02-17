@@ -258,6 +258,21 @@ Use spinners for indeterminate or small, focused waits.
 6. **Make errors persistent** - Display in UI so user can read and understand
 7. **Allow retrying** - Keep form state so user can fix and resubmit
 
+## Git Branching Strategy
+
+- `main`: stable branch, production-ready code only
+- `develop`: integration branch for shared non-production environment (`dev`)
+- `feature/<short-name>`: new features, branch from and merge into `develop`
+- `hotfix/<short-name>`: urgent production fixes, branch from `main`, merge into both `main` and `develop`
+- `release/<version>` (optional): stabilization before a production release
+
+### Pull Request Rules
+
+- No direct pushes to `main` or `develop`
+- Require CI checks to pass before merge
+- Require at least one code review
+- Prefer squash or rebase merge to keep history clean
+
 ## User Feedback
 
 Use these channels (prefer local/contextual over global):

@@ -150,6 +150,16 @@ Create or update the following records:
 - Recommended: **Let’s Encrypt (certbot)** for free certificates and automated renewal
 - **CloudFront** (assets) requires ACM certificates in **us-east-1**
 
+### CI/CD (Dev Environment)
+- **Runner**: GitHub Actions
+- **Container registry**: Docker Hub
+- **Deployment target**: single EC2 host (Nginx + frontend + backend)
+- **Deploy flow**: build/test Docker images in CI → push tagged images to Docker Hub → SSH deploy on EC2 via docker compose
+
+For full implementation details, see:
+- [./CICD.md](./CICD.md)
+- [./CodingGuidelines.md](./CodingGuidelines.md)
+
 ### Secrets Management
 - **Never** store secrets in the frontend build output
 - Backend secrets (JWT, OAuth, SMTP, etc.) should be stored in **EC2 environment variables** (via docker-compose)
@@ -162,18 +172,18 @@ Create or update the following records:
 
 ## Environment-specific Setup
 
-### Dev (Local)
+### Local
 - **Frontend**: Vite dev server (https://barback.it:5173)
 - **Backend**: Local NestJS dev server (http://localhost:3000)
 - **DB**: MongoDB Atlas (free tier)
 - **TLS**: Local certificates
 - **Networking**: /etc/hosts entry for barback.it → 127.0.0.1
 
-### Test (Single EC2)
+### Dev (Single EC2)
 - **Nginx**: EC2 (reverse proxy + static hosting)
 - **Frontend**: Static build files copied from a frontend Docker image and served by Nginx
 - **Backend**: Docker image on the same EC2 instance
-- **DB**: MongoDB Atlas (same as dev)
+- **DB**: MongoDB Atlas (same as local)
 - **TLS termination**: Nginx
 - **Certificates**: Let’s Encrypt + certbot in Docker (automatic renewal via a `certbot` service)
 - **Initial issuance**: Run a one-off `certbot-init` service to create the first certificates

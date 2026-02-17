@@ -12,14 +12,6 @@ COPY --from=deps /usr/app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
-# Test stage (for CI/CD)
-FROM node:25-alpine AS test
-WORKDIR /usr/app
-COPY package*.json ./
-COPY --from=deps /usr/app/node_modules ./node_modules
-COPY . .
-ENV NODE_ENV=test
-
 # Production stage
 FROM node:25-alpine AS prod
 # Install security updates and utilities

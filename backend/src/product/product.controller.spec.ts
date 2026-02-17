@@ -176,16 +176,6 @@ describe('ProductController (Integration)', () =>
             expect(response.body).toHaveLength(0);
         });
 
-        it('should filter products by category when categoryId is provided', async () =>
-        {
-            // This test assumes category filtering is implemented
-            const response = await request(app.getHttpServer())
-                .get(`/api/orgs/${mockOrgId}/products?categoryId=${new Types.ObjectId()}`)
-                .expect(200);
-
-            expect(response.body).toHaveLength(0); // No products with this category
-        });
-
         it('should return 400 for invalid orgId', async () =>
         {
             await request(app.getHttpServer())

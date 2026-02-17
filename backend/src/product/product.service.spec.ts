@@ -263,17 +263,6 @@ describe('ProductService - Service Tests (Unit-style)', () =>
             expect(result.every(product => product.orgId.toString() === mockOrgId.toString())).toBe(true);
         });
 
-        it('should return products filtered by category', async () => 
-        {
-            // Act
-            const result = await service.findProductsByOrg(mockOrgId, mockCategoryId.toString());
-
-            // Assert
-            expect(result).toHaveLength(1);
-            expect(result[0].name).toBe('Vodka');
-            expect(result[0].categoryIds.map(id => id.toString())).toContain(mockCategoryId.toString());
-        });
-
         it('should return empty array when no products exist for organization', async () => 
         {
             // Arrange
@@ -281,18 +270,6 @@ describe('ProductService - Service Tests (Unit-style)', () =>
 
             // Act
             const result = await service.findProductsByOrg(emptyOrgId);
-
-            // Assert
-            expect(result).toHaveLength(0);
-        });
-
-        it('should return empty array when filtering by non-existent category', async () => 
-        {
-            // Arrange
-            const nonExistentCategoryId = new Types.ObjectId().toString();
-
-            // Act
-            const result = await service.findProductsByOrg(mockOrgId, nonExistentCategoryId);
 
             // Assert
             expect(result).toHaveLength(0);

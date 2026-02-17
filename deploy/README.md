@@ -91,7 +91,7 @@ git pull --ff-only
 5. Run deploy script:
 
 ```bash
-bash deploy/deploy-dev.sh
+bash deploy-dev.sh
 ```
 
 6. Verify service health:

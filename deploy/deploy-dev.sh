@@ -2,9 +2,9 @@
 
 set -euo pipefail
 
-ROOT_DIR="${ROOT_DIR:-/opt/barback}"
-COMPOSE_FILE="${COMPOSE_FILE:-$ROOT_DIR/deploy/docker-compose.dev.yml}"
-ENV_FILE="${ENV_FILE:-$ROOT_DIR/deploy/.env.deploy.dev}"
+ROOT_DIR="${ROOT_DIR:-/home/ec2-user/barback-deploy}"
+COMPOSE_FILE="${COMPOSE_FILE:-$ROOT_DIR/docker-compose.dev.yml}"
+ENV_FILE="${ENV_FILE:-$ROOT_DIR/.env.deploy.dev}"
 
 if [[ -f "$ENV_FILE" ]]; then
   set -a

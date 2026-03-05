@@ -47,6 +47,21 @@ Steps in order:
 4. Build and push runtime image tags:
    - immutable tag: `<sha>`
    - moving tag: `dev`
+5. Frontend environment variables are injected at image build time:
+   - CI passes Docker build arg `VITE_BUILD_MODE=dev`
+   - Vite build runs with `--mode dev`
+   - `.env.dev` is loaded during build and embedded into static assets
+
+### Frontend environment files
+
+- `.env.dev`: values used by dev image publish workflow (`--mode dev`)
+- `.env.local`: local-only overrides for developers
+- `.env.example`: template reference
+
+Important:
+- `VITE_*` variables are build-time values for static frontend assets.
+- Changing frontend env values requires rebuilding and republishing the frontend image.
+- Deployment via EC2 `docker compose` does not change already-built frontend `VITE_*` values.
 
 ### Manual deploy from EC2
 

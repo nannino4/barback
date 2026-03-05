@@ -44,6 +44,8 @@ jobs:
           context: .
           file: ./Dockerfile
           target: nginx
+          build-args: |
+            VITE_BUILD_MODE=dev
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/barback-frontend:${{ steps.meta.outputs.deploy_tag }}

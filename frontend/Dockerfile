@@ -6,8 +6,9 @@ RUN npm ci --silent
 
 # Build stage
 FROM deps AS builder
+ARG VITE_BUILD_MODE=production
 COPY . .
-RUN npm run build
+RUN npm run build -- --mode ${VITE_BUILD_MODE}
 
 # Nginx stage
 FROM nginx:1.29-alpine AS nginx

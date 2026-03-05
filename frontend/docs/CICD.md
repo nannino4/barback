@@ -52,9 +52,28 @@ Steps in order:
    - Vite build runs with `--mode dev`
    - `.env.dev` is loaded during build and embedded into static assets
 
+### Prod image publish workflow
+File: [frontend/.github/workflows/publish-prod.yml](../.github/workflows/publish-prod.yml)
+
+Trigger:
+- Push to `main`
+- Manual dispatch (`workflow_dispatch`) with optional `image_tag`
+
+Steps in order:
+1. Compute deploy tag (commit SHA by default)
+2. Login to Docker Hub
+3. Build and push runtime image tags:
+   - immutable tag: `<sha>`
+   - moving tag: `prod`
+4. Frontend environment variables are injected at image build time:
+   - CI passes Docker build arg `VITE_BUILD_MODE=prod`
+   - Vite build runs with `--mode prod`
+   - `.env.prod` is loaded during build and embedded into static assets
+
 ### Frontend environment files
 
 - `.env.dev`: values used by dev image publish workflow (`--mode dev`)
+- `.env.prod`: values used by prod image publish workflow (`--mode prod`)
 - `.env.local`: local-only overrides for developers
 - `.env.example`: template reference
 

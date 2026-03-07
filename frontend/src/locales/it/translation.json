@@ -257,6 +257,9 @@
         "phone": {
             "invalidFormat": "Inserisci un numero di telefono valido"
         },
+        "language": {
+            "invalid": "Seleziona una lingua valida"
+        },
         "password": {
             "required": "Password è richiesta",
             "mustBeString": "La password deve essere testo",

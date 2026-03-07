@@ -1,6 +1,7 @@
 import { Outlet, ScrollRestoration } from 'react-router-dom';
 
 import { AuthProvider } from '@/components/features/auth/AuthProvider';
+import { UserLanguageSync } from '@/components/features/i18n/UserLanguageSync';
 import { AppToaster } from '@/components/feedback/AppToaster';
 import { AppLayout } from '@/components/layout/AppLayout';
 
@@ -16,6 +17,7 @@ export function AppRouteRoot()
 {
   return (
     <AuthProvider>
+      <UserLanguageSync />
       <ScrollRestoration />
       <AppLayout>
         <Outlet />

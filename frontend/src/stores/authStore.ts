@@ -10,10 +10,10 @@ import { AuthTokenManager } from '@/lib/auth-tokens';
  */
 interface AuthStore {
   user: UserResponse | null;
-    isAuthenticated: boolean;
+  isAuthenticated: boolean;
   setUser: (user: UserResponse | null) => void;
   login: (user: UserResponse, accessToken: string, refreshToken: string) => void;
-    logout: () => void;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthStore>()(

@@ -32,7 +32,7 @@ export const useI18n = () =>
     void i18n.changeLanguage(language);
   };
     
-  const currentLanguage = i18n.language || 'en';
+  const currentLanguage = i18n.language || 'it';
     
   return {
     // t is now fully typed thanks to our i18next.d.ts declaration

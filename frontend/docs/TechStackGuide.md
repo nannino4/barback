@@ -53,8 +53,9 @@ This document defines the technology choices, architectural patterns, and high-l
 - **react-i18next**: React integration for internationalization
 - **i18next**: Core internationalization framework
 - **i18next-browser-languagedetector**: Automatic language detection
-- **Languages**: English (default) and Italian
-- **Features**: Language switching, persistent preferences, validation message localization
+- **Languages**: Italian (default) and English
+- **Preference Source**: `user.language` from backend user profile (persisted per account)
+- **Features**: Language switching, persisted account preference, validation message localization
 
 ## Project Structure
 

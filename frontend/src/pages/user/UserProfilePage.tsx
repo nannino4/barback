@@ -33,7 +33,7 @@ import { useAuthStore } from '@/stores/authStore';
 export function UserProfilePage()
 {
   const { user } = useAuth();
-  const { t } = useI18n();
+  const { t, changeLanguage } = useI18n();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const setUser = useAuthStore((state) => state.setUser);
@@ -60,7 +60,7 @@ export function UserProfilePage()
   const currentUser = meQuery.data ?? user;
 
   const updateProfileMutation = useMutation({
-    mutationFn: (data: { firstName?: string; lastName?: string; phoneNumber?: string }) => userApi.updateMe(data),
+    mutationFn: (data: { firstName?: string; lastName?: string; phoneNumber?: string; language?: 'en' | 'it' }) => userApi.updateMe(data),
     onSuccess: (updated) =>
     {
       queryClient.setQueryData(queryKeys.users.me, updated);
@@ -175,6 +175,12 @@ export function UserProfilePage()
     void navigate(-1);
   };
 
+  const handleLanguageChange = async (language: 'en' | 'it') =>
+  {
+    const updated = await updateProfileMutation.mutateAsync({ language });
+    changeLanguage(updated.language);
+  };
+
   return (
     <PageContainer>
       <Section>
@@ -282,6 +288,28 @@ export function UserProfilePage()
                     ? t('account.resetPassword.sending')
                     : t('account.resetPassword.button')}
                 </Button>
+              </div>
+
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">{t('preferences.language.title')}</p>
+                <div className="mt-2 flex gap-2">
+                  <Button
+                    type="button"
+                    variant={currentUser.language === 'it' ? 'default' : 'outline'}
+                    onClick={() => void handleLanguageChange('it')}
+                    disabled={updateProfileMutation.isPending}
+                  >
+                    {t('preferences.language.italian')}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={currentUser.language === 'en' ? 'default' : 'outline'}
+                    onClick={() => void handleLanguageChange('en')}
+                    disabled={updateProfileMutation.isPending}
+                  >
+                    {t('preferences.language.english')}
+                  </Button>
+                </div>
               </div>
             </Stack>
           </CardContent>

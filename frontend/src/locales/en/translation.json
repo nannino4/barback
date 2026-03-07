@@ -256,6 +256,9 @@
         "phone": {
             "invalidFormat": "Please enter a valid phone number"
         },
+        "language": {
+            "invalid": "Please select a valid language"
+        },
         "password": {
             "required": "Password is required",
             "mustBeString": "Password must be text",

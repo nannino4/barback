@@ -75,7 +75,7 @@ export class InvitationController
         
         const invitation = await this.invitationService.createInvitation(
             orgId,
-            user._id as Types.ObjectId,
+            user,
             createInviteDto,
             organization.name,
             requestId,

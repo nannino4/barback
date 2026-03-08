@@ -274,7 +274,7 @@ export class AuthService
         }
 
         const token = await this.userService.generateEmailVerificationToken(user._id as Types.ObjectId, requestId);
-        const emailOptions = this.emailService.generateVerificationEmail(email, token);
+        const emailOptions = this.emailService.generateVerificationEmail(email, token, user.language);
         
         await this.emailService.sendEmail(emailOptions);
         this.logger.debug(`Verification email sent to: ${email}`, 'AuthService#sendVerificationEmail', requestId);
@@ -297,7 +297,8 @@ export class AuthService
             
             if (token)
             {
-                const emailOptions = this.emailService.generatePasswordResetEmail(email, token);
+                const user = await this.userService.findByEmail(email, requestId);
+                const emailOptions = this.emailService.generatePasswordResetEmail(email, token, user!.language);
                 await this.emailService.sendEmail(emailOptions);
                 this.logger.debug(`Password reset email sent to: ${email}`, 'AuthService#forgotPassword', requestId);
             }

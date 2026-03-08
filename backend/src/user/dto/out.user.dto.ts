@@ -29,4 +29,8 @@ export class OutUserDto
 
     @Expose()
     timezone!: string;
+
+    @Expose()
+    @Transform(({ obj }) => obj.language || 'it')
+    language!: string;
 }

@@ -1,5 +1,5 @@
 import { IsEmail, IsString, IsEnum, IsBoolean, IsUrl, IsNotEmpty, ValidateIf, IsMobilePhone, MinLength, MaxLength, Matches } from 'class-validator';
-import { AuthProvider, UserRole } from '../schemas/user.schema';
+import { AuthProvider, UserLanguage, UserRole } from '../schemas/user.schema';
 
 /**
  * Internal DTO for creating users
@@ -73,4 +73,9 @@ export class CreateUserDto
     @IsString()
     @Matches(/^[A-Za-z_]+(?:\/[A-Za-z0-9_+\-]+)+$|^auto$/)
     timezone?: string;
+
+    @ValidateIf((o, value) => value !== undefined)
+    @IsNotEmpty()
+    @IsEnum(UserLanguage)
+    language?: UserLanguage;
 }

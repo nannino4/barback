@@ -1,4 +1,5 @@
-import { IsString, MinLength, MaxLength, ValidateIf, IsNotEmpty, IsMobilePhone, Matches } from 'class-validator';
+import { IsString, MinLength, MaxLength, ValidateIf, IsNotEmpty, IsMobilePhone, Matches, IsEnum } from 'class-validator';
+import { UserLanguage } from '../schemas/user.schema';
 
 export class UpdateUserProfileDto
 {
@@ -25,4 +26,8 @@ export class UpdateUserProfileDto
     @IsString({ message: 'validation.timezone.mustBeString' })
     @Matches(/^[A-Za-z_]+(?:\/[A-Za-z0-9_+\-]+)+$|^auto$/, { message: 'validation.timezone.invalidFormat' })
     timezone?: string;
+
+    @ValidateIf((o, value) => value !== undefined)
+    @IsEnum(UserLanguage, { message: 'validation.language.invalid' })
+    language?: UserLanguage;
 }

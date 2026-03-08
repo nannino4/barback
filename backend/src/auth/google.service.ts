@@ -5,7 +5,7 @@ import axios from 'axios';
 import * as crypto from 'crypto';
 import { GoogleUserInfoDto } from './dto/google-user-info.dto';
 import { GoogleTokenResponseDto } from './dto/google-token-response.dto';
-import { User, AuthProvider } from '../user/schemas/user.schema';
+import { User, AuthProvider, UserLanguage } from '../user/schemas/user.schema';
 import { UserService } from '../user/user.service';
 import { OutGoogleAuthUrlDto } from './dto/out.google-auth-url.dto';
 import { CustomLogger } from 'src/common/logger/custom.logger';
@@ -275,6 +275,7 @@ export class GoogleService
             lastName: googleUserInfo.family_name || googleUserInfo.name?.split(' ').slice(1).join(' ') || '',
             authProvider: AuthProvider.GOOGLE,
             isEmailVerified: true, // Google emails are pre-verified
+            language: googleUserInfo.locale?.toLowerCase().startsWith('en') ? UserLanguage.EN : UserLanguage.IT,
         }, requestId);
 
         this.logger.log(

@@ -470,7 +470,7 @@ describe('AuthService - Service Tests (Unit-style)', () =>
             await service.sendVerificationEmail(user.email);
 
             // Assert
-            expect(mockEmailService.generateVerificationEmail).toHaveBeenCalledWith(user.email, expect.any(String));
+            expect(mockEmailService.generateVerificationEmail).toHaveBeenCalledWith(user.email, expect.any(String), 'it');
             expect(mockEmailService.sendEmail).toHaveBeenCalled();
         });
 
@@ -556,7 +556,7 @@ describe('AuthService - Service Tests (Unit-style)', () =>
             await service.forgotPassword(user.email);
 
             // Assert
-            expect(mockEmailService.generatePasswordResetEmail).toHaveBeenCalledWith(user.email, expect.any(String));
+            expect(mockEmailService.generatePasswordResetEmail).toHaveBeenCalledWith(user.email, expect.any(String), 'it');
             expect(mockEmailService.sendEmail).toHaveBeenCalled();
         });
 

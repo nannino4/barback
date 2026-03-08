@@ -19,7 +19,9 @@ Get current user's profile information.
   "lastName": "Doe",
   "phoneNumber": "+393331234567",
   "isEmailVerified": true,
-  "profilePictureUrl": null
+  "profilePictureUrl": null,
+  "timezone": "Europe/Rome",
+  "language": "it"
 }
 ```
 
@@ -31,6 +33,8 @@ Get current user's profile information.
 - `phoneNumber`: Optional phone number
 - `isEmailVerified`: Whether email has been verified
 - `profilePictureUrl`: Optional profile picture URL
+- `timezone`: User timezone preference
+- `language`: User language preference (`it` or `en`)
 
 **Error Responses**:
 
@@ -78,7 +82,8 @@ Update current user's profile information.
   "firstName": "John",
   "lastName": "Smith",
   "phoneNumber": "+393331234567",  // Optional
-  "profilePictureUrl": "https://example.com/profile.jpg"  // Optional
+  "timezone": "Europe/Rome",  // Optional
+  "language": "it"  // Optional (`it` | `en`)
 }
 ```
 
@@ -86,7 +91,8 @@ Update current user's profile information.
 - `firstName`: Optional, string, min 1 char, max 100 chars
 - `lastName`: Optional, string, min 1 char, max 100 chars  
 - `phoneNumber`: Optional, must be valid international mobile phone format (E.164)
-- `profilePictureUrl`: Optional, string
+- `timezone`: Optional, IANA timezone or `auto`
+- `language`: Optional, enum `it` or `en`
 
 **Response** (200 OK):
 ```json
@@ -97,7 +103,9 @@ Update current user's profile information.
   "lastName": "Smith",
   "phoneNumber": "+393331234567",
   "isEmailVerified": true,
-  "profilePictureUrl": "https://example.com/profile.jpg"
+  "profilePictureUrl": "https://example.com/profile.jpg",
+  "timezone": "Europe/Rome",
+  "language": "it"
 }
 ```
 
@@ -119,7 +127,8 @@ Update current user's profile information.
 - `validation.firstName.*` - firstName validation (required, mustBeString, minLength, maxLength)
 - `validation.lastName.*` - lastName validation
 - `validation.phoneNumber.*` - phoneNumber validation (required, invalid)
-- `validation.profilePictureUrl.*` - profilePictureUrl validation (mustBeString)
+- `validation.timezone.*` - timezone validation (mustBeString, invalidFormat)
+- `validation.language.invalid` - language must be one of `it` or `en`
 
 **401 Unauthorized** - Invalid or Missing JWT:
 ```json

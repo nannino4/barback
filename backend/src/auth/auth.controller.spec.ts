@@ -208,7 +208,8 @@ describe('AuthController - Integration Tests', () =>
             // Verify that verification email was sent
             expect(mockEmailService.generateVerificationEmail).toHaveBeenCalledWith(
                 mockRegisterDto.email,
-                expect.any(String)
+                expect.any(String),
+                'it',
             );
             expect(mockEmailService.sendEmail).toHaveBeenCalled();
         });
@@ -475,7 +476,8 @@ describe('AuthController - Integration Tests', () =>
             expect(response.body).toEqual({});
             expect(mockEmailService.generateVerificationEmail).toHaveBeenCalledWith(
                 mockRegisterDto.email,
-                expect.any(String)
+                expect.any(String),
+                'it',
             );
             expect(mockEmailService.sendEmail).toHaveBeenCalled();
         });
@@ -646,7 +648,8 @@ describe('AuthController - Integration Tests', () =>
             expect(response.body).toEqual({});
             expect(mockEmailService.generatePasswordResetEmail).toHaveBeenCalledWith(
                 mockRegisterDto.email,
-                expect.any(String)
+                expect.any(String),
+                'it',
             );
             expect(mockEmailService.sendEmail).toHaveBeenCalled();
         });

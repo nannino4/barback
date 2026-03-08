@@ -13,6 +13,12 @@ export enum AuthProvider
     GOOGLE = 'GOOGLE',
 }
 
+export enum UserLanguage
+{
+    IT = 'it',
+    EN = 'en',
+}
+
 @Schema({ timestamps: true, collection: 'users' })
 export class User extends Document 
 {
@@ -78,6 +84,9 @@ export class User extends Document
 
     @Prop({ type: String, required: true, default: 'auto' })
     timezone!: string;
+
+    @Prop({ type: String, enum: UserLanguage, required: true, default: UserLanguage.IT })
+    language!: UserLanguage;
 
     // createdAt and updatedAt are handled by timestamps: true
 }

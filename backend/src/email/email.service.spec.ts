@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { EmailService } from './email.service';
 import { CustomLogger } from '../common/logger/custom.logger';
 import * as nodemailer from 'nodemailer';
+import { UserLanguage } from 'src/user/schemas/user.schema';
 
 // Mock nodemailer
 jest.mock('nodemailer');
@@ -126,10 +127,10 @@ describe('EmailService', () =>
             const email = 'user@example.com';
             const token = 'verification-token';
 
-            const result = service.generateVerificationEmail(email, token);
+            const result = service.generateVerificationEmail(email, token, UserLanguage.IT);
 
             expect(result.to).toBe(email);
-            expect(result.subject).toBe('Verify your Barback account');
+            expect(result.subject).toBe('Verifica il tuo account Barback');
             expect(result.text).toContain('http://localhost:3001/auth/verify-email?token=verification-token');
             expect(result.html).toContain('http://localhost:3001/auth/verify-email?token=verification-token');
         });
@@ -142,10 +143,10 @@ describe('EmailService', () =>
             const email = 'user@example.com';
             const token = 'reset-token';
 
-            const result = service.generatePasswordResetEmail(email, token);
+            const result = service.generatePasswordResetEmail(email, token, UserLanguage.IT);
 
             expect(result.to).toBe(email);
-            expect(result.subject).toBe('Reset your Barback password');
+            expect(result.subject).toBe('Reimposta la password Barback');
             expect(result.text).toContain('http://localhost:3001/auth/reset-password?token=reset-token');
             expect(result.html).toContain('http://localhost:3001/auth/reset-password?token=reset-token');
         });

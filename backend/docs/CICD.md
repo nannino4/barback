@@ -74,6 +74,12 @@ These are **not** GitHub secrets in this model; they live on EC2 in `/opt/barbac
 - `BACKEND_IMAGE_TAG`
 - `FRONTEND_IMAGE_TAG`
 - `BACKEND_ENV_FILE`
+- `SMTP_HOST` (e.g. `email-smtp.eu-west-1.amazonaws.com` for AWS SES)
+- `SMTP_PORT`
+- `SMTP_USER` (SMTP username)
+- `SMTP_PASS` (SMTP password)
+- `EMAIL_FROM`
+- `EMAIL_APP_NAME` (optional branding, default `Barback`)
 - `CERTBOT_DOMAIN`
 - `CERTBOT_WWW_DOMAIN`
 - `CERTBOT_EMAIL`

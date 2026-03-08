@@ -9,6 +9,7 @@ import { InCreateInvitationDto } from './dto/in.create-invitation.dto';
 import { CustomLogger } from '../common/logger/custom.logger';
 import { maskEmail } from '../common/utils/mask-email';
 import { DatabaseOperationException } from '../common/exceptions/database.exceptions';
+import { User } from '../user/schemas/user.schema';
 import { 
     InvitationNotFoundException,
     InvalidInvitationException,
@@ -31,7 +32,7 @@ export class InvitationService
 
     async createInvitation(
         orgId: Types.ObjectId,
-        invitedBy: Types.ObjectId,
+        inviter: User,
         createInviteDto: InCreateInvitationDto,
         organizationName: string,
         requestId?: string,
@@ -90,7 +91,7 @@ export class InvitationService
                 role,
                 status: InvitationStatus.PENDING,
                 expiresAt,
-                invitedBy,
+                invitedBy: inviter._id,
             });
 
             await invitation.save();
@@ -103,6 +104,7 @@ export class InvitationService
                     invitation.id,
                     organizationName,
                     role,
+                    inviter.language,
                 );
                 await this.emailService.sendEmail(emailOptions);
                 this.logger.debug(

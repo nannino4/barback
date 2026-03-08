@@ -5,7 +5,7 @@ import axios from 'axios';
 import { GoogleService } from './google.service';
 import { UserService } from '../user/user.service';
 import { CustomLogger } from '../common/logger/custom.logger';
-import { User, AuthProvider } from '../user/schemas/user.schema';
+import { User, AuthProvider, UserLanguage } from '../user/schemas/user.schema';
 import { Types } from 'mongoose';
 import { StorageService } from '../storage/storage.service';
 import {
@@ -367,6 +367,7 @@ describe('GoogleService', () =>
                 lastName: 'User',
                 authProvider: AuthProvider.GOOGLE,
                 isEmailVerified: true,
+                language: UserLanguage.IT,
             }, undefined);
         });
 

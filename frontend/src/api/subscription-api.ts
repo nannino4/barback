@@ -4,11 +4,13 @@ import {
   SubscriptionResponseSchema,
   TrialEligibilityResponseSchema,
   SubscriptionSetupResponseSchema,
+  TrialActivationResponseSchema,
   StripeSubscriptionStatusResponseSchema,
   type SubscriptionResponse,
   type TrialEligibilityResponse,
   type CreateSubscriptionRequest,
   type SubscriptionSetupResponse,
+  type TrialActivationResponse,
   type StripeSubscriptionStatusResponse,
 } from '@/types/subscription';
 
@@ -51,6 +53,42 @@ export const subscriptionApi = {
         body: JSON.stringify(data),
       },
       SubscriptionSetupResponseSchema,
+    );
+  },
+
+  /**
+   * Activate a frictionless free trial (no payment method collected).
+   * Creates the Stripe trial subscription and the local record server-side, so the
+   * organization can be created immediately afterwards.
+   * @returns Stripe subscription ID and local status (TRIALING)
+   */
+  activateTrial: (): Promise<TrialActivationResponse> =>
+  {
+    return apiClient.request<TrialActivationResponse>(
+      '/subscriptions/trial',
+      {
+        method: 'POST',
+      },
+      TrialActivationResponseSchema,
+    );
+  },
+
+  /**
+   * Attach a payment method to a subscription and (re)activate billing.
+   * Used by the add-payment flow after a frictionless trial.
+   * @param subscriptionId Local subscription id
+   * @param paymentMethodId Stripe payment method id (from a confirmed SetupIntent)
+   * @returns The updated subscription
+   */
+  attachPaymentMethod: (subscriptionId: string, paymentMethodId: string): Promise<SubscriptionResponse> =>
+  {
+    return apiClient.request<SubscriptionResponse>(
+      `/subscriptions/${subscriptionId}/payment-method`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ paymentMethodId }),
+      },
+      SubscriptionResponseSchema,
     );
   },
 

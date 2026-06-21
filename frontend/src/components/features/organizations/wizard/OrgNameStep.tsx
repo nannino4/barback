@@ -19,15 +19,21 @@ import type { CreateOrganizationFormData } from '@/types/organization';
 interface OrgNameStepProps
 {
   onNext: () => void;
+  /** Label for the submit button (e.g. "Continue" or "Start free trial"). */
+  submitLabel?: string;
+  /** When true, the submit action is in progress (disables the button + shows a spinner). */
+  isSubmitting?: boolean;
+  /** Optional helper/description rendered below the name field (e.g. trial note). */
+  footnote?: string;
 }
 
 /**
  * OrgNameStep - First step of organization creation wizard
- * 
+ *
  * Validates organization name with real-time availability check
  * Uses debounced API validation to prevent excessive requests
  */
-export const OrgNameStep: React.FC<OrgNameStepProps> = ({ onNext }) =>
+export const OrgNameStep: React.FC<OrgNameStepProps> = ({ onNext, submitLabel, isSubmitting = false, footnote }) =>
 {
   const { t } = useI18n();
   const form = useFormContext<CreateOrganizationFormData>();
@@ -121,7 +127,8 @@ export const OrgNameStep: React.FC<OrgNameStepProps> = ({ onNext }) =>
   const disableContinue =
     !eligible ||
     status === 'checking' ||
-    status === 'unavailable';
+    status === 'unavailable' ||
+    isSubmitting;
 
   return (
     <Stack space="lg">
@@ -190,12 +197,19 @@ export const OrgNameStep: React.FC<OrgNameStepProps> = ({ onNext }) =>
             )}
           />
 
+          {footnote && (
+            <p className="text-sm text-muted-foreground">
+              {footnote}
+            </p>
+          )}
+
           <Button
             type="submit"
             className="w-full"
             disabled={disableContinue}
           >
-            {t('common.continue')}
+            {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+            {submitLabel ?? t('common.continue')}
           </Button>
         </Stack>
       </form>

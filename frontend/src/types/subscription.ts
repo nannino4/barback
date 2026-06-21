@@ -51,8 +51,17 @@ export const TrialEligibilityResponseSchema = z.object({
  * Create subscription request schema - for POST /api/subscriptions
  */
 export const CreateSubscriptionRequestSchema = z.object({
-  billingInterval: BillingIntervalSchema.optional().default('MONTHLY'),
+  billingInterval: BillingIntervalSchema.optional().default('YEARLY'),
   isTrial: z.boolean().optional().default(false),
+});
+
+/**
+ * Trial activation response schema - for POST /api/subscriptions/trial
+ * Frictionless trial: no payment collected, local subscription created immediately.
+ */
+export const TrialActivationResponseSchema = z.object({
+  stripeSubscriptionId: z.string(),
+  status: SubscriptionStatusSchema,
 });
 
 /**
@@ -90,5 +99,6 @@ export type SubscriptionResponse = z.infer<typeof SubscriptionResponseSchema>;
 export type TrialEligibilityResponse = z.infer<typeof TrialEligibilityResponseSchema>;
 export type CreateSubscriptionRequest = z.infer<typeof CreateSubscriptionRequestSchema>;
 export type SubscriptionSetupResponse = z.infer<typeof SubscriptionSetupResponseSchema>;
+export type TrialActivationResponse = z.infer<typeof TrialActivationResponseSchema>;
 export type StripeSubscriptionStatusResponse = z.infer<typeof StripeSubscriptionStatusResponseSchema>;
 export type SubscriptionStatusOnlyResponse = z.infer<typeof SubscriptionStatusOnlyResponseSchema>;

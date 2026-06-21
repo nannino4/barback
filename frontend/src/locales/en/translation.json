@@ -102,14 +102,14 @@
             "title": "Reset Your Password",
             "newPassword": "New Password",
             "newPasswordPlaceholder": "Enter your new password",
-            "confirmPassword": "Confirm Password", 
+            "confirmPassword": "Confirm Password",
             "confirmPasswordPlaceholder": "Confirm your new password",
             "hidePassword": "Hide password",
             "showPassword": "Show password",
             "requirements": "Password Requirements:",
             "requirementLength": "At least 8 characters",
             "requirementUppercase": "One uppercase letter",
-            "requirementLowercase": "One lowercase letter", 
+            "requirementLowercase": "One lowercase letter",
             "requirementNumber": "One number",
             "requirementSpecial": "One special character",
             "updating": "Updating Password...",
@@ -684,7 +684,7 @@
                 "description": "Track your spirits, wines, and mixers with precision. Monitor stock levels and get alerts when supplies run low."
             },
             "mobile": {
-                "title": "Mobile Optimized", 
+                "title": "Mobile Optimized",
                 "description": "Designed for touch interactions and perfect for use in dimly lit bar environments."
             },
             "team": {
@@ -762,40 +762,21 @@
                 "nameUnavailable": "Name is already taken",
                 "validationRequired": "Name is required",
                 "validationMinLength": "Name must be at least 2 characters",
-                "validationMaxLength": "Name must not exceed 100 characters"
+                "validationMaxLength": "Name must not exceed 100 characters",
+                "trialNote": "Start your {{days}}-day free trial — no credit card required."
             },
             "planStep": {
-                "title": "Choose Your Plan",
-                "description": "Select the billing interval that works best for you",
-                "monthly": "Monthly",
                 "yearly": "Yearly",
-                "interval": {
-                    "monthlyShort": "mo",
-                    "yearlyShort": "yr"
-                },
-                "monthlyPrice": "€29.99/mo",
-                "yearlyPrice": "€299/yr",
-                "yearlySavings": "Save 17%",
-                "savings": "Save {{percent}}%",
-                "bestDeal": "Best deal",
                 "card": {
-                    "monthlyPrice": "{{amount}} / month",
-                    "yearlyPrice": "{{amount}} / month, billed yearly at {{yearlyAmount}}",
-                    "freeTrialLine": "FREE for {{days}} days",
-                    "thenLine": "Then {{price}}",
-                    "youSave": "You save {{percent}}%"
+                    "yearlyPriceShort": "{{yearlyAmount}} / year"
                 },
                 "features": {
-                    "title": "What you get",
+                    "inventoryTracking": "Real-time inventory tracking",
                     "unlimitedProducts": "Unlimited products",
                     "unlimitedMembers": "Unlimited team members",
-                    "inventoryTracking": "Real-time inventory tracking",
                     "lowStockAlerts": "Low stock alerts",
-                    "reports": "Analytics & reports",
-                    "mobileApp": "Mobile app access",
                     "support": "Email support"
-                },
-                "bestValue": "Best Value"
+                }
             },
             "paymentStep": {
                 "title": "Complete Payment",
@@ -1028,7 +1009,8 @@
                 "incomplete": "Your subscription setup is incomplete. Please complete payment to activate.",
                 "pastDue": "Your payment is past due. Please update your payment method to avoid service interruption.",
                 "canceled": "Your subscription has been canceled. You may lose access to some features.",
-                "unpaid": "Your subscription is unpaid. Please update your payment method."
+                "unpaid": "Your subscription is unpaid. Please update your payment method.",
+                "paused": "Your free trial has ended and your subscription is paused. Add a payment method to resume access."
             },
             "currentStatus": "Current Status",
             "createdOn": "Subscription Started",
@@ -1141,6 +1123,21 @@
             "notFound": "Subscription not found",
             "notActive": "Subscription is not active",
             "createFailed": "Failed to create subscription"
+        },
+        "trialBanner": {
+            "daysLeft": "{{days}} days left in your free trial",
+            "paused": "Your free trial has ended. Add a payment method to continue.",
+            "reactivate": "Reactivate",
+            "addPayment": "Add payment method"
+        },
+        "addPayment": {
+            "title": "Add payment method",
+            "description": "Add a card to keep your access after the free trial ends.",
+            "submit": "Save payment method",
+            "errors": {
+                "unexpected": "Something went wrong. Please try again.",
+                "setupFailed": "Couldn't start the payment setup. Please try again."
+            }
         }
     },
     "account": {

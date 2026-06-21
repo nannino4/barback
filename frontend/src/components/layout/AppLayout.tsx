@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
 import { TopNav } from '@/components/layout/TopNav';
 import { BottomNav } from '@/components/layout/BottomNav';
+import { TrialBanner } from '@/components/features/organizations/TrialBanner';
 
 /**
  * AppLayout - Main application layout for all pages
@@ -25,7 +26,10 @@ export function AppLayout({ children }: { children?: ReactNode })
     <div className="min-h-screen bg-background">
       {/* Sticky Top Navigation - Takes up space in flow */}
       <TopNav />
-      
+
+      {/* Trial status banner (owner of a trialing/paused org only) */}
+      <TrialBanner />
+
       {/* Main Content Area - Only needs bottom padding for fixed mobile nav */}
       <main className="pb-16 md:pb-0">
         {children ?? <Outlet />}

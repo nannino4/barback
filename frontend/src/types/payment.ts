@@ -31,6 +31,13 @@ export const AddPaymentMethodRequestSchema = z.object({
   paymentMethodId: z.string(), // From Stripe.js
 });
 
+/**
+ * Setup intent response schema - for POST /api/payment/setup-intent
+ */
+export const SetupIntentResponseSchema = z.object({
+  clientSecret: z.string(),
+});
+
 // ============================================================================
 // TypeScript Types - Derived from Zod Schemas
 // ============================================================================
@@ -38,3 +45,4 @@ export const AddPaymentMethodRequestSchema = z.object({
 export type PaymentMethodCardResponse = z.infer<typeof PaymentMethodCardResponseSchema>;
 export type PaymentMethodResponse = z.infer<typeof PaymentMethodResponseSchema>;
 export type AddPaymentMethodRequest = z.infer<typeof AddPaymentMethodRequestSchema>;
+export type SetupIntentResponse = z.infer<typeof SetupIntentResponseSchema>;

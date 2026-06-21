@@ -1,12 +1,13 @@
-import React from 'react';
-import { CreditCard, Settings } from 'lucide-react';
+import React, { useState } from 'react';
+import { CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Stack } from '@/components/layout';
 import { useI18n } from '@/hooks/useI18n';
-import { formatDate } from '@/lib/date';
+import { formatDate, daysUntil } from '@/lib/date';
 import { useAuthStore } from '@/stores/authStore';
 import { SubscriptionStatusBadge } from './SubscriptionStatusBadge';
+import { AddPaymentMethodDialog } from './AddPaymentMethodDialog';
 import type { SubscriptionResponse, SubscriptionStatus, SubscriptionStatusOnlyResponse } from '@/types/subscription';
 
 /**
@@ -41,8 +42,9 @@ const useStatusMessage = (status: SubscriptionStatus, t: ReturnType<typeof useI1
     return t('orgManagement.subscription.statusMessages.incomplete');
   case 'PAST_DUE':
     return t('orgManagement.subscription.statusMessages.pastDue');
-  case 'CANCELED':
   case 'PAUSED':
+    return t('orgManagement.subscription.statusMessages.paused');
+  case 'CANCELED':
     return t('orgManagement.subscription.statusMessages.canceled');
   case 'UNPAID':
     return t('orgManagement.subscription.statusMessages.unpaid');
@@ -72,12 +74,21 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 {
   const { t, currentLanguage } = useI18n();
   const currentUser = useAuthStore((state) => state.user);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const statusMessage = useStatusMessage(subscriptionData.status, t);
   const hasFullData = isFullSubscription(subscriptionData);
 
   const formattedDate = hasFullData && subscriptionData.nextBillingDate
     ? formatDate(subscriptionData.nextBillingDate, currentLanguage, undefined, currentUser?.timezone)
     : null;
+
+  const isTrialing = subscriptionData.status === 'TRIALING';
+  const isPaused = subscriptionData.status === 'PAUSED';
+  const trialDaysRemaining = hasFullData && isTrialing
+    ? daysUntil(subscriptionData.nextBillingDate)
+    : null;
+  // Owners can add a payment method to convert a trial or reactivate a paused sub.
+  const canAddPayment = isOwner && hasFullData && (isTrialing || isPaused);
 
   return (
     <Card>
@@ -96,6 +107,13 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           {statusMessage && (
             <p className="text-sm text-muted-foreground">
               {statusMessage}
+            </p>
+          )}
+
+          {/* Trial countdown */}
+          {trialDaysRemaining !== null && (
+            <p className="text-sm font-medium">
+              {t('subscription.trialBanner.daysLeft' as never, { days: trialDaysRemaining }) as string}
             </p>
           )}
 
@@ -131,16 +149,30 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           )}
 
           {/* Action buttons for owner */}
-          {isOwner && hasFullData && (
+          {canAddPayment && hasFullData && (
             <Stack direction="horizontal" space="sm" className="pt-2 flex-wrap">
-              <Button variant="outline" size="sm" disabled>
-                <Settings className="w-4 h-4 mr-2" />
-                {t('orgManagement.subscription.manage')}
+              <Button
+                variant={isPaused ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setDialogOpen(true)}
+              >
+                <CreditCard className="w-4 h-4 mr-2" />
+                {isPaused
+                  ? t('subscription.trialBanner.reactivate')
+                  : t('subscription.trialBanner.addPayment')}
               </Button>
             </Stack>
           )}
         </Stack>
       </CardContent>
+
+      {canAddPayment && hasFullData && (
+        <AddPaymentMethodDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          subscriptionId={subscriptionData.id}
+        />
+      )}
     </Card>
   );
 };

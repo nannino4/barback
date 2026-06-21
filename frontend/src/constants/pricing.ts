@@ -1,7 +1,6 @@
 import type { BillingInterval } from '@/types/subscription';
 
 export type IntervalLabelKey =
-  | 'organizations.create.planStep.interval.monthlyShort'
   | 'organizations.create.planStep.interval.yearlyShort';
 
 export interface PricingPlan
@@ -11,26 +10,21 @@ export interface PricingPlan
   price: number;
   currency: string;
   billingPeriodLabelKey: IntervalLabelKey;
-  highlight?: boolean;
 }
 
-export const PRICING_PLANS: PricingPlan[] = [
-  {
-    id: 'MONTHLY',
-    interval: 'MONTHLY',
-    price: 100,
-    currency: 'EUR',
-    billingPeriodLabelKey: 'organizations.create.planStep.interval.monthlyShort',
-  },
-  {
-    id: 'YEARLY',
-    interval: 'YEARLY',
-    price: 1000,
-    currency: 'EUR',
-    billingPeriodLabelKey: 'organizations.create.planStep.interval.yearlyShort',
-    highlight: true,
-  },
-];
+/**
+ * The single plan offered (yearly). Barback is B2B and only sells an annual plan.
+ */
+export const YEARLY_PLAN: PricingPlan = {
+  id: 'YEARLY',
+  interval: 'YEARLY',
+  price: 1000,
+  currency: 'EUR',
+  billingPeriodLabelKey: 'organizations.create.planStep.interval.yearlyShort',
+};
+
+/** Length of the free trial, in days. Mirrors the backend default. */
+export const TRIAL_DAYS = 90;
 
 export const PLAN_FEATURE_KEYS = [
   'organizations.create.planStep.features.inventoryTracking',

@@ -110,16 +110,30 @@ Deploy can choose either:
 
 ## 5) certbot renewals
 
-- `certbot` service runs continuously in normal stack and performs periodic renewals.
+- `certbot` service runs continuously in the normal stack and checks for renewals every 12 hours.
+- `certbot` logs renewal attempts to container logs; it is intentionally not run with `--quiet`.
+- On successful renewal, certbot writes a marker file to the shared webroot volume.
+- `nginx-reloader` watches that marker and sends `SIGHUP` to `barback-nginx-dev` so Nginx loads the renewed certificate without a full deploy.
 - `certbot-init` is only for first issuance (or exceptional recovery/domain change).
+
+Useful renewal checks:
+
+```bash
+docker compose --env-file .env.deploy.dev -f docker-compose.yml logs --tail=200 certbot
+docker compose --env-file .env.deploy.dev -f docker-compose.yml logs --tail=200 nginx-reloader
+openssl x509 -in /etc/letsencrypt/live/<domain>/fullchain.pem -noout -dates
+echo | openssl s_client -connect <domain>:443 -servername <domain> 2>/dev/null \
+  | openssl x509 -noout -dates
+```
 
 ## 6) Troubleshooting quick checks
 
 1. DNS mismatch: verify domain resolves to correct EC2 IP
 2. Port 80 blocked: ACME HTTP challenge cannot complete
 3. Missing cert files: verify `/etc/letsencrypt/live/<domain>/fullchain.pem` and `privkey.pem` exist on the EC2 host
-4. Wrong image tag: ensure selected tag exists in Docker Hub
-5. Backend unhealthy: check container logs and app env file path
+4. Renewed cert not served: check `nginx-reloader` logs and verify the `barback-nginx-dev` container received a reload after renewal
+5. Wrong image tag: ensure selected tag exists in Docker Hub
+6. Backend unhealthy: check container logs and app env file path
 
 Useful commands:
 

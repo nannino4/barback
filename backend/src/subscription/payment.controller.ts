@@ -7,6 +7,7 @@ import { PaymentService } from './payment.service';
 import { InAddPaymentMethodDto } from './dto/in.add-payment-method.dto';
 import { InSetDefaultPaymentMethodDto } from './dto/in.set-default-payment-method.dto';
 import { OutPaymentMethodDto } from './dto/out.payment-method.dto';
+import { OutSetupIntentDto } from './dto/out.setup-intent.dto';
 import { plainToInstance } from 'class-transformer';
 import { CustomLogger } from '../common/logger/custom.logger';
 import { RequestId } from '../common/decorators/request-id.decorator';
@@ -19,6 +20,17 @@ export class PaymentController
         private readonly paymentService: PaymentService,
         private readonly logger: CustomLogger,
     ) {}
+
+    @Post('setup-intent')
+    async createSetupIntent(
+        @CurrentUser() user: User,
+        @RequestId() requestId?: string,
+    ): Promise<OutSetupIntentDto>
+    {
+        this.logger.debug(`Creating setup intent for user: ${user.id}`, 'PaymentController#createSetupIntent', requestId);
+        const result = await this.paymentService.createSetupIntent(user.id, requestId);
+        return plainToInstance(OutSetupIntentDto, result, { excludeExtraneousValues: true });
+    }
 
     @Get('methods')
     async getPaymentMethods(

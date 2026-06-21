@@ -17,7 +17,39 @@ export class PaymentService
         this.logger.log('PaymentService initialized', 'PaymentService#constructor');
     }
 
-    async addPaymentMethod(userId: Types.ObjectId, paymentMethodId: string, requestId?: string): Promise<Stripe.PaymentMethod> 
+    /**
+     * Create a SetupIntent so the client can collect and save a payment method.
+     * Ensures the user has a Stripe customer first. Returns the clientSecret.
+     */
+    async createSetupIntent(userId: Types.ObjectId, requestId?: string): Promise<{ clientSecret: string }>
+    {
+        this.logger.debug(`Creating setup intent for user: ${userId}`, 'PaymentService#createSetupIntent', requestId);
+
+        const user = await this.userService.findById(userId, requestId);
+        let stripeCustomerId = user.stripeCustomerId;
+
+        if (!stripeCustomerId)
+        {
+            const stripeCustomer = await this.stripeService.createCustomer(
+                user.email,
+                `${user.firstName} ${user.lastName}`,
+                requestId,
+            );
+            stripeCustomerId = stripeCustomer.id;
+            await this.userService.updateStripeCustomerId(userId, stripeCustomerId, requestId);
+        }
+
+        const setupIntent = await this.stripeService.createSetupIntent(stripeCustomerId, requestId);
+        if (!setupIntent.client_secret)
+        {
+            throw new BadRequestException('Setup intent client secret not available');
+        }
+
+        this.logger.debug(`Setup intent created for user: ${userId}`, 'PaymentService#createSetupIntent', requestId);
+        return { clientSecret: setupIntent.client_secret };
+    }
+
+    async addPaymentMethod(userId: Types.ObjectId, paymentMethodId: string, requestId?: string): Promise<Stripe.PaymentMethod>
     {
         this.logger.debug(`Adding payment method for user: ${userId}`, 'PaymentService#addPaymentMethod', requestId);
         

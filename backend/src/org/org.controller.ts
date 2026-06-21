@@ -16,6 +16,7 @@ import { EmailVerifiedGuard } from '../auth/guards/email-verified.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../user/schemas/user.schema';
 import { OrgService } from './org.service';
+import { OrgSeedService } from './org-seed.service';
 import { OrgRole } from './schemas/user-org-relation.schema';
 import { UserOrgRelationService } from './user-org-relation.service';
 import { OutUserOrgRelationDto } from './dto/out.user-org-relation';
@@ -54,6 +55,7 @@ export class OrgController
 {
     constructor(
         private readonly orgService: OrgService,
+        private readonly orgSeedService: OrgSeedService,
         private readonly userOrgRelationService: UserOrgRelationService,
         private readonly userService: UserService,
         private readonly subscriptionService: SubscriptionService,
@@ -107,13 +109,16 @@ export class OrgController
         
         // Create the organization
         const org = await this.orgService.create(createData, user._id as Types.ObjectId, subscription._id as Types.ObjectId, requestId);
-        
+
         this.logger.log(
             `Organization created successfully: ${org.name} with ID: ${org._id}`,
             'OrgController#createOrganization',
             requestId,
         );
-        
+
+        // Seed sample inventory so the new org isn't empty (best-effort).
+        await this.orgSeedService.seedSampleInventory(org._id as Types.ObjectId, requestId);
+
         return plainToInstance(OutOrgDto, org.toObject(), { excludeExtraneousValues: true });
     }
 

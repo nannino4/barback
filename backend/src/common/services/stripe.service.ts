@@ -358,8 +358,8 @@ export class StripeService
 
         try
         {
-            const subscription = await this.stripe.subscriptions.update(subscriptionId, {
-                pause_collection: '',
+            const subscription = await this.stripe.subscriptions.resume(subscriptionId, {
+                billing_cycle_anchor: 'now',
             });
             this.logger.debug(`Subscription resumed: ${subscriptionId}`, 'StripeService#resumeSubscription', requestId);
             return subscription;
@@ -383,6 +383,19 @@ export class StripeService
         
         try 
         {
+            const existingPaymentMethod = await this.stripe.paymentMethods.retrieve(paymentMethodId);
+            const existingCustomerId = this.getStripeId(existingPaymentMethod.customer);
+
+            if (existingCustomerId === customerId)
+            {
+                this.logger.debug(
+                    `Payment method ${paymentMethodId} is already attached to customer: ${customerId}`,
+                    'StripeService#attachPaymentMethod',
+                    requestId,
+                );
+                return existingPaymentMethod;
+            }
+
             const paymentMethod = await this.stripe.paymentMethods.attach(paymentMethodId, {
                 customer: customerId,
             });
@@ -469,6 +482,37 @@ export class StripeService
             this.logger.error(`Failed to set default payment method for customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#setDefaultPaymentMethod', requestId);
             this.handleStripeError(error, 'default payment method setting', requestId);
         }
+    }
+
+    async getDefaultPaymentMethodId(customerId: string, requestId?: string): Promise<string | null>
+    {
+        this.logger.debug(`Retrieving default payment method for customer: ${customerId}`, 'StripeService#getDefaultPaymentMethodId', requestId);
+
+        try
+        {
+            const customer = await this.stripe.customers.retrieve(customerId);
+            if (customer.deleted)
+            {
+                return null;
+            }
+
+            return this.getStripeId(customer.invoice_settings.default_payment_method);
+        }
+        catch (error)
+        {
+            this.logger.error(`Failed to retrieve default payment method for customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#getDefaultPaymentMethodId', requestId);
+            this.handleStripeError(error, 'default payment method retrieval', requestId);
+        }
+    }
+
+    private getStripeId(value: string | { id: string } | null | undefined): string | null
+    {
+        if (!value)
+        {
+            return null;
+        }
+
+        return typeof value === 'string' ? value : value.id;
     }
 
     // Webhook handling

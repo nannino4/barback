@@ -49,7 +49,7 @@ export class PaymentService
         return { clientSecret: setupIntent.client_secret };
     }
 
-    async addPaymentMethod(userId: Types.ObjectId, paymentMethodId: string, requestId?: string): Promise<Stripe.PaymentMethod>
+    async addPaymentMethod(userId: Types.ObjectId, paymentMethodId: string, requestId?: string): Promise<Stripe.PaymentMethod & { isDefault: boolean }>
     {
         this.logger.debug(`Adding payment method for user: ${userId}`, 'PaymentService#addPaymentMethod', requestId);
         
@@ -68,14 +68,23 @@ export class PaymentService
             await this.userService.updateStripeCustomerId(userId, stripeCustomerId, requestId);
         }
 
-        // Attach payment method to customer
+        // Attach payment method to customer. This is idempotent for payment methods
+        // that were already attached by a confirmed SetupIntent.
         const paymentMethod = await this.stripeService.attachPaymentMethod(paymentMethodId, stripeCustomerId, requestId);
+        const defaultPaymentMethodId = await this.stripeService.getDefaultPaymentMethodId(stripeCustomerId, requestId);
+
+        if (!defaultPaymentMethodId)
+        {
+            await this.stripeService.setDefaultPaymentMethod(stripeCustomerId, paymentMethodId, requestId);
+        }
 
         this.logger.debug(`Payment method added successfully for user: ${userId}`, 'PaymentService#addPaymentMethod', requestId);
-        return paymentMethod;
+        return Object.assign(paymentMethod, {
+            isDefault: !defaultPaymentMethodId || paymentMethod.id === defaultPaymentMethodId,
+        });
     }
 
-    async getPaymentMethods(userId: Types.ObjectId, requestId?: string): Promise<Stripe.PaymentMethod[]> 
+    async getPaymentMethods(userId: Types.ObjectId, requestId?: string): Promise<Array<Stripe.PaymentMethod & { isDefault: boolean }>> 
     {
         this.logger.debug(`Getting payment methods for user: ${userId}`, 'PaymentService#getPaymentMethods', requestId);
         
@@ -85,8 +94,14 @@ export class PaymentService
             return [];
         }
 
-        const paymentMethods = await this.stripeService.listPaymentMethods(user.stripeCustomerId, 'card', requestId);
-        return paymentMethods;
+        const [paymentMethods, defaultPaymentMethodId] = await Promise.all([
+            this.stripeService.listPaymentMethods(user.stripeCustomerId, 'card', requestId),
+            this.stripeService.getDefaultPaymentMethodId(user.stripeCustomerId, requestId),
+        ]);
+
+        return paymentMethods.map((paymentMethod) => Object.assign(paymentMethod, {
+            isDefault: paymentMethod.id === defaultPaymentMethodId,
+        }));
     }
 
     async removePaymentMethod(userId: Types.ObjectId, paymentMethodId: string, requestId?: string): Promise<void> 

@@ -1004,7 +1004,7 @@
             "statusDescription": "Informazioni sull'abbonamento corrente",
             "statusMessages": {
                 "active": "Il tuo abbonamento è attivo. Hai accesso completo a tutte le funzionalità.",
-                "trialing": "Sei attualmente in prova gratuita. Il tuo metodo di pagamento verrà addebitato al termine della prova.",
+                "trialing": "Sei attualmente in prova gratuita. Aggiungi un metodo di pagamento prima della fine per continuare senza interruzioni.",
                 "incomplete": "La configurazione del tuo abbonamento è incompleta. Completa il pagamento per attivarlo.",
                 "pastDue": "Il tuo pagamento è scaduto. Aggiorna il tuo metodo di pagamento per evitare interruzioni del servizio.",
                 "canceled": "Il tuo abbonamento è stato cancellato. Potresti perdere l'accesso ad alcune funzionalità.",

@@ -71,6 +71,14 @@ export const queryKeys = {
   },
 
   /**
+   * Payment method-related queries
+   */
+  paymentMethods: {
+    /** All payment methods for current user */
+    all: ['payment-methods'] as const,
+  },
+
+  /**
    * Product-related queries
    */
   products: {

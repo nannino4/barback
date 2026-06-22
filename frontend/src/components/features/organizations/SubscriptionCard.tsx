@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,8 +7,11 @@ import { Stack } from '@/components/layout';
 import { useI18n } from '@/hooks/useI18n';
 import { formatDate, daysUntil } from '@/lib/date';
 import { useAuthStore } from '@/stores/authStore';
+import { paymentApi } from '@/api/payment-api';
+import { queryKeys } from '@/lib/queryKeys';
 import { SubscriptionStatusBadge } from './SubscriptionStatusBadge';
 import { AddPaymentMethodDialog } from './AddPaymentMethodDialog';
+import type { PaymentMethodResponse } from '@/types/payment';
 import type { SubscriptionResponse, SubscriptionStatus, SubscriptionStatusOnlyResponse } from '@/types/subscription';
 
 /**
@@ -67,6 +71,18 @@ const useStatusMessage = (status: SubscriptionStatus, t: ReturnType<typeof useI1
  * - Subscription status badge
  * - Status message
  */
+const formatPaymentMethod = (method: PaymentMethodResponse, t: ReturnType<typeof useI18n>['t']): string =>
+{
+  if (!method.card)
+  {
+    return method.type;
+  }
+
+  const brandKey = `payment.cardBrand.${method.card.brand}`;
+  const brand = t(brandKey as never) as string;
+  return `${brand} •••• ${method.card.last4}`;
+};
+
 export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
   subscriptionData,
   isOwner,
@@ -84,11 +100,25 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
   const isTrialing = subscriptionData.status === 'TRIALING';
   const isPaused = subscriptionData.status === 'PAUSED';
+  const shouldLoadPaymentMethods = isOwner && hasFullData;
+  const {
+    data: paymentMethods,
+    isLoading: isLoadingPaymentMethods,
+  } = useQuery({
+    queryKey: queryKeys.paymentMethods.all,
+    queryFn: paymentApi.getPaymentMethods,
+    enabled: shouldLoadPaymentMethods,
+  });
+  const defaultPaymentMethod = paymentMethods?.find((method) => method.isDefault)
+    ?? paymentMethods?.[0]
+    ?? null;
+  const hasPaymentMethod = !!defaultPaymentMethod;
   const trialDaysRemaining = hasFullData && isTrialing
     ? daysUntil(subscriptionData.nextBillingDate)
     : null;
-  // Owners can add a payment method to convert a trial or reactivate a paused sub.
-  const canAddPayment = isOwner && hasFullData && (isTrialing || isPaused);
+  // Owners can add a payment method while trialing only if no method is on file.
+  // Paused subscriptions can always show the CTA because it also resumes billing.
+  const canAddPayment = isOwner && hasFullData && (isPaused || (isTrialing && !isLoadingPaymentMethods && !hasPaymentMethod));
 
   return (
     <Card>
@@ -142,6 +172,21 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                   </span>
                   <span className="ml-1 font-medium">
                     {formattedDate}
+                  </span>
+                </div>
+              )}
+
+              {shouldLoadPaymentMethods && (
+                <div>
+                  <span className="text-muted-foreground">
+                    {t('orgManagement.subscription.paymentMethod')}:
+                  </span>
+                  <span className="ml-2 font-medium">
+                    {isLoadingPaymentMethods
+                      ? t('common.loading')
+                      : defaultPaymentMethod
+                        ? formatPaymentMethod(defaultPaymentMethod, t)
+                        : t('orgManagement.subscription.noPaymentMethod')}
                   </span>
                 </div>
               )}

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useI18n } from '@/hooks/useI18n';
 import { useOrganizationStore } from '@/stores/organizationStore';
 import { organizationApi } from '@/api/organization-api';
+import { paymentApi } from '@/api/payment-api';
 import { queryKeys } from '@/lib/queryKeys';
 import { daysUntil } from '@/lib/date';
 import { AddPaymentMethodDialog } from './AddPaymentMethodDialog';
@@ -32,15 +33,31 @@ export const TrialBanner: React.FC = () =>
     enabled: !!orgId && isOwner,
   });
 
+  const isTrialing = subscription?.status === 'TRIALING';
+  const isPaused = subscription?.status === 'PAUSED';
+  const shouldLoadPaymentMethods = !!orgId && isOwner && (isTrialing || isPaused);
+  const {
+    data: paymentMethods,
+    isLoading: isLoadingPaymentMethods,
+  } = useQuery({
+    queryKey: queryKeys.paymentMethods.all,
+    queryFn: paymentApi.getPaymentMethods,
+    enabled: shouldLoadPaymentMethods,
+  });
+
   if (!orgId || !isOwner || !subscription)
   {
     return null;
   }
 
-  const isTrialing = subscription.status === 'TRIALING';
-  const isPaused = subscription.status === 'PAUSED';
-
   if (!isTrialing && !isPaused)
+  {
+    return null;
+  }
+
+  // Once a trial has a payment method on file, no banner/CTA is needed until the
+  // trial actually ends. Keep paused subscriptions visible so the user can resume.
+  if (isTrialing && (isLoadingPaymentMethods || (paymentMethods?.length ?? 0) > 0))
   {
     return null;
   }

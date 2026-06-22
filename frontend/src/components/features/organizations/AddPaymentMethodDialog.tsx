@@ -17,6 +17,7 @@ import { useI18n } from '@/hooks/useI18n';
 import { paymentApi } from '@/api/payment-api';
 import { subscriptionApi } from '@/api/subscription-api';
 import { ApiError, getLocalizedErrorMessage } from '@/lib/errors';
+import { queryKeys } from '@/lib/queryKeys';
 import { buildStripeAppearance, getStripeLocale, paymentElementOptions, stripeFonts } from '@/lib/stripe/config';
 import { ResolvedThemeContext } from '@/contexts/ThemeContext';
 
@@ -90,9 +91,10 @@ const AddPaymentMethodForm: React.FC<{
 
       await subscriptionApi.attachPaymentMethod(subscriptionId, paymentMethodId);
 
-      // Refresh org subscription + status everywhere.
+      // Refresh org subscription/status and payment method views everywhere.
       await queryClient.invalidateQueries({ queryKey: ['organization'] });
-      await queryClient.invalidateQueries({ queryKey: ['subscriptions'] });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.subscriptions.all });
+      await queryClient.invalidateQueries({ queryKey: queryKeys.paymentMethods.all });
 
       setIsProcessing(false);
       onSuccess?.();
@@ -187,7 +189,7 @@ export const AddPaymentMethodDialog: React.FC<AddPaymentMethodDialogProps> = ({
           </div>
         ) : clientSecret ? (
           <Elements
-            key={`add-pm-${resolvedTheme}`}
+            key={`add-pm-${resolvedTheme}-${clientSecret}`}
             stripe={stripePromise}
             options={{
               clientSecret,

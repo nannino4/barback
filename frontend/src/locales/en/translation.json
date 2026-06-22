@@ -1005,7 +1005,7 @@
             "statusDescription": "Current subscription information",
             "statusMessages": {
                 "active": "Your subscription is active. You have full access to all features.",
-                "trialing": "You're currently on a free trial. Your payment method will be charged when the trial ends.",
+                "trialing": "You're currently on a free trial. Add a payment method before it ends to continue without interruption.",
                 "incomplete": "Your subscription setup is incomplete. Please complete payment to activate.",
                 "pastDue": "Your payment is past due. Please update your payment method to avoid service interruption.",
                 "canceled": "Your subscription has been canceled. You may lose access to some features.",

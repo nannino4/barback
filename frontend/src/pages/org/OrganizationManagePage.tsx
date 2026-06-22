@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageContainer, Stack, Grid, Section } from '@/components/layout';
 import { ErrorState } from '@/components/feedback/ErrorState';
+import { EmptyState } from '@/components/feedback/EmptyState';
 import { ConfirmationDialog } from '@/components/feedback/ConfirmationDialog';
 import { SubscriptionCard } from '@/components/features/organizations/SubscriptionCard';
 import { SubscriptionCardSkeleton } from '@/components/features/organizations/SubscriptionCardSkeleton';
@@ -568,9 +569,12 @@ export const OrganizationManagePage: React.FC = () =>
                           ))}
                         </Grid>
                       ) : (
-                        <p className="text-sm text-muted-foreground text-center py-8">
-                          {t('invitations.noPendingInvitations')}
-                        </p>
+                        <EmptyState
+                          icon={Mail}
+                          title={t('invitations.noPendingInvitations')}
+                          description={t('invitations.sendFirstInvitation')}
+                          size="sm"
+                        />
                       )}
                     </CardContent>
                   </Card>

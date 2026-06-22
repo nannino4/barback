@@ -51,7 +51,12 @@ export class PaymentController
     ): Promise<OutPaymentMethodDto> 
     {
         this.logger.debug(`Adding payment method for user: ${user.id}`, 'PaymentController#addPaymentMethod', requestId);
-        const paymentMethod = await this.paymentService.addPaymentMethod(user.id, addPaymentMethodDto.paymentMethodId, requestId);
+        const paymentMethod = await this.paymentService.addPaymentMethod(
+            user.id,
+            addPaymentMethodDto.paymentMethodId,
+            addPaymentMethodDto.setAsDefault === true,
+            requestId,
+        );
         return plainToInstance(OutPaymentMethodDto, paymentMethod, { excludeExtraneousValues: true });
     }
 

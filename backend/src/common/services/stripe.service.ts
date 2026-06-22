@@ -256,6 +256,38 @@ export class StripeService
         }
     }
 
+    async retrieveSubscriptionWithPaymentMethod(subscriptionId: string, requestId?: string): Promise<Stripe.Subscription>
+    {
+        this.logger.debug(
+            `Retrieving subscription with payment method: ${subscriptionId}`,
+            'StripeService#retrieveSubscriptionWithPaymentMethod',
+            requestId,
+        );
+
+        try
+        {
+            const subscription = await this.stripe.subscriptions.retrieve(subscriptionId, {
+                expand: ['default_payment_method'],
+            });
+            this.logger.debug(
+                `Subscription with payment method retrieved: ${subscriptionId}`,
+                'StripeService#retrieveSubscriptionWithPaymentMethod',
+                requestId,
+            );
+            return subscription;
+        }
+        catch (error)
+        {
+            this.logger.error(
+                `Failed to retrieve subscription with payment method: ${subscriptionId}`,
+                error instanceof Error ? error.stack : undefined,
+                'StripeService#retrieveSubscriptionWithPaymentMethod',
+                requestId,
+            );
+            this.handleStripeError(error, 'subscription payment method retrieval', requestId);
+        }
+    }
+
     async retrieveSetupIntent(setupIntentId: string, requestId?: string): Promise<Stripe.SetupIntent>
     {
         this.logger.debug(`Retrieving setup intent: ${setupIntentId}`, 'StripeService#retrieveSetupIntent', requestId);
@@ -502,6 +534,58 @@ export class StripeService
         {
             this.logger.error(`Failed to retrieve default payment method for customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#getDefaultPaymentMethodId', requestId);
             this.handleStripeError(error, 'default payment method retrieval', requestId);
+        }
+    }
+
+    async getSubscriptionPaymentMethod(subscriptionId: string, requestId?: string): Promise<Stripe.PaymentMethod | null>
+    {
+        this.logger.debug(`Retrieving payment method for subscription: ${subscriptionId}`, 'StripeService#getSubscriptionPaymentMethod', requestId);
+
+        const subscription = await this.retrieveSubscriptionWithPaymentMethod(subscriptionId, requestId);
+        const subscriptionPaymentMethod = subscription.default_payment_method;
+
+        if (subscriptionPaymentMethod && typeof subscriptionPaymentMethod !== 'string')
+        {
+            return subscriptionPaymentMethod;
+        }
+
+        const subscriptionPaymentMethodId = this.getStripeId(subscriptionPaymentMethod);
+        if (subscriptionPaymentMethodId)
+        {
+            return await this.retrievePaymentMethod(subscriptionPaymentMethodId, requestId);
+        }
+
+        const customerId = this.getStripeId(subscription.customer);
+        if (!customerId)
+        {
+            return null;
+        }
+
+        const customerDefaultPaymentMethodId = await this.getDefaultPaymentMethodId(customerId, requestId);
+        return customerDefaultPaymentMethodId
+            ? await this.retrievePaymentMethod(customerDefaultPaymentMethodId, requestId)
+            : null;
+    }
+
+    async createResumeInvoicePreview(subscriptionId: string, requestId?: string): Promise<Stripe.Invoice>
+    {
+        this.logger.debug(`Creating resume invoice preview for subscription: ${subscriptionId}`, 'StripeService#createResumeInvoicePreview', requestId);
+
+        try
+        {
+            const invoice = await this.stripe.invoices.createPreview({
+                subscription: subscriptionId,
+                subscription_details: {
+                    resume_at: 'now',
+                },
+            });
+            this.logger.debug(`Resume invoice preview created for subscription: ${subscriptionId}`, 'StripeService#createResumeInvoicePreview', requestId);
+            return invoice;
+        }
+        catch (error)
+        {
+            this.logger.error(`Failed to create resume invoice preview for subscription: ${subscriptionId}`, error instanceof Error ? error.stack : undefined, 'StripeService#createResumeInvoicePreview', requestId);
+            this.handleStripeError(error, 'subscription resume invoice preview', requestId);
         }
     }
 

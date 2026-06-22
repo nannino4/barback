@@ -254,9 +254,10 @@ export class OrgController
         
         // Get the subscription by ID from org
         const subscription = await this.subscriptionService.findById(org.subscriptionId, requestId);
+        const responseObject = await this.subscriptionService.toResponseObject(subscription, requestId);
         
         this.logger.debug(`Returning subscription for organization: ${orgId}`, 'OrgController#getOrgSubscription', requestId);
-        return plainToInstance(OutSubscriptionDto, subscription.toObject(), { excludeExtraneousValues: true });
+        return plainToInstance(OutSubscriptionDto, responseObject, { excludeExtraneousValues: true });
     }
 
     @Put(':id')

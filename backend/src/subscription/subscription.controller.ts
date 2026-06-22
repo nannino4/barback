@@ -11,6 +11,7 @@ import { OutSubscriptionDto } from './dto/out.subscription.dto';
 import { OutSubscriptionSetupDto } from './dto/out.subscription-setup.dto';
 import { OutTrialActivationDto } from './dto/out.trial-activation.dto';
 import { OutStripeSubscriptionStatusDto } from './dto/out.stripe-subscription-status.dto';
+import { OutSubscriptionResumePreviewDto } from './dto/out.subscription-resume-preview.dto';
 import { BillingInterval as StripeBillingInterval } from '../common/services/stripe.service';
 import { ObjectIdValidationPipe } from '../pipes/object-id-validation.pipe';
 import { plainToInstance } from 'class-transformer';
@@ -137,10 +138,30 @@ export class SubscriptionController
             user.id,
             subscriptionId,
             addPaymentMethodDto.paymentMethodId,
+            addPaymentMethodDto.setAsDefault === true,
+            requestId,
+        );
+        const responseObject = await this.subscriptionService.toResponseObject(subscription, requestId);
+
+        return plainToInstance(OutSubscriptionDto, responseObject, { excludeExtraneousValues: true });
+    }
+
+    @UseGuards(JwtAuthGuard, EmailVerifiedGuard)
+    @Get(':id/resume-preview')
+    async getResumePreview(
+        @CurrentUser() user: User,
+        @Param('id', ObjectIdValidationPipe) subscriptionId: Types.ObjectId,
+        @RequestId() requestId?: string,
+    ): Promise<OutSubscriptionResumePreviewDto>
+    {
+        this.logger.debug(
+            `Getting resume preview for subscription ${subscriptionId} for user: ${user.id}`,
+            'SubscriptionController#getResumePreview',
             requestId,
         );
 
-        return plainToInstance(OutSubscriptionDto, subscription.toObject(), { excludeExtraneousValues: true });
+        const preview = await this.subscriptionService.getResumePreview(user.id, subscriptionId, requestId);
+        return plainToInstance(OutSubscriptionResumePreviewDto, preview, { excludeExtraneousValues: true });
     }
 
     @UseGuards(JwtAuthGuard, EmailVerifiedGuard)

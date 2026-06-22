@@ -15,6 +15,27 @@ import {
     SubscriptionSetupFailedException,
 } from './exceptions/subscription.exceptions';
 
+interface PaymentMethodSummary
+{
+    id: string;
+    type: string;
+    brand?: string;
+    last4?: string;
+    expMonth?: number;
+    expYear?: number;
+    isDefault: boolean;
+}
+
+export interface SubscriptionResumePreview
+{
+    amountDue: number;
+    currency: string;
+    recurringAmount: number;
+    recurringCurrency: string;
+    billingInterval: BillingInterval;
+    nextBillingDate: Date;
+}
+
 @Injectable()
 export class SubscriptionService 
 {
@@ -231,6 +252,7 @@ export class SubscriptionService
         userId: Types.ObjectId,
         subscriptionId: Types.ObjectId,
         paymentMethodId: string,
+        setAsDefault = false,
         requestId?: string,
     ): Promise<Subscription>
     {
@@ -252,7 +274,11 @@ export class SubscriptionService
         const stripeCustomerId = await this.ensureStripeCustomer(userId, requestId);
 
         await this.stripeService.attachPaymentMethod(paymentMethodId, stripeCustomerId, requestId);
-        await this.stripeService.setDefaultPaymentMethod(stripeCustomerId, paymentMethodId, requestId);
+        const defaultPaymentMethodId = await this.stripeService.getDefaultPaymentMethodId(stripeCustomerId, requestId);
+        if (setAsDefault || !defaultPaymentMethodId)
+        {
+            await this.stripeService.setDefaultPaymentMethod(stripeCustomerId, paymentMethodId, requestId);
+        }
         await this.stripeService.updateSubscriptionDefaultPaymentMethod(
             subscription.stripeSubscriptionId,
             paymentMethodId,
@@ -271,6 +297,90 @@ export class SubscriptionService
             requestId,
         );
         return await this.updateFromStripeSubscription(updatedStripeSubscription, requestId);
+    }
+
+    async getResumePreview(
+        userId: Types.ObjectId,
+        subscriptionId: Types.ObjectId,
+        requestId?: string,
+    ): Promise<SubscriptionResumePreview>
+    {
+        this.logger.debug(
+            `Creating resume preview for subscription ${subscriptionId} for user: ${userId}`,
+            'SubscriptionService#getResumePreview',
+            requestId,
+        );
+
+        const subscription = await this.findById(subscriptionId, requestId);
+        if (subscription.userId.toString() !== userId.toString())
+        {
+            throw new InvalidSubscriptionOperationException(
+                'Subscription ownership mismatch',
+                'Subscription does not belong to the current user',
+            );
+        }
+
+        const invoice = subscription.status === SubscriptionStatus.PAUSED
+            ? await this.stripeService.createResumeInvoicePreview(subscription.stripeSubscriptionId, requestId)
+            : null;
+
+        return {
+            amountDue: invoice?.amount_due ?? 0,
+            currency: invoice?.currency ?? 'eur',
+            recurringAmount: subscription.amount ?? invoice?.amount_due ?? 0,
+            recurringCurrency: invoice?.currency ?? 'eur',
+            billingInterval: subscription.billingInterval,
+            nextBillingDate: subscription.nextBillingDate,
+        };
+    }
+
+    async toResponseObject(subscription: Subscription, requestId?: string): Promise<Record<string, unknown>>
+    {
+        const responseObject = subscription.toObject() as Record<string, unknown>;
+
+        try
+        {
+            const [paymentMethod, user] = await Promise.all([
+                this.stripeService.getSubscriptionPaymentMethod(subscription.stripeSubscriptionId, requestId),
+                this.userService.findById(subscription.userId, requestId),
+            ]);
+
+            if (!paymentMethod)
+            {
+                return responseObject;
+            }
+
+            const defaultPaymentMethodId = user.stripeCustomerId
+                ? await this.stripeService.getDefaultPaymentMethodId(user.stripeCustomerId, requestId)
+                : null;
+
+            responseObject.paymentMethod = this.toPaymentMethodSummary(paymentMethod, paymentMethod.id === defaultPaymentMethodId);
+        }
+        catch (error)
+        {
+            // Payment-method decoration is best-effort; subscription details should
+            // still be returned if Stripe is temporarily unavailable.
+            this.logger.warn(
+                `Failed to decorate subscription ${subscription.id} with payment method details`,
+                'SubscriptionService#toResponseObject',
+                requestId,
+            );
+        }
+
+        return responseObject;
+    }
+
+    private toPaymentMethodSummary(paymentMethod: Stripe.PaymentMethod, isDefault: boolean): PaymentMethodSummary
+    {
+        return {
+            id: paymentMethod.id,
+            type: paymentMethod.type,
+            brand: paymentMethod.card?.brand,
+            last4: paymentMethod.card?.last4,
+            expMonth: paymentMethod.card?.exp_month,
+            expYear: paymentMethod.card?.exp_year,
+            isDefault,
+        };
     }
 
     /**

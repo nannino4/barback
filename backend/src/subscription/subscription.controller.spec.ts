@@ -97,6 +97,9 @@ describe('SubscriptionController - Integration Tests', () =>
             updateSubscriptionDefaultPaymentMethod: jest.fn(),
             resumeSubscription: jest.fn(),
             retrieveSubscription: jest.fn(),
+            getDefaultPaymentMethodId: jest.fn(),
+            getSubscriptionPaymentMethod: jest.fn(),
+            createResumeInvoicePreview: jest.fn(),
         } as any;
 
         mockEmailService = {
@@ -517,6 +520,38 @@ describe('SubscriptionController - Integration Tests', () =>
 
             // Assert
             expect(mockStripeService.resumeSubscription).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('/subscriptions/:id/resume-preview (GET)', () =>
+    {
+        it('returns the amount due and recurring period for a paused subscription', async () =>
+        {
+            // Arrange
+            const stripeSubscriptionId = 'sub_paused_preview';
+            const subscription = await subscriptionService.createFromStripeSubscription(
+                createMockStripeSubscription(stripeSubscriptionId, 'paused', { interval: 'year', amount: 1000 }) as Stripe.Subscription,
+                testUserId,
+            );
+            mockStripeService.createResumeInvoicePreview.mockResolvedValue({
+                amount_due: 1000,
+                currency: 'eur',
+            } as Stripe.Invoice);
+
+            // Act
+            const response = await request(app.getHttpServer())
+                .get(`/api/subscriptions/${subscription._id}/resume-preview`)
+                .expect(200);
+
+            // Assert
+            expect(response.body).toMatchObject({
+                amountDue: 1000,
+                currency: 'eur',
+                recurringAmount: 1000,
+                recurringCurrency: 'eur',
+                billingInterval: 'YEARLY',
+            });
+            expect(mockStripeService.createResumeInvoicePreview).toHaveBeenCalledWith(stripeSubscriptionId, undefined);
         });
     });
 });

@@ -49,7 +49,12 @@ export class PaymentService
         return { clientSecret: setupIntent.client_secret };
     }
 
-    async addPaymentMethod(userId: Types.ObjectId, paymentMethodId: string, requestId?: string): Promise<Stripe.PaymentMethod & { isDefault: boolean }>
+    async addPaymentMethod(
+        userId: Types.ObjectId,
+        paymentMethodId: string,
+        setAsDefault = false,
+        requestId?: string,
+    ): Promise<Stripe.PaymentMethod & { isDefault: boolean }>
     {
         this.logger.debug(`Adding payment method for user: ${userId}`, 'PaymentService#addPaymentMethod', requestId);
         
@@ -73,14 +78,15 @@ export class PaymentService
         const paymentMethod = await this.stripeService.attachPaymentMethod(paymentMethodId, stripeCustomerId, requestId);
         const defaultPaymentMethodId = await this.stripeService.getDefaultPaymentMethodId(stripeCustomerId, requestId);
 
-        if (!defaultPaymentMethodId)
+        const shouldSetDefault = setAsDefault || !defaultPaymentMethodId;
+        if (shouldSetDefault)
         {
             await this.stripeService.setDefaultPaymentMethod(stripeCustomerId, paymentMethodId, requestId);
         }
 
         this.logger.debug(`Payment method added successfully for user: ${userId}`, 'PaymentService#addPaymentMethod', requestId);
         return Object.assign(paymentMethod, {
-            isDefault: !defaultPaymentMethodId || paymentMethod.id === defaultPaymentMethodId,
+            isDefault: shouldSetDefault || paymentMethod.id === defaultPaymentMethodId,
         });
     }
 

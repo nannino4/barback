@@ -26,9 +26,9 @@ Run these from inside `backend/` or `frontend/` respectively.
 
 ### backend
 
-- `npm run start:db` — start MongoDB + replica-set init via docker-compose
-  (**required before running the app or tests**; Mongoose transactions need the
-  replica set).
+- `npm run start:db` — optional local MongoDB + replica-set init via
+  docker-compose. The normal dev setup uses Atlas via `.env.dev`, so do not run
+  this unless you intentionally switch `MONGODB_URI` to the local replica set.
 - `npm run start:dev` — watch-mode dev server (sets `NODE_ENV=dev`, port 3000).
 - `npm run test` — Jest unit/integration suite (`--runInBand`; tests use
   `mongodb-memory-server`, no external DB needed).

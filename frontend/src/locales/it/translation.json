@@ -1129,9 +1129,16 @@
             "addPayment": "Aggiungi metodo di pagamento"
         },
         "addPayment": {
-            "title": "Aggiungi metodo di pagamento",
-            "description": "Aggiungi una carta per mantenere l'accesso al termine della prova gratuita.",
+            "title": "Gestisci metodo di pagamento",
+            "description": "Scegli il metodo di pagamento per questo abbonamento o aggiungi una nuova carta.",
             "submit": "Salva metodo di pagamento",
+            "manage": "Gestisci metodo di pagamento",
+            "current": "Attuale per questo locale",
+            "useForSubscription": "Usa per questo abbonamento",
+            "chooseExisting": "Scegli un metodo esistente",
+            "dueNow": "Da pagare ora",
+            "recurring": "Addebito ricorrente",
+            "previewUnavailable": "Impossibile visualizzare l'anteprima dell'addebito di riattivazione in questo momento.",
             "errors": {
                 "unexpected": "Qualcosa è andato storto. Riprova.",
                 "setupFailed": "Impossibile avviare la configurazione del pagamento. Riprova."

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PaymentMethodResponseSchema } from '@/types/payment';
 
 // ============================================================================
 // Zod Schemas - Single Source of Truth
@@ -36,6 +37,7 @@ export const SubscriptionResponseSchema = z.object({
   billingInterval: BillingIntervalSchema,
   nextBillingDate: z.string().datetime(),
   amount: z.number(),
+  paymentMethod: PaymentMethodResponseSchema.optional(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });
@@ -81,6 +83,15 @@ export const StripeSubscriptionStatusResponseSchema = z.object({
   status: SubscriptionStatusSchema,
 });
 
+export const SubscriptionResumePreviewResponseSchema = z.object({
+  amountDue: z.number(),
+  currency: z.string(),
+  recurringAmount: z.number(),
+  recurringCurrency: z.string(),
+  billingInterval: BillingIntervalSchema,
+  nextBillingDate: z.string().datetime(),
+});
+
 /**
  * Subscription status only schema - for non-owner members viewing subscription status
  * GET /api/orgs/:orgId/subscription/status
@@ -101,4 +112,5 @@ export type CreateSubscriptionRequest = z.infer<typeof CreateSubscriptionRequest
 export type SubscriptionSetupResponse = z.infer<typeof SubscriptionSetupResponseSchema>;
 export type TrialActivationResponse = z.infer<typeof TrialActivationResponseSchema>;
 export type StripeSubscriptionStatusResponse = z.infer<typeof StripeSubscriptionStatusResponseSchema>;
+export type SubscriptionResumePreviewResponse = z.infer<typeof SubscriptionResumePreviewResponseSchema>;
 export type SubscriptionStatusOnlyResponse = z.infer<typeof SubscriptionStatusOnlyResponseSchema>;

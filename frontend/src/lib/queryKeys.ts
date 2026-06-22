@@ -68,6 +68,9 @@ export const queryKeys = {
     
     /** Trial eligibility check */
     trialEligibility: ['trial-eligibility'] as const,
+
+    /** Resume preview for a paused subscription */
+    resumePreview: (subscriptionId: string) => ['subscriptions', subscriptionId, 'resume-preview'] as const,
   },
 
   /**

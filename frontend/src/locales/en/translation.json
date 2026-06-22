@@ -1131,9 +1131,16 @@
             "addPayment": "Add payment method"
         },
         "addPayment": {
-            "title": "Add payment method",
-            "description": "Add a card to keep your access after the free trial ends.",
+            "title": "Manage payment method",
+            "description": "Choose the payment method for this subscription or add a new card.",
             "submit": "Save payment method",
+            "manage": "Manage payment method",
+            "current": "Current for this venue",
+            "useForSubscription": "Use for this subscription",
+            "chooseExisting": "Choose an existing method",
+            "dueNow": "Due now",
+            "recurring": "Recurring charge",
+            "previewUnavailable": "Unable to preview the resume charge right now.",
             "errors": {
                 "unexpected": "Something went wrong. Please try again.",
                 "setupFailed": "Couldn't start the payment setup. Please try again."

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,8 +6,6 @@ import { Stack } from '@/components/layout';
 import { useI18n } from '@/hooks/useI18n';
 import { formatDate, daysUntil } from '@/lib/date';
 import { useAuthStore } from '@/stores/authStore';
-import { paymentApi } from '@/api/payment-api';
-import { queryKeys } from '@/lib/queryKeys';
 import { SubscriptionStatusBadge } from './SubscriptionStatusBadge';
 import { AddPaymentMethodDialog } from './AddPaymentMethodDialog';
 import type { PaymentMethodResponse } from '@/types/payment';
@@ -100,25 +97,11 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
 
   const isTrialing = subscriptionData.status === 'TRIALING';
   const isPaused = subscriptionData.status === 'PAUSED';
-  const shouldLoadPaymentMethods = isOwner && hasFullData;
-  const {
-    data: paymentMethods,
-    isLoading: isLoadingPaymentMethods,
-  } = useQuery({
-    queryKey: queryKeys.paymentMethods.all,
-    queryFn: paymentApi.getPaymentMethods,
-    enabled: shouldLoadPaymentMethods,
-  });
-  const defaultPaymentMethod = paymentMethods?.find((method) => method.isDefault)
-    ?? paymentMethods?.[0]
-    ?? null;
-  const hasPaymentMethod = !!defaultPaymentMethod;
+  const currentPaymentMethod = hasFullData ? subscriptionData.paymentMethod ?? null : null;
   const trialDaysRemaining = hasFullData && isTrialing
     ? daysUntil(subscriptionData.nextBillingDate)
     : null;
-  // Owners can add a payment method while trialing only if no method is on file.
-  // Paused subscriptions can always show the CTA because it also resumes billing.
-  const canAddPayment = isOwner && hasFullData && (isPaused || (isTrialing && !isLoadingPaymentMethods && !hasPaymentMethod));
+  const canManagePayment = isOwner && hasFullData;
 
   return (
     <Card>
@@ -176,17 +159,15 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                 </div>
               )}
 
-              {shouldLoadPaymentMethods && (
+              {canManagePayment && (
                 <div>
                   <span className="text-muted-foreground">
                     {t('orgManagement.subscription.paymentMethod')}:
                   </span>
                   <span className="ml-2 font-medium">
-                    {isLoadingPaymentMethods
-                      ? t('common.loading')
-                      : defaultPaymentMethod
-                        ? formatPaymentMethod(defaultPaymentMethod, t)
-                        : t('orgManagement.subscription.noPaymentMethod')}
+                    {currentPaymentMethod
+                      ? formatPaymentMethod(currentPaymentMethod, t)
+                      : t('orgManagement.subscription.noPaymentMethod')}
                   </span>
                 </div>
               )}
@@ -194,7 +175,7 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
           )}
 
           {/* Action buttons for owner */}
-          {canAddPayment && hasFullData && (
+          {canManagePayment && hasFullData && (
             <Stack direction="horizontal" space="sm" className="pt-2 flex-wrap">
               <Button
                 variant={isPaused ? 'default' : 'outline'}
@@ -204,18 +185,22 @@ export const SubscriptionCard: React.FC<SubscriptionCardProps> = ({
                 <CreditCard className="w-4 h-4 mr-2" />
                 {isPaused
                   ? t('subscription.trialBanner.reactivate')
-                  : t('subscription.trialBanner.addPayment')}
+                  : currentPaymentMethod
+                    ? t('subscription.addPayment.manage')
+                    : t('subscription.trialBanner.addPayment')}
               </Button>
             </Stack>
           )}
         </Stack>
       </CardContent>
 
-      {canAddPayment && hasFullData && (
+      {canManagePayment && hasFullData && (
         <AddPaymentMethodDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           subscriptionId={subscriptionData.id}
+          currentPaymentMethodId={subscriptionData.paymentMethod?.id}
+          subscriptionStatus={subscriptionData.status}
         />
       )}
     </Card>

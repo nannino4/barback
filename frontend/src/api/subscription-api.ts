@@ -6,12 +6,14 @@ import {
   SubscriptionSetupResponseSchema,
   TrialActivationResponseSchema,
   StripeSubscriptionStatusResponseSchema,
+  SubscriptionResumePreviewResponseSchema,
   type SubscriptionResponse,
   type TrialEligibilityResponse,
   type CreateSubscriptionRequest,
   type SubscriptionSetupResponse,
   type TrialActivationResponse,
   type StripeSubscriptionStatusResponse,
+  type SubscriptionResumePreviewResponse,
 } from '@/types/subscription';
 
 // ============================================================================
@@ -80,15 +82,33 @@ export const subscriptionApi = {
    * @param paymentMethodId Stripe payment method id (from a confirmed SetupIntent)
    * @returns The updated subscription
    */
-  attachPaymentMethod: (subscriptionId: string, paymentMethodId: string): Promise<SubscriptionResponse> =>
+  attachPaymentMethod: (
+    subscriptionId: string,
+    paymentMethodId: string,
+    setAsDefault = false,
+  ): Promise<SubscriptionResponse> =>
   {
     return apiClient.request<SubscriptionResponse>(
       `/subscriptions/${subscriptionId}/payment-method`,
       {
         method: 'POST',
-        body: JSON.stringify({ paymentMethodId }),
+        body: JSON.stringify({ paymentMethodId, setAsDefault }),
       },
       SubscriptionResponseSchema,
+    );
+  },
+
+  /**
+   * Preview what will be charged when resuming a paused subscription.
+   */
+  getResumePreview: (subscriptionId: string): Promise<SubscriptionResumePreviewResponse> =>
+  {
+    return apiClient.request<SubscriptionResumePreviewResponse>(
+      `/subscriptions/${subscriptionId}/resume-preview`,
+      {
+        method: 'GET',
+      },
+      SubscriptionResumePreviewResponseSchema,
     );
   },
 

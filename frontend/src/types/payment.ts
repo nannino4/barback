@@ -29,6 +29,7 @@ export const PaymentMethodResponseSchema = z.object({
  */
 export const AddPaymentMethodRequestSchema = z.object({
   paymentMethodId: z.string(), // From Stripe.js
+  setAsDefault: z.boolean().optional(),
 });
 
 /**

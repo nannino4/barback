@@ -1,120 +1,119 @@
-# Barback Frontend - CI/CD Guide
+# Barback Frontend - Local CI/CD Guide
 
-This document describes the CI/CD pipeline for the frontend repository.
+This repository uses **local CI/CD only**. GitHub Actions has been removed on
+purpose: validation, Docker image publishing, and deployment are run from the
+local development/agent environment.
 
 ## Goals
 
-- Run tests and build validation automatically
-- Build and publish Docker images to Docker Hub
-- Keep deployment execution manual from EC2 when desired
+- Keep CI behavior simple and inspectable for a solo/AI-agent workflow.
+- Validate frontend changes locally before publishing images.
+- Build and push frontend Docker images from the local machine.
+- Keep deployment execution manual from the EC2 host.
 
-## Environments Naming
+## Environments
 
-- `local`: developer machine
-- `dev`: shared non-production EC2 environment
-- `prod`: future
+- `local`: developer/agent machine.
+- `dev`: shared non-production EC2 environment.
+- `prod`: future production environment.
 
-## Workflows
+## Local validation
 
-### CI workflow
-File: [frontend/.github/workflows/ci.yml](../.github/workflows/ci.yml)
+From `frontend/`:
 
-Trigger:
-- Pull requests
-- Pushes to `main`, `develop`, `feature/**`, `hotfix/**`
+```bash
+npm run ci:local
+```
 
-Steps in order:
-1. **Checkout source** (`actions/checkout`)
-   - Downloads repository content into the runner workspace.
-2. **Set up Docker Buildx** (`docker/setup-buildx-action`)
-   - Enables advanced Docker builds and layer caching.
-3. **Build Docker `test` stage** (`docker/build-push-action`)
-   - Runs tests because `RUN npm test` is inside the `test` stage of `frontend/Dockerfile`.
-4. **Build Docker runtime stage (`nginx`)**
-   - Validates that the deployable image can be built successfully.
+This runs, in order:
 
-### Dev image publish workflow
-File: [frontend/.github/workflows/ci.yml](../.github/workflows/ci.yml)
+1. `npm ci` unless `SKIP_NPM_CI=true` is set.
+2. `npm run lint`.
+3. `npm run test`.
+4. `npm run build`.
+5. `docker build --target nginx -t barback-frontend:local .`
 
-Trigger:
-- Push to `develop`
-- Manual dispatch (`workflow_dispatch`) with optional `image_tag`
+Notes:
 
-Steps in order:
-1. Compute deploy tag (commit SHA by default)
-2. Run Docker `test` stage again as a deployment gate
-3. Login to Docker Hub
-4. Build and push runtime image tags:
-   - immutable tag: `<sha>`
-   - moving tag: `dev`
-5. Frontend environment variables are injected at image build time:
-   - CI passes Docker build arg `VITE_BUILD_MODE=dev`
-   - Vite build runs with `--mode dev`
-   - `.env.dev` is loaded during build and embedded into static assets
+- `npm run lint` currently runs ESLint with `--fix`, so it may modify files.
+  Check `git status` after running local CI.
+- Docker images are built with plain `docker build`, not Docker Buildx.
+- If publishing from a machine with a different CPU architecture than the EC2
+  host, make sure the resulting image architecture is compatible with the host.
 
-### Prod image publish workflow
-File: [frontend/.github/workflows/publish-prod.yml](../.github/workflows/publish-prod.yml)
+## Publish frontend image locally
 
-Trigger:
-- Push to `main`
-- Manual dispatch (`workflow_dispatch`) with optional `image_tag`
+From `frontend/`:
 
-Steps in order:
-1. Compute deploy tag (commit SHA by default)
-2. Login to Docker Hub
-3. Build and push runtime image tags:
-   - immutable tag: `<sha>`
-   - moving tag: `prod`
-4. Frontend environment variables are injected at image build time:
-   - CI passes Docker build arg `VITE_BUILD_MODE=prod`
-   - Vite build runs with `--mode prod`
-   - `.env.prod` is loaded during build and embedded into static assets
+```bash
+export DOCKER_HUB_USERNAME=<dockerhub-user>
+export DOCKER_HUB_TOKEN=<dockerhub-token> # optional if already logged in
+npm run publish:image -- dev
+```
 
-### Frontend environment files
+Optional explicit tag:
 
-- `.env.dev`: values used by dev image publish workflow (`--mode dev`)
-- `.env.prod`: values used by prod image publish workflow (`--mode prod`)
-- `.env.local`: local-only overrides for developers
-- `.env.example`: template reference
+```bash
+npm run publish:image -- dev my-tag
+```
 
-Important:
-- `VITE_*` variables are build-time values for static frontend assets.
-- Changing frontend env values requires rebuilding and republishing the frontend image.
-- Deployment via EC2 `docker compose` does not change already-built frontend `VITE_*` values.
+Defaults:
 
-### Manual deploy from EC2
+- Environment: `dev`.
+- Immutable tag: current commit SHA (`git rev-parse HEAD`).
+- Moving tag: selected environment (`dev` or `prod`).
+- `VITE_BUILD_MODE` is set from the selected environment for image builds.
 
-Deployment is intentionally manual.
+The script runs local validation first unless skipped:
 
-1. SSH into EC2
-2. Update infra repository if needed
-3. Set image tags (typically commit SHA from CI output, or `dev`)
-4. Run shared deploy script: [deploy/deploy-dev.sh](../../deploy/deploy-dev.sh)
+```bash
+SKIP_VALIDATE=true npm run publish:image -- dev
+```
 
-Example:
-- Copy [deploy/.env.deploy.dev.example](../../deploy/.env.deploy.dev.example) to `/opt/barback/deploy/.env.deploy.dev`
-- Set `FRONTEND_IMAGE_TAG` and `BACKEND_IMAGE_TAG`
-- Run `bash /opt/barback/deploy/deploy-dev.sh`
+Published tags:
 
-### Required Secrets Checklist
+```text
+<DOCKER_HUB_USERNAME>/barback-frontend:<tag>
+<DOCKER_HUB_USERNAME>/barback-frontend:<environment>
+```
 
-| Secret | Required | Purpose | Example |
-|---|---|---|---|
-| `DOCKERHUB_USERNAME` | Yes | Docker Hub namespace for image push | `mydockeruser` |
-| `DOCKERHUB_TOKEN` | Yes | Docker Hub token for CI push | `dckr_pat_xxx` |
+## Frontend environment files
 
-## Secrets used by manual deploy script on EC2
+Frontend environment variables are build-time values for static assets:
 
-These are **not** GitHub secrets in this model; they live on EC2 in `/opt/barback/deploy/.env.deploy.dev`:
+- `.env.dev` is loaded for `VITE_BUILD_MODE=dev`.
+- `.env.prod` is loaded for `VITE_BUILD_MODE=prod`.
+- `.env.local` is for local-only Vite development.
 
-- `DOCKER_HUB_USERNAME`
-- `DOCKER_HUB_TOKEN` (optional for private pull)
-- `FRONTEND_IMAGE_TAG`
-- `BACKEND_IMAGE_TAG`
-- `BACKEND_ENV_FILE`
-- `CERTBOT_DOMAIN`
-- `CERTBOT_WWW_DOMAIN`
-- `CERTBOT_EMAIL`
-- `LETSENCRYPT_LIVE_PATH`
-- `ROOT_DIR` (optional)
-- `COMPOSE_FILE` (optional)
+Changing `VITE_*` values requires rebuilding and republishing the frontend image.
+Deployment via EC2 `docker compose` does not change already-built frontend
+`VITE_*` values.
+
+## Manual deploy from EC2
+
+Deployment remains manual from the `deploy/` repository on EC2:
+
+1. Publish backend and frontend images locally.
+2. SSH into EC2.
+3. Update the deploy repository if needed.
+4. Set `BACKEND_IMAGE_TAG` and `FRONTEND_IMAGE_TAG` in `.env.deploy.dev`.
+5. Run `deploy-dev.sh`.
+
+See `deploy/README.md` for the full deploy flow.
+
+## Required local environment variables
+
+| Variable | Required | Purpose |
+|---|---:|---|
+| `DOCKER_HUB_USERNAME` | Yes | Docker Hub namespace for image push |
+| `DOCKER_HUB_TOKEN` | No | Docker Hub token; only needed if not already logged in |
+
+The script also accepts the old names `DOCKERHUB_USERNAME` and
+`DOCKERHUB_TOKEN` as fallbacks.
+
+## Why no remote CI?
+
+This is currently a solo project optimized for AI-agent-native development.
+Local scripts are the source of truth and should be run before publishing or
+merging. Remote CI can be reintroduced later if branch protection, external
+contributors, or stronger auditability become important.

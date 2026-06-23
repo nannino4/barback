@@ -73,9 +73,26 @@ docker compose --env-file .env.deploy.dev -f docker-compose.yml --profile init d
 
 ## 3) Common deploy steps (manual)
 
-Use this flow for regular deploys after CI has pushed images.
+Use this flow for regular deploys after local CI has published images from the
+backend and frontend repositories. Remote GitHub Actions CI is intentionally not
+used for this project at the moment.
 
-### Standard procedure
+### Publish images locally first
+
+From the source repositories on the development/agent machine:
+
+```bash
+cd backend
+DOCKER_HUB_USERNAME=<dockerhub-user> DOCKER_HUB_TOKEN=<token> npm run publish:image -- dev
+
+cd ../frontend
+DOCKER_HUB_USERNAME=<dockerhub-user> DOCKER_HUB_TOKEN=<token> npm run publish:image -- dev
+```
+
+Both publish scripts default the immutable tag to the current commit SHA and also
+push the moving `dev` tag. They use plain `docker build` (not Docker Buildx).
+
+### Standard deploy procedure
 
 1. SSH into EC2
 2. Go to repo root (example: `/opt/barback`)
@@ -100,8 +117,8 @@ bash deploy-dev.sh
 
 ## 4) Tag strategy
 
-Expected image publishing behavior from CI:
-- immutable tag: commit SHA
+Expected image publishing behavior from local publish scripts:
+- immutable tag: commit SHA by default, or an explicit tag argument
 - moving tag: `dev`
 
 Deploy can choose either:

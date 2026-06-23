@@ -22,10 +22,15 @@ This document outlines the product vision, target users, and feature roadmap for
 - Role-based access (Owner, Manager, Staff)
 
 #### Subscriptions
-- Each user can activate a subscription
-- For each active subscription a user can create an organization of which is owner
-- The first subscription for a user starts with a free trial
-- Subscriptions renew automatically
+- Each user can activate subscriptions backed by Stripe.
+- For each active or trialing subscription, a user can create one organization of which they are owner.
+- The first subscription for a user starts with a 90-day frictionless free trial, without requiring a payment method up front.
+- Users can add multiple payment methods to their account and choose which one is used for each organization subscription.
+- Users can set a customer-level default payment method for future billing and new subscriptions.
+- If a trial ends without a valid payment method, the subscription is paused and access is gated until the owner assigns a payment method and reactivates it.
+- Before reactivating a paused subscription, the app shows the amount due now and the recurring billing period.
+- Subscriptions renew automatically when a valid payment method is available.
+- Personal payment settings should allow users to manage saved payment methods without using Stripe Customer Portal.
 
 #### Organizations
 - Single inventory management per organization

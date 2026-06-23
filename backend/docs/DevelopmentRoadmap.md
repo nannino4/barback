@@ -108,32 +108,50 @@ Unified guard now restricts authenticated operations until email is verified. Ex
   - [X] Install Stripe SDK and implement webhook handling.
 - [X] **Core Subscription Models**:
   - [X] Implement CRUD operations for Subscription model.
-  - [X] Define Trial (3 months) and Basic plan configurations.
+  - [X] Define 90-day trial and yearly Basic plan configurations.
 - [X] **Subscription Lifecycle**:
   - [X] Create trial subscriptions for organization owners only (not automatic for all users).
-  - [X] Implement automatic Trial → Basic conversion at trial end.
-  - [X] Sync billing status with Stripe webhooks (active, past_due, canceled).
-  - [X] Implement subscription cancellation.
+  - [X] Implement frictionless trial activation without collecting a card up front.
+  - [X] Configure trial-end behavior to pause when no payment method is available.
+  - [X] Implement automatic Trial → Basic conversion at trial end when a payment method is assigned.
+  - [X] Sync billing status with Stripe webhooks (active, trialing, paused, past_due, canceled).
+  - [X] Implement subscription cancellation foundation.
+  - [X] Implement paused subscription reactivation by assigning a payment method.
+  - [X] Add resume invoice preview so the frontend can show due-now amount and recurring period before reactivation.
 - [X] **Payment Methods**:
-  - [X] Allow users to add/update/remove payment methods via Stripe.
-  - [X] Implement default payment method selection.
+  - [X] Allow users to add/list/remove payment methods via Stripe.
+  - [X] Implement customer-level default payment method selection.
+  - [X] Allow each organization subscription to use a specific payment method (`subscription.default_payment_method`).
+  - [X] Include current subscription payment method in owner subscription responses.
 - [X] **Access Control**:
-  - [X] Implement subscription-based access control (`ActiveSubscriptionGuard`).
-  - [X] Restrict organization creation to active subscribers.
+  - [X] Implement subscription-based access control (`OrgSubscriptionGuard`).
+  - [X] Restrict organization features to active/trialing subscriptions.
+  - [X] Block organization creation for clearly failed subscription states.
 - [X] **API Endpoints**:
-  - [X] `/subscription` - Get user's subscription.
-  - [X] `/subscription/start-trial` - Start trial for organization owners.
-  - [X] `/subscription/cancel` - Cancel subscription.
-  - [X] `/subscription/plans` - Get available plans.
-  - [X] `/subscription/trial-eligibility` - Check trial eligibility.
-  - [X] `/payment/methods` - Manage payment methods.
-  - [X] `/webhooks/stripe` - Handle Stripe events.
-- [ ] **Email Notifications** (Excluded per user request):
-  - [ ] Trial expiration warnings (7-day, 3-day, 1-day reminders).
+  - [X] `POST /api/subscriptions/trial` - Activate frictionless trial.
+  - [X] `POST /api/subscriptions` - Set up paid subscription payment.
+  - [X] `GET /api/subscriptions/trial-eligibility` - Check trial eligibility.
+  - [X] `GET /api/subscriptions/:id/resume-preview` - Preview due-now amount when resuming a paused subscription.
+  - [X] `POST /api/subscriptions/:id/payment-method` - Assign payment method to a subscription and resume if paused.
+  - [X] `GET /api/payment/methods` - List saved payment methods.
+  - [X] `POST /api/payment/setup-intent` - Create SetupIntent for adding a card.
+  - [X] `POST /api/payment/methods` - Register a new payment method.
+  - [X] `POST /api/payment/methods/default` - Set customer default payment method.
+  - [X] `DELETE /api/payment/methods/:paymentMethodId` - Remove a payment method.
+  - [X] `POST /api/webhooks/stripe` - Handle Stripe events.
+- [ ] **Planned: Personal Payment Settings Support**:
+  - [ ] Return which organization subscriptions use each payment method.
+  - [ ] When deleting a payment method, allow deletion after warning about affected subscriptions.
+  - [ ] Clear or update affected subscription default payment methods after deletion.
+  - [ ] Document behavior: renewals may fail, subscriptions may become `past_due`, or trial-end subscriptions may pause if no valid fallback/default method exists.
+- [ ] **Email Notifications**:
+  - [X] Trial ending reminder from Stripe `customer.subscription.trial_will_end` webhook.
+  - [ ] Additional trial expiration reminders (7-day, 1-day) if needed.
   - [ ] Automatic billing activation notification when trial ends.
   - [ ] Payment failure notifications.
-- [ ] handle failed payments and retries
-  - [ ] "need action" state (?)
+- [ ] Handle failed payments and retries
+  - [ ] Model "requires action" / SCA state where applicable.
+  - [ ] Add customer-facing recovery flow for failed renewals.
 
 **📋 Deployment Checklist:**
 - [ ] Set up actual Stripe account and get production API keys

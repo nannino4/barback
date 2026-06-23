@@ -14,19 +14,21 @@ Barback MVP Structure
 │   └── Password Reset
 ├── 🏢 Organization Setup
 │   ├── Organization Creation (Owner only)
-│   ├── Plan Selection (Free Trial/Paid)
-│   ├── Payment Processing
+│   ├── Frictionless Trial Start (no card for eligible first org)
+│   ├── Paid Yearly Checkout (Stripe Elements for non-trial path)
 │   ├── Team Invitations (Owner/Manager)
 │   └── Role Management
 └── 📱 Core App
     ├── 📦 Inventory (Operative: Product list + Stock adjustments)
     ├── 🚨 Alerts (Low stock, critical items)
     ├── ⚙️ Organization Settings
-    │   ├── Overview (name, timezone)
+    │   ├── Subscription and organization payment method
     │   ├── Members
     │   ├── Products (full CRUD, admin view)
     │   └── Categories (full CRUD, tree/list)
     └── 👤 User Profile
+        ├── Personal info
+        └── Personal payment methods
 ```
 
 ## User Roles & Key Behaviors
@@ -77,11 +79,14 @@ Total: 5-15 minutes per session
 3. **Login**: Persistent sessions with role-based routing
 4. **Password Reset**: Email-based recovery
 
-### Subscription Management Flow
-1. **Plan Selection**: Free trial vs paid options
-2. **Payment Processing**: Secure checkout
-3. **Subscription Activation**: Enables organization creation
-4. **Plan Management**: cancel options
+### Subscription and Payment Management Flow
+1. **Trial Eligibility**: First subscription starts a 90-day trial without collecting a payment method.
+2. **Paid Path**: Non-trial organization creation uses secure Stripe checkout for the yearly plan.
+3. **Subscription Activation**: Active/trialing subscription enables organization creation and access.
+4. **Organization Payment Method**: Owners can assign an existing saved payment method or add a new one for a specific organization subscription.
+5. **Paused Trial Reactivation**: If a trial pauses because no payment method exists, show the due-now amount and recurring billing period before the owner reactivates.
+6. **Personal Payment Settings**: Users can manage saved payment methods at account level, set a default, and remove methods after reviewing affected subscriptions.
+7. **Plan Management**: cancel options.
 
 ### Organization Setup Flow
 1. **Organization Creation**: Name, settings (Owner only)
@@ -183,7 +188,7 @@ Total: 5-15 minutes per session
 
 ### Organization Settings (Admin Workspace)
 - Single settings area for org-level tasks, role-gated:
-    - **Overview** (name, timezone)
+    - **Subscription** (status, renewal date, organization payment method)
     - **Members**
     - **Products** (full CRUD, admin list view)
     - **Categories** (full CRUD, tree/list view)
@@ -191,6 +196,14 @@ Total: 5-15 minutes per session
 - **Product deletion** only available from product detail view.
 - **Category management** includes product count (calculated client-side).
 - Rationale: org admin tasks are not personal account actions and should not live in the user menu.
+- Subscription payment method selection is organization-specific: the owner chooses which saved user payment method bills that venue.
+
+### Personal Payment Settings
+- Live under the user profile/account area, not organization settings.
+- Let the user add, list, remove, and set a default payment method for their Stripe customer.
+- Do not use Stripe Customer Portal; keep the experience native in Barback.
+- When removing a payment method used by one or more organization subscriptions, show the affected venues/subscriptions and warn that future renewals may fail, subscriptions may become past due, or trial-end subscriptions may pause if no valid replacement/default exists.
+- Allow the user to delete anyway after explicit confirmation.
 
 ### Product Creation
 - Available from both Inventory page and Organization Settings.

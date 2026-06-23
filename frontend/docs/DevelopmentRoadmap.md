@@ -26,11 +26,12 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
 - [X] Implement organization creation
   - [X] organization creation page
     - [X] first draft
-    - [X] creation wizard with different steps:
-      - [X] step 1: organization name
+    - [X] creation wizard with current onboarding model:
+      - [X] Step 1: organization name
         - [X] frontend should validate org name is valid with api from backend
-      - [X] step 2: plan selection
-      - [X] step 3: payment
+      - [X] Trial-eligible path: activate frictionless 90-day trial without collecting a card
+      - [X] Paid path: complete yearly-plan payment with Stripe Elements
+      - [X] Remove separate plan-selection step (yearly-only plan)
   - [X] integrate with stripe
     - **stripe docs**
       - subscription
@@ -57,6 +58,11 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
       - [X] organization created immediately after payment confirmation
       - [X] redirect to organization page showing subscription status
     - [X] consolidate plans/pricing
+    - [X] implement frictionless trial onboarding
+      - [X] start free trial without a payment method
+      - [X] show trial countdown banner while no method is assigned
+      - [X] collect/assign payment method later via SetupIntent
+      - [X] show paused-trial reactivation CTA with amount-due preview
 - [X] Implement Organizations Hub Page (`/orgs`)
   - [X] Refactor `OrganizationsPage` with sections layout
     - [X] **Pending Invitations Section** (top, requires attention)
@@ -90,7 +96,12 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
       - [X] Renewal text: "Subscription will renew/end on [date]"
       - [X] Next billing date
       - [X] Creation date
-    - [ ] Manage payment method (Sheet/Dialog with Stripe)
+    - [X] Manage organization subscription payment method
+      - [X] Show current subscription payment method
+      - [X] Choose an existing user payment method for the organization subscription
+      - [X] Add a new card through Stripe SetupIntent
+      - [X] Optionally set a card as customer default
+      - [X] Show due-now amount and recurring period before resuming paused subscriptions
     - [ ] Cancel subscription (confirmation dialog)
   - [X] **Non-owner members can:**
     - [X] Leave organization (with confirmation dialog)
@@ -142,6 +153,13 @@ Phased development roadmap following SPA → PWA progression. See `TechStackGuid
     - user full name (editable)
     - user email (not editable)
     - reset password button
+  - [ ] Personal payment settings section
+    - [ ] List all Stripe customer payment methods attached to the user
+    - [ ] Add a new payment method via SetupIntent
+    - [ ] Set customer-level default payment method
+    - [ ] Remove payment methods with confirmation
+    - [ ] When removing a method used by organization subscriptions, show affected organizations/subscriptions and warn that renewals may fail or subscriptions may become past due/paused if no replacement/default is available
+    - [ ] Reuse existing payment-method dialog/list components where possible
 - **fixes needed**
   - [X] Date formatting doesn't respect user's locale from i18n
   - [X] Timezone management foundation

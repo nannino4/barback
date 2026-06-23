@@ -258,6 +258,27 @@ Use spinners for indeterminate or small, focused waits.
 6. **Make errors persistent** - Display in UI so user can read and understand
 7. **Allow retrying** - Keep form state so user can fix and resubmit
 
+## Local UI Validation and Visual Feedback
+
+During AI-assisted development sessions, the frontend dev server should be
+running and the local app should be available at:
+
+- `https://barback.it:5173/`
+
+When changing or implementing UI features, use available browser/visual tools to
+inspect the running app, capture screenshots, and verify the actual rendered
+behavior. Do this in addition to build/test commands. In particular, visually
+check:
+
+- new or changed flows, dialogs, sheets, and forms;
+- loading, empty, error, and success states;
+- responsive/mobile layouts when relevant;
+- both light and dark themes for theme-sensitive UI;
+- localized strings when adding or changing user-facing text.
+
+If browser/visual tooling is unavailable in the current environment, note that in
+the final response and rely on code review plus build/test validation.
+
 ## Git Branching Strategy
 
 - `main`: stable branch, production-ready code only

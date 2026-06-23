@@ -68,6 +68,17 @@ export const queryKeys = {
     
     /** Trial eligibility check */
     trialEligibility: ['trial-eligibility'] as const,
+
+    /** Resume preview for a paused subscription */
+    resumePreview: (subscriptionId: string) => ['subscriptions', subscriptionId, 'resume-preview'] as const,
+  },
+
+  /**
+   * Payment method-related queries
+   */
+  paymentMethods: {
+    /** All payment methods for current user */
+    all: ['payment-methods'] as const,
   },
 
   /**

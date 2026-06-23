@@ -102,14 +102,14 @@
             "title": "Reimposta la Tua Password",
             "newPassword": "Nuova Password",
             "newPasswordPlaceholder": "Inserisci la tua nuova password",
-            "confirmPassword": "Conferma Password", 
+            "confirmPassword": "Conferma Password",
             "confirmPasswordPlaceholder": "Conferma la tua nuova password",
             "hidePassword": "Nascondi password",
             "showPassword": "Mostra password",
             "requirements": "Requisiti Password:",
             "requirementLength": "Almeno 8 caratteri",
             "requirementUppercase": "Una lettera maiuscola",
-            "requirementLowercase": "Una lettera minuscola", 
+            "requirementLowercase": "Una lettera minuscola",
             "requirementNumber": "Un numero",
             "requirementSpecial": "Un carattere speciale",
             "updating": "Aggiornamento Password...",
@@ -685,7 +685,7 @@
                 "description": "Tieni traccia dei tuoi distillati, vini e mixer con precisione. Monitora i livelli di scorte e ricevi avvisi quando le forniture si esauriscono."
             },
             "mobile": {
-                "title": "Ottimizzato per Mobile", 
+                "title": "Ottimizzato per Mobile",
                 "description": "Progettato per interazioni touch e perfetto per l'uso in ambienti bar poco illuminati."
             },
             "team": {
@@ -763,40 +763,21 @@
                 "nameUnavailable": "Nome già in uso",
                 "validationRequired": "Nome richiesto",
                 "validationMinLength": "Il nome deve contenere almeno 2 caratteri",
-                "validationMaxLength": "Il nome non può superare i 100 caratteri"
+                "validationMaxLength": "Il nome non può superare i 100 caratteri",
+                "trialNote": "Inizia la tua prova gratuita di {{days}} giorni — nessuna carta di credito richiesta."
             },
             "planStep": {
-                "title": "Scegli il Tuo Piano",
-                "description": "Seleziona l'intervallo di fatturazione più adatto a te",
-                "monthly": "Mensile",
                 "yearly": "Annuale",
-                "interval": {
-                    "monthlyShort": "mese",
-                    "yearlyShort": "anno"
-                },
-                "monthlyPrice": "€29,99/mese",
-                "yearlyPrice": "€299/anno",
-                "yearlySavings": "Risparmia 17%",
-                "savings": "Risparmia {{percent}}%",
-                "bestDeal": "Miglior affare",
                 "card": {
-                    "monthlyPrice": "{{amount}} / mese",
-                    "yearlyPrice": "{{amount}} / mese, fatturato annualmente a {{yearlyAmount}}",
-                    "freeTrialLine": "GRATIS per {{days}} giorni",
-                    "thenLine": "Poi {{price}}",
-                    "youSave": "Risparmi {{percent}}%"
+                    "yearlyPriceShort": "{{yearlyAmount}} / anno"
                 },
                 "features": {
-                    "title": "Cosa ottieni",
+                    "inventoryTracking": "Tracciamento inventario in tempo reale",
                     "unlimitedProducts": "Prodotti illimitati",
                     "unlimitedMembers": "Membri del team illimitati",
-                    "inventoryTracking": "Tracciamento inventario in tempo reale",
                     "lowStockAlerts": "Avvisi scorte basse",
-                    "reports": "Analisi e report",
-                    "mobileApp": "Accesso app mobile",
                     "support": "Supporto via email"
-                },
-                "bestValue": "Miglior Offerta"
+                }
             },
             "paymentStep": {
                 "title": "Completa il Pagamento",
@@ -1023,11 +1004,12 @@
             "statusDescription": "Informazioni sull'abbonamento corrente",
             "statusMessages": {
                 "active": "Il tuo abbonamento è attivo. Hai accesso completo a tutte le funzionalità.",
-                "trialing": "Sei attualmente in prova gratuita. Il tuo metodo di pagamento verrà addebitato al termine della prova.",
+                "trialing": "Sei attualmente in prova gratuita. Aggiungi un metodo di pagamento prima della fine per continuare senza interruzioni.",
                 "incomplete": "La configurazione del tuo abbonamento è incompleta. Completa il pagamento per attivarlo.",
                 "pastDue": "Il tuo pagamento è scaduto. Aggiorna il tuo metodo di pagamento per evitare interruzioni del servizio.",
                 "canceled": "Il tuo abbonamento è stato cancellato. Potresti perdere l'accesso ad alcune funzionalità.",
-                "unpaid": "Il tuo abbonamento non è pagato. Aggiorna il tuo metodo di pagamento."
+                "unpaid": "Il tuo abbonamento non è pagato. Aggiorna il tuo metodo di pagamento.",
+                "paused": "La tua prova gratuita è terminata e l'abbonamento è in pausa. Aggiungi un metodo di pagamento per riprendere l'accesso."
             },
             "currentStatus": "Stato Corrente",
             "createdOn": "Abbonamento Iniziato",
@@ -1139,6 +1121,28 @@
             "notFound": "Abbonamento non trovato",
             "notActive": "L'abbonamento non è attivo",
             "createFailed": "Impossibile creare l'abbonamento"
+        },
+        "trialBanner": {
+            "daysLeft": "{{days}} giorni rimanenti nella tua prova gratuita",
+            "paused": "La tua prova gratuita è terminata. Aggiungi un metodo di pagamento per continuare.",
+            "reactivate": "Riattiva",
+            "addPayment": "Aggiungi metodo di pagamento"
+        },
+        "addPayment": {
+            "title": "Gestisci metodo di pagamento",
+            "description": "Scegli il metodo di pagamento per questo abbonamento o aggiungi una nuova carta.",
+            "submit": "Salva metodo di pagamento",
+            "manage": "Gestisci metodo di pagamento",
+            "current": "Attuale per questo locale",
+            "useForSubscription": "Usa per questo abbonamento",
+            "chooseExisting": "Scegli un metodo esistente",
+            "dueNow": "Da pagare ora",
+            "recurring": "Addebito ricorrente",
+            "previewUnavailable": "Impossibile visualizzare l'anteprima dell'addebito di riattivazione in questo momento.",
+            "errors": {
+                "unexpected": "Qualcosa è andato storto. Riprova.",
+                "setupFailed": "Impossibile avviare la configurazione del pagamento. Riprova."
+            }
         }
     },
     "account": {

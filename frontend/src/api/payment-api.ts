@@ -2,8 +2,10 @@ import { apiClient } from '@/api/api';
 import { z } from 'zod';
 import {
   PaymentMethodResponseSchema,
+  SetupIntentResponseSchema,
   type PaymentMethodResponse,
   type AddPaymentMethodRequest,
+  type SetupIntentResponse,
 } from '@/types/payment';
 
 // ============================================================================
@@ -11,6 +13,21 @@ import {
 // ============================================================================
 
 export const paymentApi = {
+  /**
+   * Create a SetupIntent to collect and save a payment method.
+   * @returns clientSecret to confirm with Stripe Elements
+   */
+  createSetupIntent: (): Promise<SetupIntentResponse> =>
+  {
+    return apiClient.request<SetupIntentResponse>(
+      '/payment/setup-intent',
+      {
+        method: 'POST',
+      },
+      SetupIntentResponseSchema,
+    );
+  },
+
   /**
    * Get user's payment methods
    * @returns List of payment methods

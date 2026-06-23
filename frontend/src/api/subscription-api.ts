@@ -4,12 +4,16 @@ import {
   SubscriptionResponseSchema,
   TrialEligibilityResponseSchema,
   SubscriptionSetupResponseSchema,
+  TrialActivationResponseSchema,
   StripeSubscriptionStatusResponseSchema,
+  SubscriptionResumePreviewResponseSchema,
   type SubscriptionResponse,
   type TrialEligibilityResponse,
   type CreateSubscriptionRequest,
   type SubscriptionSetupResponse,
+  type TrialActivationResponse,
   type StripeSubscriptionStatusResponse,
+  type SubscriptionResumePreviewResponse,
 } from '@/types/subscription';
 
 // ============================================================================
@@ -51,6 +55,60 @@ export const subscriptionApi = {
         body: JSON.stringify(data),
       },
       SubscriptionSetupResponseSchema,
+    );
+  },
+
+  /**
+   * Activate a frictionless free trial (no payment method collected).
+   * Creates the Stripe trial subscription and the local record server-side, so the
+   * organization can be created immediately afterwards.
+   * @returns Stripe subscription ID and local status (TRIALING)
+   */
+  activateTrial: (): Promise<TrialActivationResponse> =>
+  {
+    return apiClient.request<TrialActivationResponse>(
+      '/subscriptions/trial',
+      {
+        method: 'POST',
+      },
+      TrialActivationResponseSchema,
+    );
+  },
+
+  /**
+   * Attach a payment method to a subscription and (re)activate billing.
+   * Used by the add-payment flow after a frictionless trial.
+   * @param subscriptionId Local subscription id
+   * @param paymentMethodId Stripe payment method id (from a confirmed SetupIntent)
+   * @returns The updated subscription
+   */
+  attachPaymentMethod: (
+    subscriptionId: string,
+    paymentMethodId: string,
+    setAsDefault = false,
+  ): Promise<SubscriptionResponse> =>
+  {
+    return apiClient.request<SubscriptionResponse>(
+      `/subscriptions/${subscriptionId}/payment-method`,
+      {
+        method: 'POST',
+        body: JSON.stringify({ paymentMethodId, setAsDefault }),
+      },
+      SubscriptionResponseSchema,
+    );
+  },
+
+  /**
+   * Preview what will be charged when resuming a paused subscription.
+   */
+  getResumePreview: (subscriptionId: string): Promise<SubscriptionResumePreviewResponse> =>
+  {
+    return apiClient.request<SubscriptionResumePreviewResponse>(
+      `/subscriptions/${subscriptionId}/resume-preview`,
+      {
+        method: 'GET',
+      },
+      SubscriptionResumePreviewResponseSchema,
     );
   },
 

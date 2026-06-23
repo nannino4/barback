@@ -15,6 +15,20 @@ export const getBrowserTimeZone = (): string | null =>
   }
 };
 
+/**
+ * Whole days remaining until the given date, never negative. Used for trial
+ * countdowns (e.g. "12 days left"). A date in the past returns 0.
+ */
+export const daysUntil = (dateInput: string | number | Date, now: number = Date.now()): number =>
+{
+  const target = dateInput instanceof Date ? dateInput.getTime() : new Date(dateInput).getTime();
+  if (Number.isNaN(target))
+  {
+    return 0;
+  }
+  return Math.max(0, Math.ceil((target - now) / (24 * 60 * 60 * 1000)));
+};
+
 export const resolveTimeZone = (timeZonePreference?: TimeZonePreference): string | undefined =>
 {
   if (!timeZonePreference || timeZonePreference === 'auto')

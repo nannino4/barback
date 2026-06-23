@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useStripe, useElements, ExpressCheckoutElement, PaymentElement } from '@stripe/react-stripe-js';
 import type { StripeError, StripeExpressCheckoutElementConfirmEvent } from '@stripe/stripe-js';
-import { ArrowLeft, AlertCircle } from 'lucide-react';
+import { ArrowLeft, AlertCircle, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Stack } from '@/components/layout';
@@ -10,6 +10,8 @@ import { useI18n } from '@/hooks/useI18n';
 import { useCreateOrganizationWithRetry } from '@/hooks/useCreateOrganizationWithRetry';
 import { paymentElementOptions, expressCheckoutOptions } from '@/lib/stripe/config';
 import { getLocalizedErrorMessage, ApiError } from '@/lib/errors';
+import { formatCurrency } from '@/lib/formatters/formatCurrency';
+import { PLAN_FEATURE_KEYS, YEARLY_PLAN } from '@/constants/pricing';
 import { ROUTES } from '@/constants/routes';
 
 /**
@@ -58,7 +60,12 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
   onSuccess,
 }) =>
 {
-  const { t } = useI18n();
+  const { t, currentLanguage } = useI18n();
+  const planFeatures = useMemo(
+    () => PLAN_FEATURE_KEYS.map((key) => t(key as never) as string),
+    [t],
+  );
+  const yearlyPrice = formatCurrency(YEARLY_PLAN.price, currentLanguage, YEARLY_PLAN.currency);
   const stripe = useStripe();
   const elements = useElements();
   const { createOrganizationWithRetry, isCreating } = useCreateOrganizationWithRetry();
@@ -248,6 +255,28 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
       <CardContent>
         <form onSubmit={(e) => void handleStandardPayment(e)}>
           <Stack space="lg">
+            {/* Yearly plan summary */}
+            <div className="p-4 rounded-lg bg-muted/50 border border-border">
+              <Stack space="sm">
+                <div className="flex items-baseline justify-between">
+                  <span className="font-semibold">
+                    {t('organizations.create.planStep.yearly')}
+                  </span>
+                  <span className="text-sm">
+                    {t('organizations.create.planStep.card.yearlyPriceShort' as never, {
+                      yearlyAmount: yearlyPrice,
+                    }) as string}
+                  </span>
+                </div>
+                {planFeatures.map((feature) => (
+                  <div key={feature} className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span className="text-sm text-muted-foreground">{feature}</span>
+                  </div>
+                ))}
+              </Stack>
+            </div>
+
             {/* Trial/Subscription Note */}
             <div className="p-3 rounded-lg bg-muted/50 border border-border">
               <p className="text-sm text-muted-foreground">

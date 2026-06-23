@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PaymentMethodResponseSchema } from '@/types/payment';
 
 // ============================================================================
 // Zod Schemas - Single Source of Truth
@@ -36,6 +37,7 @@ export const SubscriptionResponseSchema = z.object({
   billingInterval: BillingIntervalSchema,
   nextBillingDate: z.string().datetime(),
   amount: z.number(),
+  paymentMethod: PaymentMethodResponseSchema.optional(),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
 });
@@ -51,8 +53,17 @@ export const TrialEligibilityResponseSchema = z.object({
  * Create subscription request schema - for POST /api/subscriptions
  */
 export const CreateSubscriptionRequestSchema = z.object({
-  billingInterval: BillingIntervalSchema.optional().default('MONTHLY'),
+  billingInterval: BillingIntervalSchema.optional().default('YEARLY'),
   isTrial: z.boolean().optional().default(false),
+});
+
+/**
+ * Trial activation response schema - for POST /api/subscriptions/trial
+ * Frictionless trial: no payment collected, local subscription created immediately.
+ */
+export const TrialActivationResponseSchema = z.object({
+  stripeSubscriptionId: z.string(),
+  status: SubscriptionStatusSchema,
 });
 
 /**
@@ -70,6 +81,15 @@ export const SubscriptionSetupResponseSchema = z.object({
 export const StripeSubscriptionStatusResponseSchema = z.object({
   stripeSubscriptionId: z.string(),
   status: SubscriptionStatusSchema,
+});
+
+export const SubscriptionResumePreviewResponseSchema = z.object({
+  amountDue: z.number(),
+  currency: z.string(),
+  recurringAmount: z.number(),
+  recurringCurrency: z.string(),
+  billingInterval: BillingIntervalSchema,
+  nextBillingDate: z.string().datetime(),
 });
 
 /**
@@ -90,5 +110,7 @@ export type SubscriptionResponse = z.infer<typeof SubscriptionResponseSchema>;
 export type TrialEligibilityResponse = z.infer<typeof TrialEligibilityResponseSchema>;
 export type CreateSubscriptionRequest = z.infer<typeof CreateSubscriptionRequestSchema>;
 export type SubscriptionSetupResponse = z.infer<typeof SubscriptionSetupResponseSchema>;
+export type TrialActivationResponse = z.infer<typeof TrialActivationResponseSchema>;
 export type StripeSubscriptionStatusResponse = z.infer<typeof StripeSubscriptionStatusResponseSchema>;
+export type SubscriptionResumePreviewResponse = z.infer<typeof SubscriptionResumePreviewResponseSchema>;
 export type SubscriptionStatusOnlyResponse = z.infer<typeof SubscriptionStatusOnlyResponseSchema>;

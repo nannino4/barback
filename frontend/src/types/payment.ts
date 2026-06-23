@@ -29,6 +29,14 @@ export const PaymentMethodResponseSchema = z.object({
  */
 export const AddPaymentMethodRequestSchema = z.object({
   paymentMethodId: z.string(), // From Stripe.js
+  setAsDefault: z.boolean().optional(),
+});
+
+/**
+ * Setup intent response schema - for POST /api/payment/setup-intent
+ */
+export const SetupIntentResponseSchema = z.object({
+  clientSecret: z.string(),
 });
 
 // ============================================================================
@@ -38,3 +46,4 @@ export const AddPaymentMethodRequestSchema = z.object({
 export type PaymentMethodCardResponse = z.infer<typeof PaymentMethodCardResponseSchema>;
 export type PaymentMethodResponse = z.infer<typeof PaymentMethodResponseSchema>;
 export type AddPaymentMethodRequest = z.infer<typeof AddPaymentMethodRequestSchema>;
+export type SetupIntentResponse = z.infer<typeof SetupIntentResponseSchema>;

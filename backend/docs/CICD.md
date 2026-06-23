@@ -22,7 +22,7 @@ local development/agent environment.
 From `backend/`:
 
 ```bash
-npm run ci:local
+bash scripts/ci-local.sh
 ```
 
 This runs, in order:
@@ -48,13 +48,13 @@ From `backend/`:
 ```bash
 export DOCKER_HUB_USERNAME=<dockerhub-user>
 export DOCKER_HUB_TOKEN=<dockerhub-token> # optional if already logged in
-npm run publish:image -- dev
+bash scripts/publish-image.sh dev
 ```
 
 Optional explicit tag:
 
 ```bash
-npm run publish:image -- dev my-tag
+bash scripts/publish-image.sh dev my-tag
 ```
 
 Defaults:
@@ -66,7 +66,7 @@ Defaults:
 The script runs local validation first unless skipped:
 
 ```bash
-SKIP_VALIDATE=true npm run publish:image -- dev
+SKIP_VALIDATE=true bash scripts/publish-image.sh dev
 ```
 
 Published tags:

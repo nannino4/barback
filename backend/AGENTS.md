@@ -147,8 +147,8 @@ Trunk-ish flow per repo: `main` (production) ← `develop` (integration → `dev
 env) ← `feature/<name>` / `hotfix/<name>`. This is currently a solo project, so
 remote CI/PR requirements are intentionally not enforced.
 
-CI/CD is **local-only**. Run `npm run ci:local` in `backend/` or `frontend/` for
-validation, and `npm run publish:image -- dev` to publish Docker Hub images from
+CI/CD is **local-only**. Run `bash scripts/ci-local.sh` in `backend/` or `frontend/` for
+validation, and `bash scripts/publish-image.sh dev` to publish Docker Hub images from
 the local development/agent machine. Docker images are built with plain
 `docker build`, not Docker Buildx. Deploys to EC2 are **manual**
 (`deploy/deploy-dev.sh`). See `backend/docs/CICD.md` and `frontend/docs/CICD.md`.

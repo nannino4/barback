@@ -1,88 +1,106 @@
-# Barback Backend - CI/CD Guide
+# Barback Backend - Local CI/CD Guide
 
-This document describes the CI/CD pipeline for the backend repository.
+This repository uses **local CI/CD only**. GitHub Actions has been removed on
+purpose: validation, Docker image publishing, and deployment are run from the
+local development/agent environment.
 
 ## Goals
 
-- Run backend tests automatically
-- Build and publish backend Docker image to Docker Hub
-- Keep deployment execution manual from EC2 when desired
+- Keep CI behavior simple and inspectable for a solo/AI-agent workflow.
+- Validate backend changes locally before publishing images.
+- Build and push backend Docker images from the local machine.
+- Keep deployment execution manual from the EC2 host.
 
-## Environments Naming
+## Environments
 
-- `local`: developer machine
-- `dev`: shared non-production EC2 environment
-- `prod`: future
+- `local`: developer/agent machine.
+- `dev`: shared non-production EC2 environment.
+- `prod`: future production environment.
 
-## Workflows
+## Local validation
 
-### CI workflow
-File: [backend/.github/workflows/ci.yml](../.github/workflows/ci.yml)
+From `backend/`:
 
-Trigger:
-- Pull requests
-- Pushes to `main`, `develop`, `feature/**`, `hotfix/**`
+```bash
+npm run ci:local
+```
 
-Steps in order:
-1. **Checkout source** (`actions/checkout`)
-2. **Set up Docker Buildx** (`docker/setup-buildx-action`)
-3. **Build Docker `test` stage**
-   - Runs backend test suite from Dockerfile test stage.
-4. **Build Docker runtime stage (`prod`)**
-   - Validates deployable backend image.
+This runs, in order:
 
-### Dev image publish workflow
-File: [backend/.github/workflows/ci.yml](../.github/workflows/ci.yml)
+1. `npm ci` unless `SKIP_NPM_CI=true` is set.
+2. `npm run lint`.
+3. `npm run test`.
+4. `npm run build`.
+5. `docker build --target prod -t barback-backend:local .`
 
-Trigger:
-- Push to `develop`
-- Manual dispatch with optional `image_tag`
+Notes:
 
-Steps in order:
-1. Compute deploy tag (commit SHA by default)
-2. Run backend Docker `test` stage
-3. Login to Docker Hub
-4. Build and push backend image tags (`<sha>` and `dev`)
+- `npm run lint` currently runs ESLint with `--fix`, so it may modify files.
+  Check `git status` after running local CI.
+- Docker images are built with plain `docker build`, not Docker Buildx.
+- If publishing from a machine with a different CPU architecture than the EC2
+  host, make sure the resulting image architecture is compatible with the host.
 
-### Manual deploy from EC2
+## Publish backend image locally
 
-Deployment is intentionally manual.
+From `backend/`:
 
-1. SSH into EC2
-2. Update infra repository if needed
-3. Set image tags (typically commit SHA from CI output, or `dev`)
-4. Run shared deploy script: [deploy/deploy-dev.sh](../../deploy/deploy-dev.sh)
+```bash
+export DOCKER_HUB_USERNAME=<dockerhub-user>
+export DOCKER_HUB_TOKEN=<dockerhub-token> # optional if already logged in
+npm run publish:image -- dev
+```
 
-Example:
-- Copy [deploy/.env.deploy.dev.example](../../deploy/.env.deploy.dev.example) to `/opt/barback/deploy/.env.deploy.dev`
-- Set `BACKEND_IMAGE_TAG` and `FRONTEND_IMAGE_TAG`
-- Run `bash /opt/barback/deploy/deploy-dev.sh`
+Optional explicit tag:
 
-### Required Secrets Checklist
+```bash
+npm run publish:image -- dev my-tag
+```
 
-| Secret | Required | Purpose | Example |
-|---|---|---|---|
-| `DOCKERHUB_USERNAME` | Yes | Docker Hub namespace for image push | `mydockeruser` |
-| `DOCKERHUB_TOKEN` | Yes | Docker Hub token for CI push | `dckr_pat_xxx` |
+Defaults:
 
-## Secrets used by manual deploy script on EC2
+- Environment: `dev`.
+- Immutable tag: current commit SHA (`git rev-parse HEAD`).
+- Moving tag: selected environment (`dev` or `prod`).
 
-These are **not** GitHub secrets in this model; they live on EC2 in `/opt/barback/deploy/.env.deploy.dev`:
+The script runs local validation first unless skipped:
 
-- `DOCKER_HUB_USERNAME`
-- `DOCKER_HUB_TOKEN` (optional for private pull)
-- `BACKEND_IMAGE_TAG`
-- `FRONTEND_IMAGE_TAG`
-- `BACKEND_ENV_FILE`
-- `SMTP_HOST` (e.g. `email-smtp.eu-west-1.amazonaws.com` for AWS SES)
-- `SMTP_PORT`
-- `SMTP_USER` (SMTP username)
-- `SMTP_PASS` (SMTP password)
-- `EMAIL_FROM`
-- `EMAIL_APP_NAME` (optional branding, default `Barback`)
-- `CERTBOT_DOMAIN`
-- `CERTBOT_WWW_DOMAIN`
-- `CERTBOT_EMAIL`
-- `LETSENCRYPT_LIVE_PATH`
-- `ROOT_DIR` (optional)
-- `COMPOSE_FILE` (optional)
+```bash
+SKIP_VALIDATE=true npm run publish:image -- dev
+```
+
+Published tags:
+
+```text
+<DOCKER_HUB_USERNAME>/barback-backend:<tag>
+<DOCKER_HUB_USERNAME>/barback-backend:<environment>
+```
+
+## Manual deploy from EC2
+
+Deployment remains manual from the `deploy/` repository on EC2:
+
+1. Publish backend and frontend images locally.
+2. SSH into EC2.
+3. Update the deploy repository if needed.
+4. Set `BACKEND_IMAGE_TAG` and `FRONTEND_IMAGE_TAG` in `.env.deploy.dev`.
+5. Run `deploy-dev.sh`.
+
+See `deploy/README.md` for the full deploy flow.
+
+## Required local environment variables
+
+| Variable | Required | Purpose |
+|---|---:|---|
+| `DOCKER_HUB_USERNAME` | Yes | Docker Hub namespace for image push |
+| `DOCKER_HUB_TOKEN` | No | Docker Hub token; only needed if not already logged in |
+
+The script also accepts the old names `DOCKERHUB_USERNAME` and
+`DOCKERHUB_TOKEN` as fallbacks.
+
+## Why no remote CI?
+
+This is currently a solo project optimized for AI-agent-native development.
+Local scripts are the source of truth and should be run before publishing or
+merging. Remote CI can be reintroduced later if branch protection, external
+contributors, or stronger auditability become important.

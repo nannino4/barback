@@ -144,10 +144,11 @@ controller/integration tests are `*.controller.spec.ts` / `test/*.e2e-spec.ts`.
 ## Git workflow
 
 Trunk-ish flow per repo: `main` (production) ← `develop` (integration → `dev`
-env) ← `feature/<name>` / `hotfix/<name>`. No direct pushes to `main`/`develop`;
-PRs require passing CI + one review; prefer squash/rebase merges.
+env) ← `feature/<name>` / `hotfix/<name>`. This is currently a solo project, so
+remote CI/PR requirements are intentionally not enforced.
 
-CI (`backend/.github/workflows/ci.yml`) builds the Dockerfile `test` and `prod`
-stages on PRs; pushes to `develop` publish images to Docker Hub tagged with the
-commit SHA and `dev`. Deploys to EC2 are **manual** (`deploy/deploy-dev.sh`). See
-`backend/docs/CICD.md`.
+CI/CD is **local-only**. Run `npm run ci:local` in `backend/` or `frontend/` for
+validation, and `npm run publish:image -- dev` to publish Docker Hub images from
+the local development/agent machine. Docker images are built with plain
+`docker build`, not Docker Buildx. Deploys to EC2 are **manual**
+(`deploy/deploy-dev.sh`). See `backend/docs/CICD.md` and `frontend/docs/CICD.md`.

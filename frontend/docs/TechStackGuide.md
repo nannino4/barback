@@ -152,10 +152,10 @@ Create or update the following records:
 - **CloudFront** (assets) requires ACM certificates in **us-east-1**
 
 ### CI/CD (Dev Environment)
-- **Runner**: GitHub Actions
+- **Runner**: local development/AI-agent machine (no GitHub Actions)
 - **Container registry**: Docker Hub
 - **Deployment target**: single EC2 host (Nginx + frontend + backend)
-- **Deploy flow**: build/test Docker images in CI → push tagged images to Docker Hub → SSH deploy on EC2 via docker compose
+- **Deploy flow**: run local shell-script validation → build/push Docker images with plain `docker build` → trigger EC2 deploy script over SSH or run it manually on EC2
 
 For full implementation details, see:
 - [./CICD.md](./CICD.md)

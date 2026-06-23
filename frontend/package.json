@@ -8,9 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint . --fix",
     "preview": "vite preview",
-    "test": "vitest run",
-    "ci:local": "bash scripts/ci-local.sh",
-    "publish:image": "bash scripts/publish-image.sh"
+    "test": "vitest run"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",

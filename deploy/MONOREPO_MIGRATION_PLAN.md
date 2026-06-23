@@ -120,8 +120,8 @@ git log --oneline -- backend | head
 git log --oneline -- frontend | head
 git log --oneline -- deploy | head
 
-cd backend && npm run ci:local
-cd ../frontend && npm run ci:local
+cd backend && bash scripts/ci-local.sh
+cd ../frontend && bash scripts/ci-local.sh
 cd ../deploy && docker compose -f docker-compose.yml config
 ```
 

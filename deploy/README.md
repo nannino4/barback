@@ -83,10 +83,10 @@ From the source repositories on the development/agent machine:
 
 ```bash
 cd backend
-DOCKER_HUB_USERNAME=<dockerhub-user> DOCKER_HUB_TOKEN=<token> npm run publish:image -- dev
+DOCKER_HUB_USERNAME=<dockerhub-user> DOCKER_HUB_TOKEN=<token> bash scripts/publish-image.sh dev
 
 cd ../frontend
-DOCKER_HUB_USERNAME=<dockerhub-user> DOCKER_HUB_TOKEN=<token> npm run publish:image -- dev
+DOCKER_HUB_USERNAME=<dockerhub-user> DOCKER_HUB_TOKEN=<token> bash scripts/publish-image.sh dev
 ```
 
 Both publish scripts default the immutable tag to the current commit SHA and also
@@ -110,6 +110,31 @@ git pull --ff-only
 ```bash
 bash deploy-dev.sh
 ```
+
+### Agent-run remote deploy helper
+
+From the local `deploy/` repository, an agent can trigger the EC2 deploy over SSH:
+
+```bash
+BARBACK_EC2_HOST=<ec2-host-or-ip> \
+BARBACK_EC2_USER=ec2-user \
+BARBACK_EC2_KEY=/path/to/key.pem \
+BARBACK_REMOTE_DEPLOY_DIR=/home/ec2-user/barback-deploy \
+  bash scripts/deploy-dev-remote.sh
+```
+
+Environment variables:
+
+| Variable | Required | Default | Purpose |
+|---|---:|---|---|
+| `BARBACK_EC2_HOST` | Yes | - | EC2 hostname or IP |
+| `BARBACK_EC2_USER` | No | `ec2-user` | SSH user |
+| `BARBACK_EC2_KEY` | No | - | SSH private key path; omit if SSH agent/config handles auth |
+| `BARBACK_REMOTE_DEPLOY_DIR` | No | `/home/ec2-user/barback-deploy` | Deploy repo path on EC2 |
+| `SKIP_REMOTE_GIT_PULL` | No | `false` | Set `true` to skip `git pull --ff-only` before deploy |
+
+The helper does not edit `.env.deploy.dev`; it deploys whatever image tags are
+already configured on EC2 (often the moving `dev` tags).
 
 6. Verify service health:
    - backend health endpoint: `http://127.0.0.1/api/health`

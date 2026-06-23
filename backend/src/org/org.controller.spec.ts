@@ -7,10 +7,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { OrgController } from './org.controller';
 import { OrgService } from './org.service';
+import { OrgSeedService } from './org-seed.service';
 import { UserOrgRelationService } from './user-org-relation.service';
 import { Org, OrgSchema } from './schemas/org.schema';
 import { UserOrgRelation, UserOrgRelationSchema, OrgRole } from './schemas/user-org-relation.schema';
 import { User, UserSchema } from '../user/schemas/user.schema';
+import { Category, CategorySchema } from '../category/schemas/category.schema';
+import { Product, ProductSchema } from '../product/schemas/product.schema';
 import { Subscription, SubscriptionSchema, SubscriptionStatus } from '../subscription/schemas/subscription.schema';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { OrgRolesGuard } from './guards/org-roles.guard';
@@ -80,6 +83,8 @@ describe('OrgController (Integration)', () =>
                     { name: Org.name, schema: OrgSchema },
                     { name: UserOrgRelation.name, schema: UserOrgRelationSchema },
                     { name: Subscription.name, schema: SubscriptionSchema },
+                    { name: Category.name, schema: CategorySchema },
+                    { name: Product.name, schema: ProductSchema },
                 ]),
                 JwtModule.register({
                     secret: 'test-secret',
@@ -88,9 +93,10 @@ describe('OrgController (Integration)', () =>
             ],
             controllers: [OrgController],
             providers: [
-                OrgService, 
-                UserOrgRelationService, 
-                UserService, 
+                OrgService,
+                OrgSeedService,
+                UserOrgRelationService,
+                UserService,
                 OrgRolesGuard,
                 OrgSubscriptionGuard,
                 SubscriptionService,

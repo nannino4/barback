@@ -92,6 +92,14 @@ describe('SubscriptionController - Integration Tests', () =>
             createCustomer: jest.fn(),
             createSubscription: jest.fn(),
             cancelSubscription: jest.fn(),
+            attachPaymentMethod: jest.fn(),
+            setDefaultPaymentMethod: jest.fn(),
+            updateSubscriptionDefaultPaymentMethod: jest.fn(),
+            resumeSubscription: jest.fn(),
+            retrieveSubscription: jest.fn(),
+            getDefaultPaymentMethodId: jest.fn(),
+            getSubscriptionPaymentMethod: jest.fn(),
+            createResumeInvoicePreview: jest.fn(),
         } as any;
 
         mockEmailService = {
@@ -393,6 +401,157 @@ describe('SubscriptionController - Integration Tests', () =>
                 .expect(200);
 
             expect(pastDueResponse.body.status).toBe(SubscriptionStatus.PAST_DUE);
+        });
+    });
+
+    describe('/subscriptions/trial (POST)', () =>
+    {
+        it('activates a frictionless trial and persists a TRIALING subscription', async () =>
+        {
+            // Arrange - Stripe returns a trialing subscription, no payment collected
+            const stripeSubscriptionId = 'sub_trial_friction';
+            mockStripeService.createCustomer.mockResolvedValue({ id: 'cus_trial' } as Stripe.Customer);
+            mockStripeService.createSubscription.mockResolvedValue(
+                createMockStripeSubscription(stripeSubscriptionId, 'trialing', { interval: 'year' }) as Stripe.Subscription,
+            );
+
+            // Act
+            const response = await request(app.getHttpServer())
+                .post('/api/subscriptions/trial')
+                .expect(201);
+
+            // Assert - response and persisted state
+            expect(response.body).toHaveProperty('stripeSubscriptionId', stripeSubscriptionId);
+            expect(response.body).toHaveProperty('status', SubscriptionStatus.TRIALING);
+
+            // No payment method collected for the trial
+            expect(mockStripeService.createSubscription).toHaveBeenCalledWith(
+                'cus_trial',
+                expect.anything(),
+                expect.objectContaining({ isTrial: true, collectPaymentMethod: false }),
+                undefined,
+            );
+
+            // Local record created synchronously (query the DB, not internals)
+            const stored = await subscriptionService.findByStripeSubscriptionId(stripeSubscriptionId);
+            expect(stored.status).toBe(SubscriptionStatus.TRIALING);
+            expect(stored.userId.toString()).toBe(testUserId.toString());
+        });
+
+        it('returns 409 when the user is not eligible for a trial', async () =>
+        {
+            // Arrange - user already has a subscription, so they are not eligible
+            await subscriptionService.createFromStripeSubscription(
+                createMockStripeSubscription('sub_existing', 'active') as Stripe.Subscription,
+                testUserId,
+            );
+
+            // Act & Assert
+            await request(app.getHttpServer())
+                .post('/api/subscriptions/trial')
+                .expect(409);
+
+            expect(mockStripeService.createSubscription).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('/subscriptions/:id/payment-method (POST)', () =>
+    {
+        it('attaches a payment method and resumes a paused subscription', async () =>
+        {
+            // Arrange - a paused subscription owned by the test user
+            const stripeSubscriptionId = 'sub_paused';
+            const subscription = await subscriptionService.createFromStripeSubscription(
+                createMockStripeSubscription(stripeSubscriptionId, 'paused', { interval: 'year' }) as Stripe.Subscription,
+                testUserId,
+            );
+
+            mockStripeService.createCustomer.mockResolvedValue({ id: 'cus_resume' } as Stripe.Customer);
+            mockStripeService.attachPaymentMethod.mockResolvedValue({ id: 'pm_123' } as Stripe.PaymentMethod);
+            mockStripeService.setDefaultPaymentMethod.mockResolvedValue({} as Stripe.Customer);
+            mockStripeService.updateSubscriptionDefaultPaymentMethod.mockResolvedValue({} as Stripe.Subscription);
+            mockStripeService.resumeSubscription.mockResolvedValue({} as Stripe.Subscription);
+            // After adding payment + resuming, Stripe reports the sub as active
+            mockStripeService.retrieveSubscription.mockResolvedValue(
+                createMockStripeSubscription(stripeSubscriptionId, 'active', { interval: 'year' }) as Stripe.Subscription,
+            );
+
+            // Act
+            const response = await request(app.getHttpServer())
+                .post(`/api/subscriptions/${subscription._id}/payment-method`)
+                .send({ paymentMethodId: 'pm_123' })
+                .expect(201);
+
+            // Assert - resume was triggered and local status synced to ACTIVE
+            expect(mockStripeService.updateSubscriptionDefaultPaymentMethod).toHaveBeenCalledWith(
+                stripeSubscriptionId,
+                'pm_123',
+                undefined,
+            );
+            expect(mockStripeService.resumeSubscription).toHaveBeenCalledWith(stripeSubscriptionId, undefined);
+            expect(response.body).toHaveProperty('status', SubscriptionStatus.ACTIVE);
+
+            const stored = await subscriptionService.findByStripeSubscriptionId(stripeSubscriptionId);
+            expect(stored.status).toBe(SubscriptionStatus.ACTIVE);
+        });
+
+        it('does not resume when the subscription is still trialing', async () =>
+        {
+            // Arrange - a trialing subscription (adding a card should not resume)
+            const stripeSubscriptionId = 'sub_trialing_addpm';
+            const subscription = await subscriptionService.createFromStripeSubscription(
+                createMockStripeSubscription(stripeSubscriptionId, 'trialing', { interval: 'year' }) as Stripe.Subscription,
+                testUserId,
+            );
+
+            mockStripeService.createCustomer.mockResolvedValue({ id: 'cus_trial_pm' } as Stripe.Customer);
+            mockStripeService.attachPaymentMethod.mockResolvedValue({ id: 'pm_456' } as Stripe.PaymentMethod);
+            mockStripeService.setDefaultPaymentMethod.mockResolvedValue({} as Stripe.Customer);
+            mockStripeService.updateSubscriptionDefaultPaymentMethod.mockResolvedValue({} as Stripe.Subscription);
+            mockStripeService.retrieveSubscription.mockResolvedValue(
+                createMockStripeSubscription(stripeSubscriptionId, 'trialing', { interval: 'year' }) as Stripe.Subscription,
+            );
+
+            // Act
+            await request(app.getHttpServer())
+                .post(`/api/subscriptions/${subscription._id}/payment-method`)
+                .send({ paymentMethodId: 'pm_456' })
+                .expect(201);
+
+            // Assert
+            expect(mockStripeService.resumeSubscription).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('/subscriptions/:id/resume-preview (GET)', () =>
+    {
+        it('returns the amount due and recurring period for a paused subscription', async () =>
+        {
+            // Arrange
+            const stripeSubscriptionId = 'sub_paused_preview';
+            const subscription = await subscriptionService.createFromStripeSubscription(
+                createMockStripeSubscription(stripeSubscriptionId, 'paused', { interval: 'year', amount: 1000 }) as Stripe.Subscription,
+                testUserId,
+            );
+            mockStripeService.createResumeInvoicePreview.mockResolvedValue({
+                amount_due: 1000,
+                currency: 'eur',
+            } as Stripe.Invoice);
+
+            // Act
+            const response = await request(app.getHttpServer())
+                .get(`/api/subscriptions/${subscription._id}/resume-preview`)
+                .expect(200);
+
+            // Assert
+            expect(response.body).toMatchObject({
+                amountDue: 1000,
+                currency: 'eur',
+                recurringAmount: 1000,
+                recurringCurrency: 'eur',
+                billingInterval: 'YEARLY',
+            });
+            expect(mockStripeService.createResumeInvoicePreview).toHaveBeenCalledWith(stripeSubscriptionId, undefined);
         });
     });
 });

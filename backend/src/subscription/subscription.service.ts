@@ -15,6 +15,27 @@ import {
     SubscriptionSetupFailedException,
 } from './exceptions/subscription.exceptions';
 
+interface PaymentMethodSummary
+{
+    id: string;
+    type: string;
+    brand?: string;
+    last4?: string;
+    expMonth?: number;
+    expYear?: number;
+    isDefault: boolean;
+}
+
+export interface SubscriptionResumePreview
+{
+    amountDue: number;
+    currency: string;
+    recurringAmount: number;
+    recurringCurrency: string;
+    billingInterval: BillingInterval;
+    nextBillingDate: Date;
+}
+
 @Injectable()
 export class SubscriptionService 
 {
@@ -75,19 +96,7 @@ export class SubscriptionService
         }
 
         // Retrieve user and ensure Stripe customer exists
-        const user = await this.userService.findById(userId, requestId);
-        let stripeCustomerId = user.stripeCustomerId;
-
-        if (!stripeCustomerId)
-        {
-            const stripeCustomer = await this.stripeService.createCustomer(
-                user.email,
-                `${user.firstName} ${user.lastName}`,
-                requestId,
-            );
-            stripeCustomerId = stripeCustomer.id;
-            await this.userService.updateStripeCustomerId(userId, stripeCustomerId, requestId);
-        }
+        const stripeCustomerId = await this.ensureStripeCustomer(userId, requestId);
 
         // Create subscription in Stripe (both trial and paid collect payment upfront)
         const stripeSubscription = await this.stripeService.createSubscription(
@@ -170,10 +179,229 @@ export class SubscriptionService
 
         // Return Stripe subscription ID and client secret
         // Local DB record will be created by webhook when stripe subscription creation event is received
-        return { 
+        return {
             stripeSubscriptionId: stripeSubscription.id,
             clientSecret,
         };
+    }
+
+    /**
+     * Activate a frictionless free trial — no payment method collected.
+     *
+     * Creates a Stripe trial subscription (status `trialing`) without collecting a
+     * card, then creates the local subscription record synchronously so the caller
+     * can create the organization immediately. The `customer.subscription.created`
+     * webhook is idempotent and will no-op for this subscription.
+     *
+     * @param userId User ID
+     * @param billingInterval Billing interval the trial will convert to (default YEARLY)
+     * @returns The created local subscription (status TRIALING)
+     */
+    async activateTrialSubscription(
+        userId: Types.ObjectId,
+        billingInterval: StripeBillingInterval = StripeBillingInterval.YEARLY,
+        requestId?: string,
+    ): Promise<Subscription>
+    {
+        this.logger.debug(
+            `Activating frictionless trial subscription for user: ${userId}`,
+            'SubscriptionService#activateTrialSubscription',
+            requestId,
+        );
+
+        const eligible = await this.isEligibleForTrial(userId, requestId);
+        if (!eligible)
+        {
+            this.logger.warn(
+                `User ${userId} is not eligible for trial subscription`,
+                'SubscriptionService#activateTrialSubscription',
+                requestId,
+            );
+            throw new NotEligibleForTrialException('User already has a subscription or is not eligible for trial');
+        }
+
+        const stripeCustomerId = await this.ensureStripeCustomer(userId, requestId);
+
+        const stripeSubscription = await this.stripeService.createSubscription(
+            stripeCustomerId,
+            billingInterval,
+            { isTrial: true, collectPaymentMethod: false },
+            requestId,
+        );
+
+        // Create the local record synchronously so the org can be created immediately.
+        const subscription = await this.createFromStripeSubscription(stripeSubscription, userId, requestId);
+
+        this.logger.debug(
+            `Frictionless trial activated for user: ${userId}, Stripe subscription: ${stripeSubscription.id}`,
+            'SubscriptionService#activateTrialSubscription',
+            requestId,
+        );
+
+        return subscription;
+    }
+
+    /**
+     * Attach a payment method to a user's subscription and (re)activate billing.
+     *
+     * Used by the add-payment flow after a frictionless trial: attaches the payment
+     * method to the customer, sets it as the default for both the customer and the
+     * subscription, and resumes the subscription if it was paused at trial end.
+     */
+    async attachPaymentMethodToSubscription(
+        userId: Types.ObjectId,
+        subscriptionId: Types.ObjectId,
+        paymentMethodId: string,
+        setAsDefault = false,
+        requestId?: string,
+    ): Promise<Subscription>
+    {
+        this.logger.debug(
+            `Attaching payment method ${paymentMethodId} to subscription ${subscriptionId} for user: ${userId}`,
+            'SubscriptionService#attachPaymentMethodToSubscription',
+            requestId,
+        );
+
+        const subscription = await this.findById(subscriptionId, requestId);
+        if (subscription.userId.toString() !== userId.toString())
+        {
+            throw new InvalidSubscriptionOperationException(
+                'Subscription ownership mismatch',
+                'Subscription does not belong to the current user',
+            );
+        }
+
+        const stripeCustomerId = await this.ensureStripeCustomer(userId, requestId);
+
+        await this.stripeService.attachPaymentMethod(paymentMethodId, stripeCustomerId, requestId);
+        const defaultPaymentMethodId = await this.stripeService.getDefaultPaymentMethodId(stripeCustomerId, requestId);
+        if (setAsDefault || !defaultPaymentMethodId)
+        {
+            await this.stripeService.setDefaultPaymentMethod(stripeCustomerId, paymentMethodId, requestId);
+        }
+        await this.stripeService.updateSubscriptionDefaultPaymentMethod(
+            subscription.stripeSubscriptionId,
+            paymentMethodId,
+            requestId,
+        );
+
+        // If the trial was paused for a missing payment method, resume billing now.
+        if (subscription.status === SubscriptionStatus.PAUSED)
+        {
+            await this.stripeService.resumeSubscription(subscription.stripeSubscriptionId, requestId);
+        }
+
+        // Sync the local record from the latest Stripe state.
+        const updatedStripeSubscription = await this.stripeService.retrieveSubscription(
+            subscription.stripeSubscriptionId,
+            requestId,
+        );
+        return await this.updateFromStripeSubscription(updatedStripeSubscription, requestId);
+    }
+
+    async getResumePreview(
+        userId: Types.ObjectId,
+        subscriptionId: Types.ObjectId,
+        requestId?: string,
+    ): Promise<SubscriptionResumePreview>
+    {
+        this.logger.debug(
+            `Creating resume preview for subscription ${subscriptionId} for user: ${userId}`,
+            'SubscriptionService#getResumePreview',
+            requestId,
+        );
+
+        const subscription = await this.findById(subscriptionId, requestId);
+        if (subscription.userId.toString() !== userId.toString())
+        {
+            throw new InvalidSubscriptionOperationException(
+                'Subscription ownership mismatch',
+                'Subscription does not belong to the current user',
+            );
+        }
+
+        const invoice = subscription.status === SubscriptionStatus.PAUSED
+            ? await this.stripeService.createResumeInvoicePreview(subscription.stripeSubscriptionId, requestId)
+            : null;
+
+        return {
+            amountDue: invoice?.amount_due ?? 0,
+            currency: invoice?.currency ?? 'eur',
+            recurringAmount: subscription.amount ?? invoice?.amount_due ?? 0,
+            recurringCurrency: invoice?.currency ?? 'eur',
+            billingInterval: subscription.billingInterval,
+            nextBillingDate: subscription.nextBillingDate,
+        };
+    }
+
+    async toResponseObject(subscription: Subscription, requestId?: string): Promise<Record<string, unknown>>
+    {
+        const responseObject = subscription.toObject() as Record<string, unknown>;
+
+        try
+        {
+            const [paymentMethod, user] = await Promise.all([
+                this.stripeService.getSubscriptionPaymentMethod(subscription.stripeSubscriptionId, requestId),
+                this.userService.findById(subscription.userId, requestId),
+            ]);
+
+            if (!paymentMethod)
+            {
+                return responseObject;
+            }
+
+            const defaultPaymentMethodId = user.stripeCustomerId
+                ? await this.stripeService.getDefaultPaymentMethodId(user.stripeCustomerId, requestId)
+                : null;
+
+            responseObject.paymentMethod = this.toPaymentMethodSummary(paymentMethod, paymentMethod.id === defaultPaymentMethodId);
+        }
+        catch (error)
+        {
+            // Payment-method decoration is best-effort; subscription details should
+            // still be returned if Stripe is temporarily unavailable.
+            this.logger.warn(
+                `Failed to decorate subscription ${subscription.id} with payment method details`,
+                'SubscriptionService#toResponseObject',
+                requestId,
+            );
+        }
+
+        return responseObject;
+    }
+
+    private toPaymentMethodSummary(paymentMethod: Stripe.PaymentMethod, isDefault: boolean): PaymentMethodSummary
+    {
+        return {
+            id: paymentMethod.id,
+            type: paymentMethod.type,
+            brand: paymentMethod.card?.brand,
+            last4: paymentMethod.card?.last4,
+            expMonth: paymentMethod.card?.exp_month,
+            expYear: paymentMethod.card?.exp_year,
+            isDefault,
+        };
+    }
+
+    /**
+     * Ensure the user has a Stripe customer, creating one if needed. Returns the
+     * Stripe customer ID.
+     */
+    private async ensureStripeCustomer(userId: Types.ObjectId, requestId?: string): Promise<string>
+    {
+        const user = await this.userService.findById(userId, requestId);
+        if (user.stripeCustomerId)
+        {
+            return user.stripeCustomerId;
+        }
+
+        const stripeCustomer = await this.stripeService.createCustomer(
+            user.email,
+            `${user.firstName} ${user.lastName}`,
+            requestId,
+        );
+        await this.userService.updateStripeCustomerId(userId, stripeCustomer.id, requestId);
+        return stripeCustomer.id;
     }
 
     /**
@@ -594,15 +822,19 @@ export class SubscriptionService
     {
         this.logger.debug(`Checking trial eligibility for user: ${userId}`, 'SubscriptionService#isEligibleForTrial', requestId);
         
-        try 
+        try
         {
+            // Normalize to ObjectId — callers may pass a string id (e.g. user.id),
+            // which countDocuments does not reliably match against the ObjectId field.
+            const userObjectId = new Types.ObjectId(userId);
+
             // Check if user has any existing subscriptions
             const existingSubscriptionCount = await this.subscriptionModel
-                .countDocuments({ 
-                    userId: userId,
+                .countDocuments({
+                    userId: userObjectId,
                 })
                 .exec();
-            
+
             // User is eligible for trial only if this is their first subscription
             const isEligible = existingSubscriptionCount === 0;
             this.logger.debug(

@@ -125,25 +125,33 @@ export class StripeService
      * - Returns subscription with incomplete status (requires payment confirmation)
      * 
      * Trial subscriptions:
-     * - Have $0 first invoice but still collect payment method
-     * - Use trial_period_days for simpler configuration
+     * - Use trial_period_days for simpler configuration (default 90 days)
      * - Automatically convert to paid after trial period ends
-     * - Follow Stripe best practice for seamless conversion
-     * 
+     *
+     * Frictionless trials (`collectPaymentMethod: false`):
+     * - No payment method is collected up front, so no clientSecret is returned
+     * - The subscription is created directly in `trialing` status
+     * - When the trial ends without a payment method on file, Stripe pauses the
+     *   subscription (`trial_settings.end_behavior.missing_payment_method = 'pause'`)
+     *   rather than charging or cancelling — access is gated until the user pays.
+     *
      * @param customerId Stripe customer ID
      * @param billingInterval Billing interval (monthly/yearly)
-     * @param options Additional creation options
+     * @param options Additional creation options. `collectPaymentMethod` defaults to
+     *   true (collect a card via PaymentIntent/SetupIntent); set false for a
+     *   frictionless trial.
      */
     async createSubscription(
         customerId: string,
-        billingInterval: BillingInterval = BillingInterval.MONTHLY,
-        options?: { isTrial?: boolean; trialPeriodDays?: number },
+        billingInterval: BillingInterval = BillingInterval.YEARLY,
+        options?: { isTrial?: boolean; trialPeriodDays?: number; collectPaymentMethod?: boolean },
         requestId?: string,
     ): Promise<Stripe.Subscription>
     {
         const isTrial = options?.isTrial === true;
+        const collectPaymentMethod = options?.collectPaymentMethod !== false;
         this.logger.debug(
-            `Creating ${isTrial ? 'trial' : 'paid'} subscription for customer: ${customerId} with ${billingInterval} billing`,
+            `Creating ${isTrial ? 'trial' : 'paid'} subscription for customer: ${customerId} with ${billingInterval} billing (collectPaymentMethod=${collectPaymentMethod})`,
             'StripeService#createSubscription',
             requestId,
         );
@@ -151,17 +159,28 @@ export class StripeService
         try
         {
             const priceId = this.getPriceId(billingInterval, requestId);
-            
-            const subscriptionParams: Stripe.SubscriptionCreateParams = {
-                customer: customerId,
-                items: [{ price: priceId }],
-                payment_behavior: 'default_incomplete',
-                payment_settings: { 
-                    save_default_payment_method: 'on_subscription',
-                },
-                // Expand confirmation_secret to get clientSecret for Payment Element
-                expand: ['latest_invoice.confirmation_secret', 'pending_setup_intent'],
-            };
+
+            const subscriptionParams: Stripe.SubscriptionCreateParams = collectPaymentMethod
+                ? {
+                    customer: customerId,
+                    items: [{ price: priceId }],
+                    payment_behavior: 'default_incomplete',
+                    payment_settings: {
+                        save_default_payment_method: 'on_subscription',
+                    },
+                    // Expand confirmation_secret to get clientSecret for Payment Element
+                    expand: ['latest_invoice.confirmation_secret', 'pending_setup_intent'],
+                }
+                : {
+                    // Frictionless trial: no payment collection. The subscription is
+                    // created directly in `trialing` status; pause at trial end if no
+                    // payment method has been added by then.
+                    customer: customerId,
+                    items: [{ price: priceId }],
+                    trial_settings: {
+                        end_behavior: { missing_payment_method: 'pause' },
+                    },
+                };
 
             if (isTrial)
             {
@@ -237,6 +256,38 @@ export class StripeService
         }
     }
 
+    async retrieveSubscriptionWithPaymentMethod(subscriptionId: string, requestId?: string): Promise<Stripe.Subscription>
+    {
+        this.logger.debug(
+            `Retrieving subscription with payment method: ${subscriptionId}`,
+            'StripeService#retrieveSubscriptionWithPaymentMethod',
+            requestId,
+        );
+
+        try
+        {
+            const subscription = await this.stripe.subscriptions.retrieve(subscriptionId, {
+                expand: ['default_payment_method'],
+            });
+            this.logger.debug(
+                `Subscription with payment method retrieved: ${subscriptionId}`,
+                'StripeService#retrieveSubscriptionWithPaymentMethod',
+                requestId,
+            );
+            return subscription;
+        }
+        catch (error)
+        {
+            this.logger.error(
+                `Failed to retrieve subscription with payment method: ${subscriptionId}`,
+                error instanceof Error ? error.stack : undefined,
+                'StripeService#retrieveSubscriptionWithPaymentMethod',
+                requestId,
+            );
+            this.handleStripeError(error, 'subscription payment method retrieval', requestId);
+        }
+    }
+
     async retrieveSetupIntent(setupIntentId: string, requestId?: string): Promise<Stripe.SetupIntent>
     {
         this.logger.debug(`Retrieving setup intent: ${setupIntentId}`, 'StripeService#retrieveSetupIntent', requestId);
@@ -259,13 +310,124 @@ export class StripeService
         }
     }
 
+    /**
+     * Create a SetupIntent to collect (and save) a payment method off-session.
+     * Used by the add-payment flow so a user can attach a card after a frictionless
+     * trial without going through a subscription PaymentIntent.
+     */
+    async createSetupIntent(customerId: string, requestId?: string): Promise<Stripe.SetupIntent>
+    {
+        this.logger.debug(`Creating setup intent for customer: ${customerId}`, 'StripeService#createSetupIntent', requestId);
+
+        try
+        {
+            const setupIntent = await this.stripe.setupIntents.create({
+                customer: customerId,
+                usage: 'off_session',
+                payment_method_types: ['card'],
+            });
+            this.logger.debug(`Setup intent created: ${setupIntent.id}`, 'StripeService#createSetupIntent', requestId);
+            return setupIntent;
+        }
+        catch (error)
+        {
+            this.logger.error(
+                `Failed to create setup intent for customer: ${customerId}`,
+                error instanceof Error ? error.stack : undefined,
+                'StripeService#createSetupIntent',
+                requestId,
+            );
+            this.handleStripeError(error, 'payment setup intent creation', requestId);
+        }
+    }
+
+    /**
+     * Set the default payment method used to bill a subscription.
+     */
+    async updateSubscriptionDefaultPaymentMethod(
+        subscriptionId: string,
+        paymentMethodId: string,
+        requestId?: string,
+    ): Promise<Stripe.Subscription>
+    {
+        this.logger.debug(
+            `Setting default payment method ${paymentMethodId} on subscription: ${subscriptionId}`,
+            'StripeService#updateSubscriptionDefaultPaymentMethod',
+            requestId,
+        );
+
+        try
+        {
+            const subscription = await this.stripe.subscriptions.update(subscriptionId, {
+                default_payment_method: paymentMethodId,
+            });
+            this.logger.debug(
+                `Default payment method set on subscription: ${subscriptionId}`,
+                'StripeService#updateSubscriptionDefaultPaymentMethod',
+                requestId,
+            );
+            return subscription;
+        }
+        catch (error)
+        {
+            this.logger.error(
+                `Failed to set default payment method on subscription: ${subscriptionId}`,
+                error instanceof Error ? error.stack : undefined,
+                'StripeService#updateSubscriptionDefaultPaymentMethod',
+                requestId,
+            );
+            this.handleStripeError(error, 'subscription payment method update', requestId);
+        }
+    }
+
+    /**
+     * Resume a subscription that Stripe paused at trial end (missing payment method).
+     * Clears `pause_collection` so billing resumes once a payment method is on file.
+     */
+    async resumeSubscription(subscriptionId: string, requestId?: string): Promise<Stripe.Subscription>
+    {
+        this.logger.debug(`Resuming subscription: ${subscriptionId}`, 'StripeService#resumeSubscription', requestId);
+
+        try
+        {
+            const subscription = await this.stripe.subscriptions.resume(subscriptionId, {
+                billing_cycle_anchor: 'now',
+            });
+            this.logger.debug(`Subscription resumed: ${subscriptionId}`, 'StripeService#resumeSubscription', requestId);
+            return subscription;
+        }
+        catch (error)
+        {
+            this.logger.error(
+                `Failed to resume subscription: ${subscriptionId}`,
+                error instanceof Error ? error.stack : undefined,
+                'StripeService#resumeSubscription',
+                requestId,
+            );
+            this.handleStripeError(error, 'subscription resume', requestId);
+        }
+    }
+
     // Payment Method Management
-    async attachPaymentMethod(paymentMethodId: string, customerId: string, requestId?: string): Promise<Stripe.PaymentMethod> 
+    async attachPaymentMethod(paymentMethodId: string, customerId: string, requestId?: string): Promise<Stripe.PaymentMethod>
     {
         this.logger.debug(`Attaching payment method ${paymentMethodId} to customer: ${customerId}`, 'StripeService#attachPaymentMethod', requestId);
         
         try 
         {
+            const existingPaymentMethod = await this.stripe.paymentMethods.retrieve(paymentMethodId);
+            const existingCustomerId = this.getStripeId(existingPaymentMethod.customer);
+
+            if (existingCustomerId === customerId)
+            {
+                this.logger.debug(
+                    `Payment method ${paymentMethodId} is already attached to customer: ${customerId}`,
+                    'StripeService#attachPaymentMethod',
+                    requestId,
+                );
+                return existingPaymentMethod;
+            }
+
             const paymentMethod = await this.stripe.paymentMethods.attach(paymentMethodId, {
                 customer: customerId,
             });
@@ -352,6 +514,89 @@ export class StripeService
             this.logger.error(`Failed to set default payment method for customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#setDefaultPaymentMethod', requestId);
             this.handleStripeError(error, 'default payment method setting', requestId);
         }
+    }
+
+    async getDefaultPaymentMethodId(customerId: string, requestId?: string): Promise<string | null>
+    {
+        this.logger.debug(`Retrieving default payment method for customer: ${customerId}`, 'StripeService#getDefaultPaymentMethodId', requestId);
+
+        try
+        {
+            const customer = await this.stripe.customers.retrieve(customerId);
+            if (customer.deleted)
+            {
+                return null;
+            }
+
+            return this.getStripeId(customer.invoice_settings.default_payment_method);
+        }
+        catch (error)
+        {
+            this.logger.error(`Failed to retrieve default payment method for customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#getDefaultPaymentMethodId', requestId);
+            this.handleStripeError(error, 'default payment method retrieval', requestId);
+        }
+    }
+
+    async getSubscriptionPaymentMethod(subscriptionId: string, requestId?: string): Promise<Stripe.PaymentMethod | null>
+    {
+        this.logger.debug(`Retrieving payment method for subscription: ${subscriptionId}`, 'StripeService#getSubscriptionPaymentMethod', requestId);
+
+        const subscription = await this.retrieveSubscriptionWithPaymentMethod(subscriptionId, requestId);
+        const subscriptionPaymentMethod = subscription.default_payment_method;
+
+        if (subscriptionPaymentMethod && typeof subscriptionPaymentMethod !== 'string')
+        {
+            return subscriptionPaymentMethod;
+        }
+
+        const subscriptionPaymentMethodId = this.getStripeId(subscriptionPaymentMethod);
+        if (subscriptionPaymentMethodId)
+        {
+            return await this.retrievePaymentMethod(subscriptionPaymentMethodId, requestId);
+        }
+
+        const customerId = this.getStripeId(subscription.customer);
+        if (!customerId)
+        {
+            return null;
+        }
+
+        const customerDefaultPaymentMethodId = await this.getDefaultPaymentMethodId(customerId, requestId);
+        return customerDefaultPaymentMethodId
+            ? await this.retrievePaymentMethod(customerDefaultPaymentMethodId, requestId)
+            : null;
+    }
+
+    async createResumeInvoicePreview(subscriptionId: string, requestId?: string): Promise<Stripe.Invoice>
+    {
+        this.logger.debug(`Creating resume invoice preview for subscription: ${subscriptionId}`, 'StripeService#createResumeInvoicePreview', requestId);
+
+        try
+        {
+            const invoice = await this.stripe.invoices.createPreview({
+                subscription: subscriptionId,
+                subscription_details: {
+                    resume_at: 'now',
+                },
+            });
+            this.logger.debug(`Resume invoice preview created for subscription: ${subscriptionId}`, 'StripeService#createResumeInvoicePreview', requestId);
+            return invoice;
+        }
+        catch (error)
+        {
+            this.logger.error(`Failed to create resume invoice preview for subscription: ${subscriptionId}`, error instanceof Error ? error.stack : undefined, 'StripeService#createResumeInvoicePreview', requestId);
+            this.handleStripeError(error, 'subscription resume invoice preview', requestId);
+        }
+    }
+
+    private getStripeId(value: string | { id: string } | null | undefined): string | null
+    {
+        if (!value)
+        {
+            return null;
+        }
+
+        return typeof value === 'string' ? value : value.id;
     }
 
     // Webhook handling

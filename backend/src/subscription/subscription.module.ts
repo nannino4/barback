@@ -8,6 +8,7 @@ import { WebhookController } from './webhook.controller';
 import { Subscription, SubscriptionSchema } from './schemas/subscription.schema';
 import { UserModule } from '../user/user.module';
 import { AuthGuardModule } from '../auth/auth-guard.module';
+import { EmailModule } from '../email/email.module';
 import { StripeService } from 'src/common/services/stripe.service';
 
 @Module({
@@ -15,6 +16,7 @@ import { StripeService } from 'src/common/services/stripe.service';
         MongooseModule.forFeature([{ name: Subscription.name, schema: SubscriptionSchema }]),
         AuthGuardModule,
         UserModule,
+        EmailModule,
     ],
     controllers: [SubscriptionController, PaymentController, WebhookController],
     providers: [SubscriptionService, PaymentService, StripeService],

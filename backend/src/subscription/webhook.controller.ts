@@ -2,6 +2,7 @@ import { Controller, Post, RawBodyRequest, Req, Headers, BadRequestException } f
 import { SubscriptionService } from './subscription.service';
 import { StripeService } from '../common/services/stripe.service';
 import { UserService } from '../user/user.service';
+import { EmailService } from '../email/email.service';
 import { ConfigService } from '@nestjs/config';
 import { SubscriptionStatus } from './schemas/subscription.schema';
 import Stripe from 'stripe';
@@ -29,9 +30,10 @@ export class WebhookController
         private readonly subscriptionService: SubscriptionService,
         private readonly stripeService: StripeService,
         private readonly userService: UserService,
+        private readonly emailService: EmailService,
         private readonly configService: ConfigService,
         private readonly logger: CustomLogger,
-    ) 
+    )
     {
         const webhookSecret = this.configService.get<string>('STRIPE_WEBHOOK_SECRET');
         if (!webhookSecret) 
@@ -125,6 +127,48 @@ export class WebhookController
             await this.subscriptionService.updateStatus(stripeSubscription.id, SubscriptionStatus.CANCELED, requestId);
             break;
         }
+        case 'customer.subscription.trial_will_end':
+        {
+            // Stripe fires this ~3 days before a trial ends. Remind the user to add
+            // a payment method so access continues (the trial pauses otherwise).
+            this.logger.log(`Processing customer.subscription.trial_will_end event with id: ${event.id}`, 'WebhookController#handleStripeWebhook', requestId);
+            const subscriptionData = event.data.object as Stripe.Subscription;
+            const subscriptionResult = await this.getStripeSubscriptionAndUser(
+                subscriptionData,
+                'WebhookController#handleStripeWebhook',
+                requestId,
+            );
+
+            if (!subscriptionResult)
+            {
+                break;
+            }
+
+            const { stripeSubscription, user } = subscriptionResult;
+            const daysRemaining = this.computeTrialDaysRemaining(stripeSubscription.trial_end);
+
+            try
+            {
+                const emailOptions = this.emailService.generateTrialEndingEmail(user.email, daysRemaining, user.language);
+                await this.emailService.sendEmail(emailOptions);
+                this.logger.log(
+                    `Trial-ending reminder sent for Stripe subscription ${stripeSubscription.id}`,
+                    'WebhookController#handleStripeWebhook',
+                    requestId,
+                );
+            }
+            catch (error)
+            {
+                // Best-effort: don't fail the webhook if the email can't be sent.
+                this.logger.error(
+                    `Failed to send trial-ending reminder for subscription ${stripeSubscription.id}`,
+                    error instanceof Error ? error.stack : undefined,
+                    'WebhookController#handleStripeWebhook',
+                    requestId,
+                );
+            }
+            break;
+        }
         case 'invoice.payment_failed':
         {
             // just log payment failure
@@ -140,6 +184,21 @@ export class WebhookController
         }
 
         return { received: true };
+    }
+
+    /**
+     * Number of whole days remaining until the trial ends (minimum 1), derived from
+     * the Stripe `trial_end` unix timestamp. Falls back to 3 (Stripe's reminder
+     * window) when no timestamp is present.
+     */
+    private computeTrialDaysRemaining(trialEnd: number | null | undefined): number
+    {
+        if (!trialEnd)
+        {
+            return 3;
+        }
+        const millisRemaining = trialEnd * 1000 - Date.now();
+        return Math.max(1, Math.ceil(millisRemaining / (24 * 60 * 60 * 1000)));
     }
 
     private async getStripeSubscriptionAndUser(

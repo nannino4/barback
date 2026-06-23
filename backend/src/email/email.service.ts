@@ -305,4 +305,56 @@ export class EmailService
             }),
         };
     }
+
+    /**
+     * Reminder sent (via the Stripe `customer.subscription.trial_will_end` webhook)
+     * a few days before a free trial ends, prompting the user to add a payment
+     * method so access continues. The CTA links to the organizations page where the
+     * trial banner / subscription card expose the add-payment flow.
+     */
+    generateTrialEndingEmail(email: string, daysRemaining: number, locale: UserLanguage): EmailOptions
+    {
+        const orgsPageUrl = `${this.frontendUrl}/orgs`;
+
+        if (locale === UserLanguage.IT)
+        {
+            const daysText = daysRemaining === 1 ? 'tra 1 giorno' : `tra ${daysRemaining} giorni`;
+            return {
+                to: email,
+                subject: `La tua prova gratuita ${this.appName} sta per terminare`,
+                text: `La tua prova gratuita termina ${daysText}. Aggiungi un metodo di pagamento per continuare a usare ${this.appName} senza interruzioni: ${orgsPageUrl}`,
+                html: this.buildEmailLayout({
+                    locale: locale,
+                    title: 'La tua prova gratuita sta per terminare',
+                    intro: `La tua prova gratuita di ${this.appName} termina ${daysText}. Aggiungi un metodo di pagamento per continuare senza interruzioni.`,
+                    ctaLabel: 'Aggiungi metodo di pagamento',
+                    ctaUrl: orgsPageUrl,
+                    fallbackText: 'Se il pulsante non funziona, copia e incolla questo link nel browser:',
+                    expiryText: `La prova gratuita termina ${daysText}.`,
+                    ignoreText: 'Se hai già aggiunto un metodo di pagamento, puoi ignorare questa email.',
+                    preheader: 'Aggiungi un metodo di pagamento per continuare dopo la prova.',
+                    accentColor: '#2563eb',
+                }),
+            };
+        }
+
+        const daysText = daysRemaining === 1 ? 'in 1 day' : `in ${daysRemaining} days`;
+        return {
+            to: email,
+            subject: `Your ${this.appName} free trial is ending soon`,
+            text: `Your free trial ends ${daysText}. Add a payment method to keep using ${this.appName} without interruption: ${orgsPageUrl}`,
+            html: this.buildEmailLayout({
+                locale: locale,
+                title: 'Your free trial is ending soon',
+                intro: `Your ${this.appName} free trial ends ${daysText}. Add a payment method to keep your access without interruption.`,
+                ctaLabel: 'Add payment method',
+                ctaUrl: orgsPageUrl,
+                fallbackText: "If the button doesn't work, copy and paste this link into your browser:",
+                expiryText: `Your free trial ends ${daysText}.`,
+                ignoreText: 'If you have already added a payment method, you can ignore this email.',
+                preheader: 'Add a payment method to continue after your trial.',
+                accentColor: '#2563eb',
+            }),
+        };
+    }
 }

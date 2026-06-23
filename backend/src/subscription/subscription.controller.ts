@@ -1,13 +1,19 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { EmailVerifiedGuard } from '../auth/guards/email-verified.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../user/schemas/user.schema';
 import { SubscriptionService } from './subscription.service';
 import { InCreateSubscriptionDto } from './dto/in.create-subscription.dto';
+import { InAddPaymentMethodDto } from './dto/in.add-payment-method.dto';
 import { OutSubscriptionDto } from './dto/out.subscription.dto';
 import { OutSubscriptionSetupDto } from './dto/out.subscription-setup.dto';
+import { OutTrialActivationDto } from './dto/out.trial-activation.dto';
 import { OutStripeSubscriptionStatusDto } from './dto/out.stripe-subscription-status.dto';
+import { OutSubscriptionResumePreviewDto } from './dto/out.subscription-resume-preview.dto';
+import { BillingInterval as StripeBillingInterval } from '../common/services/stripe.service';
+import { ObjectIdValidationPipe } from '../pipes/object-id-validation.pipe';
 import { plainToInstance } from 'class-transformer';
 import { CustomLogger } from '../common/logger/custom.logger';
 import { SubscriptionOwnershipException } from 'src/org/exceptions/org.exceptions';
@@ -76,6 +82,86 @@ export class SubscriptionController
             result,
             { excludeExtraneousValues: true }
         );
+    }
+
+    /**
+     * Activate a frictionless free trial (no payment method collected).
+     *
+     * Creates a Stripe trial subscription and the local subscription record
+     * synchronously, so the organization can be created immediately afterwards.
+     * Returns the Stripe subscription ID and the local status (TRIALING).
+     */
+    @UseGuards(JwtAuthGuard, EmailVerifiedGuard)
+    @Post('trial')
+    async activateTrial(
+        @CurrentUser() user: User,
+        @RequestId() requestId?: string,
+    ): Promise<OutTrialActivationDto>
+    {
+        this.logger.log(`Activating frictionless trial for user: ${user.id}`, 'SubscriptionController#activateTrial', requestId);
+
+        const subscription = await this.subscriptionService.activateTrialSubscription(
+            user.id,
+            StripeBillingInterval.YEARLY,
+            requestId,
+        );
+
+        this.logger.log(
+            `Trial activated: userId=${user.id} stripeSubscriptionId=${subscription.stripeSubscriptionId} status=${subscription.status}`,
+            'SubscriptionController#activateTrial',
+            requestId,
+        );
+
+        return plainToInstance(OutTrialActivationDto, subscription.toObject(), { excludeExtraneousValues: true });
+    }
+
+    /**
+     * Attach a payment method to a subscription and (re)activate billing.
+     * Used by the add-payment flow after a frictionless trial.
+     */
+    @UseGuards(JwtAuthGuard, EmailVerifiedGuard)
+    @Post(':id/payment-method')
+    async attachPaymentMethod(
+        @CurrentUser() user: User,
+        @Param('id', ObjectIdValidationPipe) subscriptionId: Types.ObjectId,
+        @Body() addPaymentMethodDto: InAddPaymentMethodDto,
+        @RequestId() requestId?: string,
+    ): Promise<OutSubscriptionDto>
+    {
+        this.logger.log(
+            `Attaching payment method to subscription ${subscriptionId} for user: ${user.id}`,
+            'SubscriptionController#attachPaymentMethod',
+            requestId,
+        );
+
+        const subscription = await this.subscriptionService.attachPaymentMethodToSubscription(
+            user.id,
+            subscriptionId,
+            addPaymentMethodDto.paymentMethodId,
+            addPaymentMethodDto.setAsDefault === true,
+            requestId,
+        );
+        const responseObject = await this.subscriptionService.toResponseObject(subscription, requestId);
+
+        return plainToInstance(OutSubscriptionDto, responseObject, { excludeExtraneousValues: true });
+    }
+
+    @UseGuards(JwtAuthGuard, EmailVerifiedGuard)
+    @Get(':id/resume-preview')
+    async getResumePreview(
+        @CurrentUser() user: User,
+        @Param('id', ObjectIdValidationPipe) subscriptionId: Types.ObjectId,
+        @RequestId() requestId?: string,
+    ): Promise<OutSubscriptionResumePreviewDto>
+    {
+        this.logger.debug(
+            `Getting resume preview for subscription ${subscriptionId} for user: ${user.id}`,
+            'SubscriptionController#getResumePreview',
+            requestId,
+        );
+
+        const preview = await this.subscriptionService.getResumePreview(user.id, subscriptionId, requestId);
+        return plainToInstance(OutSubscriptionResumePreviewDto, preview, { excludeExtraneousValues: true });
     }
 
     @UseGuards(JwtAuthGuard, EmailVerifiedGuard)

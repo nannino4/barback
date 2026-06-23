@@ -17,20 +17,55 @@ This project is built with [NestJS](https://github.com/nestjs/nest), a progressi
 ## Installation
 
 ```bash
-$ npm install
+npm install
 ```
 
-## Running the app
+## Running the dev server
+
+The normal development setup uses the shared Atlas MongoDB database configured in
+`.env.dev`, so you do **not** need to start the local Docker MongoDB replica set
+for day-to-day development.
+
+1. Create the dev environment file if it does not already exist:
+
+    ```bash
+    cp .env.example .env.dev
+    ```
+
+2. Ensure `.env.dev` contains the Atlas `MONGODB_URI` and the other required dev
+   secrets.
+
+3. Start the backend in watch mode:
+
+    ```bash
+    npm run start:dev
+    ```
+
+The API is served at:
+
+```text
+http://localhost:3000/api
+```
+
+### Optional local MongoDB
+
+Only run this if you intentionally want to use the local Docker MongoDB replica
+set instead of Atlas. In that case, first update `.env.dev` so `MONGODB_URI`
+points at the local replica set, then run:
 
 ```bash
-# development
-$ npm run start
+npm run start:db
+npm run start:dev
+```
 
-# watch mode
-$ npm run start:dev
+## Running the app in other modes
+
+```bash
+# one-shot local start
+npm run start
 
 # production mode
-$ npm run start:prod
+npm run start:prod
 ```
 
 ## Test

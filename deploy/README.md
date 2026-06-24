@@ -85,10 +85,10 @@ From the source repositories on the development/agent machine:
 
 ```bash
 cd backend
-DOCKER_HUB_USERNAME=<dockerhub-user> DOCKER_HUB_TOKEN=<token> bash scripts/publish-image.sh dev
+DOCKER_DEFAULT_PLATFORM=linux/amd64 DOCKER_HUB_USERNAME=<dockerhub-user> DOCKER_HUB_TOKEN=<token> bash scripts/publish-image.sh dev
 
 cd ../frontend
-DOCKER_HUB_USERNAME=<dockerhub-user> DOCKER_HUB_TOKEN=<token> bash scripts/publish-image.sh dev
+DOCKER_DEFAULT_PLATFORM=linux/amd64 DOCKER_HUB_USERNAME=<dockerhub-user> DOCKER_HUB_TOKEN=<token> bash scripts/publish-image.sh dev
 ```
 
 Both publish scripts default the immutable tag to the current commit SHA and also

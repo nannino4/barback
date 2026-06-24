@@ -38,8 +38,9 @@ Notes:
 - `npm run lint` currently runs ESLint with `--fix`, so it may modify files.
   Check `git status` after running local CI.
 - Docker images are built with plain `docker build`, not Docker Buildx.
-- If publishing from a machine with a different CPU architecture than the EC2
-  host, make sure the resulting image architecture is compatible with the host.
+- The shared dev EC2 host is `linux/amd64`. When publishing from Apple Silicon
+  or another non-amd64 machine, set `DOCKER_DEFAULT_PLATFORM=linux/amd64` so the
+  pushed image can run on EC2.
 
 ## Publish frontend image locally
 
@@ -48,6 +49,7 @@ From `frontend/`:
 ```bash
 export DOCKER_HUB_USERNAME=<dockerhub-user>
 export DOCKER_HUB_TOKEN=<dockerhub-token> # optional if already logged in
+export DOCKER_DEFAULT_PLATFORM=linux/amd64 # required from Apple Silicon for the dev EC2 host
 bash scripts/publish-image.sh dev
 ```
 

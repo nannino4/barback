@@ -1,0 +1,272 @@
+@import "tailwindcss";
+
+@theme {
+  /* ===================================
+     TYPOGRAPHY SYSTEM
+     =================================== */
+  
+  /* Font Families */
+  --font-heading: 'Playfair Display', 'Times New Roman', serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  /* ===================================
+     SPACING SYSTEM
+     =================================== */
+  
+  /* Custom spacing - only what's truly needed */
+  --spacing-touch: 2.75rem; /* 44px minimum touch target for mobile accessibility */
+  
+  /* ===================================
+     COLOR SYSTEM - "The Speakeasy"
+     Dark Theme (Default) - OKLCH Format
+     =================================== */
+  
+  /* Base surface colors */
+  --color-background: oklch(0.15 0.01 240);        /* Page base layer */
+  --color-foreground: oklch(0.97 0.01 60);         /* High contrast text */
+  
+  /* Elevated surface colors */
+  --color-card: oklch(0.20 0.01 240);              /* Elevated surfaces (cards, panels) */
+  --color-card-foreground: oklch(0.97 0.01 60);
+  
+  --color-popover: oklch(0.20 0.01 240);           /* Floating surfaces (dropdowns, popovers) */
+  --color-popover-foreground: oklch(0.97 0.01 60);
+
+  --color-input: oklch(0.18 0.01 240);             /* Form input backgrounds */
+  
+  /* Muted/subtle UI - Used for backgrounds AND secondary text */
+  --color-muted: oklch(0.22 0.01 240);             /* Muted backgrounds & hover states */
+  --color-muted-foreground: oklch(0.66 0.01 60);   /* Secondary/de-emphasized text */
+  
+  /* Brand colors - Gold accent (optimized for dark mode) */
+  --color-primary: oklch(0.78 0.18 93);            /* Brighter gold for dark backgrounds */
+  --color-primary-foreground: oklch(0.15 0.01 240);
+  
+  /* Secondary UI - For button variants */
+  --color-secondary: oklch(0.25 0.01 240);         /* Secondary button background */
+  --color-secondary-foreground: oklch(0.97 0.01 60);
+  
+  /* Accent - Tertiary interactive elements */
+  --color-accent: oklch(0.22 0.01 240);            /* Subtle interactive elements */
+  --color-accent-foreground: oklch(0.97 0.01 60);
+  
+  /* Semantic colors - Destructive/Error */
+  --color-destructive: oklch(0.58 0.25 27);        /* Vibrant red, good saturation */
+  --color-destructive-foreground: oklch(0.97 0.01 60);
+  
+  /* Semantic colors - Success */
+  --color-success: oklch(0.70 0.20 160);           /* Brighter green for dark backgrounds */
+  --color-success-foreground: oklch(0.15 0.01 240);
+  
+  /* Semantic colors - Warning */
+  --color-warning: oklch(0.78 0.20 60);            /* Brighter amber for dark backgrounds */
+  --color-warning-foreground: oklch(0.15 0.01 240);
+  
+  /* Semantic colors - Info */
+  --color-info: oklch(0.65 0.20 240);              /* Brighter blue for dark backgrounds */
+  --color-info-foreground: oklch(0.97 0.01 60);
+  
+  /* Interactive UI elements - More distinct */
+  --color-border: oklch(0.35 0.01 240);            /* Visible borders */
+  --color-ring: oklch(0.78 0.18 93);               /* Gold focus ring */
+  
+  /* Inset highlight color for top inner glow */
+  --color-highlight-inset: oklch(1 0 0 / 0.08);    /* Subtle white inset for premium feel */
+  
+  /* Elevation shadow scale - dual layer (contact + ambient) with inset highlight */
+  --shadow-sm: 
+    inset 0 1px 0 0 var(--color-highlight-inset),
+    0 1px 1px 0 oklch(0 0 0 / 0.12),
+    0 2px 4px 0 oklch(0 0 0 / 0.08);
+  
+  --shadow: 
+    inset 0 1px 0 0 var(--color-highlight-inset),
+    0 1px 2px 0 oklch(0 0 0 / 0.12),
+    0 3px 6px -1px oklch(0 0 0 / 0.08);
+
+  --shadow-md: 
+    inset 0 1px 0 0 var(--color-highlight-inset),
+    0 2px 3px -1px oklch(0 0 0 / 0.12),
+    0 6px 12px -2px oklch(0 0 0 / 0.08);
+
+  --shadow-lg: 
+    inset 0 1px 0 0 var(--color-highlight-inset),
+    0 4px 6px -1px oklch(0 0 0 / 0.12),
+    0 12px 24px -4px oklch(0 0 0 / 0.08);
+  
+  --shadow-xl: 
+    inset 0 1px 0 0 var(--color-highlight-inset),
+    0 8px 10px -3px oklch(0 0 0 / 0.12),
+    0 20px 32px -6px oklch(0 0 0 / 0.08);
+
+  --shadow-2xl: 
+    inset 0 1px 0 0 var(--color-highlight-inset),
+    0 12px 16px -4px oklch(0 0 0 / 0.12),
+    0 32px 50px -8px oklch(0 0 0 / 0.08);
+
+  /* Gradients for dark mode */
+  --gradient-highlight: linear-gradient(
+    135deg,
+    oklch(0.20 0.01 240) 0%,
+    oklch(0.25 0.02 240) 50%,
+    oklch(0.78 0.18 93 / 0.08) 100%
+  );
+  
+  --gradient-highlight-hover: linear-gradient(
+    135deg,
+    oklch(0.22 0.01 240) 0%,
+    oklch(0.27 0.02 240) 50%,
+    oklch(0.78 0.18 93 / 0.12) 100%
+  );
+  
+  --gradient-premium: linear-gradient(
+    135deg,
+    oklch(0.75 0.18 90) 0%,
+    oklch(0.82 0.22 80) 50%,
+    oklch(0.75 0.18 90) 100%
+  );
+}
+
+  /* ===================================
+     LIGHT MODE THEME OVERRIDES
+     =================================== */
+
+.light {
+  /* Base surface colors */
+  --color-background: oklch(0.96 0.01 60);         /* Page base layer */
+  --color-foreground: oklch(0.20 0.01 240);        /* High contrast text */
+  
+  /* Elevated surface colors */
+  --color-card: oklch(0.995 0.005 60);             /* Elevated surfaces (cards, panels) */
+  --color-card-foreground: oklch(0.20 0.01 240);
+  
+  --color-popover: oklch(0.995 0.005 60);          /* Floating surfaces (dropdowns, popovers) */
+  --color-popover-foreground: oklch(0.20 0.01 240);
+
+  --color-input: oklch(0.99 0.01 60);              /* Form input backgrounds */
+  
+  /* Muted/subtle UI - Used for backgrounds AND secondary text */
+  --color-muted: oklch(0.92 0.01 60);              /* Muted backgrounds & hover states */
+  --color-muted-foreground: oklch(0.50 0.01 240);  /* Secondary/de-emphasized text */
+  
+  /* Brand colors - Brighter, more golden for light backgrounds */
+  --color-primary: oklch(0.62 0.20 85);            /* Brighter, more saturated gold */
+  --color-primary-foreground: oklch(0.995 0.005 60);
+  
+  /* Secondary UI - For button variants */
+  --color-secondary: oklch(0.88 0.01 60);          /* Secondary button background */
+  --color-secondary-foreground: oklch(0.20 0.01 240);
+  
+  /* Accent - Tertiary interactive elements */
+  --color-accent: oklch(0.90 0.01 60);             /* Subtle interactive elements */
+  --color-accent-foreground: oklch(0.20 0.01 240);
+  
+  /* Semantic colors - Optimized for light backgrounds */
+  --color-destructive: oklch(0.55 0.22 27);        /* Rich red for contrast */
+  --color-destructive-foreground: oklch(0.995 0.005 60);
+  
+  /* Semantic colors - Success (optimized for light) */
+  --color-success: oklch(0.45 0.18 160);           /* Darker green for contrast */
+  --color-success-foreground: oklch(0.995 0.005 60);
+  
+  /* Semantic colors - Warning (optimized for light) */
+  --color-warning: oklch(0.55 0.18 70);            /* Richer amber for contrast */
+  --color-warning-foreground: oklch(0.20 0.01 240);
+  
+  /* Semantic colors - Info (optimized for light) */
+  --color-info: oklch(0.50 0.18 240);              /* Deeper blue for contrast */
+  --color-info-foreground: oklch(0.995 0.005 60);
+  
+  /* Interactive UI elements - More distinct */
+  --color-border: oklch(0.80 0.01 60);             /* Visible borders */
+  --color-ring: oklch(0.62 0.20 85);               /* Gold focus ring */
+  
+  /* Inset highlight color for top inner glow */
+  --color-highlight-inset: oklch(1 0 0 / 0.50);    /* Stronger white inset for light mode */
+  
+  /* ===================================
+     GRADIENTS FOR HIGHLIGHT CARDS
+     Premium feel with subtle gold accent
+     =================================== */
+  
+  /* Subtle gold accent gradient for featured cards */
+  --gradient-highlight: linear-gradient(
+    135deg,
+    oklch(0.99 0.002 60) 0%,
+    oklch(0.96 0.005 60) 50%,
+    oklch(0.62 0.20 85 / 0.08) 100%
+  );
+  
+  --gradient-highlight-hover: linear-gradient(
+    135deg,
+    oklch(0.98 0.003 60) 0%,
+    oklch(0.95 0.006 60) 50%,
+    oklch(0.62 0.20 85 / 0.12) 100%
+  );
+  
+  /* Premium shimmer gradient for CTAs */
+  --gradient-premium: linear-gradient(
+    135deg,
+    oklch(0.60 0.22 88) 0%,
+    oklch(0.68 0.25 78) 50%,
+    oklch(0.60 0.22 88) 100%
+  );
+}
+
+/* ===================================
+   BASE APPLICATION STYLES
+   =================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-body);
+  font-feature-settings: "rlig" 1, "calt" 1;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===================================
+   ENHANCED UX STYLES
+   =================================== */
+
+::placeholder {
+  color: oklch(from var(--color-muted-foreground) l c h / 0.5);
+  opacity: 1;
+}
+
+/* Focus states are handled by individual components via ring utilities */
+/* No global focus-visible styles to avoid conflicts with component-level rings */
+
+/* Note: Avoid global `scroll-behavior: smooth`.
+   React Router's ScrollRestoration manages scroll positions on navigation.
+   Global smooth scrolling can cause visible/late animated scroll jumps. */
+
+/* ===================================
+   ACCESSIBILITY - REDUCED MOTION
+   =================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Configure dark mode to use class-based strategy instead of media query
+   - Light mode: when .light class is present on <html>
+   - Dark mode: when .dark class is present on <html>
+   This overrides the default @media (prefers-color-scheme: dark) behavior */
+@variant dark (.dark &);

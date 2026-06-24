@@ -1,0 +1,370 @@
+import React, { useMemo, useState } from 'react';
+import { useStripe, useElements, ExpressCheckoutElement, PaymentElement } from '@stripe/react-stripe-js';
+import type { StripeError, StripeExpressCheckoutElementConfirmEvent } from '@stripe/stripe-js';
+import { ArrowLeft, AlertCircle, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Stack } from '@/components/layout';
+import { InlineSpinner } from '@/components/ui/spinner';
+import { useI18n } from '@/hooks/useI18n';
+import { useCreateOrganizationWithRetry } from '@/hooks/useCreateOrganizationWithRetry';
+import { paymentElementOptions, expressCheckoutOptions } from '@/lib/stripe/config';
+import { getLocalizedErrorMessage, ApiError } from '@/lib/errors';
+import { formatCurrency } from '@/lib/formatters/formatCurrency';
+import { PLAN_FEATURE_KEYS, YEARLY_PLAN } from '@/constants/pricing';
+import { ROUTES } from '@/constants/routes';
+
+/**
+ * PaymentStep - Third step of organization creation wizard
+ * 
+ * This component handles payment collection for both trial and paid subscriptions.
+ * Following Stripe best practices, we collect payment details upfront for both:
+ * - Trial: $0 invoice with SetupIntent (saves payment method for future billing)
+ * - Paid: Regular invoice with PaymentIntent (charges immediately)
+ * 
+ * Uses Express Checkout Element with fallback to standard Payment Element
+ * for maximum payment method coverage (Apple Pay, Google Pay, cards)
+ * 
+ * Flow:
+ * 1. Parent creates Stripe subscription and gets clientSecret
+ * 2. This component shows Express Checkout Element (or Payment Element fallback)
+ * 3. User selects payment method and completes payment
+ * 4. Stripe webhook (`customer.subscription.created`) creates local subscription with INCOMPLETE status
+ * 5. Create organization immediately (with retry logic to handle webhook race condition)
+ *    - Organization creation accepts INCOMPLETE, ACTIVE, or TRIALING subscription status
+ * 6. Redirect to organization page where user can see subscription status
+ * 7. Webhook (`customer.subscription.updated`) later updates status to ACTIVE/TRIALING
+ * 
+ * @param stripeSubscriptionId - Stripe subscription ID to attach to organization
+ * @param organizationName - Name for the organization to be created
+ * @param isTrial - Whether this is a trial subscription (for messaging)
+ * @param onBack - Callback to return to previous step
+ * @param onSuccess - Callback when organization is created successfully
+ */
+interface PaymentStepProps
+{
+  stripeSubscriptionId: string;
+  organizationName: string;
+  isTrial: boolean;
+  intentType: 'setup' | 'payment';
+  onBack: () => void;
+  onSuccess: (orgId: string) => void;
+}
+
+export const PaymentStep: React.FC<PaymentStepProps> = ({
+  stripeSubscriptionId,
+  organizationName,
+  isTrial,
+  intentType,
+  onBack,
+  onSuccess,
+}) =>
+{
+  const { t, currentLanguage } = useI18n();
+  const planFeatures = useMemo(
+    () => PLAN_FEATURE_KEYS.map((key) => t(key as never) as string),
+    [t],
+  );
+  const yearlyPrice = formatCurrency(YEARLY_PLAN.price, currentLanguage, YEARLY_PLAN.currency);
+  const stripe = useStripe();
+  const elements = useElements();
+  const { createOrganizationWithRetry, isCreating } = useCreateOrganizationWithRetry();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [expressCheckoutReady, setExpressCheckoutReady] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const returnUrl = `${window.location.origin}${ROUTES.ORGS.ROOT}`;
+
+
+  const getStripePaymentErrorMessage = (error?: StripeError): string =>
+  {
+    if (!error)
+    {
+      return t('organizations.create.paymentStep.errors.unexpected');
+    }
+
+    if (error.type === 'card_error')
+    {
+      return error.message ?? t('organizations.create.paymentStep.errors.card');
+    }
+
+    if (error.type === 'validation_error')
+    {
+      return error.message ?? t('organizations.create.paymentStep.errors.validation');
+    }
+
+    return error.message ?? t('organizations.create.paymentStep.errors.unexpected');
+  };
+
+  const handleFinalizationError = (error: unknown): void =>
+  {
+    const localizedMessage = ApiError.isApiError(error)
+      ? getLocalizedErrorMessage(error, t)
+      : error instanceof Error
+        ? error.message
+        : t('organizations.create.paymentStep.paymentFailed');
+
+    setErrorMessage(localizedMessage);
+    setStatusMessage(null);
+    setIsProcessing(false);
+  };
+
+  const finalizeOrganizationCreation = async (): Promise<void> =>
+  {
+    const organization = await createOrganizationWithRetry({
+      organizationName,
+      stripeSubscriptionId,
+      onAttempt: (attempt, max) =>
+      {
+        setStatusMessage(
+          attempt === 1
+            ? (t('organizations.create.paymentStep.status.creatingOrganization' as never) as string)
+            : (t('organizations.create.paymentStep.status.retryingOrganization' as never, {
+              attempt,
+              max,
+            }) as string),
+        );
+      },
+    });
+
+    setStatusMessage(null);
+    setIsProcessing(false);
+    onSuccess(organization.id);
+  };
+
+  /**
+   * Handle Express Checkout confirmation
+   */
+  const handleExpressCheckout = async (event: StripeExpressCheckoutElementConfirmEvent) =>
+  {
+    if (!stripe || !elements)
+    {
+      return;
+    }
+
+    setIsProcessing(true);
+    setErrorMessage(null);
+    setStatusMessage(t('organizations.create.paymentStep.status.confirmingWallet' as never) as string);
+    
+    try
+    {
+      const { error } = intentType === 'setup'
+        ? await stripe.confirmSetup({
+          elements,
+          confirmParams: {
+            return_url: returnUrl,
+          },
+          redirect: 'if_required',
+        })
+        : await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: returnUrl,
+          },
+          redirect: 'if_required',
+        });
+
+      if (error)
+      {
+        const friendlyMessage = getStripePaymentErrorMessage(error);
+
+        if (event.paymentFailed)
+        {
+          event.paymentFailed({
+            reason: 'fail',
+            message: friendlyMessage,
+          });
+        }
+
+        setErrorMessage(friendlyMessage);
+        setIsProcessing(false);
+        setStatusMessage(null);
+        return;
+      }
+
+      await finalizeOrganizationCreation();
+    }
+    catch (error)
+    {
+      handleFinalizationError(error);
+    }
+  };
+
+  /**
+   * Handle standard Payment Element submission
+   */
+  const handleStandardPayment = async (e: React.FormEvent) =>
+  {
+    e.preventDefault();
+    
+    if (!stripe || !elements)
+    {
+      return;
+    }
+    
+    setIsProcessing(true);
+    setErrorMessage(null);
+    setStatusMessage(t('organizations.create.paymentStep.status.confirmingCard' as never) as string);
+    
+    try
+    {
+      await elements.submit();
+
+      const { error } = intentType === 'setup'
+        ? await stripe.confirmSetup({
+          elements,
+          confirmParams: {
+            return_url: returnUrl,
+          },
+          redirect: 'if_required',
+        })
+        : await stripe.confirmPayment({
+          elements,
+          confirmParams: {
+            return_url: returnUrl,
+          },
+          redirect: 'if_required',
+        });
+      
+      if (error)
+      {
+        setErrorMessage(getStripePaymentErrorMessage(error));
+        setIsProcessing(false);
+        setStatusMessage(null);
+        return;
+      }
+
+      await finalizeOrganizationCreation();
+    }
+    catch (error)
+    {
+      handleFinalizationError(error);
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>
+          {t('organizations.create.paymentStep.title')}
+        </CardTitle>
+        <CardDescription>
+          {t('organizations.create.paymentStep.description', { name: organizationName })}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={(e) => void handleStandardPayment(e)}>
+          <Stack space="lg">
+            {/* Yearly plan summary */}
+            <div className="p-4 rounded-lg bg-muted/50 border border-border">
+              <Stack space="sm">
+                <div className="flex items-baseline justify-between">
+                  <span className="font-semibold">
+                    {t('organizations.create.planStep.yearly')}
+                  </span>
+                  <span className="text-sm">
+                    {t('organizations.create.planStep.card.yearlyPriceShort' as never, {
+                      yearlyAmount: yearlyPrice,
+                    }) as string}
+                  </span>
+                </div>
+                {planFeatures.map((feature) => (
+                  <div key={feature} className="flex items-start gap-2">
+                    <Check className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                    <span className="text-sm text-muted-foreground">{feature}</span>
+                  </div>
+                ))}
+              </Stack>
+            </div>
+
+            {/* Trial/Subscription Note */}
+            <div className="p-3 rounded-lg bg-muted/50 border border-border">
+              <p className="text-sm text-muted-foreground">
+                {isTrial
+                  ? t('organizations.create.paymentStep.trialNote')
+                  : t('organizations.create.paymentStep.subscriptionNote')}
+              </p>
+            </div>
+
+            {/* Express Checkout Element */}
+            <div>
+              <ExpressCheckoutElement
+                onConfirm={(event) => void handleExpressCheckout(event)}
+                onReady={() => setExpressCheckoutReady(true)}
+                options={expressCheckoutOptions}
+              />
+              
+              {/* Divider - only show if express checkout is ready */}
+              {expressCheckoutReady && (
+                <div className="relative my-4">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-border"></div>
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="bg-background px-2 text-muted-foreground">
+                      {t('common.or')}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Standard Payment Element (fallback) */}
+            <PaymentElement options={paymentElementOptions} />
+
+            {/* Status Message */}
+            {statusMessage && (
+              <div className="p-3 rounded-lg bg-primary/5 border border-border flex items-center gap-2 text-sm text-muted-foreground">
+                <InlineSpinner className="text-primary" />
+                <span>{statusMessage}</span>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {errorMessage && (
+              <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 flex items-start gap-2">
+                <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-destructive">{errorMessage}</p>
+              </div>
+            )}
+
+            {/* Form Actions */}
+            <Stack direction="horizontal" space="md" className="justify-between">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                {
+                  setStatusMessage(null);
+                  setErrorMessage(null);
+                  onBack();
+                }}
+                disabled={isProcessing || isCreating}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                {t('common.back')}
+              </Button>
+
+              <Button
+                type="submit"
+                disabled={!stripe || isProcessing || isCreating}
+                className="min-w-[200px]"
+              >
+                {(isProcessing || isCreating) && (
+                  <InlineSpinner className="mr-2" />
+                )}
+                {isProcessing
+                  ? t('organizations.create.paymentStep.processingPayment')
+                  : isCreating
+                    ? t('organizations.create.paymentStep.creatingOrganization')
+                    : isTrial
+                      ? t('subscription.startTrial')
+                      : t('organizations.create.create')}
+              </Button>
+            </Stack>
+          </Stack>
+        </form>
+      </CardContent>
+    </Card>
+  );
+};

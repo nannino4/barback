@@ -1,0 +1,1219 @@
+{
+    "common": {
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Conferma Password",
+        "firstName": "Nome",
+        "lastName": "Cognome",
+        "phoneNumber": "Numero di Telefono",
+        "optional": "(Opzionale)",
+        "submit": "Invia",
+        "cancel": "Annulla",
+        "loading": "Caricamento...",
+        "save": "Salva",
+        "edit": "Modifica",
+        "close": "Chiudi",
+        "back": "Indietro",
+        "next": "Avanti",
+        "continue": "Continua",
+        "error": "Errore",
+        "success": "Successo",
+        "tryAgain": "Riprova",
+        "you": "tu",
+        "userWithoutName": "utente senza nome",
+        "selected": "Selezionato",
+        "or": "oppure",
+        "refresh": "Aggiorna",
+        "yes": "Sì",
+        "no": "No",
+        "showAll": "Mostra tutto",
+        "showLess": "Mostra meno",
+        "dangerZone": "Zona Pericolosa",
+        "add": "Aggiungi",
+        "clear": "Cancella"
+    },
+    "auth": {
+        "login": {
+            "title": "Accedi",
+            "emailPlaceholder": "Inserisci la tua email",
+            "passwordPlaceholder": "Inserisci la tua password",
+            "showPassword": "Mostra password",
+            "hidePassword": "Nascondi password",
+            "forgotPassword": "Hai dimenticato la password?",
+            "signIn": "Accedi",
+            "signingIn": "Accesso in corso...",
+            "noAccount": "Non hai un account?",
+            "signUp": "Registrati",
+            "continueWith": "Oppure continua con email",
+            "googleLogin": "Continua con Google",
+            "backToLogin": "Torna al login",
+            "success": "Accesso effettuato con successo!",
+            "alreadyLoggedIn": "Hai già effettuato l'accesso",
+            "alreadyLoggedInDescription": "Sei attualmente autenticato. Puoi andare alla tua dashboard o disconnetterti per accedere con un account diverso.",
+            "goToDashboard": "Vai alla Dashboard",
+            "signOut": "Disconnetti"
+        },
+        "register": {
+            "title": "Crea il tuo account",
+            "success": "Account creato con successo!",
+            "firstNamePlaceholder": "Inserisci il tuo nome",
+            "lastNamePlaceholder": "Inserisci il tuo cognome",
+            "emailPlaceholder": "Inserisci la tua email",
+            "phoneNumberPlaceholder": "Inserisci il tuo numero di telefono (opzionale)",
+            "passwordPlaceholder": "Crea una password",
+            "confirmPasswordPlaceholder": "Conferma la tua password",
+            "createAccount": "Crea Account",
+            "creatingAccount": "Creazione account...",
+            "hasAccount": "Hai già un account?",
+            "signIn": "Accedi",
+            "continueWith": "Oppure continua con email",
+            "googleSignup": "Registrati con Google",
+            "showPassword": "Mostra password",
+            "hidePassword": "Nascondi password",
+            "requirements": "Requisiti della Password:",
+            "requirementLength": "Almeno 8 caratteri",
+            "requirementUppercase": "Una lettera maiuscola",
+            "requirementLowercase": "Una lettera minuscola",
+            "requirementNumber": "Un numero",
+            "requirementSpecial": "Un carattere speciale"
+        },
+        "forgotPassword": {
+            "title": "Hai dimenticato la password?",
+            "emailPlaceholder": "Inserisci la tua email",
+            "sendLink": "Invia Link di Reset",
+            "sendingLink": "Invio link...",
+            "cooldown": "Aspetta {{seconds}}s",
+            "backToLogin": "Torna all'Accesso",
+            "successMessage": "Email di reset password inviata nuovamente",
+            "genericSuccessMessage": "Se esiste un account con quell'email, riceverai le istruzioni per il reset della password."
+        },
+        "forgotPasswordSent": {
+            "title": "Controlla la Tua Email",
+            "description": "Abbiamo inviato un link per reimpostare la password al tuo indirizzo email.",
+            "instructions": "Se esiste un account con quell'email, riceverai le istruzioni per il reset della password.",
+            "linkExpires": "Il link scadrà tra 15 minuti.",
+            "checkSpam": "Non hai ricevuto l'email? Controlla la cartella spam.",
+            "resendingEmail": "Reinvio Email...",
+            "resendEmailCountdown": "Reinvia Email ({{countdown}}s)",
+            "resendEmail": "Reinvia Email",
+            "backToSignIn": "Torna all'Accesso"
+        },
+        "resetPassword": {
+            "title": "Reimposta la Tua Password",
+            "newPassword": "Nuova Password",
+            "newPasswordPlaceholder": "Inserisci la tua nuova password",
+            "confirmPassword": "Conferma Password",
+            "confirmPasswordPlaceholder": "Conferma la tua nuova password",
+            "hidePassword": "Nascondi password",
+            "showPassword": "Mostra password",
+            "requirements": "Requisiti Password:",
+            "requirementLength": "Almeno 8 caratteri",
+            "requirementUppercase": "Una lettera maiuscola",
+            "requirementLowercase": "Una lettera minuscola",
+            "requirementNumber": "Un numero",
+            "requirementSpecial": "Un carattere speciale",
+            "updating": "Aggiornamento Password...",
+            "updateButton": "Aggiorna Password",
+            "validating": "Validazione link di reset...",
+            "successMessage": "Password aggiornata con successo",
+            "errorMessage": "Impossibile reimpostare la password. Riprova.",
+            "backToSignIn": "Torna al Login"
+        },
+        "resetPasswordSuccess": {
+            "title": "Password Aggiornata!",
+            "description": "La tua password è stata reimpostata con successo.",
+            "securityNotice": "Per la tua sicurezza, tutte le altre sessioni sono state disconnesse.",
+            "emailNotice": "Riceverai a breve un'email di conferma.",
+            "signInButton": "Accedi con Nuova Password"
+        },
+        "resetPasswordError": {
+            "title": "Link di Reset Scaduto",
+            "description": "Questo link di reset password non è valido o è scaduto.",
+            "whatCanYouDo": "Cosa puoi fare?",
+            "requestNewLink": "Richiedi un nuovo link per il reset della password",
+            "trySigningIn": "Prova ad accedere se ricordi la password",
+            "contactSupport": "Contatta il supporto se continui ad avere problemi",
+            "requestNewLinkButton": "Richiedi Nuovo Link di Reset",
+            "requestNewReset": "Richiedi Nuovo Link di Reset",
+            "backToSignIn": "Torna all'Accesso",
+            "needHelp": "Hai bisogno di aiuto?",
+            "contactSupportLink": "Contatta il Supporto"
+        },
+        "sendVerificationEmail": {
+            "title": "Verifica la tua email",
+            "emailSentTitle": "Email inviata!",
+            "sendFailedTitle": "Invio email fallito",
+            "sentTo": "Email di verifica inviata a",
+            "clickLinkInstructions": "Clicca il link nell'email per verificare il tuo account e accedere a tutte le funzionalità.",
+            "tryAgainInstructions": "Riprova o contatta il supporto se il problema persiste.",
+            "resendEmail": "Reinvia email di verifica",
+            "resendingEmail": "Reinvio email...",
+            "resendInSeconds": "Reinvia tra {{seconds}}s",
+            "emailSentSuccess": "Email di verifica inviata! Controlla la tua casella di posta.",
+            "checkYourEmail": "Controlla la tua email",
+            "alreadySentDuringRegistration": "Abbiamo già inviato un'email di verifica a {{email}} al momento della registrazione.",
+            "checkSpamAndResend": "Non l'hai ricevuta? Controlla la cartella spam o richiedi una nuova email di verifica qui sotto."
+        },
+        "verifyEmailCallback": {
+            "verifying": "Verifica della tua email...",
+            "verifyingInstructions": "Attendere prego mentre verifichiamo il tuo indirizzo email...",
+            "success": "Email verificata con successo! Ora puoi accedere a tutte le funzionalità.",
+            "successTitle": "Email Verificata!",
+            "successMessage": "La tua email è stata verificata con successo. Ora hai accesso completo a tutte le funzionalità.",
+            "redirecting": "Reindirizzamento in corso...",
+            "redirectingIn": "Reindirizzamento tra {{seconds}}s...",
+            "errorTitle": "Verifica Fallita",
+            "errorInstructions": "Il link di verifica potrebbe essere non valido o scaduto. Richiedi un nuovo link qui sotto.",
+            "invalidLink": "Link di verifica non valido.",
+            "requestNewLink": "Richiedi Nuovo Link di Verifica",
+            "goToLogin": "Vai al Login"
+        },
+        "emailVerification": {
+            "success": "Email verificata con successo! Ora puoi accedere a tutte le funzionalità."
+        },
+        "logout": {
+            "success": "Disconnessione avvenuta con successo"
+        },
+        "errors": {
+            "emailAlreadyVerified": "La tua email è già verificata! Reindirizzamento...",
+            "invalidOrExpiredToken": "Questo link di verifica non è valido o è scaduto. Richiedine uno nuovo.",
+            "userNotFound": "Account non trovato. Registrati prima.",
+            "invalidCredentials": "Email o password non validi. Riprova.",
+            "unauthorized": "La tua sessione è scaduta. Effettua nuovamente l'accesso.",
+            "sessionExpired": "La tua sessione è scaduta. Effettua nuovamente l'accesso.",
+            "emailAlreadyExists": "Esiste già un account con questa email. Effettua l'accesso.",
+            "wrongAuthProvider": "Questo account utilizza un metodo di accesso diverso. Utilizza l'opzione corretta.",
+            "authenticationFailed": "Autenticazione fallita. Riprova.",
+            "googleAuthCancelled": "L'autenticazione Google è stata annullata o è fallita.",
+            "invalidGoogleResponse": "Risposta di autenticazione non valida da Google.",
+            "invalidAuthState": "Stato di autenticazione non valido. Riprova.",
+            "googleSignInSuccess": "Accesso con Google effettuato con successo!",
+            "googleTokenExchangeFailed": "Impossibile completare l'accesso con Google. Riprova.",
+            "googleUserInfoFailed": "Impossibile recuperare le informazioni del tuo account Google. Riprova.",
+            "googleTokenInvalid": "La tua autenticazione Google è scaduta. Effettua nuovamente l'accesso.",
+            "googleEmailNotVerified": "L'email del tuo account Google deve essere verificata. Verifica prima la tua email con Google.",
+            "googleAccountLinkingConflict": "Esiste già un account con questa email che utilizza un metodo di accesso diverso. Utilizza il metodo di accesso originale."
+        }
+    },
+    "errors": {
+        "networkError": "Errore di rete. Controlla la connessione e riprova.",
+        "networkTimeout": "Richiesta scaduta. Controlla la connessione e riprova.",
+        "networkCors": "Connessione bloccata dalle impostazioni di sicurezza. Contatta l'assistenza.",
+        "networkConnectionRefused": "Impossibile connettersi al server. Riprova più tardi.",
+        "networkDnsFailure": "Impossibile raggiungere il server. Controlla la connessione.",
+        "emailServiceUnavailable": "Il servizio email è temporaneamente non disponibile. Riprova più tardi.",
+        "rateLimitExceeded": "Troppe richieste. Attendi prima di riprovare.",
+        "rateLimitExceededWithTime": "Troppe richieste. Attendi {{seconds}} secondi prima di riprovare.",
+        "unauthorized": "Accesso negato. Effettua l'accesso per continuare.",
+        "forbidden": "Non hai il permesso per eseguire questa azione.",
+        "badRequest": "Richiesta non valida. Controlla i dati inseriti.",
+        "notFoundError": "La risorsa richiesta non è stata trovata.",
+        "serverError": "Si è verificato un errore del server. Riprova più tardi o contatta l'assistenza.",
+        "serviceUnavailable": "Il servizio è temporaneamente non disponibile. Riprova più tardi.",
+        "validationError": "I dati ricevuti dal server non sono validi. Riprova.",
+        "genericError": "Si è verificato un errore imprevisto. Riprova.",
+        "sessionExpired": "La tua sessione è scaduta. Accedi di nuovo.",
+        "boundary": {
+            "title": "Qualcosa è andato storto",
+            "message": "Ci dispiace, ma si è verificato un errore imprevisto. L'errore è stato registrato e lo esamineremo.",
+            "apiErrorTitle": "Errore del Server",
+            "networkErrorTitle": "Errore di Connessione",
+            "validationErrorTitle": "Errore nei Dati",
+            "tryAgain": "Riprova",
+            "reloadPage": "Ricarica Pagina",
+            "footer": "Se il problema persiste, contatta l'assistenza."
+        },
+        "routeError": {
+            "title": "Errore della Pagina",
+            "message": "Questa pagina ha riscontrato un errore imprevisto. Puoi riprovare o tornare alla sicurezza.",
+            "tryAgain": "Riprova",
+            "backHome": "Torna alla Home",
+            "footer": "Le altre pagine dovrebbero funzionare normalmente."
+        },
+        "notFound": {
+            "title": "Pagina Non Trovata",
+            "message": "La pagina che stai cercando non esiste o è stata spostata.",
+            "suggestions": "Ecco alcuni link utili:",
+            "goBack": "Torna Indietro",
+            "goHome": "Vai alla Home",
+            "goInventory": "Vai all'Inventario",
+            "goLogin": "Accedi"
+        }
+    },
+    "validation": {
+        "required": "Questo campo è richiesto",
+        "email": {
+            "required": "Email è richiesta",
+            "invalid": "Inserisci un indirizzo email valido",
+            "maxLength": "L'email deve essere inferiore a 255 caratteri",
+            "tooLong": "L'email deve essere inferiore a 255 caratteri"
+        },
+        "name": {
+            "firstNameRequired": "Il nome è richiesto",
+            "lastNameRequired": "Il cognome è richiesto",
+            "tooLong": "Il nome non può superare i 50 caratteri",
+            "invalidChars": "Il nome può contenere solo lettere, spazi, trattini e apostrofi"
+        },
+        "phone": {
+            "invalidFormat": "Inserisci un numero di telefono valido"
+        },
+        "language": {
+            "invalid": "Seleziona una lingua valida"
+        },
+        "password": {
+            "required": "Password è richiesta",
+            "mustBeString": "La password deve essere testo",
+            "minLength": "La password deve contenere almeno 8 caratteri",
+            "maxLength": "La password non può superare i 20 caratteri",
+            "weak": "La password deve contenere almeno 8 caratteri con maiuscola, minuscola, numero e carattere speciale",
+            "uppercase": "La password deve contenere almeno una lettera maiuscola",
+            "lowercase": "La password deve contenere almeno una lettera minuscola",
+            "number": "La password deve contenere almeno un numero",
+            "specialChar": "La password deve contenere almeno un carattere speciale",
+            "confirmRequired": "Conferma la tua password",
+            "noMatch": "Le password non corrispondono"
+        },
+        "currentPassword": {
+            "required": "La password attuale è richiesta",
+            "mustBeString": "La password attuale deve essere testo"
+        },
+        "newPassword": {
+            "required": "La nuova password è richiesta",
+            "maxLength": "La nuova password non può superare i 20 caratteri",
+            "weak": "La nuova password deve contenere almeno 8 caratteri con maiuscola, minuscola, numero e carattere speciale"
+        },
+        "firstName": {
+            "required": "Nome è richiesto",
+            "mustBeString": "Il nome deve essere testo",
+            "minLength": "Il nome deve contenere almeno 1 carattere",
+            "maxLength": "Il nome non può superare i 50 caratteri"
+        },
+        "lastName": {
+            "required": "Cognome è richiesto",
+            "mustBeString": "Il cognome deve essere testo",
+            "minLength": "Il cognome deve contenere almeno 1 carattere",
+            "maxLength": "Il cognome non può superare i 50 caratteri"
+        },
+        "phoneNumber": {
+            "required": "Numero di telefono è richiesto",
+            "invalid": "Inserisci un numero di cellulare italiano valido (+39 3XX XXX XXXX)"
+        },
+        "profilePictureUrl": {
+            "mustBeString": "L'URL dell'immagine del profilo deve essere testo",
+            "invalidUrl": "L'URL dell'immagine del profilo deve essere un URL valido"
+        },
+        "token": {
+            "required": "Token è richiesto",
+            "mustBeString": "Il token deve essere testo"
+        },
+        "refreshToken": {
+            "invalidJWT": "Formato del token di aggiornamento non valido"
+        },
+        "code": {
+            "required": "Codice di autorizzazione è richiesto",
+            "mustBeString": "Il codice di autorizzazione deve essere testo"
+        },
+        "state": {
+            "required": "Il parametro state è richiesto",
+            "mustBeString": "Il parametro state deve essere testo"
+        },
+        "org": {
+            "name": {
+                "required": "Nome dell'organizzazione è richiesto",
+                "mustBeString": "Il nome dell'organizzazione deve essere testo"
+            },
+            "subscriptionId": {
+                "required": "ID abbonamento è richiesto",
+                "invalidObjectId": "Formato ID abbonamento non valido"
+            },
+            "settings": {
+                "required": "Impostazioni organizzazione sono richieste",
+                "mustBeObject": "Le impostazioni dell'organizzazione devono essere un oggetto",
+                "invalid": "Le impostazioni dell'organizzazione non sono valide"
+            },
+            "role": {
+                "invalid": "Ruolo organizzazione non valido"
+            },
+            "currency": {
+                "mustBeString": "La valuta deve essere testo",
+                "exactLength": "Il codice valuta deve essere esattamente di 3 caratteri",
+                "invalidFormat": "Il codice valuta deve essere di 3 lettere maiuscole (es. EUR, USD)"
+            }
+        },
+        "product": {
+            "name": {
+                "required": "Nome del prodotto è richiesto",
+                "mustBeString": "Il nome del prodotto deve essere testo",
+                "maxLength": "Il nome del prodotto non può superare {{max}} caratteri"
+            },
+            "description": {
+                "required": "Descrizione del prodotto è richiesta",
+                "mustBeString": "La descrizione del prodotto deve essere testo",
+                "maxLength": "La descrizione non può superare {{max}} caratteri"
+            },
+            "brand": {
+                "required": "Marca del prodotto è richiesta",
+                "mustBeString": "La marca del prodotto deve essere testo",
+                "maxLength": "La marca non può superare {{max}} caratteri"
+            },
+            "defaultUnit": {
+                "required": "Unità predefinita è richiesta",
+                "mustBeString": "L'unità predefinita deve essere testo",
+                "maxLength": "L'unità non può superare {{max}} caratteri"
+            },
+            "defaultPurchasePrice": {
+                "mustBeNumber": "Il prezzo d'acquisto predefinito deve essere un numero",
+                "min": "Il prezzo d'acquisto predefinito non può essere negativo"
+            },
+            "currentQuantity": {
+                "mustBeNumber": "La quantità attuale deve essere un numero",
+                "min": "La quantità attuale non può essere negativa"
+            },
+            "categoryIds": {
+                "mustBeArray": "Gli ID delle categorie devono essere un array",
+                "invalidObjectId": "Formato ID categoria non valido"
+            },
+            "imageUrl": {
+                "invalidUrl": "Formato URL immagine non valido"
+            }
+        },
+        "category": {
+            "name": {
+                "required": "Nome della categoria è richiesto",
+                "mustBeString": "Il nome della categoria deve essere testo",
+                "maxLength": "Il nome della categoria non può superare {{max}} caratteri"
+            },
+            "description": {
+                "required": "Descrizione della categoria è richiesta",
+                "mustBeString": "La descrizione della categoria deve essere testo",
+                "maxLength": "La descrizione non può superare {{max}} caratteri"
+            },
+            "parentId": {
+                "invalidObjectId": "Formato ID categoria padre non valido"
+            }
+        },
+        "inventory": {
+            "type": {
+                "invalid": "Tipo di registro inventario non valido"
+            },
+            "quantity": {
+                "mustBeNumber": "La quantità deve essere un numero",
+                "required": "La quantità è richiesta",
+                "invalid": "La quantità deve essere un numero",
+                "nonZero": "La quantità non può essere zero",
+                "noChange": "Nessuna variazione di scorte rilevata",
+                "negativeStocktake": "Il conteggio reale non può essere negativo",
+                "negativeResult": "Non puoi scendere sotto zero. Attuale: {{current}}, riduzione max: {{maxReduction}}"
+            },
+            "note": {
+                "required": "Nota è richiesta per le modifiche di stock",
+                "mustBeString": "La nota deve essere testo",
+                "maxLength": "La nota deve avere al massimo {{max}} caratteri"
+            }
+        },
+        "invitation": {
+            "invitedEmail": {
+                "required": "Email invitato è richiesta",
+                "invalid": "Inserisci un indirizzo email valido"
+            },
+            "role": {
+                "required": "Ruolo è richiesto",
+                "invalid": "Ruolo selezionato non valido"
+            }
+        },
+        "subscription": {
+            "status": {
+                "required": "Stato abbonamento è richiesto",
+                "invalid": "Stato abbonamento non valido"
+            },
+            "autoRenew": {
+                "required": "Impostazione rinnovo automatico è richiesta",
+                "mustBeBoolean": "Il rinnovo automatico deve essere vero o falso"
+            },
+            "billingInterval": {
+                "invalid": "Intervallo di fatturazione non valido"
+            },
+            "isTrial": {
+                "mustBeBoolean": "Il flag trial deve essere vero o falso"
+            },
+            "paymentMethodId": {
+                "mustBeString": "L'ID del metodo di pagamento deve essere testo"
+            }
+        },
+        "admin": {
+            "isActive": {
+                "mustBeBoolean": "Lo stato attivo deve essere vero o falso"
+            },
+            "role": {
+                "invalid": "Ruolo utente non valido"
+            }
+        }
+    },
+    "theme": {
+        "toggle": "Cambia tema",
+        "light": "Chiaro",
+        "dark": "Scuro",
+        "system": "Sistema"
+    },
+    "language": {
+        "toggle": "Cambia lingua",
+        "english": "English",
+        "italian": "Italiano"
+    },
+    "nav": {
+        "login": "Accedi",
+        "logout": "Logout",
+        "home": "Home",
+        "inventory": "Inventario",
+        "alerts": "Avvisi",
+        "more": "Altro",
+        "orgSettings": "Impostazioni Locale"
+    },
+    "landing": {
+        "hero": {
+            "title": "Barback",
+            "subtitle": "Il sofisticato sistema di gestione inventario per cocktail bar. Costruito per operazioni mobile-first con l'eleganza di uno speakeasy premium.",
+            "getStarted": "Inizia",
+            "signIn": "Accedi"
+        },
+        "features": {
+            "inventory": {
+                "title": "Gestione Inventario",
+                "description": "Tieni traccia dei tuoi distillati, vini e mixer con precisione. Monitora i livelli di scorte e ricevi avvisi quando le forniture si esauriscono."
+            },
+            "mobile": {
+                "title": "Ottimizzato per Mobile",
+                "description": "Progettato per interazioni touch e perfetto per l'uso in ambienti bar poco illuminati."
+            },
+            "team": {
+                "title": "Collaborazione di Team",
+                "description": "Invita i membri del tuo team e gestisci i ruoli con precisione. Mantieni tutti sincronizzati."
+            },
+            "alerts": {
+                "title": "Avvisi Intelligenti",
+                "description": "Ricevi notifiche quando l'inventario si esaurisce con avvisi di soglia personalizzabili e promemoria basati sul tempo."
+            },
+            "analytics": {
+                "title": "Analisi e Insights",
+                "description": "Tieni traccia dei modelli di consumo per periodo di tempo, categoria e prodotto per ottimizzare il tuo inventario."
+            },
+            "reports": {
+                "title": "Report Inventario",
+                "description": "Genera report dettagliati dell'inventario per intervallo di date per tracciare i movimenti e le tendenze delle scorte."
+            }
+        },
+        "cta": {
+            "title": "Pronto a Trasformare la Gestione del Tuo Bar?",
+            "description": "Unisciti ai cocktail bar di Roma che già risparmiano tempo e riducono gli sprechi con Barback.",
+            "button": "Inizia Prova Gratuita"
+        }
+    },
+    "dashboard": {
+        "welcome": "Benvenuto nella Tua Dashboard",
+        "placeholder": "La tua dashboard è in preparazione. Altre funzionalità in arrivo!"
+    },
+    "inventory": {
+        "title": "Inventario",
+        "placeholder": "Funzionalità di gestione inventario in arrivo!",
+        "addProduct": "Aggiungi Prodotto",
+        "productCount": "prodotti",
+        "productCount_one": "prodotto",
+        "productCount_other": "prodotti",
+        "searchPlaceholder": "Cerca prodotti...",
+        "allCategories": "Tutte le Categorie",
+        "categoryFilterTitle": "Filtra per categoria",
+        "categoryFilterDescription": "Scegli una categoria per restringere la lista prodotti.",
+        "categorySearchPlaceholder": "Cerca categorie...",
+        "categorySearchEmpty": "Nessuna categoria corrisponde alla ricerca.",
+        "filterStatus": "Visualizzati {{showing}} di {{total}} prodotti",
+        "clearFilters": "Cancella filtri",
+        "adjustStock": "Modifica scorte",
+        "adjustStockSuccess": "Scorte modificate con successo",
+        "category": "Categoria",
+        "uncategorized": "Senza categoria",
+        "empty": {
+            "title": "Nessun prodotto",
+            "description": "Aggiungi il tuo primo prodotto per iniziare a tracciare l'inventario"
+        },
+        "noResults": {
+            "title": "Nessun prodotto trovato",
+            "description": "Prova a modificare la ricerca o i filtri"
+        },
+        "adjustment": {
+            "title": "Modifica Scorte",
+            "currentStock": "Scorte attuali",
+            "quantityLabel": "Variazione quantità",
+            "newStockLevelLabel": "Scorte aggiornate",
+            "actualCountLabel": "Conteggio reale",
+            "quantityPlaceholder": "es. +3 o -2",
+            "newStockLevelPlaceholder": "Inserisci il nuovo livello",
+            "actualCountPlaceholder": "es. 12",
+            "reasonLabel": "Motivo",
+            "decrease": "Riduci quantità",
+            "increase": "Aumenta quantità",
+            "save": "Salva modifica",
+            "saving": "Salvataggio...",
+            "noteLabel": "Nota (opzionale)",
+            "notePlaceholder": "Aggiungi contesto (opzionale)",
+            "noteCount": "{{count}} / {{max}}",
+            "preview": {
+                "title": "Nuovo livello di scorte",
+                "helper": "Inserisci una quantità per visualizzare il nuovo livello"
+            },
+            "stocktakeInfo": {
+                "title": "Inventario con conteggio reale",
+                "description": "Inserisci il conteggio reale delle scorte. Calcoleremo automaticamente la modifica."
+            },
+            "types": {
+                "purchase": "Acquisto",
+                "consumption": "Consumo",
+                "adjustment": "Correzione",
+                "stocktake": "Inventario"
+            },
+            "mismatch": {
+                "title": "Controlla il motivo",
+                "purchase": "L'acquisto è di solito usato per aumenti.",
+                "consumption": "Il consumo è di solito usato per riduzioni."
+            },
+            "errors": {
+                "title": "Impossibile salvare la modifica",
+                "saveFailed": "Non siamo riusciti a salvare. Riprova."
+            }
+        }
+    },
+    "product": {
+        "createSuccess": "Prodotto creato con successo",
+        "updateSuccess": "Prodotto aggiornato con successo",
+        "deleteSuccess": "Prodotto eliminato con successo",
+        "detail": {
+            "actionsButton": "Azioni",
+            "actionsTitle": "Azioni prodotto",
+            "editButton": "Modifica",
+            "deleteButton": "Elimina",
+            "notFound": "Prodotto non trovato",
+            "errorTitle": "Impossibile caricare il prodotto",
+            "errorDescription": "Non siamo riusciti a caricare questo prodotto. Riprova.",
+            "info": {
+                "title": "Dettagli prodotto",
+                "descriptionLabel": "Descrizione",
+                "categoriesLabel": "Categorie",
+                "unitLabel": "Unità di misura",
+                "purchasePriceLabel": "Prezzo di acquisto",
+                "notProvided": "Non specificato"
+            },
+            "stock": {
+                "title": "Scorte",
+                "currentLabel": "Quantità attuale"
+            },
+            "history": {
+                "title": "Storico recente",
+                "viewAll": "Vedi tutto lo storico",
+                "fullTitle": "Storico inventario",
+                "emptyTitle": "Nessuno storico",
+                "emptyDescription": "Le modifiche di inventario appariranno qui.",
+                "errorTitle": "Impossibile caricare lo storico",
+                "errorDescription": "Non siamo riusciti a caricare lo storico inventario. Riprova."
+            },
+            "delete": {
+                "confirmTitle": "Eliminare {{name}}?",
+                "confirmDescription": "Questo eliminerà definitivamente il prodotto e il suo storico di inventario.",
+                "confirmButton": "Elimina prodotto"
+            }
+        },
+        "form": {
+            "createTitle": "Nuovo Prodotto",
+            "editTitle": "Modifica Prodotto",
+            "nameLabel": "Nome prodotto",
+            "namePlaceholder": "es. Johnnie Walker Black",
+            "brandLabel": "Brand",
+            "brandPlaceholder": "es. Johnnie Walker",
+            "descriptionLabel": "Descrizione",
+            "descriptionPlaceholder": "Note, formato o dettagli",
+            "unitLabel": "Unità di misura",
+            "unitPlaceholder": "es. bottiglia, ml, oz",
+            "purchasePriceLabel": "Prezzo di acquisto",
+            "purchasePricePlaceholder": "es. 18,50",
+            "initialQuantityLabel": "Quantità iniziale",
+            "initialQuantityPlaceholder": "es. 12",
+            "categoriesLabel": "Categorie",
+            "categoriesPlaceholder": "Seleziona categorie",
+            "categoriesSearchPlaceholder": "Cerca categorie...",
+            "categoriesEmpty": "Nessuna categoria trovata",
+            "categoriesAdd": "Aggiungi categoria",
+            "saveCreate": "Crea prodotto",
+            "saveUpdate": "Salva modifiche",
+            "saving": "Salvataggio..."
+        }
+    },
+    "category": {
+        "createSuccess": "Categoria creata con successo",
+        "updateSuccess": "Categoria aggiornata con successo",
+        "deleteSuccess": "Categoria eliminata con successo",
+        "form": {
+            "createTitle": "Nuova Categoria",
+            "editTitle": "Modifica Categoria",
+            "nameLabel": "Nome categoria",
+            "namePlaceholder": "es. Whiskey",
+            "descriptionLabel": "Descrizione",
+            "descriptionPlaceholder": "Dettagli opzionali",
+            "parentLabel": "Categoria padre",
+            "parentPlaceholder": "Nessuna categoria padre",
+            "saveCreate": "Crea categoria",
+            "saveUpdate": "Salva modifiche",
+            "saving": "Salvataggio..."
+        }
+    },
+    "alerts": {
+        "title": "Avvisi",
+        "placeholder": "Avvisi di scorte basse e notifiche in arrivo!"
+    },
+    "more": {
+        "title": "Altro",
+        "profile": "Profilo",
+        "profileDescription": "Visualizza e modifica le informazioni del tuo account",
+        "myVenuesDescription": "Gestisci i tuoi locali e gli inviti",
+        "orgSettingsDescription": "Gestisci membri, impostazioni e abbonamento",
+        "help": "Aiuto e Supporto",
+        "helpDescription": "Ottieni aiuto e contatta il supporto"
+    },
+    "home": {
+        "welcome": "Benvenuto in Barback",
+        "description": "Il sofisticato sistema di gestione inventario per cocktail bar. Costruito per operazioni mobile-first con l'eleganza di uno speakeasy premium.",
+        "features": {
+            "inventory": {
+                "title": "Gestione Inventario",
+                "description": "Tieni traccia dei tuoi distillati, vini e mixer con precisione. Monitora i livelli di scorte e ricevi avvisi quando le forniture si esauriscono."
+            },
+            "mobile": {
+                "title": "Ottimizzato per Mobile",
+                "description": "Progettato per interazioni touch e perfetto per l'uso in ambienti bar poco illuminati."
+            },
+            "team": {
+                "title": "Collaborazione di Team",
+                "description": "Invita i membri del tuo team e gestisci i ruoli con precisione. Mantieni tutti sincronizzati."
+            }
+        }
+    },
+    "organizations": {
+        "title": "Seleziona dove vuoi lavorare oggi",
+        "selectDescription": "Scegli un locale per accedere ai tuoi prodotti e inventario.",
+        "selectVenue": "Seleziona Locale",
+        "myOrganizations": "I Miei Locali",
+        "myVenues": "I Miei Locali",
+        "ownedVenues": "Locali di Proprietà",
+        "invitations": "Inviti",
+        "invitationsCount": "Inviti ({{count}})",
+        "noOrganizations": "Ancora nessun locale",
+        "noOrganizationsDescription": "Crea il tuo primo locale per iniziare, o attendi un invito da un team.",
+        "noInvitations": "Nessun invito in sospeso",
+        "noInvitationsDescription": "Non hai inviti in sospeso al momento.",
+        "noResults": "Nessun locale trovato",
+        "noResultsDescription": "Prova a modificare la ricerca o i filtri per trovare quello che stai cercando.",
+        "createOrganization": "Crea Locale",
+        "selectOrganization": "Seleziona Locale",
+        "switchOrganization": "Cambia Locale",
+        "manageOrganizations": "Gestisci Locali",
+        "createdBy": "Creata da {{name}}",
+        "unknownOwner": "Proprietario Sconosciuto",
+        "ownerLabel": "Proprietario",
+        "members": "{{count}} membro",
+        "members_plural": "{{count}} membri",
+        "products": "{{count}} prodotto",
+        "products_plural": "{{count}} prodotti",
+        "select": "Seleziona",
+        "selected": "Selezionata",
+        "manage": "Gestisci",
+        "viewDetails": "Vedi dettagli",
+        "switchTo": "Passa a {{name}}",
+        "noOrgSelected": {
+            "title": "Nessun locale selezionato",
+            "description": "Seleziona un locale per accedere all'inventario, ordini e altro.",
+            "goToOrganizations": "Seleziona un Locale"
+        },
+        "role": {
+            "label": "Ruolo",
+            "all": "Tutti i Ruoli",
+            "owner": "Proprietario",
+            "manager": "Manager",
+            "staff": "Staff"
+        },
+        "filters": {
+            "searchPlaceholder": "Cerca locali...",
+            "roleFilter": "Filtra per ruolo",
+            "clearFilters": "Cancella filtri"
+        },
+        "create": {
+            "title": "Crea Nuovo Locale",
+            "description": "Configura un nuovo locale con la propria sottoscrizione e inventario",
+            "wizard": {
+                "step": "Passo {{current}} di {{total}}",
+                "stepName": {
+                    "name": "Nome Locale",
+                    "plan": "Scegli Piano",
+                    "payment": "Pagamento"
+                }
+            },
+            "nameStep": {
+                "title": "Dai un Nome al Tuo Locale",
+                "description": "Scegli un nome unico per il tuo locale",
+                "nameLabel": "Nome Locale",
+                "namePlaceholder": "Inserisci nome locale",
+                "checkingAvailability": "Controllo disponibilità...",
+                "nameAvailable": "Nome disponibile",
+                "nameUnavailable": "Nome già in uso",
+                "validationRequired": "Nome richiesto",
+                "validationMinLength": "Il nome deve contenere almeno 2 caratteri",
+                "validationMaxLength": "Il nome non può superare i 100 caratteri",
+                "trialNote": "Inizia la tua prova gratuita di {{days}} giorni — nessuna carta di credito richiesta."
+            },
+            "planStep": {
+                "yearly": "Annuale",
+                "card": {
+                    "yearlyPriceShort": "{{yearlyAmount}} / anno"
+                },
+                "features": {
+                    "inventoryTracking": "Tracciamento inventario in tempo reale",
+                    "unlimitedProducts": "Prodotti illimitati",
+                    "unlimitedMembers": "Membri del team illimitati",
+                    "lowStockAlerts": "Avvisi scorte basse",
+                    "support": "Supporto via email"
+                }
+            },
+            "paymentStep": {
+                "title": "Completa il Pagamento",
+                "description": "Completa in sicurezza il pagamento per creare {{name}}",
+                "trialNote": "La tua prova gratuita di 3 mesi inizia oggi. Non ti verrà addebitato nulla fino alla fine della prova.",
+                "subscriptionNote": "La tua sottoscrizione inizia immediatamente. Puoi annullare in qualsiasi momento dalle impostazioni account.",
+                "processingPayment": "Elaborazione pagamento...",
+                "creatingOrganization": "Creazione locale...",
+                "paymentFailed": "Pagamento fallito. Riprova.",
+                "expressCheckoutUnavailable": "Checkout express non disponibile. Prova un altro metodo di pagamento.",
+                "subscriptionTimeout": "Non siamo riusciti a confermare il pagamento in tempo. Aggiorna e riprova oppure contatta il supporto.",
+                "subscriptionUnsupported": "Non siamo riusciti a verificare automaticamente il pagamento. Aggiorna e riprova oppure contatta il supporto.",
+                "errors": {
+                    "card": "La tua carta è stata rifiutata. Controlla i dati o prova con un'altra carta.",
+                    "validation": "Alcuni dati di pagamento sono mancanti o non validi. Verifica e riprova.",
+                    "unexpected": "Non siamo riusciti a completare il pagamento. Riprova o contatta il supporto."
+                },
+                "status": {
+                    "confirmingWallet": "Conferma del pagamento con wallet...",
+                    "confirmingCard": "Conferma del pagamento con carta...",
+                    "waitingForStripe": "In attesa che Stripe attivi la tua sottoscrizione ({{attempt}}/{{max}})...",
+                    "creatingOrganization": "Finalizzazione del tuo locale...",
+                    "retryingOrganization": "Finalizzazione del tuo locale (tentativo {{attempt}}/{{max}})..."
+                }
+            },
+            "nameLabel": "Nome Locale",
+            "namePlaceholder": "Inserisci nome locale",
+            "checkingEligibility": "Controllo idoneità...",
+            "creatingSubscription": "Creazione sottoscrizione...",
+            "creatingOrganization": "Creazione locale...",
+            "detailsTitle": "Dettagli Locale",
+            "detailsDescription": "Inserisci il nome del locale e seleziona un piano di fatturazione",
+            "paymentDescription": "Completa il pagamento per creare {{name}}",
+            "success": "Locale creato con successo",
+            "error": "Impossibile creare il locale",
+            "cancel": "Annulla",
+            "create": "Crea Locale",
+            "trialEligible": "Sei idoneo per una prova gratuita di 3 mesi!",
+            "trialNotEligible": "Verrà creata una sottoscrizione per questo locale.",
+            "subscriptionNote": "La tua sottoscrizione inizierà dopo la conferma del pagamento. Puoi annullare in qualsiasi momento.",
+            "validationError": "Controlla il tuo input"
+        },
+        "switch": {
+            "success": "Passato a {{name}}",
+            "error": "Impossibile cambiare organizzazione"
+        },
+        "errors": {
+            "loadFailed": "Impossibile caricare i locali",
+            "loadFailedDescription": "Impossibile caricare i locali. Riprova.",
+            "createFailed": "Impossibile creare il locale",
+            "notFound": "Locale non trovato",
+            "noAccess": "Non hai accesso a questo locale"
+        }
+    },
+    "invitations": {
+        "title": "I Miei Inviti",
+        "myInvitations": "I Miei Inviti",
+        "pendingInvitations": "Inviti In Sospeso",
+        "pendingCount": "{{count}} invito in sospeso",
+        "pendingCount_plural": "{{count}} inviti in sospeso",
+        "invitedBy": "Invitato da",
+        "invitedByLabel": "Invitato da",
+        "invitedTo": "Invitato a {{orgName}}",
+        "created": "Invitato il {{date}}",
+        "expires": "Scade {{date}}",
+        "expiresIn": "Scade tra {{count}} giorno",
+        "expiresIn_plural": "Scade tra {{count}} giorni",
+        "expired": "Scaduto",
+        "expiredMessage": "Questo invito è scaduto e non può più essere accettato.",
+        "acceptButton": "Accetta",
+        "declineButton": "Rifiuta",
+        "accepting": "Accettazione...",
+        "declining": "Rifiuto...",
+        "accepted": "Accettato",
+        "declined": "Rifiutato",
+        "backToOrganizations": "Torna ai Locali",
+        "accept": {
+            "success": "Invito accettato con successo",
+            "error": "Impossibile accettare l'invito"
+        },
+        "decline": {
+            "success": "Invito rifiutato",
+            "error": "Impossibile rifiutare l'invito",
+            "confirm": "Sei sicuro di voler rifiutare questo invito?"
+        },
+        "send": {
+            "title": "Invia Invito",
+            "emailLabel": "Indirizzo Email",
+            "emailPlaceholder": "utente@esempio.com",
+            "roleLabel": "Ruolo",
+            "sending": "Invio invito...",
+            "sendButton": "Invia Invito",
+            "success": "Invito inviato con successo",
+            "error": "Impossibile inviare l'invito"
+        },
+        "revoke": {
+            "button": "Revoca",
+            "revoking": "Revoca...",
+            "confirm": "Sei sicuro di voler revocare questo invito?",
+            "success": "Invito revocato con successo",
+            "error": "Impossibile revocare l'invito"
+        },
+        "errors": {
+            "loadFailed": "Impossibile caricare gli inviti",
+            "loadFailedDescription": "Impossibile caricare gli inviti. Riprova.",
+            "invalid": "Invito non valido",
+            "expired": "Questo invito è scaduto",
+            "alreadyProcessed": "Questo invito è già stato elaborato",
+            "alreadyMember": "L'utente è già membro",
+            "alreadyInvited": "L'utente è già stato invitato"
+        }
+    },
+    "members": {
+        "title": "Membri",
+        "count": "{{count}} membro",
+        "count_plural": "{{count}} membri",
+        "noMembers": "Nessun membro trovato",
+        "viewAll": "Visualizza Tutti i Membri",
+        "remove": {
+            "button": "Rimuovi",
+            "removeMember": "Rimuovi membro",
+            "removing": "Rimozione...",
+            "confirm": "Sei sicuro di voler rimuovere {{name}} da questa organizzazione?",
+            "confirmDescription": "Perderanno l'accesso a tutte le risorse dell'organizzazione.",
+            "success": "Membro rimosso con successo",
+            "error": "Impossibile rimuovere il membro",
+            "cannotRemoveSelf": "Non puoi rimuovere te stesso"
+        },
+        "leave": {
+            "description": "Lascia questa organizzazione. Perderai l'accesso a tutte le risorse.",
+            "button": "Lascia Organizzazione",
+            "leaving": "Uscita...",
+            "confirm": "Lascia Organizzazione",
+            "confirmDescription": "Sei sicuro di voler lasciare questa organizzazione? Perderai l'accesso a tutte le risorse e dovrai essere re-invitato per rientrare.",
+            "success": "Hai lasciato l'organizzazione con successo",
+            "error": "Impossibile lasciare l'organizzazione",
+            "ownerCannotLeave": "Il proprietario non può lasciare l'organizzazione. Trasferisci prima la proprietà."
+        }
+    },
+    "orgManagement": {
+        "title": "Gestione Locale",
+        "description": "Gestisci le impostazioni del locale, l'abbonamento e il team",
+        "tabs": {
+            "overview": "Panoramica",
+            "members": "Membri",
+            "invitations": "Inviti",
+            "subscription": "Abbonamento"
+        },
+        "overview": {
+            "title": "Panoramica Locale",
+            "details": "Dettagli Locale",
+            "detailsDescription": "Visualizza e modifica le informazioni del tuo locale",
+            "organizationDetails": "Dettagli Locale",
+            "organizationId": "ID Locale",
+            "name": "Nome",
+            "owner": "Proprietario",
+            "createdOn": "Creato Il",
+            "settings": "Impostazioni",
+            "defaultCurrency": "Valuta Predefinita",
+            "quickStats": "Statistiche Rapide",
+            "totalMembers": "Membri Totali",
+            "pendingInvitations": "Inviti In Sospeso",
+            "edit": {
+                "button": "Modifica Locale",
+                "title": "Modifica Locale",
+                "nameLabel": "Nome Locale",
+                "namePlaceholder": "Inserisci il nome del locale",
+                "currencyLabel": "Valuta Predefinita",
+                "saving": "Salvataggio...",
+                "saveButton": "Salva Modifiche",
+                "success": "Locale aggiornato con successo",
+                "error": "Impossibile aggiornare il locale"
+            }
+        },
+        "members": {
+            "title": "Membri del Team",
+            "description": "Visualizza e gestisci i membri del tuo team",
+            "noMembers": "Nessun membro del team"
+        },
+        "products": {
+            "title": "Prodotti",
+            "description": "Gestisci i dettagli dei prodotti e le impostazioni di inventario",
+            "searchPlaceholder": "Cerca prodotti...",
+            "addButton": "Aggiungi Prodotto",
+            "editButton": "Modifica",
+            "emptyTitle": "Nessun prodotto",
+            "emptyDescription": "Aggiungi il primo prodotto per iniziare a tracciare l'inventario.",
+            "errorTitle": "Impossibile caricare i prodotti",
+            "errorDescription": "Non siamo riusciti a caricare i prodotti. Riprova."
+        },
+        "categories": {
+            "title": "Categorie",
+            "description": "Organizza i prodotti in categorie",
+            "searchPlaceholder": "Cerca categorie...",
+            "addButton": "Aggiungi Categoria",
+            "addSubcategory": "Aggiungi sottocategoria",
+            "editButton": "Modifica",
+            "deleteButton": "Elimina",
+            "expandLabel": "Espandi categoria",
+            "collapseLabel": "Comprimi categoria",
+            "emptyTitle": "Nessuna categoria",
+            "emptyDescription": "Crea categorie per organizzare i prodotti.",
+            "deleteConfirm": "Eliminare la categoria \"{{name}}\"? Questa azione non può essere annullata.",
+            "deleteWithChildren": "\"{{name}}\" ha {{count}} sottocategorie. Eliminandola verranno rimosse anche le sottocategorie.",
+            "deleteWithProducts": "\"{{name}}\" ha {{count}} prodotti assegnati. Verranno rimossi dalla categoria.",
+            "deleteWithProductsAndChildren": "\"{{name}}\" ha {{childCount}} sottocategorie e {{productCount}} prodotti. Verranno rimossi dalla categoria.",
+            "errorTitle": "Impossibile caricare le categorie",
+            "errorDescription": "Non siamo riusciti a caricare le categorie. Riprova."
+        },
+        "settings": {
+            "title": "Impostazioni",
+            "description": "Impostazioni e configurazione del locale",
+            "currency": "Valuta Predefinita",
+            "createdAt": "Creato",
+            "edit": "Modifica Impostazioni"
+        },
+        "subscription": {
+            "title": "Abbonamento",
+            "description": "Gestisci il tuo abbonamento e le impostazioni di fatturazione",
+            "manage": "Gestisci Abbonamento",
+            "autoRenew": "Rinnovo automatico",
+            "createdAt": "Iniziato",
+            "statusTitle": "Stato Abbonamento",
+            "statusDescription": "Informazioni sull'abbonamento corrente",
+            "statusMessages": {
+                "active": "Il tuo abbonamento è attivo. Hai accesso completo a tutte le funzionalità.",
+                "trialing": "Sei attualmente in prova gratuita. Aggiungi un metodo di pagamento prima della fine per continuare senza interruzioni.",
+                "incomplete": "La configurazione del tuo abbonamento è incompleta. Completa il pagamento per attivarlo.",
+                "pastDue": "Il tuo pagamento è scaduto. Aggiorna il tuo metodo di pagamento per evitare interruzioni del servizio.",
+                "canceled": "Il tuo abbonamento è stato cancellato. Potresti perdere l'accesso ad alcune funzionalità.",
+                "unpaid": "Il tuo abbonamento non è pagato. Aggiorna il tuo metodo di pagamento.",
+                "paused": "La tua prova gratuita è terminata e l'abbonamento è in pausa. Aggiungi un metodo di pagamento per riprendere l'accesso."
+            },
+            "currentStatus": "Stato Corrente",
+            "createdOn": "Abbonamento Iniziato",
+            "renewsOn": "Si rinnova il",
+            "endsOn": "Termina il",
+            "cancelSubscription": "Annulla Abbonamento",
+            "cancelConfirm": {
+                "title": "Annulla Abbonamento",
+                "description": "Sei sicuro di voler annullare il tuo abbonamento? Perderai l'accesso alle funzionalità premium alla fine del periodo di fatturazione corrente.",
+                "confirmButton": "Sì, Annulla Abbonamento",
+                "cancelButton": "Mantieni Abbonamento"
+            },
+            "paymentFailedMessage": "Pagamento fallito. Aggiorna il tuo metodo di pagamento o riprova.",
+            "paymentMethodsTitle": "Metodi di Pagamento",
+            "paymentMethodsDescription": "Gestisci i tuoi metodi di pagamento",
+            "paymentMethodsComingSoon": "La gestione dei metodi di pagamento sarà presto disponibile.",
+            "status": "Stato",
+            "plan": "Piano",
+            "billingInterval": "Intervallo di Fatturazione",
+            "monthly": "Mensile",
+            "yearly": "Annuale",
+            "nextBilling": "Prossima Data di Fatturazione",
+            "trialEnds": "Fine Prova",
+            "autoRenewal": "Rinnovo Automatico",
+            "autoRenewEnabled": "Abilitato",
+            "autoRenewDisabled": "Disabilitato",
+            "paymentMethod": "Metodo di Pagamento",
+            "noPaymentMethod": "Nessun metodo di pagamento registrato",
+            "addPaymentMethod": "Aggiungi Metodo di Pagamento",
+            "features": "Tutti i Piani Includono",
+            "paymentFailed": {
+                "title": "Pagamento Fallito",
+                "description": "Il tuo pagamento recente è fallito. Aggiorna il tuo metodo di pagamento o riprova.",
+                "retryButton": "Riprova Pagamento",
+                "updateButton": "Aggiorna Metodo di Pagamento"
+            }
+        }
+    },
+    "payment": {
+        "title": "Metodi di Pagamento",
+        "methods": "Metodi di Pagamento",
+        "noMethods": "Nessun metodo di pagamento registrato",
+        "noMethodsDescription": "Aggiungi un metodo di pagamento per gestire il tuo abbonamento.",
+        "addMethod": "Aggiungi Metodo di Pagamento",
+        "defaultLabel": "Predefinito",
+        "setDefaultButton": "Imposta come Predefinito",
+        "removeButton": "Rimuovi",
+        "cardBrand": {
+            "visa": "Visa",
+            "mastercard": "Mastercard",
+            "amex": "American Express",
+            "discover": "Discover",
+            "diners": "Diners Club",
+            "jcb": "JCB",
+            "unionpay": "UnionPay",
+            "unknown": "Carta"
+        },
+        "cardEnding": "•••• {{last4}}",
+        "expiresOn": "Scade {{month}}/{{year}}",
+        "expired": "Scaduto",
+        "add": {
+            "title": "Aggiungi Metodo di Pagamento",
+            "cardNumber": "Numero Carta",
+            "cardCvc": "CVC",
+            "setAsDefault": "Imposta come metodo di pagamento predefinito",
+            "adding": "Aggiunta metodo di pagamento...",
+            "addButton": "Aggiungi Carta",
+            "success": "Metodo di pagamento aggiunto con successo",
+            "error": "Impossibile aggiungere il metodo di pagamento",
+            "stripeError": "Errore di elaborazione del pagamento. Controlla i dettagli della tua carta."
+        },
+        "remove": {
+            "confirm": "Sei sicuro di voler rimuovere questo metodo di pagamento?",
+            "confirmDefault": "Questo è il tuo metodo di pagamento predefinito. Imposta un altro come predefinito prima di rimuoverlo.",
+            "removing": "Rimozione...",
+            "success": "Metodo di pagamento rimosso con successo",
+            "error": "Impossibile rimuovere il metodo di pagamento"
+        },
+        "setDefault": {
+            "success": "Metodo di pagamento predefinito aggiornato",
+            "error": "Impossibile aggiornare il metodo di pagamento predefinito"
+        }
+    },
+    "subscription": {
+        "trial": {
+            "eligible": "Sei idoneo per una prova gratuita",
+            "notEligible": "Prova non disponibile",
+            "duration": "3 mesi gratis",
+            "description": "Inizia con una prova gratuita di 3 mesi. Non è richiesto alcun pagamento ora."
+        },
+        "status": {
+            "trialing": "Prova",
+            "active": "Attivo",
+            "past_due": "Scaduto",
+            "canceled": "Annullato",
+            "unpaid": "Non Pagato",
+            "incomplete": "Incompleto",
+            "incomplete_expired": "Scaduto",
+            "paused": "In Pausa"
+        },
+        "monthly": "Mensile",
+        "yearly": "Annuale",
+        "selectPlan": "Seleziona un piano",
+        "startTrial": "Inizia Prova Gratuita",
+        "paymentDetails": "Dettagli di Pagamento",
+        "processingPayment": "Elaborazione pagamento...",
+        "confirmPayment": "Conferma Pagamento",
+        "errors": {
+            "notFound": "Abbonamento non trovato",
+            "notActive": "L'abbonamento non è attivo",
+            "createFailed": "Impossibile creare l'abbonamento"
+        },
+        "trialBanner": {
+            "daysLeft": "{{days}} giorni rimanenti nella tua prova gratuita",
+            "paused": "La tua prova gratuita è terminata. Aggiungi un metodo di pagamento per continuare.",
+            "reactivate": "Riattiva",
+            "addPayment": "Aggiungi metodo di pagamento"
+        },
+        "addPayment": {
+            "title": "Gestisci metodo di pagamento",
+            "description": "Scegli il metodo di pagamento per questo abbonamento o aggiungi una nuova carta.",
+            "submit": "Salva metodo di pagamento",
+            "manage": "Gestisci metodo di pagamento",
+            "current": "Attuale per questo locale",
+            "useForSubscription": "Usa per questo abbonamento",
+            "chooseExisting": "Scegli un metodo esistente",
+            "dueNow": "Da pagare ora",
+            "recurring": "Addebito ricorrente",
+            "previewUnavailable": "Impossibile visualizzare l'anteprima dell'addebito di riattivazione in questo momento.",
+            "errors": {
+                "unexpected": "Qualcosa è andato storto. Riprova.",
+                "setupFailed": "Impossibile avviare la configurazione del pagamento. Riprova."
+            }
+        }
+    },
+    "account": {
+        "title": "Account",
+        "description": "Visualizza e gestisci le informazioni del tuo account",
+        "personalInformation": "Informazioni Personali",
+        "openProfilePicture": "Apri immagine profilo",
+        "fullName": "Nome Completo",
+        "email": "Indirizzo Email",
+        "emailVerified": "✓ Verificata",
+        "phoneNumber": "Numero di Telefono",
+        "memberSince": "Membro Dal",
+        "futureFeatures": "Modifica account e gestione password in arrivo",
+        "updated": "Profilo aggiornato",
+        "profilePictureUpdated": "Immagine profilo aggiornata",
+        "changeProfilePicture": "Cambia immagine profilo",
+        "profilePictureDialog": {
+            "title": "Immagine profilo",
+            "description": "Anteprima dell'immagine profilo corrente"
+        },
+        "resetPassword": {
+            "title": "Password",
+            "description": "Ti invieremo via email un link per reimpostare la password.",
+            "button": "Reimposta password",
+            "sending": "Invio link in corso..."
+        },
+        "addPhoneNumber": "Aggiungi numero di telefono",
+        "fullNameMustIncludeLastName": "Inserisci anche il cognome",
+        "ownedOrganizations": {
+            "title": "Organizzazioni possedute",
+            "description": "Stato abbonamento delle organizzazioni di cui sei proprietario",
+            "count": "{{count}} organizzazione posseduta",
+            "count_plural": "{{count}} organizzazioni possedute",
+            "activeCount": "{{count}} attiva",
+            "activeCount_plural": "{{count}} attive",
+            "trialCount": "{{count}} in prova",
+            "trialCount_plural": "{{count}} in prova",
+            "trialExpiresUnknown": "scadenza prova sconosciuta",
+            "trialExpiresInDays": "la prova scade tra {{days}} giorni",
+            "inactiveCount": "{{count}} inattiva",
+            "inactiveCount_plural": "{{count}} inattive"
+        }
+    },
+    "preferences": {
+        "title": "Preferenze",
+        "theme": {
+            "title": "Tema",
+            "light": "Chiaro",
+            "dark": "Scuro",
+            "system": "Sistema"
+        },
+        "language": {
+            "title": "Lingua",
+            "english": "English",
+            "italian": "Italiano"
+        }
+    },
+    "menu": {
+        "currentVenue": "Locale Corrente",
+        "noVenueSelected": "Nessun locale selezionato",
+        "account": "Account",
+        "preferences": "Preferenze",
+        "openUserMenu": "Apri menu utente",
+        "viewOrganizations": "Visualizza locali",
+        "viewAccount": "Visualizza impostazioni account",
+        "openPreferences": "Apri preferenze",
+        "userMenu": "Menu Utente",
+        "userMenuDescription": "Accedi alle impostazioni dell'account, alla gestione dei locali e alle preferenze",
+        "preferencesDescription": "Personalizza il tema e le preferenze della lingua",
+        "myVenues": "I Miei Locali",
+        "switchVenue": "Cambia locale",
+        "viewAllVenues": "Vedi tutti i locali"
+    }
+}

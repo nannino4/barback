@@ -1,0 +1,1221 @@
+{
+    "common": {
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "phoneNumber": "Phone Number",
+        "optional": "(Optional)",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "loading": "Loading...",
+        "save": "Save",
+        "edit": "Edit",
+        "close": "Close",
+        "back": "Back",
+        "next": "Next",
+        "continue": "Continue",
+        "error": "Error",
+        "success": "Success",
+        "tryAgain": "Try Again",
+        "you": "you",
+        "userWithoutName": "user without name",
+        "selected": "Selected",
+        "or": "or",
+        "refresh": "Refresh",
+        "yes": "Yes",
+        "no": "No",
+        "showAll": "Show all",
+        "showLess": "Show less",
+        "dangerZone": "Danger Zone",
+        "add": "Add",
+        "clear": "Clear"
+    },
+    "auth": {
+        "login": {
+            "title": "Login",
+            "emailPlaceholder": "Enter your email",
+            "passwordPlaceholder": "Enter your password",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
+            "forgotPassword": "Forgot your password?",
+            "signIn": "Sign In",
+            "signingIn": "Signing in...",
+            "noAccount": "Don't have an account?",
+            "signUp": "Sign up",
+            "continueWith": "Or continue with email",
+            "googleLogin": "Continue with Google",
+            "backToLogin": "Back to Sign In",
+            "success": "Successfully signed in!",
+            "alreadyLoggedIn": "You're already logged in",
+            "alreadyLoggedInDescription": "You're currently logged in. You can go to your dashboard or sign out to log in with a different account.",
+            "goToDashboard": "Go to Dashboard",
+            "signOut": "Sign Out"
+        },
+        "register": {
+            "title": "Create your account",
+            "success": "Account created successfully!",
+            "firstNamePlaceholder": "Enter your first name",
+            "lastNamePlaceholder": "Enter your last name",
+            "emailPlaceholder": "Enter your email",
+            "phoneNumberPlaceholder": "Enter your phone number (optional)",
+            "passwordPlaceholder": "Create a password",
+            "confirmPasswordPlaceholder": "Confirm your password",
+            "createAccount": "Create Account",
+            "creatingAccount": "Creating account...",
+            "hasAccount": "Already have an account?",
+            "signIn": "Sign in",
+            "continueWith": "Or continue with email",
+            "googleSignup": "Sign up with Google",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
+            "requirements": "Password Requirements:",
+            "requirementLength": "At least 8 characters",
+            "requirementUppercase": "One uppercase letter",
+            "requirementLowercase": "One lowercase letter",
+            "requirementNumber": "One number",
+            "requirementSpecial": "One special character"
+        },
+        "forgotPassword": {
+            "title": "Forgot your password?",
+            "emailPlaceholder": "Enter your email",
+            "sendLink": "Send Reset Link",
+            "sendingLink": "Sending link...",
+            "cooldown": "Wait {{seconds}}s",
+            "backToLogin": "Back to Sign In",
+            "successMessage": "Password reset email sent again",
+            "genericSuccessMessage": "If an account exists with that email, you will receive password reset instructions."
+        },
+        "forgotPasswordSent": {
+            "title": "Check Your Email",
+            "description": "We've sent a password reset link to your email address.",
+            "instructions": "If an account exists with that email, you will receive password reset instructions.",
+            "linkExpires": "The link will expire in 15 minutes.",
+            "checkSpam": "Didn't receive the email? Check your spam folder.",
+            "resendingEmail": "Resending Email...",
+            "resendEmailCountdown": "Resend Email ({{countdown}}s)",
+            "resendEmail": "Resend Email",
+            "backToSignIn": "Back to Sign In"
+        },
+        "resetPassword": {
+            "title": "Reset Your Password",
+            "newPassword": "New Password",
+            "newPasswordPlaceholder": "Enter your new password",
+            "confirmPassword": "Confirm Password",
+            "confirmPasswordPlaceholder": "Confirm your new password",
+            "hidePassword": "Hide password",
+            "showPassword": "Show password",
+            "requirements": "Password Requirements:",
+            "requirementLength": "At least 8 characters",
+            "requirementUppercase": "One uppercase letter",
+            "requirementLowercase": "One lowercase letter",
+            "requirementNumber": "One number",
+            "requirementSpecial": "One special character",
+            "updating": "Updating Password...",
+            "updateButton": "Update Password",
+            "validating": "Validating reset link...",
+            "successMessage": "Password updated successfully",
+            "errorMessage": "Failed to reset password. Please try again.",
+            "backToSignIn": "Back to Sign In"
+        },
+        "resetPasswordSuccess": {
+            "title": "Password Updated!",
+            "description": "Your password has been successfully reset.",
+            "securityNotice": "For your security, all other sessions have been logged out.",
+            "emailNotice": "You will receive a confirmation email shortly.",
+            "signInButton": "Sign In with New Password"
+        },
+        "resetPasswordError": {
+            "title": "Reset Link Expired",
+            "description": "This password reset link is invalid or has expired.",
+            "whatCanYouDo": "What can you do?",
+            "requestNewLink": "Request a new password reset link",
+            "trySigningIn": "Try signing in if you remember your password",
+            "contactSupport": "Contact support if you continue having issues",
+            "requestNewLinkButton": "Request New Reset Link",
+            "requestNewReset": "Request New Reset Link",
+            "backToSignIn": "Back to Sign In",
+            "needHelp": "Need help?",
+            "contactSupportLink": "Contact Support"
+        },
+        "sendVerificationEmail": {
+            "title": "Verify your email",
+            "emailSentTitle": "Email sent!",
+            "sendFailedTitle": "Failed to send email",
+            "sentTo": "Verification email sent to",
+            "clickLinkInstructions": "Click the link in the email to verify your account and access all features.",
+            "tryAgainInstructions": "Please try again or contact support if the problem persists.",
+            "resendEmail": "Resend verification email",
+            "resendingEmail": "Resending email...",
+            "resendInSeconds": "Resend in {{seconds}}s",
+            "emailSentSuccess": "Verification email sent! Check your inbox.",
+            "checkYourEmail": "Check your email",
+            "alreadySentDuringRegistration": "We've already sent a verification email to {{email}} when you registered.",
+            "checkSpamAndResend": "Didn't receive it? Check your spam folder or request a new verification email below."
+        },
+        "verifyEmailCallback": {
+            "verifying": "Verifying your email...",
+            "verifyingInstructions": "Please wait while we verify your email address...",
+            "success": "Email verified successfully! You can now access all features.",
+            "successTitle": "Email Verified!",
+            "successMessage": "Your email has been successfully verified. You now have full access to all features.",
+            "redirecting": "Redirecting you now...",
+            "redirectingIn": "Redirecting in {{seconds}}s...",
+            "errorTitle": "Verification Failed",
+            "errorInstructions": "The verification link may be invalid or expired. Request a new link below.",
+            "invalidLink": "Invalid verification link.",
+            "requestNewLink": "Request New Verification Link",
+            "goToLogin": "Go to Login"
+        },
+        "emailVerification": {
+            "success": "Email verified successfully! You can now access all features."
+        },
+        "logout": {
+            "success": "Logged out successfully"
+        },
+        "errors": {
+            "emailAlreadyVerified": "Your email is already verified! Redirecting...",
+            "invalidOrExpiredToken": "This verification link is invalid or has expired. Please request a new one.",
+            "userNotFound": "Account not found. Please register first.",
+            "invalidCredentials": "Invalid email or password. Please try again.",
+            "unauthorized": "Your session has expired. Please sign in again.",
+            "sessionExpired": "Your session has expired. Please sign in again.",
+            "emailAlreadyExists": "An account with this email already exists. Please sign in instead.",
+            "wrongAuthProvider": "This account uses a different sign-in method. Please use the correct sign-in option.",
+            "authenticationFailed": "Authentication failed. Please try again.",
+            "googleAuthCancelled": "Google authentication was cancelled or failed.",
+            "invalidGoogleResponse": "Invalid authentication response from Google.",
+            "invalidAuthState": "Invalid authentication state. Please try again.",
+            "googleSignInSuccess": "Successfully signed in with Google!",
+            "googleTokenExchangeFailed": "Failed to complete Google sign-in. Please try again.",
+            "googleUserInfoFailed": "Failed to retrieve your Google account information. Please try again.",
+            "googleTokenInvalid": "Your Google authentication has expired. Please sign in again.",
+            "googleEmailNotVerified": "Your Google account email must be verified. Please verify your email with Google first.",
+            "googleAccountLinkingConflict": "An account with this email already exists using a different sign-in method. Please use the original sign-in method."
+        }
+    },
+    "errors": {
+        "networkError": "Network error. Please check your connection and try again.",
+        "networkTimeout": "Request timed out. Please check your connection and try again.",
+        "networkCors": "Connection blocked by security settings. Please contact support.",
+        "networkConnectionRefused": "Could not connect to the server. Please try again later.",
+        "networkDnsFailure": "Could not reach the server. Please check your connection.",
+        "emailServiceUnavailable": "Email service is temporarily unavailable. Please try again later.",
+        "rateLimitExceeded": "Too many requests. Please wait before trying again.",
+        "rateLimitExceededWithTime": "Too many requests. Please wait {{seconds}} seconds before trying again.",
+        "unauthorized": "Access denied. Please sign in to continue.",
+        "forbidden": "You don't have permission to perform this action.",
+        "badRequest": "Invalid request. Please check your input.",
+        "notFoundError": "The requested resource was not found.",
+        "serverError": "A server error occurred. Please try again later or contact support.",
+        "serviceUnavailable": "The service is temporarily unavailable. Please try again later.",
+        "validationError": "The data received from the server is invalid. Please try again.",
+        "genericError": "An unexpected error occurred. Please try again.",
+        "boundary": {
+            "title": "Something went wrong",
+            "message": "We're sorry, but something unexpected happened. The error has been logged and we'll look into it.",
+            "apiErrorTitle": "Server Error",
+            "networkErrorTitle": "Connection Error",
+            "validationErrorTitle": "Data Error",
+            "tryAgain": "Try Again",
+            "reloadPage": "Reload Page",
+            "footer": "If this problem persists, please contact support."
+        },
+        "routeError": {
+            "title": "Page Error",
+            "message": "This page encountered an unexpected error. You can try again or navigate back to safety.",
+            "tryAgain": "Try Again",
+            "backHome": "Back to Home",
+            "footer": "Your other pages should still work normally."
+        },
+        "notFound": {
+            "title": "Page Not Found",
+            "message": "The page you're looking for doesn't exist or has been moved.",
+            "suggestions": "Here are some helpful links:",
+            "goBack": "Go Back",
+            "goHome": "Go to Home",
+            "goInventory": "Go to Inventory",
+            "goLogin": "Sign In"
+        }
+    },
+    "validation": {
+        "required": "This field is required",
+        "email": {
+            "required": "Email is required",
+            "invalid": "Please enter a valid email address",
+            "maxLength": "Email must be less than 255 characters",
+            "tooLong": "Email must be less than 255 characters"
+        },
+        "name": {
+            "firstNameRequired": "First name is required",
+            "lastNameRequired": "Last name is required",
+            "tooLong": "Name cannot exceed 50 characters",
+            "invalidChars": "Name can only contain letters, spaces, hyphens, and apostrophes"
+        },
+        "phone": {
+            "invalidFormat": "Please enter a valid phone number"
+        },
+        "language": {
+            "invalid": "Please select a valid language"
+        },
+        "password": {
+            "required": "Password is required",
+            "mustBeString": "Password must be text",
+            "minLength": "Password must be at least 8 characters",
+            "maxLength": "Password cannot exceed 20 characters",
+            "weak": "Password must contain at least 8 characters with uppercase, lowercase, number, and special character",
+            "uppercase": "Password must contain at least one uppercase letter",
+            "lowercase": "Password must contain at least one lowercase letter",
+            "number": "Password must contain at least one number",
+            "specialChar": "Password must contain at least one special character",
+            "confirmRequired": "Please confirm your password",
+            "noMatch": "Passwords do not match"
+        },
+        "currentPassword": {
+            "required": "Current password is required",
+            "mustBeString": "Current password must be text"
+        },
+        "newPassword": {
+            "required": "New password is required",
+            "maxLength": "New password cannot exceed 20 characters",
+            "weak": "New password must contain at least 8 characters with uppercase, lowercase, number, and special character"
+        },
+        "firstName": {
+            "required": "First name is required",
+            "mustBeString": "First name must be text",
+            "minLength": "First name must be at least 1 character",
+            "maxLength": "First name cannot exceed 50 characters"
+        },
+        "lastName": {
+            "required": "Last name is required",
+            "mustBeString": "Last name must be text",
+            "minLength": "Last name must be at least 1 character",
+            "maxLength": "Last name cannot exceed 50 characters"
+        },
+        "phoneNumber": {
+            "required": "Phone number is required",
+            "invalid": "Please enter a valid Italian mobile number (+39 3XX XXX XXXX)"
+        },
+        "profilePictureUrl": {
+            "mustBeString": "Profile picture URL must be text",
+            "invalidUrl": "Profile picture URL must be a valid URL"
+        },
+        "token": {
+            "required": "Token is required",
+            "mustBeString": "Token must be text"
+        },
+        "refreshToken": {
+            "invalidJWT": "Invalid refresh token format"
+        },
+        "code": {
+            "required": "Authorization code is required",
+            "mustBeString": "Authorization code must be text"
+        },
+        "state": {
+            "required": "State parameter is required",
+            "mustBeString": "State parameter must be text"
+        },
+        "org": {
+            "name": {
+                "required": "Organization name is required",
+                "mustBeString": "Organization name must be text"
+            },
+            "subscriptionId": {
+                "required": "Subscription ID is required",
+                "invalidObjectId": "Invalid subscription ID format"
+            },
+            "settings": {
+                "required": "Organization settings are required",
+                "mustBeObject": "Organization settings must be an object",
+                "invalid": "Organization settings are invalid"
+            },
+            "role": {
+                "invalid": "Invalid organization role"
+            },
+            "currency": {
+                "mustBeString": "Currency must be text",
+                "exactLength": "Currency code must be exactly 3 characters",
+                "invalidFormat": "Currency code must be 3 uppercase letters (e.g., EUR, USD)"
+            }
+        },
+        "product": {
+            "name": {
+                "required": "Product name is required",
+                "mustBeString": "Product name must be text",
+                "maxLength": "Product name cannot exceed {{max}} characters"
+            },
+            "description": {
+                "required": "Product description is required",
+                "mustBeString": "Product description must be text",
+                "maxLength": "Description cannot exceed {{max}} characters"
+            },
+            "brand": {
+                "required": "Product brand is required",
+                "mustBeString": "Product brand must be text",
+                "maxLength": "Brand cannot exceed {{max}} characters"
+            },
+            "defaultUnit": {
+                "required": "Default unit is required",
+                "mustBeString": "Default unit must be text",
+                "maxLength": "Unit cannot exceed {{max}} characters"
+            },
+            "defaultPurchasePrice": {
+                "mustBeNumber": "Default purchase price must be a number",
+                "min": "Default purchase price cannot be negative"
+            },
+            "currentQuantity": {
+                "mustBeNumber": "Current quantity must be a number",
+                "min": "Current quantity cannot be negative"
+            },
+            "categoryIds": {
+                "mustBeArray": "Category IDs must be an array",
+                "invalidObjectId": "Invalid category ID format"
+            },
+            "imageUrl": {
+                "invalidUrl": "Invalid image URL format"
+            }
+        },
+        "category": {
+            "name": {
+                "required": "Category name is required",
+                "mustBeString": "Category name must be text",
+                "maxLength": "Category name cannot exceed {{max}} characters"
+            },
+            "description": {
+                "required": "Category description is required",
+                "mustBeString": "Category description must be text",
+                "maxLength": "Description cannot exceed {{max}} characters"
+            },
+            "parentId": {
+                "invalidObjectId": "Invalid parent category ID format"
+            }
+        },
+        "inventory": {
+            "type": {
+                "invalid": "Invalid inventory log type"
+            },
+            "quantity": {
+                "mustBeNumber": "Quantity must be a number",
+                "required": "Quantity is required",
+                "invalid": "Quantity must be a number",
+                "nonZero": "Quantity cannot be zero",
+                "noChange": "No stock change detected",
+                "negativeStocktake": "Actual count cannot be negative",
+                "negativeResult": "Cannot reduce below zero. Current: {{current}}, max reduction: {{maxReduction}}"
+            },
+            "note": {
+                "required": "Note is required for stock adjustments",
+                "mustBeString": "Note must be text",
+                "maxLength": "Note must be {{max}} characters or less"
+            }
+        },
+        "invitation": {
+            "invitedEmail": {
+                "required": "Invited email is required",
+                "invalid": "Please enter a valid email address"
+            },
+            "role": {
+                "required": "Role is required",
+                "invalid": "Invalid role selected"
+            }
+        },
+        "subscription": {
+            "status": {
+                "required": "Subscription status is required",
+                "invalid": "Invalid subscription status"
+            },
+            "autoRenew": {
+                "required": "Auto-renew setting is required",
+                "mustBeBoolean": "Auto-renew must be true or false"
+            },
+            "billingInterval": {
+                "invalid": "Invalid billing interval"
+            },
+            "isTrial": {
+                "mustBeBoolean": "Trial flag must be true or false"
+            },
+            "paymentMethodId": {
+                "mustBeString": "Payment method ID must be text"
+            }
+        },
+        "admin": {
+            "isActive": {
+                "mustBeBoolean": "Active status must be true or false"
+            },
+            "role": {
+                "invalid": "Invalid user role"
+            }
+        }
+    },
+    "theme": {
+        "toggle": "Toggle theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+    },
+    "language": {
+        "toggle": "Change language",
+        "english": "English",
+        "italian": "Italiano"
+    },
+    "nav": {
+        "login": "Login",
+        "logout": "Logout",
+        "home": "Home",
+        "inventory": "Inventory",
+        "alerts": "Alerts",
+        "more": "More",
+        "orgSettings": "Organization Settings"
+    },
+    "landing": {
+        "hero": {
+            "title": "Barback",
+            "subtitle": "The sophisticated inventory management system for cocktail bars. Built for mobile-first operations with the elegance of a premium speakeasy.",
+            "getStarted": "Get Started",
+            "signIn": "Sign In"
+        },
+        "features": {
+            "inventory": {
+                "title": "Inventory Management",
+                "description": "Track your spirits, wines, and mixers with precision. Monitor stock levels and get alerts when supplies run low."
+            },
+            "mobile": {
+                "title": "Mobile Optimized",
+                "description": "Designed for touch interactions and perfect for use in dimly lit bar environments."
+            },
+            "team": {
+                "title": "Team Collaboration",
+                "description": "Invite your team members and manage roles with precision. Keep everyone in sync."
+            },
+            "alerts": {
+                "title": "Smart Alerts",
+                "description": "Get notified when inventory runs low with customizable threshold alerts and time-based reminders."
+            },
+            "analytics": {
+                "title": "Analytics & Insights",
+                "description": "Track consumption patterns by time period, category, and product to optimize your inventory."
+            },
+            "reports": {
+                "title": "Inventory Reports",
+                "description": "Generate detailed inventory reports by date range to track your stock movements and trends."
+            }
+        },
+        "cta": {
+            "title": "Ready to Transform Your Bar Management?",
+            "description": "Join cocktail bars in Rome that are already saving time and reducing waste with Barback.",
+            "button": "Start Free Trial"
+        }
+    },
+    "dashboard": {
+        "welcome": "Welcome to Your Dashboard",
+        "placeholder": "Your dashboard is being prepared. More features coming soon!"
+    },
+    "inventory": {
+        "title": "Inventory",
+        "placeholder": "Inventory management features coming soon!",
+        "addProduct": "Add Product",
+        "productCount": "products",
+        "productCount_one": "product",
+        "productCount_other": "products",
+        "searchPlaceholder": "Search products...",
+        "allCategories": "All Categories",
+        "categoryFilterTitle": "Filter by category",
+        "categoryFilterDescription": "Choose a category to narrow your inventory list.",
+        "categorySearchPlaceholder": "Search categories...",
+        "categorySearchEmpty": "No categories match your search.",
+        "filterStatus": "Showing {{showing}} of {{total}} products",
+        "clearFilters": "Clear filters",
+        "adjustStock": "Adjust stock",
+        "adjustStockSuccess": "Stock adjusted successfully",
+        "category": "Category",
+        "uncategorized": "Uncategorized",
+        "empty": {
+            "title": "No products yet",
+            "description": "Add your first product to start tracking inventory"
+        },
+        "noResults": {
+            "title": "No products found",
+            "description": "Try adjusting your search or filters"
+        },
+        "adjustment": {
+            "title": "Adjust Stock",
+            "currentStock": "Current stock",
+            "quantityLabel": "Quantity change",
+            "newStockLevelLabel": "Updated stock",
+            "actualCountLabel": "Actual count",
+            "quantityPlaceholder": "e.g. +3 or -2",
+            "newStockLevelPlaceholder": "Enter new stock level",
+            "actualCountPlaceholder": "e.g. 12",
+            "reasonLabel": "Reason",
+            "decrease": "Decrease quantity",
+            "increase": "Increase quantity",
+            "save": "Save adjustment",
+            "saving": "Saving...",
+            "noteLabel": "Note (optional)",
+            "notePlaceholder": "Add context (optional)",
+            "noteCount": "{{count}} / {{max}}",
+            "preview": {
+                "title": "New stock level",
+                "helper": "Enter a quantity to preview the new stock level"
+            },
+            "stocktakeInfo": {
+                "title": "Stocktake uses actual count",
+                "description": "Enter the real stock count. We'll calculate the adjustment for you."
+            },
+            "types": {
+                "purchase": "Purchase",
+                "consumption": "Consumption",
+                "adjustment": "Adjustment",
+                "stocktake": "Stocktake"
+            },
+            "mismatch": {
+                "title": "Check adjustment reason",
+                "purchase": "Purchase is typically used for increases.",
+                "consumption": "Consumption is typically used for decreases."
+            },
+            "errors": {
+                "title": "Unable to save adjustment",
+                "saveFailed": "We couldn't save your changes. Please try again."
+            }
+        }
+    },
+    "product": {
+        "createSuccess": "Product created successfully",
+        "updateSuccess": "Product updated successfully",
+        "deleteSuccess": "Product deleted successfully",
+        "detail": {
+            "actionsButton": "Actions",
+            "actionsTitle": "Product Actions",
+            "editButton": "Edit",
+            "deleteButton": "Delete",
+            "notFound": "Product not found",
+            "errorTitle": "Unable to load product",
+            "errorDescription": "We couldn't load this product. Please try again.",
+            "info": {
+                "title": "Product details",
+                "descriptionLabel": "Description",
+                "categoriesLabel": "Categories",
+                "unitLabel": "Unit of measure",
+                "purchasePriceLabel": "Purchase price",
+                "notProvided": "Not provided"
+            },
+            "stock": {
+                "title": "Stock",
+                "currentLabel": "Current quantity"
+            },
+            "history": {
+                "title": "Recent history",
+                "viewAll": "View all history",
+                "fullTitle": "Inventory history",
+                "emptyTitle": "No history yet",
+                "emptyDescription": "Inventory changes will appear here.",
+                "errorTitle": "Unable to load history",
+                "errorDescription": "We couldn't load inventory history. Please try again."
+            },
+            "delete": {
+                "confirmTitle": "Delete {{name}}?",
+                "confirmDescription": "This will permanently delete the product and its inventory history.",
+                "confirmButton": "Delete product"
+            }
+        },
+        "form": {
+            "createTitle": "New Product",
+            "editTitle": "Edit Product",
+            "nameLabel": "Product name",
+            "namePlaceholder": "e.g. Johnnie Walker Black",
+            "brandLabel": "Brand",
+            "brandPlaceholder": "e.g. Johnnie Walker",
+            "descriptionLabel": "Description",
+            "descriptionPlaceholder": "Notes, size, or details",
+            "unitLabel": "Unit of measure",
+            "unitPlaceholder": "e.g. bottle, ml, oz",
+            "purchasePriceLabel": "Purchase price",
+            "purchasePricePlaceholder": "e.g. 18.50",
+            "initialQuantityLabel": "Initial quantity",
+            "initialQuantityPlaceholder": "e.g. 12",
+            "categoriesLabel": "Categories",
+            "categoriesPlaceholder": "Select categories",
+            "categoriesSearchPlaceholder": "Search categories...",
+            "categoriesEmpty": "No categories found",
+            "categoriesAdd": "Add category",
+            "saveCreate": "Create product",
+            "saveUpdate": "Save changes",
+            "saving": "Saving..."
+        }
+    },
+    "category": {
+        "createSuccess": "Category created successfully",
+        "updateSuccess": "Category updated successfully",
+        "deleteSuccess": "Category deleted successfully",
+        "form": {
+            "createTitle": "New Category",
+            "editTitle": "Edit Category",
+            "nameLabel": "Category name",
+            "namePlaceholder": "e.g. Whiskey",
+            "descriptionLabel": "Description",
+            "descriptionPlaceholder": "Optional details",
+            "parentLabel": "Parent category",
+            "parentPlaceholder": "No parent",
+            "saveCreate": "Create category",
+            "saveUpdate": "Save changes",
+            "saving": "Saving..."
+        }
+    },
+    "alerts": {
+        "title": "Alerts",
+        "placeholder": "Low stock alerts and notifications coming soon!"
+    },
+    "more": {
+        "title": "More",
+        "profile": "Profile",
+        "profileDescription": "View and edit your account information",
+        "myVenuesDescription": "Manage your venues and invitations",
+        "orgSettingsDescription": "Manage members, settings, and subscription",
+        "help": "Help & Support",
+        "helpDescription": "Get help and contact support"
+    },
+    "home": {
+        "welcome": "Welcome to Barback",
+        "description": "The sophisticated inventory management system for cocktail bars. Built for mobile-first operations with the elegance of a premium speakeasy.",
+        "features": {
+            "inventory": {
+                "title": "Inventory Management",
+                "description": "Track your spirits, wines, and mixers with precision. Monitor stock levels and get alerts when supplies run low."
+            },
+            "mobile": {
+                "title": "Mobile Optimized",
+                "description": "Designed for touch interactions and perfect for use in dimly lit bar environments."
+            },
+            "team": {
+                "title": "Team Collaboration",
+                "description": "Invite your team members and manage roles with precision. Keep everyone in sync."
+            }
+        }
+    },
+    "organizations": {
+        "title": "Select where you want to work today",
+        "selectDescription": "Choose a venue to access your products and inventory.",
+        "selectVenue": "Select Venue",
+        "myOrganizations": "My Venues",
+        "myVenues": "My Venues",
+        "ownedVenues": "Owned Venues",
+        "invitations": "Invitations",
+        "invitationsCount": "Invitations ({{count}})",
+        "noOrganizations": "No venues yet",
+        "noOrganizationsDescription": "Create your first venue to get started, or wait for an invitation from a team.",
+        "noInvitations": "No pending invitations",
+        "noInvitationsDescription": "You don't have any pending invitations at the moment.",
+        "noResults": "No venues found",
+        "noResultsDescription": "Try adjusting your search or filters to find what you're looking for.",
+        "createOrganization": "Create Venue",
+        "selectOrganization": "Select Venue",
+        "switchOrganization": "Switch Venue",
+        "manageOrganizations": "Manage Venues",
+        "createdBy": "Created by {{name}}",
+        "unknownOwner": "Unknown Owner",
+        "ownerLabel": "Owner",
+        "members": "{{count}} member",
+        "members_plural": "{{count}} members",
+        "products": "{{count}} product",
+        "products_plural": "{{count}} products",
+        "select": "Select",
+        "selected": "Selected",
+        "manage": "Manage",
+        "viewDetails": "View details",
+        "switchTo": "Switch to {{name}}",
+        "noOrgSelected": {
+            "title": "No venue selected",
+            "description": "Please select a venue to access inventory, orders, and more.",
+            "goToOrganizations": "Select a Venue"
+        },
+        "role": {
+            "label": "Role",
+            "all": "All Roles",
+            "owner": "Owner",
+            "manager": "Manager",
+            "staff": "Staff"
+        },
+        "filters": {
+            "searchPlaceholder": "Search venues...",
+            "roleFilter": "Filter by role",
+            "clearFilters": "Clear filters"
+        },
+        "create": {
+            "title": "Create New Venue",
+            "description": "Set up a new venue with its own subscription and inventory",
+            "wizard": {
+                "step": "Step {{current}} of {{total}}",
+                "stepName": {
+                    "name": "Venue Name",
+                    "plan": "Select Plan",
+                    "payment": "Payment"
+                }
+            },
+            "nameStep": {
+                "title": "Name Your Venue",
+                "description": "Choose a unique name for your venue",
+                "nameLabel": "Venue Name",
+                "namePlaceholder": "Enter venue name",
+                "checkingAvailability": "Checking availability...",
+                "nameAvailable": "Name is available",
+                "nameUnavailable": "Name is already taken",
+                "validationRequired": "Name is required",
+                "validationMinLength": "Name must be at least 2 characters",
+                "validationMaxLength": "Name must not exceed 100 characters",
+                "trialNote": "Start your {{days}}-day free trial — no credit card required."
+            },
+            "planStep": {
+                "yearly": "Yearly",
+                "card": {
+                    "yearlyPriceShort": "{{yearlyAmount}} / year"
+                },
+                "features": {
+                    "inventoryTracking": "Real-time inventory tracking",
+                    "unlimitedProducts": "Unlimited products",
+                    "unlimitedMembers": "Unlimited team members",
+                    "lowStockAlerts": "Low stock alerts",
+                    "support": "Email support"
+                }
+            },
+            "paymentStep": {
+                "title": "Complete Payment",
+                "description": "Securely complete your payment to create {{name}}",
+                "trialNote": "Your free 3-month trial starts today. You won't be charged until the trial ends.",
+                "subscriptionNote": "Your subscription starts immediately. Cancel anytime from account settings.",
+                "processingPayment": "Processing payment...",
+                "creatingOrganization": "Creating venue...",
+                "paymentFailed": "Payment failed. Please try again.",
+                "expressCheckoutUnavailable": "Express checkout unavailable. Please try a different payment method.",
+                "subscriptionTimeout": "We couldn't confirm your payment in time. Please refresh and try again or contact support.",
+                "subscriptionUnsupported": "We couldn't verify this payment automatically. Please refresh and try again or contact support.",
+                "errors": {
+                    "card": "Your card was declined. Double-check the details or try a different card.",
+                    "validation": "Some payment details are missing or invalid. Please review and try again.",
+                    "unexpected": "We couldn't complete the payment. Please try again or contact support."
+                },
+                "status": {
+                    "confirmingWallet": "Confirming wallet payment...",
+                    "confirmingCard": "Confirming card payment...",
+                    "waitingForStripe": "Waiting for Stripe to activate your subscription ({{attempt}}/{{max}})...",
+                    "creatingOrganization": "Finalizing your venue...",
+                    "retryingOrganization": "Finalizing your venue (attempt {{attempt}}/{{max}})..."
+                }
+            },
+            "nameLabel": "Venue Name",
+            "namePlaceholder": "Enter venue name",
+            "checkingEligibility": "Checking eligibility...",
+            "creatingSubscription": "Creating subscription...",
+            "creatingOrganization": "Creating venue...",
+            "detailsTitle": "Venue Details",
+            "detailsDescription": "Enter your venue name and select a billing plan",
+            "paymentDescription": "Complete payment to create {{name}}",
+            "success": "Venue created successfully",
+            "error": "Failed to create venue",
+            "cancel": "Cancel",
+            "create": "Create Venue",
+            "trialEligible": "You're eligible for a free 3-month trial!",
+            "trialNotEligible": "A subscription will be created for this venue.",
+            "subscriptionNote": "Your subscription will start after payment is confirmed. You can cancel anytime.",
+            "validationError": "Please check your input"
+        },
+        "switch": {
+            "success": "Switched to {{name}}",
+            "error": "Failed to switch organization"
+        },
+        "errors": {
+            "loadFailed": "Failed to load venues",
+            "loadFailedDescription": "Unable to load venues. Please try again.",
+            "createFailed": "Failed to create venue",
+            "notFound": "Venue not found",
+            "noAccess": "You don't have access to this venue"
+        }
+    },
+    "invitations": {
+        "title": "My Invitations",
+        "myInvitations": "My Invitations",
+        "pendingInvitations": "Pending Invitations",
+        "noPendingInvitations": "No pending invitations",
+        "sendFirstInvitation": "Send your first invitation to add team members",
+        "pendingCount": "{{count}} pending invitation",
+        "pendingCount_plural": "{{count}} pending invitations",
+        "invitedBy": "Invited by",
+        "invitedByLabel": "Invited by",
+        "invitedTo": "Invited to {{orgName}}",
+        "created": "Invited on {{date}}",
+        "expires": "Expires {{date}}",
+        "expiresIn": "Expires in {{count}} day",
+        "expiresIn_plural": "Expires in {{count}} days",
+        "expired": "Expired",
+        "expiredMessage": "This invitation has expired and can no longer be accepted.",
+        "acceptButton": "Accept",
+        "declineButton": "Decline",
+        "accepting": "Accepting...",
+        "declining": "Declining...",
+        "accepted": "Accepted",
+        "declined": "Declined",
+        "backToOrganizations": "Back to Organizations",
+        "accept": {
+            "success": "Invitation accepted successfully",
+            "error": "Failed to accept invitation"
+        },
+        "decline": {
+            "success": "Invitation declined",
+            "error": "Failed to decline invitation",
+            "confirm": "Are you sure you want to decline this invitation?"
+        },
+        "send": {
+            "title": "Send Invitation",
+            "emailLabel": "Email Address",
+            "emailPlaceholder": "user@example.com",
+            "roleLabel": "Role",
+            "sending": "Sending invitation...",
+            "sendButton": "Send Invitation",
+            "success": "Invitation sent successfully",
+            "error": "Failed to send invitation"
+        },
+        "revoke": {
+            "button": "Revoke",
+            "revoking": "Revoking...",
+            "confirm": "Are you sure you want to revoke this invitation?",
+            "success": "Invitation revoked successfully",
+            "error": "Failed to revoke invitation"
+        },
+        "errors": {
+            "loadFailed": "Failed to load invitations",
+            "loadFailedDescription": "Unable to load invitations. Please try again.",
+            "invalid": "Invalid invitation",
+            "expired": "This invitation has expired",
+            "alreadyProcessed": "This invitation has already been processed",
+            "alreadyMember": "User is already a member",
+            "alreadyInvited": "User has already been invited"
+        }
+    },
+    "members": {
+        "title": "Members",
+        "count": "{{count}} member",
+        "count_plural": "{{count}} members",
+        "noMembers": "No members found",
+        "viewAll": "View All Members",
+        "remove": {
+            "button": "Remove",
+            "removeMember": "Remove member",
+            "removing": "Removing...",
+            "confirm": "Are you sure you want to remove {{name}} from this organization?",
+            "confirmDescription": "They will lose access to all organization resources.",
+            "success": "Member removed successfully",
+            "error": "Failed to remove member",
+            "cannotRemoveSelf": "You cannot remove yourself"
+        },
+        "leave": {
+            "description": "Leave the organization and lose access to all its resources.",
+            "button": "Leave Organization",
+            "leaving": "Leaving...",
+            "confirm": "Leave Organization",
+            "confirmDescription": "Are you sure you want to leave this organization? You will lose access to all organization resources and will need to be re-invited to rejoin.",
+            "success": "Successfully left the organization",
+            "error": "Failed to leave organization",
+            "ownerCannotLeave": "Organization owner cannot leave. Transfer ownership first."
+        }
+    },
+    "orgManagement": {
+        "title": "Organization Management",
+        "description": "Manage your venue settings, subscription, and team",
+        "tabs": {
+            "overview": "Overview",
+            "members": "Members",
+            "invitations": "Invitations",
+            "subscription": "Subscription"
+        },
+        "overview": {
+            "title": "Organization Overview",
+            "details": "Organization Details",
+            "detailsDescription": "View and edit your organization information",
+            "organizationDetails": "Organization Details",
+            "organizationId": "Organization ID",
+            "name": "Name",
+            "owner": "Owner",
+            "createdOn": "Created On",
+            "settings": "Settings",
+            "defaultCurrency": "Default Currency",
+            "quickStats": "Quick Stats",
+            "totalMembers": "Total Members",
+            "pendingInvitations": "Pending Invitations",
+            "edit": {
+                "button": "Edit Organization",
+                "title": "Edit Organization",
+                "nameLabel": "Organization Name",
+                "namePlaceholder": "Enter organization name",
+                "currencyLabel": "Default Currency",
+                "saving": "Saving...",
+                "saveButton": "Save Changes",
+                "success": "Organization updated successfully",
+                "error": "Failed to update organization"
+            }
+        },
+        "members": {
+            "title": "Team Members",
+            "description": "View and manage your team members",
+            "noMembers": "No team members yet"
+        },
+        "products": {
+            "title": "Products",
+            "description": "Manage product details and inventory settings",
+            "searchPlaceholder": "Search products...",
+            "addButton": "Add Product",
+            "editButton": "Edit",
+            "emptyTitle": "No products yet",
+            "emptyDescription": "Add your first product to start tracking inventory.",
+            "errorTitle": "Unable to load products",
+            "errorDescription": "We couldn't load products. Please try again."
+        },
+        "categories": {
+            "title": "Categories",
+            "description": "Organize products into categories",
+            "searchPlaceholder": "Search categories...",
+            "addButton": "Add Category",
+            "addSubcategory": "Add subcategory",
+            "editButton": "Edit",
+            "deleteButton": "Delete",
+            "expandLabel": "Expand category",
+            "collapseLabel": "Collapse category",
+            "emptyTitle": "No categories yet",
+            "emptyDescription": "Create categories to organize your products.",
+            "deleteConfirm": "Delete category \"{{name}}\"? This cannot be undone.",
+            "deleteWithChildren": "\"{{name}}\" has {{count}} subcategories. Deleting it will also remove all subcategories.",
+            "deleteWithProducts": "\"{{name}}\" has {{count}} products assigned. They will be removed from this category.",
+            "deleteWithProductsAndChildren": "\"{{name}}\" has {{childCount}} subcategories and {{productCount}} products. They will be removed from this category.",
+            "errorTitle": "Unable to load categories",
+            "errorDescription": "We couldn't load categories. Please try again."
+        },
+        "settings": {
+            "title": "Settings",
+            "description": "Organization settings and configuration",
+            "currency": "Default Currency",
+            "createdAt": "Created",
+            "edit": "Edit Settings"
+        },
+        "subscription": {
+            "title": "Subscription",
+            "description": "Manage your subscription and billing settings",
+            "manage": "Manage Subscription",
+            "autoRenew": "Auto-renewal",
+            "createdAt": "Started",
+            "statusTitle": "Subscription Status",
+            "statusDescription": "Current subscription information",
+            "statusMessages": {
+                "active": "Your subscription is active. You have full access to all features.",
+                "trialing": "You're currently on a free trial. Add a payment method before it ends to continue without interruption.",
+                "incomplete": "Your subscription setup is incomplete. Please complete payment to activate.",
+                "pastDue": "Your payment is past due. Please update your payment method to avoid service interruption.",
+                "canceled": "Your subscription has been canceled. You may lose access to some features.",
+                "unpaid": "Your subscription is unpaid. Please update your payment method.",
+                "paused": "Your free trial has ended and your subscription is paused. Add a payment method to resume access."
+            },
+            "currentStatus": "Current Status",
+            "createdOn": "Subscription Started",
+            "renewsOn": "Renews on",
+            "endsOn": "Ends on",
+            "cancelSubscription": "Cancel Subscription",
+            "cancelConfirm": {
+                "title": "Cancel Subscription",
+                "description": "Are you sure you want to cancel your subscription? You'll lose access to premium features at the end of your current billing period.",
+                "confirmButton": "Yes, Cancel Subscription",
+                "cancelButton": "Keep Subscription"
+            },
+            "paymentFailedMessage": "Payment failed. Please update your payment method or try again.",
+            "paymentMethodsTitle": "Payment Methods",
+            "paymentMethodsDescription": "Manage your payment methods",
+            "paymentMethodsComingSoon": "Payment method management will be available soon.",
+            "status": "Status",
+            "plan": "Plan",
+            "billingInterval": "Billing Interval",
+            "monthly": "Monthly",
+            "yearly": "Yearly",
+            "nextBilling": "Next Billing Date",
+            "trialEnds": "Trial Ends",
+            "autoRenewal": "Auto-Renewal",
+            "autoRenewEnabled": "Enabled",
+            "autoRenewDisabled": "Disabled",
+            "paymentMethod": "Payment Method",
+            "noPaymentMethod": "No payment method on file",
+            "addPaymentMethod": "Add Payment Method",
+            "features": "All Plans Include",
+            "paymentFailed": {
+                "title": "Payment Failed",
+                "description": "Your recent payment failed. Please update your payment method or try again.",
+                "retryButton": "Retry Payment",
+                "updateButton": "Update Payment Method"
+            }
+        }
+    },
+    "payment": {
+        "title": "Payment Methods",
+        "methods": "Payment Methods",
+        "noMethods": "No payment methods on file",
+        "noMethodsDescription": "Add a payment method to manage your subscription.",
+        "addMethod": "Add Payment Method",
+        "defaultLabel": "Default",
+        "setDefaultButton": "Set as Default",
+        "removeButton": "Remove",
+        "cardBrand": {
+            "visa": "Visa",
+            "mastercard": "Mastercard",
+            "amex": "American Express",
+            "discover": "Discover",
+            "diners": "Diners Club",
+            "jcb": "JCB",
+            "unionpay": "UnionPay",
+            "unknown": "Card"
+        },
+        "cardEnding": "•••• {{last4}}",
+        "expiresOn": "Expires {{month}}/{{year}}",
+        "expired": "Expired",
+        "add": {
+            "title": "Add Payment Method",
+            "cardNumber": "Card Number",
+            "cardExpiry": "Expiry Date",
+            "cardCvc": "CVC",
+            "setAsDefault": "Set as default payment method",
+            "adding": "Adding payment method...",
+            "addButton": "Add Card",
+            "success": "Payment method added successfully",
+            "error": "Failed to add payment method",
+            "stripeError": "Payment processing error. Please check your card details."
+        },
+        "remove": {
+            "confirm": "Are you sure you want to remove this payment method?",
+            "confirmDefault": "This is your default payment method. Set another as default before removing.",
+            "removing": "Removing...",
+            "success": "Payment method removed successfully",
+            "error": "Failed to remove payment method"
+        },
+        "setDefault": {
+            "success": "Default payment method updated",
+            "error": "Failed to update default payment method"
+        }
+    },
+    "subscription": {
+        "trial": {
+            "eligible": "You're eligible for a free trial",
+            "notEligible": "Trial not available",
+            "duration": "3 months free",
+            "description": "Start with a 3-month free trial. No payment required now."
+        },
+        "status": {
+            "trialing": "Trial",
+            "active": "Active",
+            "past_due": "Past Due",
+            "canceled": "Canceled",
+            "unpaid": "Unpaid",
+            "incomplete": "Incomplete",
+            "incomplete_expired": "Expired",
+            "paused": "Paused"
+        },
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "selectPlan": "Select a plan",
+        "startTrial": "Start Free Trial",
+        "paymentDetails": "Payment Details",
+        "processingPayment": "Processing payment...",
+        "confirmPayment": "Confirm Payment",
+        "errors": {
+            "notFound": "Subscription not found",
+            "notActive": "Subscription is not active",
+            "createFailed": "Failed to create subscription"
+        },
+        "trialBanner": {
+            "daysLeft": "{{days}} days left in your free trial",
+            "paused": "Your free trial has ended. Add a payment method to continue.",
+            "reactivate": "Reactivate",
+            "addPayment": "Add payment method"
+        },
+        "addPayment": {
+            "title": "Manage payment method",
+            "description": "Choose the payment method for this subscription or add a new card.",
+            "submit": "Save payment method",
+            "manage": "Manage payment method",
+            "current": "Current for this venue",
+            "useForSubscription": "Use for this subscription",
+            "chooseExisting": "Choose an existing method",
+            "dueNow": "Due now",
+            "recurring": "Recurring charge",
+            "previewUnavailable": "Unable to preview the resume charge right now.",
+            "errors": {
+                "unexpected": "Something went wrong. Please try again.",
+                "setupFailed": "Couldn't start the payment setup. Please try again."
+            }
+        }
+    },
+    "account": {
+        "title": "Account",
+        "description": "View and manage your account information",
+        "personalInformation": "Personal Information",
+        "openProfilePicture": "Open profile picture",
+        "fullName": "Full Name",
+        "email": "Email Address",
+        "emailVerified": "✓ Verified",
+        "phoneNumber": "Phone Number",
+        "memberSince": "Member Since",
+        "futureFeatures": "Account editing and password management coming soon",
+        "updated": "Profile updated",
+        "profilePictureUpdated": "Profile picture updated",
+        "changeProfilePicture": "Change profile picture",
+        "profilePictureDialog": {
+            "title": "Profile picture",
+            "description": "Preview your current profile picture"
+        },
+        "resetPassword": {
+            "title": "Password",
+            "description": "We will email you a password reset link.",
+            "button": "Reset password",
+            "sending": "Sending reset link..."
+        },
+        "addPhoneNumber": "Add phone number",
+        "fullNameMustIncludeLastName": "Please include a last name",
+        "ownedOrganizations": {
+            "title": "Owned organizations",
+            "description": "Subscription status for organizations you own",
+            "count": "{{count}} organization owned",
+            "count_plural": "{{count}} organizations owned",
+            "activeCount": "{{count}} active",
+            "activeCount_plural": "{{count}} active",
+            "trialCount": "{{count}} trial",
+            "trialCount_plural": "{{count}} trials",
+            "trialExpiresUnknown": "trial expiry unknown",
+            "trialExpiresInDays": "trial expires in {{days}} days",
+            "inactiveCount": "{{count}} inactive",
+            "inactiveCount_plural": "{{count}} inactive"
+        }
+    },
+    "preferences": {
+        "title": "Preferences",
+        "theme": {
+            "title": "Theme",
+            "light": "Light",
+            "dark": "Dark",
+            "system": "System"
+        },
+        "language": {
+            "title": "Language",
+            "english": "English",
+            "italian": "Italiano"
+        }
+    },
+    "menu": {
+        "currentVenue": "Current Venue",
+        "noVenueSelected": "No venue selected",
+        "account": "Account",
+        "preferences": "Preferences",
+        "openUserMenu": "Open user menu",
+        "viewOrganizations": "View organizations",
+        "viewAccount": "View account settings",
+        "openPreferences": "Open preferences",
+        "userMenu": "User Menu",
+        "userMenuDescription": "Access your account settings, organization management, and preferences",
+        "preferencesDescription": "Customize your theme and language preferences",
+        "myVenues": "My Venues",
+        "switchVenue": "Switch venue",
+        "viewAllVenues": "View all venues"
+    }
+}

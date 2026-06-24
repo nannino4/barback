@@ -136,7 +136,7 @@ export class OrgService
             const org = await this.orgModel.findByIdAndUpdate(
                 orgId,
                 { $set: updateData },
-                { new: true, runValidators: true }
+                { new: true, runValidators: true },
             ).exec();
             
             // This shouldn't happen since we already verified the org exists, but keeping for safety

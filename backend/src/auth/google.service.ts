@@ -143,7 +143,7 @@ export class GoogleService
                     'OAuth state validation failed',
                     error instanceof Error ? error.stack : undefined,
                     'GoogleService#validateOAuthState',
-                    requestId
+                    requestId,
                 );
             }
             throw new InvalidOAuthStateException();
@@ -255,7 +255,7 @@ export class GoogleService
             user = await this.userService.linkGoogleAccount(
                 existingUserByEmail, 
                 googleUserInfo.id, 
-                requestId
+                requestId,
             );
 
             this.logger.log(
@@ -296,7 +296,7 @@ export class GoogleService
         this.logger.debug(
             `Checking if Google profile picture import is needed for user: ${user.email}`,
             'GoogleService#importGoogleProfilePictureIfNeeded',
-            requestId
+            requestId,
         );
 
         if (!this.shouldImportGoogleProfilePicture(user, pictureUrl))
@@ -304,7 +304,7 @@ export class GoogleService
             this.logger.debug(
                 `No import needed for user: ${user.email}`,
                 'GoogleService#importGoogleProfilePictureIfNeeded',
-                requestId
+                requestId,
             );
             return user;
         }
@@ -315,7 +315,7 @@ export class GoogleService
             this.logger.warn(
                 `Skipping profile picture import due to unsafe/unsupported URL for user: ${user.email}`,
                 'GoogleService#importGoogleProfilePictureIfNeeded',
-                requestId
+                requestId,
             );
             return user;
         }
@@ -325,7 +325,7 @@ export class GoogleService
             this.logger.debug(
                 `Attempting to download and upload Google profile picture for user: ${user.email}`,
                 'GoogleService#importGoogleProfilePictureIfNeeded',
-                requestId
+                requestId,
             );
 
             const { bytes, contentType }: { bytes: Buffer; contentType: string } = await this.downloadImageFromUrl(safeUrl);
@@ -350,7 +350,7 @@ export class GoogleService
             this.logger.debug(
                 `Google profile picture imported and uploaded for user: ${user.email}`,
                 'GoogleService#importGoogleProfilePictureIfNeeded',
-                requestId
+                requestId,
             );
             return updated.user;
         }
@@ -360,7 +360,7 @@ export class GoogleService
             this.logger.warn(
                 `Failed to import Google profile picture for user: ${user.email} - ${errorMessage}`,
                 'GoogleService#importGoogleProfilePictureIfNeeded',
-                requestId
+                requestId,
             );
             return user;
         }

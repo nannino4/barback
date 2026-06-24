@@ -1324,14 +1324,14 @@ describe('OrgController (Integration)', () =>
             const promises = Array(3).fill(null).map(() =>
                 request(app.getHttpServer())
                     .put(`/api/orgs/${testOrgs[0].id}/members/${testUser3.id}/role`)
-                    .send(updateData)
+                    .send(updateData),
             );
 
             const results = await Promise.allSettled(promises);
             
             // Assert - At least one should succeed, others might fail due to race conditions
             const successfulRequests = results.filter(result => 
-                result.status === 'fulfilled' && result.value.status === 200
+                result.status === 'fulfilled' && result.value.status === 200,
             );
             
             expect(successfulRequests.length).toBeGreaterThanOrEqual(1);

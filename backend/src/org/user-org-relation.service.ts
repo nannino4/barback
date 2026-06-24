@@ -101,7 +101,7 @@ export class UserOrgRelationService
             const relationship = await this.userOrgRelationModel.findOneAndUpdate(
                 { userId: userId, orgId: orgId },
                 { $set: { orgRole: newRole } },
-                { new: true, runValidators: true }
+                { new: true, runValidators: true },
             ).exec();
             
             if (!relationship)

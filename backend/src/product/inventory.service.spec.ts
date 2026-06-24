@@ -103,7 +103,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                 mockOrgId, 
                 mockProductId, 
                 mockUserId, 
-                mockAdjustmentDto
+                mockAdjustmentDto,
             );
 
             // Assert - Verify inventory log is created in database
@@ -137,7 +137,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                 mockOrgId, 
                 mockProductId, 
                 mockUserId, 
-                negativeAdjustmentDto
+                negativeAdjustmentDto,
             );
 
             // Assert - Verify inventory log is created in database
@@ -166,7 +166,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                 mockOrgId, 
                 mockProductId, 
                 mockUserId, 
-                adjustmentWithoutNote
+                adjustmentWithoutNote,
             );
 
             // Assert - Verify log is created without note
@@ -195,7 +195,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                 mockOrgId, 
                 mockProductId, 
                 mockUserId, 
-                purchaseAdjustmentDto
+                purchaseAdjustmentDto,
             );
 
             // Assert - Verify inventory log type and details
@@ -220,7 +220,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                 mockOrgId, 
                 nonExistentProductId, 
                 mockUserId, 
-                mockAdjustmentDto
+                mockAdjustmentDto,
             )).rejects.toThrow(ProductNotFoundException);
 
             // Assert - No logs should be created
@@ -235,7 +235,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                 mockOrgId2, 
                 mockProductId, 
                 mockUserId, 
-                mockAdjustmentDto
+                mockAdjustmentDto,
             )).rejects.toThrow(ProductNotFoundException);
 
             // Assert - Product quantity should remain unchanged
@@ -261,7 +261,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                 mockOrgId, 
                 mockProductId, 
                 mockUserId, 
-                largeNegativeAdjustment
+                largeNegativeAdjustment,
             )).rejects.toThrow(NegativeStockException);
 
             // Assert - Product quantity should remain unchanged
@@ -287,7 +287,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                 mockOrgId, 
                 mockProductId, 
                 mockUserId, 
-                zeroAdjustment
+                zeroAdjustment,
             )).rejects.toThrow(ZeroStockAdjustmentException);
 
             // Assert - Product quantity should remain unchanged
@@ -313,7 +313,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                 mockOrgId, 
                 mockProductId, 
                 mockUserId, 
-                zeroQuantityAdjustment
+                zeroQuantityAdjustment,
             );
 
             // Assert - Verify log is created
@@ -341,7 +341,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                     mockOrgId, 
                     mockProductId, 
                     mockUserId, 
-                    mockAdjustmentDto
+                    mockAdjustmentDto,
                 )).rejects.toThrow('Database error');
 
                 // Assert - No logs should remain in database (rollback)
@@ -436,7 +436,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
             const result = await service.getProductInventoryLogs(
                 mockOrgId, 
                 mockProductId, 
-                startDate
+                startDate,
             );
 
             // Assert - Only logs after start date should be returned
@@ -455,7 +455,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                 mockOrgId, 
                 mockProductId, 
                 undefined, 
-                endDate
+                endDate,
             );
 
             // Assert - Only logs before end date should be returned
@@ -474,7 +474,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                 mockOrgId, 
                 mockProductId, 
                 startDate, 
-                endDate
+                endDate,
             );
 
             // Assert - Only logs within date range should be returned
@@ -511,7 +511,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
             const result = await service.getProductInventoryLogs(
                 mockOrgId, 
                 mockProductId, 
-                futureStartDate
+                futureStartDate,
             );
 
             // Assert
@@ -529,7 +529,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
                 mockOrgId, 
                 mockProductId, 
                 startDate, 
-                endDate
+                endDate,
             )).rejects.toThrow(InvalidDateRangeException);
         });
 
@@ -541,7 +541,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
             // Act & Assert
             await expect(service.getProductInventoryLogs(
                 mockOrgId, 
-                nonExistentProductId
+                nonExistentProductId,
             )).rejects.toThrow(ProductNotFoundException);
         });
 
@@ -550,7 +550,7 @@ describe('InventoryService - Service Tests (Unit-style)', () =>
             // Act & Assert
             await expect(service.getProductInventoryLogs(
                 mockOrgId2, 
-                mockProductId
+                mockProductId,
             )).rejects.toThrow(ProductNotFoundException);
         });
 

@@ -224,7 +224,7 @@ export class AuthService
             const saltOrRounds = 10;
             userData.hashedPassword = await bcrypt.hash(registerUserDto.password, saltOrRounds);
         }
-        catch (error)
+        catch
         {
             this.logger.error('Password hashing failed during registration', undefined, 'AuthService#registerEmail', requestId);
             throw new PasswordHashingException();
@@ -246,7 +246,7 @@ export class AuthService
         {
             await this.sendVerificationEmail(newUser.email, requestId);
         } 
-        catch (error) 
+        catch
         {
             this.logger.warn(`Failed to send verification email to ${newUser.email}`, 'AuthService#registerEmail', requestId);
             // Don't fail registration if email sending fails

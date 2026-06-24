@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { 
     ProfilePictureFileRequiredException, 
     InvalidProfilePictureFileTypeException, 
-    ProfilePictureFileTooLargeException 
+    ProfilePictureFileTooLargeException, 
 } from '../user/exceptions/user-profile-picture.exceptions';
 
 // Default max file size (5MB) if not configured

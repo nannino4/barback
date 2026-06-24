@@ -163,7 +163,7 @@ export class CategoryService
                 .findOneAndUpdate(
                     { _id: categoryId, orgId },
                     updateData,
-                    { new: true }
+                    { new: true },
                 )
                 .exec();
         } 

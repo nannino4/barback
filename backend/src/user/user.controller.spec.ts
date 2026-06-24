@@ -428,7 +428,7 @@ describe('UserController (Integration)', () =>
         {
             // Mock service to throw error
             jest.spyOn(userService, 'updateProfile').mockRejectedValueOnce(
-                new Error('Database connection failed')
+                new Error('Database connection failed'),
             );
 
             await request(app.getHttpServer())
@@ -461,14 +461,14 @@ describe('UserController (Integration)', () =>
             const promises = Array(3).fill(null).map(() =>
                 request(app.getHttpServer())
                     .put('/api/users/me/password')
-                    .send(changePasswordDto)
+                    .send(changePasswordDto),
             );
 
             const results = await Promise.allSettled(promises);
             
             // At least one should succeed
             const successfulRequests = results.filter(result => 
-                result.status === 'fulfilled' && result.value.status === 200
+                result.status === 'fulfilled' && result.value.status === 200,
             );
             
             expect(successfulRequests.length).toBeGreaterThanOrEqual(1);

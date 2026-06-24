@@ -71,7 +71,7 @@ export class ThrottlerExceptionFilter implements ExceptionFilter
             // Fallback: return null if we can't extract the info
             return null;
         }
-        catch (error)
+        catch
         {
             // If extraction fails, return null and headers won't be added
             return null;

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { APP_INTERCEPTOR, APP_FILTER } from '@nestjs/core';
+import { APP_FILTER } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerExceptionFilter } from './common/filters/throttler-exception.filter';
 import { CommonModule } from './common/common.module';

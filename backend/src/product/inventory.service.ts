@@ -99,7 +99,7 @@ export class InventoryService
                 const updateResult = await this.productModel.updateOne(
                     { _id: productId, orgId },
                     { currentQuantity: newQuantity },
-                    { session }
+                    { session },
                 ).exec();
 
                 if (updateResult.modifiedCount !== 1)

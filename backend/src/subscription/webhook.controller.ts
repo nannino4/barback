@@ -115,7 +115,7 @@ export class WebhookController
             const stripeSubscription = event.data.object as Stripe.Subscription;
             await this.subscriptionService.syncSubscriptionFromStripe(stripeSubscription, requestId);
             this.logger.debug(
-            `Local subscription synced from Stripe subscription ${stripeSubscription.id} with status ${stripeSubscription.status}`,
+                `Local subscription synced from Stripe subscription ${stripeSubscription.id} with status ${stripeSubscription.status}`,
                 'WebhookController#handleStripeWebhook',
                 requestId,
             );

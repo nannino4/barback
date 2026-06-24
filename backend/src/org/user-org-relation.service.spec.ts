@@ -324,7 +324,7 @@ describe('UserOrgRelationService - Service Tests (Unit-style)', () =>
 
             // Verify this is the expected relationship from our mock data
             const expectedRelation = mockRelationData.find(
-                r => r.userId._id.toString() === mockUserId1.toString() && r.orgId._id.toString() === mockOrgId2.toString()
+                r => r.userId._id.toString() === mockUserId1.toString() && r.orgId._id.toString() === mockOrgId2.toString(),
             );
             expect(expectedRelation).toBeDefined();
             expect(result!.orgRole).toBe(expectedRelation!.orgRole);
@@ -335,7 +335,7 @@ describe('UserOrgRelationService - Service Tests (Unit-style)', () =>
             // Act - Test with ObjectId objects converted to strings
             const result = await service.findOne(
                 mockUserId2,
-                mockOrgId1
+                mockOrgId1,
             );
 
             // Assert
@@ -379,7 +379,7 @@ describe('UserOrgRelationService - Service Tests (Unit-style)', () =>
             const relationModel = connection.model('UserOrgRelation');
             await relationModel.findOneAndUpdate(
                 { userId: mockUserId1, orgId: mockOrgId1 },
-                { $set: { orgRole: OrgRole.STAFF } }
+                { $set: { orgRole: OrgRole.STAFF } },
             );
 
             // Act - Update to MANAGER

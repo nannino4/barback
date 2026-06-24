@@ -356,7 +356,7 @@ export class SubscriptionService
 
             responseObject.paymentMethod = this.toPaymentMethodSummary(paymentMethod, paymentMethod.id === defaultPaymentMethodId);
         }
-        catch (error)
+        catch
         {
             // Payment-method decoration is best-effort; subscription details should
             // still be returned if Stripe is temporarily unavailable.
@@ -599,7 +599,7 @@ export class SubscriptionService
                 .findOneAndUpdate(
                     { stripeSubscriptionId: stripeSubscriptionId },
                     { status: status },
-                    { new: true }
+                    { new: true },
                 )
                 .exec();
             
@@ -659,7 +659,7 @@ export class SubscriptionService
         {
             await this.stripeService.cancelSubscription(subscription.stripeSubscriptionId, requestId);
         }
-        catch (error)
+        catch
         {
             this.logger.warn(
                 `Failed to cancel Stripe subscription ${subscription.stripeSubscriptionId}, proceeding with local cancellation`,
@@ -790,7 +790,7 @@ export class SubscriptionService
                         nextBillingDate: billingDetails.nextBillingDate,
                         amount: billingDetails.amount,
                     },
-                    { new: true }
+                    { new: true },
                 )
                 .exec();
 

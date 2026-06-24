@@ -16,7 +16,8 @@ const getDevServerHttps = () => ({
 // https://vite.dev/config/
 export default defineConfig(({ command }) =>
 {
-    const isDevServer = command === 'serve';
+    const isVitest = process.env.VITEST === 'true';
+    const isDevServer = command === 'serve' && !isVitest;
 
     return {
         plugins: [

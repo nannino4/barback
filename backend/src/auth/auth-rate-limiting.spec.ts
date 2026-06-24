@@ -26,6 +26,21 @@ describe('Auth Rate Limiting (Integration)', () =>
 
     beforeAll(async () => 
     {
+        process.env.JWT_ACCESS_TOKEN_SECRET = process.env.JWT_ACCESS_TOKEN_SECRET ?? 'test-access-secret';
+        process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME = process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME ?? '15m';
+        process.env.JWT_REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_TOKEN_SECRET ?? 'test-refresh-secret';
+        process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME = process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME ?? '7d';
+        process.env.JWT_OAUTH_STATE_SECRET = process.env.JWT_OAUTH_STATE_SECRET ?? 'test-oauth-state-secret';
+        process.env.JWT_OAUTH_STATE_EXPIRATION_TIME = process.env.JWT_OAUTH_STATE_EXPIRATION_TIME ?? '10m';
+        process.env.GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID ?? 'test-google-client-id';
+        process.env.GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET ?? 'test-google-client-secret';
+        process.env.GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI ?? 'https://example.test/auth/google/callback';
+        process.env.S3_REGION = process.env.S3_REGION ?? 'us-east-1';
+        process.env.S3_BUCKET = process.env.S3_BUCKET ?? 'barback-test';
+        process.env.S3_ACCESS_KEY_ID = process.env.S3_ACCESS_KEY_ID ?? 'test';
+        process.env.S3_SECRET_ACCESS_KEY = process.env.S3_SECRET_ACCESS_KEY ?? 'test';
+        process.env.S3_PUBLIC_BASE_URL = process.env.S3_PUBLIC_BASE_URL ?? 'https://cdn.example.test';
+
         // Start in-memory MongoDB
         mongoServer = await MongoMemoryServer.create();
         const mongoUri = mongoServer.getUri();
@@ -97,8 +112,8 @@ describe('Auth Rate Limiting (Integration)', () =>
 
     afterAll(async () => 
     {
-        await app.close();
-        await mongoServer.stop();
+        await app?.close();
+        await mongoServer?.stop();
     });
 
     describe('POST /api/auth/register/email', () => 

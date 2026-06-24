@@ -145,7 +145,7 @@ describe('GoogleService', () =>
             expect(service).toBeDefined();
             expect(logger.log).toHaveBeenCalledWith(
                 'GoogleService initialized with valid configuration',
-                'GoogleService#constructor'
+                'GoogleService#constructor',
             );
         });
     });
@@ -180,7 +180,7 @@ describe('GoogleService', () =>
         it('should reject invalid state', async () => 
         {
             await expect(service.validateOAuthState('invalid-state')).rejects.toThrow(
-                InvalidOAuthStateException
+                InvalidOAuthStateException,
             );
         });
 
@@ -202,7 +202,7 @@ describe('GoogleService', () =>
             await new Promise(resolve => setTimeout(resolve, 100));
 
             await expect(service.validateOAuthState(expiredState)).rejects.toThrow(
-                InvalidOAuthStateException
+                InvalidOAuthStateException,
             );
         });
 
@@ -220,7 +220,7 @@ describe('GoogleService', () =>
             });
 
             await expect(service.validateOAuthState(wrongState)).rejects.toThrow(
-                InvalidOAuthStateException
+                InvalidOAuthStateException,
             );
         });
     });
@@ -245,7 +245,7 @@ describe('GoogleService', () =>
                 }),
                 expect.objectContaining({
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                })
+                }),
             );
         });
 
@@ -254,7 +254,7 @@ describe('GoogleService', () =>
             mockedAxios.post.mockRejectedValueOnce(new Error('Network error'));
 
             await expect(service.exchangeCodeForTokens('invalid-code')).rejects.toThrow(
-                GoogleTokenExchangeException
+                GoogleTokenExchangeException,
             );
         });
     });
@@ -270,7 +270,7 @@ describe('GoogleService', () =>
             expect(result).toEqual(mockGoogleUserInfo);
             expect(mockedAxios.get).toHaveBeenCalledWith(
                 'https://www.googleapis.com/oauth2/v2/userinfo',
-                { headers: { Authorization: 'Bearer access-token' } }
+                { headers: { Authorization: 'Bearer access-token' } },
             );
         });
 
@@ -280,7 +280,7 @@ describe('GoogleService', () =>
             mockedAxios.get.mockResolvedValueOnce({ data: unverifiedUserInfo });
 
             await expect(service.getUserInfo('access-token')).rejects.toThrow(
-                GoogleEmailNotVerifiedException
+                GoogleEmailNotVerifiedException,
             );
         });
 
@@ -294,7 +294,7 @@ describe('GoogleService', () =>
             mockedAxios.isAxiosError.mockReturnValueOnce(true);
 
             await expect(service.getUserInfo('invalid-token')).rejects.toThrow(
-                GoogleTokenInvalidException
+                GoogleTokenInvalidException,
             );
         });
 
@@ -303,7 +303,7 @@ describe('GoogleService', () =>
             mockedAxios.get.mockRejectedValueOnce(new Error('Network error'));
 
             await expect(service.getUserInfo('access-token')).rejects.toThrow(
-                GoogleUserInfoException
+                GoogleUserInfoException,
             );
         });
     });
@@ -347,7 +347,7 @@ describe('GoogleService', () =>
             userService.findByEmail.mockResolvedValueOnce(otherProviderUser);
 
             await expect(service.findOrCreateUser(mockGoogleUserInfo)).rejects.toThrow(
-                GoogleAccountLinkingException
+                GoogleAccountLinkingException,
             );
         });
 

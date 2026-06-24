@@ -203,7 +203,7 @@ export class ProductService
                 .findOneAndUpdate(
                     { _id: productId, orgId },
                     updateData,
-                    { new: true }
+                    { new: true },
                 )
                 .exec();
         } 

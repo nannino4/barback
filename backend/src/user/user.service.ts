@@ -131,7 +131,7 @@ export class UserService
             const user = await this.userModel.findByIdAndUpdate(
                 id,
                 { $set: updateData },
-                { new: true, runValidators: true }
+                { new: true, runValidators: true },
             ).exec();
             
             if (!user)
@@ -181,7 +181,7 @@ export class UserService
         pictureKey: string,
         thumbnailUrl: string,
         thumbnailKey: string,
-        requestId?: string
+        requestId?: string,
     ): Promise<{ user: User; oldPictureKey?: string; oldThumbnailKey?: string }>
     {
         this.logger.debug(`Attempting to update profile picture for user ID: ${id}`, 'UserService#updateProfilePicture', requestId);
@@ -208,9 +208,9 @@ export class UserService
                         profilePictureKey: pictureKey,
                         profilePictureThumbnailUrl: thumbnailUrl,
                         profilePictureThumbnailKey: thumbnailKey,
-                    }
+                    },
                 },
-                { new: true, runValidators: true }
+                { new: true, runValidators: true },
             ).exec();
             
             if (!user)
@@ -242,7 +242,7 @@ export class UserService
         const user = await this.userModel.findByIdAndUpdate(
             id,
             { $set: { role } },
-            { new: true, runValidators: true }
+            { new: true, runValidators: true },
         ).exec();
         if (!user)
         {
@@ -260,7 +260,7 @@ export class UserService
         const user = await this.userModel.findByIdAndUpdate(
             id,
             { $set: { isActive } },
-            { new: true, runValidators: true }
+            { new: true, runValidators: true },
         ).exec();
         if (!user)
         {
@@ -351,7 +351,7 @@ export class UserService
                     hashedPassword: user.hashedPassword,  // Condition: current password must match
                 },
                 { $set: { hashedPassword: hashedNewPassword } },
-                { new: true, runValidators: true }
+                { new: true, runValidators: true },
             ).exec();
             
             if (!result)
@@ -384,7 +384,7 @@ export class UserService
         const user = await this.userModel.findByIdAndUpdate(
             userId,
             { $set: { stripeCustomerId } },
-            { new: true, runValidators: true }
+            { new: true, runValidators: true },
         ).exec();
         if (!user)
         {
@@ -419,7 +419,7 @@ export class UserService
                 `Database error while finding user by Stripe customer ID: ${stripeCustomerId}`,
                 error instanceof Error ? error.stack : undefined,
                 'UserService#findByStripeCustomerId',
-                requestId
+                requestId,
             );
             throw new DatabaseOperationException('user lookup by Stripe customer ID', errorMessage);
         }
@@ -443,7 +443,7 @@ export class UserService
                         emailVerificationExpires: expiresAt,
                     },
                 },
-                { new: true, runValidators: true }
+                { new: true, runValidators: true },
             ).exec();
 
             this.logger.debug(`Email verification token generated for user ID: ${userId}`, 'UserService#generateEmailVerificationToken', requestId);
@@ -503,7 +503,7 @@ export class UserService
                         emailVerificationExpires: 1,
                     },
                 },
-                { new: true, runValidators: true }
+                { new: true, runValidators: true },
             ).exec();
         }
         catch (error)
@@ -583,7 +583,7 @@ export class UserService
                         passwordResetExpires: expiresAt,
                     },
                 },
-                { new: true, runValidators: true }
+                { new: true, runValidators: true },
             ).exec();
         }
         catch (error)
@@ -648,7 +648,7 @@ export class UserService
                         passwordResetExpires: 1,
                     },
                 },
-                { new: true, runValidators: true }
+                { new: true, runValidators: true },
             ).exec();
         }
         catch (error)
@@ -709,7 +709,7 @@ export class UserService
         const updatedUser = await this.userModel.findByIdAndUpdate(
             user._id,
             { $set: updateData },
-            { new: true, runValidators: true }
+            { new: true, runValidators: true },
         ).exec();
 
         if (!updatedUser) 

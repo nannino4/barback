@@ -318,7 +318,8 @@ export const AddPaymentMethodDialog: React.FC<AddPaymentMethodDialogProps> = ({
             </div>
           ) : paymentMethods.length > 0 && !shouldShowAddForm ? (
             <Stack space="md">
-              {paymentMethods.map((method: PaymentMethodResponse) => {
+              {paymentMethods.map((method: PaymentMethodResponse) => 
+              {
                 const isCurrent = method.id === currentPaymentMethodId;
                 const isAssigning = assignMutation.isPending && assignMutation.variables === method.id;
 

@@ -29,7 +29,7 @@ function createMockStripeSubscription(
         interval?: 'month' | 'year';
         amount?: number;
         currentPeriodEnd?: number;
-    }
+    },
 ): Partial<Stripe.Subscription>
 {
     const interval = options?.interval ?? 'month';
@@ -227,7 +227,7 @@ describe('SubscriptionController - Integration Tests', () =>
             const stripeSubscriptionId = 'sub_test123';
             await subscriptionService.createFromStripeSubscription(
                 createMockStripeSubscription(stripeSubscriptionId, 'active') as Stripe.Subscription,
-                testUserId
+                testUserId,
             );
 
             // Act
@@ -260,7 +260,7 @@ describe('SubscriptionController - Integration Tests', () =>
             const stripeSubscriptionId = 'sub_other123';
             await subscriptionService.createFromStripeSubscription(
                 createMockStripeSubscription(stripeSubscriptionId, 'active') as Stripe.Subscription,
-                otherUserId
+                otherUserId,
             );
 
             // Act & Assert
@@ -302,7 +302,7 @@ describe('SubscriptionController - Integration Tests', () =>
             const stripeSubscriptionId = 'sub_test123';
             await subscriptionService.createFromStripeSubscription(
                 createMockStripeSubscription(stripeSubscriptionId, 'active') as Stripe.Subscription,
-                testUserId
+                testUserId,
             );
 
             // Mock guards to deny access (no user attached)
@@ -334,7 +334,7 @@ describe('SubscriptionController - Integration Tests', () =>
             const stripeSubscriptionId = 'sub_test123';
             await subscriptionService.createFromStripeSubscription(
                 createMockStripeSubscription(stripeSubscriptionId, 'active') as Stripe.Subscription,
-                unverifiedUserId
+                unverifiedUserId,
             );
 
             // Mock JWT guard to attach unverified user
@@ -367,7 +367,7 @@ describe('SubscriptionController - Integration Tests', () =>
             const trialingSubId = 'sub_trialing';
             await subscriptionService.createFromStripeSubscription(
                 createMockStripeSubscription(trialingSubId, 'trialing') as Stripe.Subscription,
-                testUserId
+                testUserId,
             );
 
             const trialingResponse = await request(app.getHttpServer())
@@ -380,7 +380,7 @@ describe('SubscriptionController - Integration Tests', () =>
             const canceledSubId = 'sub_canceled';
             await subscriptionService.createFromStripeSubscription(
                 createMockStripeSubscription(canceledSubId, 'canceled') as Stripe.Subscription,
-                testUserId
+                testUserId,
             );
 
             const canceledResponse = await request(app.getHttpServer())
@@ -393,7 +393,7 @@ describe('SubscriptionController - Integration Tests', () =>
             const pastDueSubId = 'sub_past_due';
             await subscriptionService.createFromStripeSubscription(
                 createMockStripeSubscription(pastDueSubId, 'past_due') as Stripe.Subscription,
-                testUserId
+                testUserId,
             );
 
             const pastDueResponse = await request(app.getHttpServer())

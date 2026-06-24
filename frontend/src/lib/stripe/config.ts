@@ -156,7 +156,7 @@ export const buildStripeAppearance = (
 
   return {
     theme: 'flat',
-    inputs: 'condensed',
+    inputs: 'spaced',
     labels: 'floating',
     disableAnimations,
     variables: {

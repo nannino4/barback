@@ -137,7 +137,7 @@ describe('CategoryController (Integration)', () =>
                         name: 'Food',
                         description: 'All food items',
                     }),
-                ])
+                ]),
             );
         });
 
@@ -281,7 +281,7 @@ describe('CategoryController (Integration)', () =>
             // Verify category was persisted in database
             const savedCategory = await categoryService.findCategoryById(
                 mockOrgId, 
-                response.body.id
+                response.body.id,
             );
             expect(savedCategory.name).toBe('New Category');
             expect(savedCategory.orgId.toString()).toBe(mockOrgId.toString());
@@ -465,7 +465,7 @@ describe('CategoryController (Integration)', () =>
             // Verify changes were persisted
             const updatedCategory = await categoryService.findCategoryById(
                 mockOrgId, 
-                existingCategory._id as Types.ObjectId
+                existingCategory._id as Types.ObjectId,
             );
             expect(updatedCategory.name).toBe('Updated Category');
             expect(updatedCategory.description).toBe('Updated description');
@@ -655,7 +655,7 @@ describe('CategoryController (Integration)', () =>
 
             // Verify category was deleted from database
             await expect(
-                categoryService.findCategoryById(mockOrgId, existingCategory._id as Types.ObjectId)
+                categoryService.findCategoryById(mockOrgId, existingCategory._id as Types.ObjectId),
             ).rejects.toThrow();
         });
 
@@ -678,7 +678,7 @@ describe('CategoryController (Integration)', () =>
             // Verify parent category still exists
             const stillExists = await categoryService.findCategoryById(
                 mockOrgId, 
-                existingCategory._id as Types.ObjectId
+                existingCategory._id as Types.ObjectId,
             );
             expect(stillExists).toBeDefined();
         });

@@ -112,7 +112,7 @@ export class InvitationController
             requestId,
         );
         return invitations.map(invitation => 
-            plainToInstance(OutInvitationDto, invitation.toObject(), { excludeExtraneousValues: true })
+            plainToInstance(OutInvitationDto, invitation.toObject(), { excludeExtraneousValues: true }),
         );
     }
 
@@ -168,7 +168,7 @@ export class InvitationController
             requestId,
         );
         return invitations.map(invitation => 
-            plainToInstance(OutInvitationDto, invitation.toObject(), { excludeExtraneousValues: true })
+            plainToInstance(OutInvitationDto, invitation.toObject(), { excludeExtraneousValues: true }),
         );
     }
 

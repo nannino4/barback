@@ -80,7 +80,7 @@ export class SubscriptionController
         return plainToInstance(
             OutSubscriptionSetupDto,
             result,
-            { excludeExtraneousValues: true }
+            { excludeExtraneousValues: true },
         );
     }
 

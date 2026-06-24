@@ -24,7 +24,6 @@ import { CustomLogger } from '../common/logger/custom.logger';
 import { StorageService } from '../storage/storage.service';
 import { ProfilePictureValidationPipe } from '../pipes/profile-picture-validation.pipe';
 import { RequestId } from '../common/decorators/request-id.decorator';
-import { maskEmail } from '../common/utils/mask-email';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, EmailVerifiedGuard)
@@ -87,7 +86,7 @@ export class UserController
             uploadResult.picture.key,
             uploadResult.thumbnail.url,
             uploadResult.thumbnail.key
-        ,
+            ,
             requestId,
         );
 
@@ -109,7 +108,7 @@ export class UserController
             user.id,
             changePasswordDto.currentPassword,
             changePasswordDto.newPassword
-        ,
+            ,
             requestId,
         );
         this.logger.log(`Password changed successfully for user: ${user.id}`, 'UserController#changeCurrentUserPassword', requestId);

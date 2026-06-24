@@ -94,7 +94,7 @@ export class S3StorageService extends StorageService
             this.logger.error(
                 `Failed to initialize S3 client: ${errorMessage}`,
                 error instanceof Error ? error.stack : undefined,
-                'S3StorageService#constructor'
+                'S3StorageService#constructor',
             );
             throw new StorageConfigurationException(`Failed to initialize S3 client: ${errorMessage}`);
         }
@@ -132,16 +132,16 @@ export class S3StorageService extends StorageService
                     [input.oldPictureKey, input.oldThumbnailKey].filter(Boolean) as string[],
                     requestId,
                 );
-                }
-                catch (error)
-                {
-                    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-                    this.logger.error(
-                        `Failed to delete old profile picture files for user ${input.userId}: ${errorMessage}`,
-                        error instanceof Error ? error.stack : undefined,
-                        'S3StorageService#updateProfilePicture',
-                        requestId,
-                    );
+            }
+            catch (error)
+            {
+                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                this.logger.error(
+                    `Failed to delete old profile picture files for user ${input.userId}: ${errorMessage}`,
+                    error instanceof Error ? error.stack : undefined,
+                    'S3StorageService#updateProfilePicture',
+                    requestId,
+                );
             }
 
             return {

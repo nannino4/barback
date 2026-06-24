@@ -124,7 +124,7 @@ describe('OrgSubscriptionGuard', () =>
             const context = createMockExecutionContext(mockOrg._id.toString(), null);
 
             await expect(guard.canActivate(context)).rejects.toThrow(
-                new ForbiddenException('User information not available')
+                new ForbiddenException('User information not available'),
             );
         });
 
@@ -133,7 +133,7 @@ describe('OrgSubscriptionGuard', () =>
             const context = createMockExecutionContext(undefined, mockUser);
 
             await expect(guard.canActivate(context)).rejects.toThrow(
-                new ForbiddenException('Organization ID is required')
+                new ForbiddenException('Organization ID is required'),
             );
         });
 
@@ -142,7 +142,7 @@ describe('OrgSubscriptionGuard', () =>
             const context = createMockExecutionContext('invalid-id', mockUser);
 
             await expect(guard.canActivate(context)).rejects.toThrow(
-                new BadRequestException('Invalid organization ID format')
+                new BadRequestException('Invalid organization ID format'),
             );
         });
 
@@ -153,7 +153,7 @@ describe('OrgSubscriptionGuard', () =>
             const context = createMockExecutionContext(mockOrg._id.toString(), mockUser);
 
             await expect(guard.canActivate(context)).rejects.toThrow(
-                new ForbiddenException('Organization not found')
+                new ForbiddenException('Organization not found'),
             );
         });
 
@@ -165,7 +165,7 @@ describe('OrgSubscriptionGuard', () =>
             const context = createMockExecutionContext(mockOrg._id.toString(), mockUser);
 
             await expect(guard.canActivate(context)).rejects.toThrow(
-                new ForbiddenException('Organization subscription not found')
+                new ForbiddenException('Organization subscription not found'),
             );
         });
 
@@ -177,7 +177,7 @@ describe('OrgSubscriptionGuard', () =>
             const context = createMockExecutionContext(mockOrg._id.toString(), mockUser);
 
             await expect(guard.canActivate(context)).rejects.toThrow(
-                new ForbiddenException('Organization subscription is not active')
+                new ForbiddenException('Organization subscription is not active'),
             );
         });
 
@@ -188,7 +188,7 @@ describe('OrgSubscriptionGuard', () =>
             const context = createMockExecutionContext(mockOrg._id.toString(), mockUser);
 
             await expect(guard.canActivate(context)).rejects.toThrow(
-                new ForbiddenException('Unable to verify organization subscription status')
+                new ForbiddenException('Unable to verify organization subscription status'),
             );
         });
     });

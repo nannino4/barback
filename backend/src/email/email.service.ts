@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import * as nodemailer from 'nodemailer';
 import { Transporter } from 'nodemailer';
 import { EmailConfigurationException, EmailSendingException } from './exceptions/email.exceptions';
@@ -15,11 +16,15 @@ export interface EmailOptions
     html?: string;
 }
 
+type EmailTransport = 'smtp' | 'ses';
+
 @Injectable()
 export class EmailService
 {
-    private transporter: Transporter | null = null;
+    private smtpTransporter: Transporter | null = null;
+    private sesClient: SESClient | null = null;
 
+    private readonly emailTransport: EmailTransport;
     private readonly emailFrom: string;
     private readonly frontendUrl: string;
     private readonly appName: string;
@@ -29,7 +34,15 @@ export class EmailService
         private readonly logger: CustomLogger,
     )
     {
-        this.initializeTransporter();
+        const emailFrom = this.configService.get<string>('EMAIL_FROM');
+        if (!emailFrom)
+        {
+            throw new EmailConfigurationException('EMAIL_FROM');
+        }
+        this.emailFrom = emailFrom;
+
+        this.emailTransport = this.getEmailTransport();
+        this.initializeEmailClient();
 
         const frontendUrl = this.configService.get<string>('FRONTEND_URL');
         if (!frontendUrl)
@@ -40,18 +53,38 @@ export class EmailService
 
         this.appName = this.configService.get<string>('EMAIL_APP_NAME') || 'Barback';
 
-        this.emailFrom = this.configService.get<string>('EMAIL_FROM')!;
-
         this.logger.log('EmailService initialized', 'EmailService#constructor');
     }
 
-    private initializeTransporter(): void
+    private getEmailTransport(): EmailTransport
+    {
+        const emailTransport = this.configService.get<string>('EMAIL_TRANSPORT') || 'smtp';
+
+        if (emailTransport !== 'smtp' && emailTransport !== 'ses')
+        {
+            throw new EmailConfigurationException('EMAIL_TRANSPORT');
+        }
+
+        return emailTransport;
+    }
+
+    private initializeEmailClient(): void
+    {
+        if (this.emailTransport === 'ses')
+        {
+            this.initializeSesClient();
+            return;
+        }
+
+        this.initializeSmtpTransporter();
+    }
+
+    private initializeSmtpTransporter(): void
     {
         const smtpHost = this.configService.get<string>('SMTP_HOST');
         const smtpPort = this.configService.get<number>('SMTP_PORT');
         const smtpUser = this.configService.get<string>('SMTP_USER');
         const smtpPass = this.configService.get<string>('SMTP_PASS');
-        const emailFrom = this.configService.get<string>('EMAIL_FROM');
 
         if (!smtpHost)
         {
@@ -69,12 +102,8 @@ export class EmailService
         {
             throw new EmailConfigurationException('SMTP_PASS');
         }
-        if (!emailFrom)
-        {
-            throw new EmailConfigurationException('EMAIL_FROM');
-        }
 
-        this.transporter = nodemailer.createTransport({
+        this.smtpTransporter = nodemailer.createTransport({
             host: smtpHost,
             port: smtpPort,
             secure: smtpPort === 465,
@@ -84,7 +113,37 @@ export class EmailService
             },
         });
 
-        this.logger.log('Email transporter initialized', 'EmailService#initializeTransporter');
+        this.logger.log('SMTP email transporter initialized', 'EmailService#initializeSmtpTransporter');
+    }
+
+    private initializeSesClient(): void
+    {
+        const sesRegion = this.configService.get<string>('SES_REGION');
+        const sesAccessKeyId = this.configService.get<string>('SES_ACCESS_KEY_ID');
+        const sesSecretAccessKey = this.configService.get<string>('SES_SECRET_ACCESS_KEY');
+
+        if (!sesRegion)
+        {
+            throw new EmailConfigurationException('SES_REGION');
+        }
+        if (!sesAccessKeyId)
+        {
+            throw new EmailConfigurationException('SES_ACCESS_KEY_ID');
+        }
+        if (!sesSecretAccessKey)
+        {
+            throw new EmailConfigurationException('SES_SECRET_ACCESS_KEY');
+        }
+
+        this.sesClient = new SESClient({
+            region: sesRegion,
+            credentials: {
+                accessKeyId: sesAccessKeyId,
+                secretAccessKey: sesSecretAccessKey,
+            },
+        });
+
+        this.logger.log('SES email client initialized', 'EmailService#initializeSesClient');
     }
 
     private buildEmailLayout(content: {
@@ -137,23 +196,13 @@ export class EmailService
     {
         try
         {
-            const info = await this.transporter!.sendMail({
-                from: this.emailFrom,
-                to: options.to,
-                subject: options.subject,
-                text: options.text,
-                html: options.html,
-            });
-
-            this.logger.debug(
-                `Email sent successfully to ${maskEmail(options.to)}. Message ID: ${info.messageId}`,
-                'EmailService#sendEmail',
-            );
-
-            if (nodemailer.getTestMessageUrl(info))
+            if (this.emailTransport === 'ses')
             {
-                this.logger.debug(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`, 'EmailService#sendEmail');
+                await this.sendEmailWithSes(options);
+                return;
             }
+
+            await this.sendEmailWithSmtp(options);
         }
         catch (error)
         {
@@ -165,6 +214,64 @@ export class EmailService
             );
             throw new EmailSendingException(errorMessage);
         }
+    }
+
+    private async sendEmailWithSmtp(options: EmailOptions): Promise<void>
+    {
+        const info = await this.smtpTransporter!.sendMail({
+            from: this.emailFrom,
+            to: options.to,
+            subject: options.subject,
+            text: options.text,
+            html: options.html,
+        });
+
+        this.logger.debug(
+            `Email sent successfully to ${maskEmail(options.to)} via SMTP. Message ID: ${info.messageId}`,
+            'EmailService#sendEmailWithSmtp',
+        );
+
+        if (nodemailer.getTestMessageUrl(info))
+        {
+            this.logger.debug(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`, 'EmailService#sendEmailWithSmtp');
+        }
+    }
+
+    private async sendEmailWithSes(options: EmailOptions): Promise<void>
+    {
+        const command = new SendEmailCommand({
+            Source: this.emailFrom,
+            Destination: {
+                ToAddresses: [options.to],
+            },
+            Message: {
+                Subject: {
+                    Data: options.subject,
+                    Charset: 'UTF-8',
+                },
+                Body: {
+                    Text: {
+                        Data: options.text,
+                        Charset: 'UTF-8',
+                    },
+                    ...(options.html
+                        ? {
+                            Html: {
+                                Data: options.html,
+                                Charset: 'UTF-8',
+                            },
+                        }
+                        : {}),
+                },
+            },
+        });
+
+        const result = await this.sesClient!.send(command);
+
+        this.logger.debug(
+            `Email sent successfully to ${maskEmail(options.to)} via SES. Message ID: ${result.MessageId}`,
+            'EmailService#sendEmailWithSes',
+        );
     }
 
     generateVerificationEmail(email: string, token: string, locale: UserLanguage): EmailOptions

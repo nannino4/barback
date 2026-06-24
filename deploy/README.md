@@ -18,6 +18,8 @@ This guide covers:
 - `deploy-dev.sh`: manual full-stack deploy script
 - `.env.deploy.dev.example`: example deploy env file template
 - `nginx.bootstrap.conf`: temporary HTTP-only Nginx config for first certificate issuance
+- `terraform/`: AWS IaC for DNS/SES/IAM runtime users and importable existing AWS resources
+- `secrets/README.md`: documented gitignored runtime-secret workflow
 
 ## 1) Prerequisites (before first bootstrap)
 

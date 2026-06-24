@@ -6,7 +6,7 @@ Barback is an inventory-management product for cocktail bars.
 
 - `backend/` — NestJS + MongoDB API. All routes are prefixed `/api`.
 - `frontend/` — React + Vite + TypeScript SPA.
-- `deploy/` — Docker Compose deployment for the shared dev EC2 host.
+- `deploy/` — Docker Compose deployment for the shared dev EC2 host, plus Terraform IaC under `deploy/terraform/`.
 
 ## Local CI/CD
 

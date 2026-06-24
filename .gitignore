@@ -6,6 +6,21 @@
 node_modules/
 dist/
 coverage/
+
+# Terraform local state and plans
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+terraform.tfvars
+terraform.tfvars.json
+
 # Local TLS certs and SSH/deploy keys
 *.pem
 *.key

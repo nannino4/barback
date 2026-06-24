@@ -1,0 +1,24 @@
+# Copy to terraform.tfvars and adjust locally. Do not commit terraform.tfvars.
+
+# Use a Barback-specific Terraform/admin profile with Route53, SES, S3, EC2,
+# CloudFront and IAM permissions. Avoid profiles that belong to other projects.
+aws_profile = "barback-terraform"
+
+aws_region = "eu-south-1"
+
+# Must match backend SES_REGION.
+ses_region = "eu-south-1"
+
+environment = "dev"
+domain_name = "barback.it"
+
+# Optional but recommended when the AWS profile does not have
+# route53:ListHostedZones*. Example: "Z0123456789ABCDEF".
+hosted_zone_id = "Z05215372PSC9C9M6SH5N"
+
+# Creates backend runtime IAM keys for SES API email and S3 profile-picture storage.
+# Secrets are stored in Terraform state.
+create_app_runtime_credentials = false
+
+# Enable only after importing the existing bucket resources documented in README.md.
+manage_profile_pictures_bucket = false

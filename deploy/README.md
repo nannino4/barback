@@ -142,7 +142,11 @@ already configured on EC2 (often the moving `dev` tags).
    - backend health endpoint: `http://127.0.0.1/api/health`
    - external checks on `https://<domain>`
 
-## 4) Tag strategy
+## 4) Branch and tag strategy
+
+The shared staging/demo environment should deploy from the `staging` branch. Use
+`develop` for active integration, then fast-forward or merge `staging` to the
+validated commit before publishing images and deploying.
 
 Expected image publishing behavior from local publish scripts:
 - immutable tag: commit SHA by default, or an explicit tag argument

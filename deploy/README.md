@@ -18,8 +18,29 @@ This guide covers:
 - `deploy-dev.sh`: manual full-stack deploy script
 - `.env.deploy.dev.example`: example deploy env file template
 - `nginx.bootstrap.conf`: temporary HTTP-only Nginx config for first certificate issuance
+- `scripts/sync-runtime-and-deploy-dev.sh`: preferred monorepo deploy helper; copies only runtime files and secrets to EC2, then deploys
+- `scripts/deploy-dev-remote.sh`: legacy helper for running deploy against an already-synced remote directory
 - `terraform/`: AWS IaC for DNS/SES/IAM runtime users and importable existing AWS resources
 - `secrets/README.md`: documented gitignored runtime-secret workflow
+
+## Runtime files required on EC2
+
+The EC2 host does **not** need the full monorepo. To serve the app it only needs:
+
+- Docker and the Docker Compose plugin installed on the host.
+- Persistent host directories managed outside git:
+  - `/etc/letsencrypt` for TLS certificates.
+  - `/var/lib/letsencrypt` for certbot state.
+  - Docker volumes, especially `certbot-webroot`.
+- Runtime deploy directory, default `/home/ec2-user/barback-deploy`, containing:
+  - `docker-compose.yml`
+  - `deploy-dev.sh`
+  - `.env.deploy.dev` (gitignored; Docker Hub/image tag/certbot deploy settings)
+  - `secrets/backend.dev.env` (gitignored; backend runtime secrets)
+  - `nginx.bootstrap.conf` (only needed for first TLS bootstrap or certificate recovery)
+
+The frontend Nginx config is baked into the frontend Docker image; backend and
+frontend application source files are not needed on EC2.
 
 ## 1) Prerequisites (before first bootstrap)
 
@@ -96,33 +117,17 @@ push the moving `dev` tag. They use plain `docker build` (not Docker Buildx).
 
 ### Standard deploy procedure
 
-1. SSH into EC2
-2. Go to repo root (example: `/opt/barback`)
-3. Update repository if needed:
+Use the sync helper from the local monorepo. It copies exactly the runtime files
+listed above, including local gitignored deploy secrets, then runs the remote
+deploy script.
 
 ```bash
-git pull --ff-only
-```
-
-4. Set desired image tags in `.env.deploy.dev`
-   - use commit SHA for controlled rollout
-   - or `dev` for latest moving tag
-5. Run deploy script:
-
-```bash
-bash deploy-dev.sh
-```
-
-### Agent-run remote deploy helper
-
-From the local `deploy/` repository, an agent can trigger the EC2 deploy over SSH:
-
-```bash
+cd deploy
 BARBACK_EC2_HOST=<ec2-host-or-ip> \
 BARBACK_EC2_USER=ec2-user \
-BARBACK_EC2_KEY=/path/to/key.pem \
+BARBACK_EC2_KEY=../ec2-key \
 BARBACK_REMOTE_DEPLOY_DIR=/home/ec2-user/barback-deploy \
-  bash scripts/deploy-dev-remote.sh
+  bash scripts/sync-runtime-and-deploy-dev.sh
 ```
 
 Environment variables:
@@ -132,13 +137,16 @@ Environment variables:
 | `BARBACK_EC2_HOST` | Yes | - | EC2 hostname or IP |
 | `BARBACK_EC2_USER` | No | `ec2-user` | SSH user |
 | `BARBACK_EC2_KEY` | No | - | SSH private key path; omit if SSH agent/config handles auth |
-| `BARBACK_REMOTE_DEPLOY_DIR` | No | `/home/ec2-user/barback-deploy` | Deploy repo path on EC2 |
-| `SKIP_REMOTE_GIT_PULL` | No | `false` | Set `true` to skip `git pull --ff-only` before deploy |
+| `BARBACK_REMOTE_DEPLOY_DIR` | No | `/home/ec2-user/barback-deploy` | Runtime deploy directory on EC2 |
+| `BARBACK_LOCAL_DEPLOY_ENV_FILE` | No | `deploy/.env.deploy.dev` | Local deploy env file to copy to EC2 as `.env.deploy.dev` |
+| `BARBACK_LOCAL_BACKEND_ENV_FILE` | No | `deploy/secrets/backend.dev.env` | Local backend runtime env file to copy to EC2 |
+| `SKIP_REMOTE_DEPLOY` | No | `false` | Set `true` to sync files without running deploy |
 
-The helper does not edit `.env.deploy.dev`; it deploys whatever image tags are
-already configured on EC2 (often the moving `dev` tags).
+Legacy fallback: `scripts/deploy-dev-remote.sh` only SSHes into an already-synced
+remote directory and runs `deploy-dev.sh`. Prefer the sync helper for monorepo
+deploys.
 
-6. Verify service health:
+After deploy, verify service health:
    - backend health endpoint: `http://127.0.0.1/api/health`
    - external checks on `https://<domain>`
 

@@ -1081,19 +1081,30 @@
             "addButton": "Add Card",
             "success": "Payment method added successfully",
             "error": "Failed to add payment method",
-            "stripeError": "Payment processing error. Please check your card details."
+            "stripeError": "Payment processing error. Please check your card details.",
+            "description": "Add a card to your personal billing account. You can assign it to venue subscriptions from venue settings."
         },
         "remove": {
             "confirm": "Are you sure you want to remove this payment method?",
             "confirmDefault": "This is your default payment method. Set another as default before removing.",
             "removing": "Removing...",
             "success": "Payment method removed successfully",
-            "error": "Failed to remove payment method"
+            "error": "Failed to remove payment method",
+            "title": "Remove payment method",
+            "description": "This card will be detached from your billing account.",
+            "usedByTitle": "This card is used by venue subscriptions",
+            "usedByWarning": "Removing it clears it from those subscriptions. Renewals may fail, subscriptions may become past due, or trials may pause if no valid fallback payment method is available.",
+            "defaultWarning": "This is your default payment method. Removing it clears your default payment method.",
+            "confirmButton": "Remove payment method"
         },
         "setDefault": {
             "success": "Default payment method updated",
             "error": "Failed to update default payment method"
-        }
+        },
+        "personalDescription": "Manage cards saved to your personal billing account.",
+        "usedBy": "Used by {{count}} venue subscription: {{organizations}}",
+        "usedBy_plural": "Used by {{count}} venue subscriptions: {{organizations}}",
+        "notUsedBySubscriptions": "Not currently used by any venue subscription."
     },
     "subscription": {
         "trial": {

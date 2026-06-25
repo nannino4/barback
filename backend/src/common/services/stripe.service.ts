@@ -346,12 +346,12 @@ export class StripeService
      */
     async updateSubscriptionDefaultPaymentMethod(
         subscriptionId: string,
-        paymentMethodId: string,
+        paymentMethodId: string | null,
         requestId?: string,
     ): Promise<Stripe.Subscription>
     {
         this.logger.debug(
-            `Setting default payment method ${paymentMethodId} on subscription: ${subscriptionId}`,
+            `${paymentMethodId ? 'Setting' : 'Clearing'} default payment method ${paymentMethodId ?? ''} on subscription: ${subscriptionId}`,
             'StripeService#updateSubscriptionDefaultPaymentMethod',
             requestId,
         );
@@ -359,10 +359,10 @@ export class StripeService
         try
         {
             const subscription = await this.stripe.subscriptions.update(subscriptionId, {
-                default_payment_method: paymentMethodId,
+                default_payment_method: paymentMethodId ?? '',
             });
             this.logger.debug(
-                `Default payment method set on subscription: ${subscriptionId}`,
+                `Default payment method updated on subscription: ${subscriptionId}`,
                 'StripeService#updateSubscriptionDefaultPaymentMethod',
                 requestId,
             );
@@ -371,7 +371,7 @@ export class StripeService
         catch (error)
         {
             this.logger.error(
-                `Failed to set default payment method on subscription: ${subscriptionId}`,
+                `Failed to update default payment method on subscription: ${subscriptionId}`,
                 error instanceof Error ? error.stack : undefined,
                 'StripeService#updateSubscriptionDefaultPaymentMethod',
                 requestId,
@@ -516,6 +516,27 @@ export class StripeService
         }
     }
 
+    async clearDefaultPaymentMethod(customerId: string, requestId?: string): Promise<Stripe.Customer>
+    {
+        this.logger.debug(`Clearing default payment method for customer: ${customerId}`, 'StripeService#clearDefaultPaymentMethod', requestId);
+
+        try
+        {
+            const customer = await this.stripe.customers.update(customerId, {
+                invoice_settings: {
+                    default_payment_method: '',
+                },
+            });
+            this.logger.debug(`Default payment method cleared for customer: ${customerId}`, 'StripeService#clearDefaultPaymentMethod', requestId);
+            return customer;
+        }
+        catch (error)
+        {
+            this.logger.error(`Failed to clear default payment method for customer: ${customerId}`, error instanceof Error ? error.stack : undefined, 'StripeService#clearDefaultPaymentMethod', requestId);
+            this.handleStripeError(error, 'default payment method clearing', requestId);
+        }
+    }
+
     async getDefaultPaymentMethodId(customerId: string, requestId?: string): Promise<string | null>
     {
         this.logger.debug(`Retrieving default payment method for customer: ${customerId}`, 'StripeService#getDefaultPaymentMethodId', requestId);
@@ -565,6 +586,14 @@ export class StripeService
         return customerDefaultPaymentMethodId
             ? await this.retrievePaymentMethod(customerDefaultPaymentMethodId, requestId)
             : null;
+    }
+
+    async getSubscriptionDefaultPaymentMethodId(subscriptionId: string, requestId?: string): Promise<string | null>
+    {
+        this.logger.debug(`Retrieving explicit default payment method for subscription: ${subscriptionId}`, 'StripeService#getSubscriptionDefaultPaymentMethodId', requestId);
+
+        const subscription = await this.retrieveSubscriptionWithPaymentMethod(subscriptionId, requestId);
+        return this.getStripeId(subscription.default_payment_method);
     }
 
     async createResumeInvoicePreview(subscriptionId: string, requestId?: string): Promise<Stripe.Invoice>

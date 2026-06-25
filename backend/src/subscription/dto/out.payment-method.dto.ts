@@ -1,5 +1,20 @@
 import { Expose, Transform } from 'class-transformer';
 
+export class OutPaymentMethodUsageDto
+{
+    @Expose()
+    organizationId!: string;
+
+    @Expose()
+    organizationName!: string;
+
+    @Expose()
+    subscriptionId!: string;
+
+    @Expose()
+    subscriptionStatus!: string;
+}
+
 export class OutPaymentMethodDto 
 {
     @Expose()
@@ -24,4 +39,15 @@ export class OutPaymentMethodDto
 
     @Expose()
     isDefault!: boolean;
+
+    @Expose()
+    @Transform(({ obj }) => Array.isArray(obj.usedBySubscriptions)
+        ? obj.usedBySubscriptions.map((usage: Record<string, unknown>) => ({
+            organizationId: usage.organizationId,
+            organizationName: usage.organizationName,
+            subscriptionId: usage.subscriptionId,
+            subscriptionStatus: usage.subscriptionStatus,
+        }))
+        : [])
+    usedBySubscriptions!: OutPaymentMethodUsageDto[];
 }

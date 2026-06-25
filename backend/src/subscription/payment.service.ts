@@ -1,14 +1,32 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { Types } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 import { UserService } from '../user/user.service';
 import { StripeService } from '../common/services/stripe.service';
 import { CustomLogger } from '../common/logger/custom.logger';
+import { Org } from '../org/schemas/org.schema';
+import { Subscription } from './schemas/subscription.schema';
 import Stripe from 'stripe';
+
+interface PaymentMethodUsage
+{
+    organizationId: string;
+    organizationName: string;
+    subscriptionId: string;
+    subscriptionStatus: string;
+}
+
+export type PaymentMethodWithDefaultAndUsage = Stripe.PaymentMethod & {
+    isDefault: boolean;
+    usedBySubscriptions: PaymentMethodUsage[];
+};
 
 @Injectable()
 export class PaymentService 
 {
     constructor(
+        @InjectModel(Subscription.name) private readonly subscriptionModel: Model<Subscription>,
+        @InjectModel(Org.name) private readonly orgModel: Model<Org>,
         private readonly userService: UserService,
         private readonly stripeService: StripeService,
         private readonly logger: CustomLogger,
@@ -90,7 +108,7 @@ export class PaymentService
         });
     }
 
-    async getPaymentMethods(userId: Types.ObjectId, requestId?: string): Promise<Array<Stripe.PaymentMethod & { isDefault: boolean }>> 
+    async getPaymentMethods(userId: Types.ObjectId, requestId?: string): Promise<PaymentMethodWithDefaultAndUsage[]>
     {
         this.logger.debug(`Getting payment methods for user: ${userId}`, 'PaymentService#getPaymentMethods', requestId);
         
@@ -100,13 +118,15 @@ export class PaymentService
             return [];
         }
 
-        const [paymentMethods, defaultPaymentMethodId] = await Promise.all([
+        const [paymentMethods, defaultPaymentMethodId, usageByPaymentMethodId] = await Promise.all([
             this.stripeService.listPaymentMethods(user.stripeCustomerId, 'card', requestId),
             this.stripeService.getDefaultPaymentMethodId(user.stripeCustomerId, requestId),
+            this.getPaymentMethodUsageById(userId, requestId),
         ]);
 
         return paymentMethods.map((paymentMethod) => Object.assign(paymentMethod, {
             isDefault: paymentMethod.id === defaultPaymentMethodId,
+            usedBySubscriptions: usageByPaymentMethodId.get(paymentMethod.id) ?? [],
         }));
     }
 
@@ -129,6 +149,33 @@ export class PaymentService
         if (paymentMethod.customer !== user.stripeCustomerId) 
         {
             throw new BadRequestException('Payment method does not belong to user');
+        }
+
+        const [defaultPaymentMethodId, ownedSubscriptions] = await Promise.all([
+            this.stripeService.getDefaultPaymentMethodId(user.stripeCustomerId, requestId),
+            this.subscriptionModel.find({ userId }).exec(),
+        ]);
+
+        await Promise.all(ownedSubscriptions.map(async (subscription) =>
+        {
+            const explicitPaymentMethodId = await this.stripeService.getSubscriptionDefaultPaymentMethodId(
+                subscription.stripeSubscriptionId,
+                requestId,
+            );
+
+            if (explicitPaymentMethodId === paymentMethodId)
+            {
+                await this.stripeService.updateSubscriptionDefaultPaymentMethod(
+                    subscription.stripeSubscriptionId,
+                    defaultPaymentMethodId && defaultPaymentMethodId !== paymentMethodId ? defaultPaymentMethodId : null,
+                    requestId,
+                );
+            }
+        }));
+
+        if (defaultPaymentMethodId === paymentMethodId)
+        {
+            await this.stripeService.clearDefaultPaymentMethod(user.stripeCustomerId, requestId);
         }
 
         await this.stripeService.detachPaymentMethod(paymentMethodId, requestId);
@@ -162,5 +209,64 @@ export class PaymentService
             'PaymentService#setDefaultPaymentMethod',
             requestId,
         );
+    }
+
+    private async getPaymentMethodUsageById(userId: Types.ObjectId, requestId?: string): Promise<Map<string, PaymentMethodUsage[]>>
+    {
+        const subscriptions = await this.subscriptionModel.find({ userId }).exec();
+        if (subscriptions.length === 0)
+        {
+            return new Map<string, PaymentMethodUsage[]>();
+        }
+
+        const subscriptionIds = subscriptions.map(subscription => subscription._id);
+        const orgs = await this.orgModel
+            .find({ subscriptionId: { $in: subscriptionIds } })
+            .select('_id name subscriptionId')
+            .lean()
+            .exec();
+        const orgBySubscriptionId = new Map(orgs.map(org => [org.subscriptionId.toString(), org]));
+        const usageByPaymentMethodId = new Map<string, PaymentMethodUsage[]>();
+
+        await Promise.all(subscriptions.map(async (subscription) =>
+        {
+            try
+            {
+                const paymentMethod = await this.stripeService.getSubscriptionPaymentMethod(
+                    subscription.stripeSubscriptionId,
+                    requestId,
+                );
+
+                if (!paymentMethod)
+                {
+                    return;
+                }
+
+                const org = orgBySubscriptionId.get(subscription.id);
+                if (!org)
+                {
+                    return;
+                }
+
+                const usage = usageByPaymentMethodId.get(paymentMethod.id) ?? [];
+                usage.push({
+                    organizationId: org._id.toString(),
+                    organizationName: org.name,
+                    subscriptionId: subscription.id,
+                    subscriptionStatus: subscription.status,
+                });
+                usageByPaymentMethodId.set(paymentMethod.id, usage);
+            }
+            catch
+            {
+                this.logger.warn(
+                    `Failed to resolve payment method usage for subscription ${subscription.id}`,
+                    'PaymentService#getPaymentMethodUsageById',
+                    requestId,
+                );
+            }
+        }));
+
+        return usageByPaymentMethodId;
     }
 }

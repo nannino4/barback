@@ -72,7 +72,6 @@ export const paymentApi = {
       {
         method: 'DELETE',
       },
-      z.void(),
     );
   },
 
@@ -89,7 +88,6 @@ export const paymentApi = {
         method: 'POST',
         body: JSON.stringify({ paymentMethodId }),
       },
-      z.void(),
     );
   },
 };

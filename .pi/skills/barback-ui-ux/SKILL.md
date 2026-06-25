@@ -48,7 +48,12 @@ When a design choice is subjective:
 6. Port only the selected variant into production code.
 7. Remove temporary experiment code.
 
-## Playwright checks
+## Mandatory visual validation
+
+For every UI change, perform visual validation before the final response using
+Playwright/browser tooling. At minimum, inspect the changed route/component in a
+relevant mobile and desktop viewport; also inspect light and dark themes when
+colors, theme tokens, dialogs, overlays, or visual states are touched.
 
 ```bash
 cd frontend
@@ -56,9 +61,9 @@ npm run test:e2e
 npm run screenshots
 ```
 
-Do not claim a UI change is visually verified unless you inspected it in the
-browser or via Playwright screenshots. If tooling is unavailable, state that
-explicitly.
+The final response must include what was visually inspected (route/component,
+viewport, theme, and tool used). If tooling is unavailable or blocked, state that
+explicitly with the reason instead of implying validation was completed.
 
 Reference docs:
 

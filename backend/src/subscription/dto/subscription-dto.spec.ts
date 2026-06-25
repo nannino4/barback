@@ -24,6 +24,15 @@ describe('Subscription DTOs', () =>
                         number: '4242424242424242', // This should be excluded
                     },
                     isDefault: true,
+                    usedBySubscriptions: [
+                        {
+                            organizationId: 'org_123',
+                            organizationName: 'Bar One',
+                            subscriptionId: 'sub_123',
+                            subscriptionStatus: 'ACTIVE',
+                            internalStripeId: 'stripe_sub_123', // This should be excluded
+                        },
+                    ],
                     customerId: 'cus_123456', // This should be excluded
                     stripeData: { metadata: 'secret' }, // This should be excluded
                     billingDetails: { // This should be excluded
@@ -44,6 +53,14 @@ describe('Subscription DTOs', () =>
                 expect(transformed.card?.expMonth).toBe(paymentMethod.card.exp_month);
                 expect(transformed.card?.expYear).toBe(paymentMethod.card.exp_year);
                 expect(transformed.isDefault).toBe(paymentMethod.isDefault);
+                expect(transformed.usedBySubscriptions).toEqual([
+                    {
+                        organizationId: 'org_123',
+                        organizationName: 'Bar One',
+                        subscriptionId: 'sub_123',
+                        subscriptionStatus: 'ACTIVE',
+                    },
+                ]);
 
                 // Should exclude sensitive fields
                 expect((transformed.card as any)?.cvc).toBeUndefined();
@@ -51,6 +68,7 @@ describe('Subscription DTOs', () =>
                 expect((transformed as any).customerId).toBeUndefined();
                 expect((transformed as any).stripeData).toBeUndefined();
                 expect((transformed as any).billingDetails).toBeUndefined();
+                expect((transformed.usedBySubscriptions[0] as any).internalStripeId).toBeUndefined();
             });
 
             it('should handle non-card payment methods', () => 

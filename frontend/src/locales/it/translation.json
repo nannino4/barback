@@ -1079,19 +1079,30 @@
             "addButton": "Aggiungi Carta",
             "success": "Metodo di pagamento aggiunto con successo",
             "error": "Impossibile aggiungere il metodo di pagamento",
-            "stripeError": "Errore di elaborazione del pagamento. Controlla i dettagli della tua carta."
+            "stripeError": "Errore di elaborazione del pagamento. Controlla i dettagli della tua carta.",
+            "description": "Aggiungi una carta al tuo account di fatturazione personale. Puoi assegnarla agli abbonamenti dei locali dalle impostazioni del locale."
         },
         "remove": {
             "confirm": "Sei sicuro di voler rimuovere questo metodo di pagamento?",
             "confirmDefault": "Questo è il tuo metodo di pagamento predefinito. Imposta un altro come predefinito prima di rimuoverlo.",
             "removing": "Rimozione...",
             "success": "Metodo di pagamento rimosso con successo",
-            "error": "Impossibile rimuovere il metodo di pagamento"
+            "error": "Impossibile rimuovere il metodo di pagamento",
+            "title": "Rimuovi metodo di pagamento",
+            "description": "Questa carta verrà scollegata dal tuo account di fatturazione.",
+            "usedByTitle": "Questa carta è usata da abbonamenti di locali",
+            "usedByWarning": "Rimuovendola verrà eliminata da quegli abbonamenti. I rinnovi potrebbero non riuscire, gli abbonamenti potrebbero risultare scaduti o le prove potrebbero essere messe in pausa se non è disponibile un metodo di pagamento alternativo valido.",
+            "defaultWarning": "Questo è il tuo metodo di pagamento predefinito. Rimuovendolo verrà cancellato il metodo predefinito.",
+            "confirmButton": "Rimuovi metodo di pagamento"
         },
         "setDefault": {
             "success": "Metodo di pagamento predefinito aggiornato",
             "error": "Impossibile aggiornare il metodo di pagamento predefinito"
-        }
+        },
+        "personalDescription": "Gestisci le carte salvate nel tuo account di fatturazione personale.",
+        "usedBy": "Usato da {{count}} abbonamento locale: {{organizations}}",
+        "usedBy_plural": "Usato da {{count}} abbonamenti di locali: {{organizations}}",
+        "notUsedBySubscriptions": "Non è attualmente usato da nessun abbonamento locale."
     },
     "subscription": {
         "trial": {

@@ -15,6 +15,16 @@ export const PaymentMethodCardResponseSchema = z.object({
 });
 
 /**
+ * Organization subscription using a payment method.
+ */
+export const PaymentMethodUsageResponseSchema = z.object({
+  organizationId: z.string(),
+  organizationName: z.string(),
+  subscriptionId: z.string(),
+  subscriptionStatus: z.string(),
+});
+
+/**
  * Payment method schema
  */
 export const PaymentMethodResponseSchema = z.object({
@@ -22,6 +32,7 @@ export const PaymentMethodResponseSchema = z.object({
   type: z.string(), // 'card', etc.
   card: PaymentMethodCardResponseSchema.optional(),
   isDefault: z.boolean(),
+  usedBySubscriptions: z.array(PaymentMethodUsageResponseSchema).optional(),
 });
 
 /**
@@ -44,6 +55,7 @@ export const SetupIntentResponseSchema = z.object({
 // ============================================================================
 
 export type PaymentMethodCardResponse = z.infer<typeof PaymentMethodCardResponseSchema>;
+export type PaymentMethodUsageResponse = z.infer<typeof PaymentMethodUsageResponseSchema>;
 export type PaymentMethodResponse = z.infer<typeof PaymentMethodResponseSchema>;
 export type AddPaymentMethodRequest = z.infer<typeof AddPaymentMethodRequestSchema>;
 export type SetupIntentResponse = z.infer<typeof SetupIntentResponseSchema>;

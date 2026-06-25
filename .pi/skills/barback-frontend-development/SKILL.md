@@ -38,8 +38,10 @@ Use this skill for changes under `frontend/`.
 
 ## UI checks
 
-For UI changes, load `barback-ui-ux` too. Playwright/browser inspection is
-required before claiming visual validation.
+For any UI change, load `barback-ui-ux` too. Playwright/browser inspection is
+required before the final response, not just before claiming validation. The
+final response must say what was inspected (route/viewport/theme) or explicitly
+state that tooling blocked validation and why.
 
 ## Validation commands
 

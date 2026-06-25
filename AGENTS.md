@@ -75,8 +75,9 @@ setting up.
 - Frontend internal imports use the `@/` alias.
 - Frontend UI uses CSS-variable theme colors; do not use `dark:` color variants.
 - Use `notify` from `src/lib/notify.ts`, never `react-hot-toast` directly.
-- For UI changes, inspect with Playwright/browser tooling before claiming visual
-  validation.
+- For any UI change, always perform visual validation with Playwright/browser
+  tooling before final response. Report what was inspected (route/viewport/theme)
+  or explicitly state if tooling blocked validation and why.
 
 ## Reference docs
 

@@ -61,8 +61,15 @@ repository.
 # production build
 npm run build
 
-# tests
+# unit/component tests
 npm run test
+
+# Playwright browser smoke tests
+npx playwright install chromium # first time or after Playwright updates
+npm run test:e2e
+
+# Playwright screenshots for UI review
+npm run screenshots
 
 # lint and autofix
 npm run lint

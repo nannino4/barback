@@ -33,7 +33,7 @@ Email/password authentication provides the primary authentication method for Bar
    ↓
 7. Email Verification (via email link)
    ↓
-8. Verification Success → Auto-redirect to Dashboard
+8. Verification Success → Auto-redirect to Inventory
    ↓
 9. Organization Setup Flow (if no existing invitations)
 ```
@@ -73,11 +73,11 @@ Validation Timing:
    └── Authentication attempt
    ↓
 4. Authentication Response
-   ├── Success → Token storage → Dashboard redirect
+   ├── Success → Token storage → Inventory redirect
    ├── Invalid Credentials → Error message + retry
    └── Unverified Email → Verification page redirect
    ↓
-5. Dashboard Access (with role-based permissions)
+5. Inventory Access (with role-based permissions)
 ```
 
 #### Login Form Interaction Flow

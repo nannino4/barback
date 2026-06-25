@@ -36,11 +36,11 @@ Google OAuth integration provides a streamlined authentication option for Barbac
 6. Account Setup Completion
    ├── Auto-verified email (trusted Google email)
    ├── Pre-filled profile information
-   └── Redirect to organization setup or dashboard
+   └── Redirect to organization setup or inventory
    ↓
 7. First-time Experience
    ├── Organization creation/joining flow
-   └── Dashboard onboarding
+   └── Inventory-first onboarding
 ```
 
 #### Google OAuth User Experience Details
@@ -81,7 +81,7 @@ User Benefits Messaging:
 4. Immediate Access
    ├── Tokens stored in auth store
    ├── User profile loaded
-   └── Redirect to last used organization/dashboard
+   └── Redirect to last used organization inventory
 ```
 
 ### OAuth Error Handling Flow

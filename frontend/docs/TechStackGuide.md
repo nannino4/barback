@@ -49,6 +49,10 @@ This document defines the technology choices, architectural patterns, and high-l
 - **Loading States**: Built into TanStack Query
 - **Error Boundaries**: React error handling
 
+### Browser Testing & UI Feedback
+- **Playwright**: Mandatory E2E/browser automation for smoke tests, responsive checks, screenshots, and UI experimentation feedback
+- **Visual workflow**: UI changes should be inspected in the running app at mobile and desktop widths before claiming visual validation
+
 ### Internationalization (i18n)
 - **react-i18next**: React integration for internationalization
 - **i18next**: Core internationalization framework

@@ -15,9 +15,8 @@ import { useI18n } from '@/hooks/useI18n';
  * Usage:
  * ```tsx
  * <Route element={<HasCurrentOrgRoute />}>
- *   <Route path="/dashboard" element={<Dashboard />} />
- *   <Route path="/inventory" element={<InventoryPage />} />
- *   <Route path="/orders" element={<OrdersPage />} />
+ *   <Route path="/orgs/:orgId/inventory" element={<InventoryPage />} />
+ *   <Route path="/orgs/:orgId/products/:productId" element={<ProductDetailPage />} />
  * </Route>
  * ```
  */

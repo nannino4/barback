@@ -49,8 +49,8 @@
             "backToLogin": "Back to Sign In",
             "success": "Successfully signed in!",
             "alreadyLoggedIn": "You're already logged in",
-            "alreadyLoggedInDescription": "You're currently logged in. You can go to your dashboard or sign out to log in with a different account.",
-            "goToDashboard": "Go to Dashboard",
+            "alreadyLoggedInDescription": "You're currently logged in. You can go to your inventory or sign out to log in with a different account.",
+            "goToDashboard": "Go to Inventory",
             "signOut": "Sign Out"
         },
         "register": {
@@ -91,7 +91,7 @@
             "title": "Check Your Email",
             "description": "We've sent a password reset link to your email address.",
             "instructions": "If an account exists with that email, you will receive password reset instructions.",
-            "linkExpires": "The link will expire in 15 minutes.",
+            "linkExpires": "The link will expire in 1 hour.",
             "checkSpam": "Didn't receive the email? Check your spam folder.",
             "resendingEmail": "Resending Email...",
             "resendEmailCountdown": "Resend Email ({{countdown}}s)",
@@ -508,8 +508,8 @@
         }
     },
     "dashboard": {
-        "welcome": "Welcome to Your Dashboard",
-        "placeholder": "Your dashboard is being prepared. More features coming soon!"
+        "welcome": "Welcome to Your Inventory",
+        "placeholder": "Your inventory workspace is ready. More features coming soon!"
     },
     "inventory": {
         "title": "Inventory",

@@ -33,7 +33,7 @@ Email verification is a mandatory security feature that ensures users have acces
    ├── Backend validates token
    ├── Account marked as verified
    ├── Success page displayed
-   └── Auto-redirect to dashboard
+   └── Auto-redirect to inventory
    ↓
 6. Full App Access Granted
    ├── User can create/join organizations
@@ -126,7 +126,7 @@ Unverified User Attempts Access:
    └── Validate against user account
    ↓
 3. Verification Result
-   ├── Success: Account verified, redirect to dashboard
+   ├── Success: Account verified, redirect to inventory
    ├── Expired: Friendly error, offer resend
    ├── Invalid: Error message, return to verification page
    └── Already verified: Confirmation, continue to app

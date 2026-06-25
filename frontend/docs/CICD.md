@@ -28,15 +28,20 @@ bash scripts/ci-local.sh
 This runs, in order:
 
 1. `npm ci` unless `SKIP_NPM_CI=true` is set.
-2. `npm run lint`.
-3. `npm run test`.
-4. `npm run build`.
-5. `docker build --target nginx -t barback-frontend:local .`
+2. `npx playwright install chromium` unless `SKIP_PLAYWRIGHT_INSTALL=true` is set.
+3. `npm run lint`.
+4. `npm run test`.
+5. `npm run test:e2e` (Playwright browser smoke tests).
+6. `npm run build`.
+7. `docker build --target nginx -t barback-frontend:local .`
 
 Notes:
 
 - `npm run lint` currently runs ESLint with `--fix`, so it may modify files.
   Check `git status` after running local CI.
+- Local CI installs the Playwright Chromium browser when needed. Set
+  `SKIP_PLAYWRIGHT_INSTALL=true` only if the browser is already installed and you
+  intentionally want to skip that check.
 - Docker images are built with plain `docker build`, not Docker Buildx.
 - The shared dev EC2 host is `linux/amd64`. When publishing from Apple Silicon
   or another non-amd64 machine, set `DOCKER_DEFAULT_PLATFORM=linux/amd64` so the

@@ -6,6 +6,10 @@
 node_modules/
 dist/
 coverage/
+frontend/docs/screenshots/
+frontend/docs/mockups/
+frontend/test-results/
+frontend/playwright-report/
 
 # Terraform local state and plans
 .terraform/

@@ -41,7 +41,7 @@ The password reset feature provides a secure way for users to recover access to 
 6. User Checks Email
    ├── Password reset email received
    ├── Secure reset link provided
-   └── 15-minute expiration notice
+   └── 1-hour expiration notice
 ```
 
 #### Password Reset Email Flow
@@ -54,13 +54,13 @@ Email Content Structure:
    ├── Reset request confirmation
    ├── Secure reset button/link
    ├── Manual link as backup
-   ├── Expiration time (15 minutes)
+   ├── Expiration time (1 hour)
    ├── Security notice (ignore if not requested)
    └── Support contact information
 
 Security Features:
 - Unique, single-use token
-- 15-minute expiration
+- 1-hour expiration
 - HTTPS-only reset links
 - Clear security warnings
 ```
@@ -76,7 +76,7 @@ Security Features:
    ↓
 2. Token Validation
    ├── Backend validates token
-   ├── Check expiration (15 minutes)
+   ├── Check expiration (1 hour)
    ├── Verify single-use status
    └── Confirm account association
    ↓
@@ -112,7 +112,7 @@ Security Features:
 1. User Clicks Invalid/Expired Link
    ↓
 2. Token Validation Failure
-   ├── Expired token (> 15 minutes)
+   ├── Expired token (> 1 hour)
    ├── Already used token
    ├── Invalid token format
    └── Non-existent token

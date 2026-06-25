@@ -49,8 +49,8 @@
             "backToLogin": "Torna al login",
             "success": "Accesso effettuato con successo!",
             "alreadyLoggedIn": "Hai già effettuato l'accesso",
-            "alreadyLoggedInDescription": "Sei attualmente autenticato. Puoi andare alla tua dashboard o disconnetterti per accedere con un account diverso.",
-            "goToDashboard": "Vai alla Dashboard",
+            "alreadyLoggedInDescription": "Sei attualmente autenticato. Puoi andare al tuo inventario o disconnetterti per accedere con un account diverso.",
+            "goToDashboard": "Vai all'Inventario",
             "signOut": "Disconnetti"
         },
         "register": {
@@ -91,7 +91,7 @@
             "title": "Controlla la Tua Email",
             "description": "Abbiamo inviato un link per reimpostare la password al tuo indirizzo email.",
             "instructions": "Se esiste un account con quell'email, riceverai le istruzioni per il reset della password.",
-            "linkExpires": "Il link scadrà tra 15 minuti.",
+            "linkExpires": "Il link scadrà tra 1 ora.",
             "checkSpam": "Non hai ricevuto l'email? Controlla la cartella spam.",
             "resendingEmail": "Reinvio Email...",
             "resendEmailCountdown": "Reinvia Email ({{countdown}}s)",
@@ -509,8 +509,8 @@
         }
     },
     "dashboard": {
-        "welcome": "Benvenuto nella Tua Dashboard",
-        "placeholder": "La tua dashboard è in preparazione. Altre funzionalità in arrivo!"
+        "welcome": "Benvenuto nel Tuo Inventario",
+        "placeholder": "Il tuo spazio inventario è pronto. Altre funzionalità in arrivo!"
     },
     "inventory": {
         "title": "Inventario",

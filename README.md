@@ -8,6 +8,13 @@ Barback is an inventory-management product for cocktail bars.
 - `frontend/` — React + Vite + TypeScript SPA.
 - `deploy/` — Docker Compose deployment for the shared dev EC2 host, plus Terraform IaC under `deploy/terraform/`.
 
+## Documentation model
+
+- `.pi/skills/` — task-specific agent workflows and checklists.
+- `backend/docs/`, `frontend/docs/`, `deploy/` — durable product, architecture,
+  testing, and operations references.
+- `AGENTS.md` — short always-loaded orientation for coding agents.
+
 ## Local CI/CD
 
 Remote GitHub Actions CI is intentionally not used. Run local shell scripts:

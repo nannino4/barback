@@ -18,6 +18,9 @@ export default defineConfig(({ command }) =>
 {
     const isVitest = process.env.VITEST === 'true';
     const isDevServer = command === 'serve' && !isVitest;
+    const devServerHost = process.env.VITE_DEV_SERVER_HOST ?? 'barback.it';
+    const shouldUseDevServerHttps = process.env.VITE_DEV_SERVER_HTTPS !== 'false';
+    const shouldUseStrictPort = process.env.VITE_DEV_SERVER_STRICT_PORT === 'true';
 
     return {
         plugins: [
@@ -31,9 +34,10 @@ export default defineConfig(({ command }) =>
         },
         server: isDevServer
             ? {
-                host: 'barback.it',
+                host: devServerHost,
                 port: 5173,
-                https: getDevServerHttps(),
+                strictPort: shouldUseStrictPort,
+                https: shouldUseDevServerHttps ? getDevServerHttps() : undefined,
                 proxy: {
                     '/api': {
                         target: 'http://localhost:3000',

@@ -9,8 +9,13 @@ if [[ "${SKIP_NPM_CI:-false}" != "true" ]]; then
   npm ci
 fi
 
+if [[ "${SKIP_PLAYWRIGHT_INSTALL:-false}" != "true" ]]; then
+  npx playwright install chromium
+fi
+
 npm run lint
 npm run test
+npm run test:e2e
 npm run build
 
 docker build \

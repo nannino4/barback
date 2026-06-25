@@ -76,7 +76,7 @@ export const useAuth = () =>
       }
       else
       {
-        // User is verified - check for redirect parameter or go to dashboard
+        // User is verified - check for redirect parameter or go to inventory
         const redirectUrl = searchParams.get('redirect');
         if (redirectUrl)
         {

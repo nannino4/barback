@@ -33,23 +33,23 @@ We focus on testing **what the component does**, not **how it does it**. This ap
 ### Testing Tools
 - **Vitest**: Fast unit testing (Vite-native, compatible with Jest)
 - **React Testing Library**: Component testing focused on user behavior
-- **MSW (Mock Service Worker)**: API mocking for realistic network requests
-- **Playwright**: E2E testing in real browsers
+- **Playwright**: Mandatory browser automation for E2E smoke tests, responsive checks, visual inspection, and UI experimentation feedback
 - **@testing-library/user-event**: Realistic user interactions
+
+MSW can be added later if API-heavy component tests need realistic network-level
+mocks. Do not document MSW as required unless it is installed and used by the
+suite.
 
 ### Testing Utilities
 - **@testing-library/jest-dom**: Custom matchers for DOM testing
-- **@vitest/ui**: Visual test runner interface
-- **c8**: Code coverage reporting
+- **@testing-library/user-event**: Realistic user interactions in component tests
+- **Vitest coverage**: Coverage reporting when enabled through Vitest configuration
 
 ## Project Structure
 
 ```
 src/
-├── __tests__/           # Global test setup and utilities
-│   ├── setup.ts         # Test environment configuration
-│   ├── mocks/           # MSW API mocks
-│   └── utils.tsx        # Custom render functions
+├── test/                # Vitest setup and utilities
 ├── components/
 │   ├── ui/
 │   │   └── __tests__/   # shadcn/ui component tests
@@ -62,6 +62,8 @@ src/
 │   └── __tests__/       # Utility function tests
 └── pages/
     └── __tests__/       # Page component tests
+
+e2e/                     # Playwright browser tests
 ```
 
 ## Best Practices
@@ -101,4 +103,50 @@ test('useProducts hook returns data')                   // ❌ Implementation
 - **Use setup/teardown** appropriately
 - **Don't repeat yourself** - extract common setup
 
-This testing approach ensures your Barback application is robust, maintainable, and provides confidence that features work as users expect them to.
+## Playwright Browser Testing
+
+Playwright is part of the required frontend validation workflow. After a fresh
+checkout or Playwright version update, install the browser binary once:
+
+```bash
+npx playwright install chromium
+```
+
+Then run:
+
+```bash
+npm run test:e2e
+```
+
+The Playwright config starts the Vite dev server unless
+`PLAYWRIGHT_SKIP_WEB_SERVER=true` is set. The default base URL is:
+
+```text
+http://localhost:5173
+```
+
+Set `PLAYWRIGHT_BASE_URL` when checking a different running environment.
+
+Use Playwright for:
+
+- public-route and auth-route smoke tests;
+- mobile/tablet/desktop responsive checks;
+- horizontal overflow checks;
+- critical navigation and form flows;
+- visual inspection during UI experimentation.
+
+For repeatable screenshots during design work:
+
+```bash
+npm run screenshots
+```
+
+Generated screenshots live in `docs/screenshots/` and are gitignored. They are
+working artifacts, not deliverables.
+
+For UI experiments, follow `frontend/docs/UIExperimentationGuide.md`: define the
+single variable, build comparable variants, inspect them in the browser, present
+an opinionated read, port the winner, and remove temporary experiment code.
+
+This testing approach ensures your Barback application is robust, maintainable,
+and provides confidence that features work as users expect them to.

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LogOut, Settings, ChevronRight, Building2, User } from 'lucide-react';
+import { CreditCard, LogOut, Settings, ChevronRight, Building2, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -126,6 +126,33 @@ export const UserMenuMobile: React.FC = () =>
                   }}
                 >
                   <UserInfo user={user} size="md" className="flex-1 min-w-0" />
+                </Link>
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="lg"
+                asChild
+                className={cn(
+                  'w-full justify-start rounded-lg h-auto py-3 px-4',
+                  'text-left hover:bg-muted',
+                )}
+              >
+                <Link
+                  to={ROUTES.USERS.PAYMENT_METHODS}
+                  onClick={() =>
+                  {
+                    setSheetOpen(false);
+                    setMobileView('main');
+                  }}
+                >
+                  <Icon mode="inline" size="md">
+                    <CreditCard />
+                  </Icon>
+                  <span className="flex-1 font-medium">{t('payment.title')}</span>
+                  <Icon mode="inline" size="md" variant="muted">
+                    <ChevronRight />
+                  </Icon>
                 </Link>
               </Button>
 

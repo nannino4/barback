@@ -23,6 +23,7 @@ import { OrganizationsPage } from '@/pages/org/OrganizationsPage'
 import { CreateOrganizationPage } from '@/pages/org/CreateOrganizationPage'
 import { OrganizationManagePage } from '@/pages/org/OrganizationManagePage'
 import { UserProfilePage } from '@/pages/user/UserProfilePage'
+import { PaymentMethodsPage } from '@/pages/user/PaymentMethodsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import DesignSystemPage from '@/pages/DesignSystemPage'
 import { ApiError } from '@/lib/errors'
@@ -132,8 +133,9 @@ const router = createBrowserRouter(
         <Route path={ROUTES.ORGS.CREATE} element={<CreateOrganizationPage />} />
         <Route path={ROUTES.ORGS.DETAIL} element={<OrganizationManagePage />} />
 
-        {/* User Profile */}
+        {/* User settings */}
         <Route path={ROUTES.USERS.ME} element={<UserProfilePage />} />
+        <Route path={ROUTES.USERS.PAYMENT_METHODS} element={<PaymentMethodsPage />} />
 
         {/* Requires organization selection */}
         <Route element={<HasCurrentOrgRoute />}>

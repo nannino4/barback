@@ -10,6 +10,7 @@ frontend/docs/screenshots/
 frontend/docs/mockups/
 frontend/test-results/
 frontend/playwright-report/
+frontend/visual-validation/
 
 # Terraform local state and plans
 .terraform/

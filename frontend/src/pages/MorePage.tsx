@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Settings, Building2, User, HelpCircle, ChevronRight } from 'lucide-react';
+import { CreditCard, Settings, Building2, User, HelpCircle, ChevronRight } from 'lucide-react';
 import { useI18n } from '@/hooks/useI18n';
 import { useOrganizations } from '@/hooks/useOrganizations';
 import { PageContainer } from '@/components/layout/PageContainer';
@@ -59,6 +59,13 @@ export function MorePage()
       label: t('more.profile'),
       description: t('more.profileDescription'),
       to: ROUTES.USERS.ME,
+      show: true,
+    },
+    {
+      icon: CreditCard,
+      label: t('payment.title'),
+      description: t('more.paymentMethodsDescription'),
+      to: ROUTES.USERS.PAYMENT_METHODS,
       show: true,
     },
     {

@@ -23,7 +23,6 @@ import { PASSWORD_RESET_COOLDOWN_MS } from '@/constants/constants';
 import { queryKeys } from '@/lib/queryKeys';
 import { notify } from '@/lib/notify';
 import { UserAvatar } from '@/components/user/UserAvatar';
-import { PersonalPaymentMethodsCard } from '@/components/user/PersonalPaymentMethodsCard';
 import { useAuthStore } from '@/stores/authStore';
 
 /**
@@ -316,7 +315,6 @@ export function UserProfilePage()
           </CardContent>
         </Card>
 
-        <PersonalPaymentMethodsCard />
       </Section>
 
       <Dialog open={isProfilePictureOpen} onOpenChange={setIsProfilePictureOpen}>

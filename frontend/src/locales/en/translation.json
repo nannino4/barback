@@ -670,6 +670,7 @@
         "title": "More",
         "profile": "Profile",
         "profileDescription": "View and edit your account information",
+        "paymentMethodsDescription": "Manage cards saved to your personal billing account",
         "myVenuesDescription": "Manage your venues and invitations",
         "orgSettingsDescription": "Manage members, settings, and subscription",
         "help": "Help & Support",

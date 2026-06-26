@@ -38,6 +38,7 @@ export const ROUTES = {
   // Users
   USERS: {
     ME: '/users/me',
+    PAYMENT_METHODS: '/users/me/payment-methods',
   },
 
   // Core App Routes (require org context)

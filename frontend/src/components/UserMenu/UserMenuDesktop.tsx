@@ -1,4 +1,4 @@
-import { LogOut, Settings, Building2, User } from 'lucide-react';
+import { CreditCard, LogOut, Settings, Building2, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Icon } from '@/components/ui/icon';
@@ -68,6 +68,15 @@ export const UserMenuDesktop: React.FC = () =>
         <DropdownMenuItem asChild className="cursor-pointer" aria-label={t('menu.viewAccount')}>
           <Link to={ROUTES.USERS.ME}>
             <UserInfo user={user} size="md" className="w-full" />
+          </Link>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild className="cursor-pointer">
+          <Link to={ROUTES.USERS.PAYMENT_METHODS}>
+            <Icon mode="inline" size="sm" className="mr-2">
+              <CreditCard />
+            </Icon>
+            <span>{t('payment.title')}</span>
           </Link>
         </DropdownMenuItem>
 

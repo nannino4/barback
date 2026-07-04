@@ -1,6 +1,27 @@
 # Barback Frontend
 
-This repository contains the React/Vite frontend for Barback.
+React 19 + Vite + TypeScript SPA for Barback.
+
+## Documentation
+
+Monorepo-level docs:
+
+- Product definition: `../docs/product.md`
+- Roadmap: `../docs/roadmap.md`
+- Architecture: `../docs/architecture.md`
+- Local development: `../docs/local-development.md`
+- Testing strategy: `../docs/testing.md`
+- CI/CD: `../docs/cicd.md`
+- Feature references: `../docs/features/`
+
+Frontend-specific docs:
+
+- Coding guidelines: `docs/CodingGuidelines.md`
+- Testing guide: `docs/TestingGuide.md`
+- Design system: `docs/design-system.md`
+- UX reference: `docs/ux.md`
+- UI experimentation: `docs/UIExperimentationGuide.md`
+- Frontend technology notes: `docs/TechStackGuide.md`
 
 ## Installation
 
@@ -10,40 +31,32 @@ npm install
 
 ## Running the dev server
 
-1. Create the local frontend environment file if it does not already exist:
+```bash
+cp .env.example .env.local
+npm run dev
+```
 
-    ```bash
-    cp .env.example .env.local
-    ```
+Ensure `.env.local` contains required dev values, especially:
 
-2. Ensure `.env.local` contains the required dev values, especially:
+```text
+VITE_API_BASE_URL=/api
+VITE_STRIPE_PUBLISHABLE_KEY=...
+VITE_GOOGLE_CLIENT_ID=...
+```
 
-    ```text
-    VITE_API_BASE_URL=/api
-    VITE_STRIPE_PUBLISHABLE_KEY=...
-    VITE_GOOGLE_CLIENT_ID=...
-    ```
+Make sure `barback.it` resolves locally:
 
-3. Make sure `barback.it` resolves locally. Add this line to `/etc/hosts` if it
-   is missing:
+```text
+127.0.0.1 barback.it
+```
 
-    ```text
-    127.0.0.1 barback.it
-    ```
+The local HTTPS certificate files expected by `vite.config.ts` must exist in the
+parent project directory:
 
-4. Ensure the local HTTPS certificate files expected by `vite.config.ts` exist in
-   the parent project directory:
-
-    ```text
-    ../barback.it.pem
-    ../barback.it-key.pem
-    ```
-
-5. Start the Vite dev server:
-
-    ```bash
-    npm run dev
-    ```
+```text
+../barback.it.pem
+../barback.it-key.pem
+```
 
 The frontend is served at:
 
@@ -52,25 +65,21 @@ https://barback.it:5173
 ```
 
 The Vite dev server proxies `/api` to the backend at `http://localhost:3000`.
-Start the backend separately with `npm run start:dev` from the `backend/`
-repository.
+Start the backend separately from `backend/`.
 
-## Other commands
+## Commands
 
 ```bash
-# production build
-npm run build
-
-# unit/component tests
-npm run test
-
-# Playwright browser smoke tests
-npx playwright install chromium # first time or after Playwright updates
-npm run test:e2e
-
-# Playwright screenshots for UI review
-npm run screenshots
-
-# lint and autofix
 npm run lint
+npm run test
+npm run test:e2e
+npm run build
+npm run screenshots
+bash scripts/ci-local.sh
+```
+
+Install Playwright Chromium after a fresh checkout or Playwright update:
+
+```bash
+npx playwright install chromium
 ```

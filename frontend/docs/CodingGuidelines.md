@@ -111,4 +111,4 @@ cd frontend
 npx playwright install chromium
 ```
 
-See `frontend/docs/TestingGuide.md` and `frontend/docs/CICD.md` for details.
+See `frontend/docs/TestingGuide.md`, `docs/testing.md`, and `docs/cicd.md` for details.

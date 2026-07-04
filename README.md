@@ -163,7 +163,7 @@ DOCKER_HUB_TOKEN=<token> \
 bash scripts/publish-image.sh dev
 ```
 
-See `deploy/README.md` for the full deployment procedure.
+See `docs/cicd.md` and `docs/operations/deploy-dev.md` for the full deployment procedure.
 
 ## Quality standards
 
@@ -176,10 +176,14 @@ See `deploy/README.md` for the full deployment procedure.
 
 ## Documentation
 
-- Product definition: `backend/docs/ProductDefinition.md`
-- Backend coding/testing: `backend/docs/CodingGuidelines.md`, `backend/docs/TestingGuidelines.md`
-- Frontend coding/testing/UI: `frontend/docs/CodingGuidelines.md`, `frontend/docs/TestingGuide.md`, `frontend/docs/design-system.md`, `frontend/docs/ux.md`
-- Deployment: `deploy/README.md`
+- Documentation index: `docs/README.md`
+- Product and roadmap: `docs/product.md`, `docs/roadmap.md`
+- Architecture and local setup: `docs/architecture.md`, `docs/local-development.md`
+- Testing and CI/CD: `docs/testing.md`, `docs/cicd.md`
+- Feature references: `docs/features/`
+- Operations: `docs/operations/`
+- Backend implementation references: `backend/docs/`
+- Frontend implementation/UI references: `frontend/docs/`
 
 ## License
 

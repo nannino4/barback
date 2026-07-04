@@ -93,4 +93,4 @@ npm run build
 bash scripts/ci-local.sh
 ```
 
-See `backend/docs/TestingGuidelines.md` and `backend/docs/CICD.md` for details.
+See `backend/docs/TestingGuidelines.md`, `docs/testing.md`, and `docs/cicd.md` for details.

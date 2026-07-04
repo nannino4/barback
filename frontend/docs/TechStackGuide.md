@@ -1,197 +1,81 @@
-# Barback Frontend - Technology Stack Guide
+# Barback Frontend - Technology Stack Notes
 
-This document defines the technology choices, architectural patterns, and high-level implementation strategies for the Barback frontend. For detailed coding standards and code examples, see [CodingGuidelines.md](./CodingGuidelines.md).
+This document is the frontend-specific technology reference. Product, deployment,
+and monorepo architecture docs live under root-level `docs/`.
 
-## Project Overview
+## Core stack
 
-**Barback** is a mobile-first inventory management system for cocktail bars, targeting owners, managers, and staff in Rome/Italy. The application helps reduce waste, gain consumption insights, optimize ordering, and streamline inventory management.
+- **Vite** for development and production builds.
+- **React 19** with functional components and hooks.
+- **TypeScript** with strict typing.
+- **React Router** for client-side routing.
+- **TanStack Query** for server state.
+- **Zustand** for client/app state.
+- **React Hook Form** for forms.
+- **Zod** for runtime API contract and form validation.
+- **Tailwind CSS v4** with CSS-variable theme tokens.
+- **Radix/shadcn-style components** copied into the codebase.
+- **Lucide React** for icons.
+- **i18next/react-i18next** for English and Italian localization.
+- **Vitest + React Testing Library** for unit/component tests.
+- **Playwright** for browser smoke tests, responsive checks, screenshots, and UI
+  validation.
 
-**Frontend Type**: Single Page Application (SPA)  
-**Design Philosophy**: Mobile-first responsive design  
-**Target Users**: Bar owners, managers, bartenders  
-**Key Features**: Auth, role-based access, inventory CRUD, real-time updates, notifications, analytics
+## Architecture patterns
 
-## Core Technology Stack
+- Routes come from `src/constants/routes.ts`.
+- Access control composes route guards: authenticated → email verified → current
+  organization selected.
+- Server data flows through hooks in `src/hooks/` that wrap typed clients in
+  `src/api/`.
+- API response schemas live in `src/types/<domain>.ts` and are validated with
+  Zod.
+- Form schemas live in `src/types/<domain>-forms.ts`.
+- Client state lives in `src/stores/`.
+- JWTs are managed through `AuthTokenManager`.
 
-### Build Tool & Framework
-- **Vite**: Build tool using native ES modules for development, Rollup for production
-- **React**: UI library with functional components and hooks
-- **TypeScript**: Full type safety across the application
-- **Target**: Modern browsers with ES2020+ support
+## Project structure
 
-### UI & Styling
-- **Tailwind CSS**: Utility-first CSS framework
-- **shadcn/ui**: Copy-paste component system (NOT an npm dependency)
-- **Radix UI Primitives**: Accessible, unstyled component primitives
-- **Lucide React**: Icon library
-
-### State Management
-- **Client State**: Zustand for app-wide state (user, UI preferences, selected organization)
-- **Server State**: TanStack Query (React Query) for API data, caching, background updates
-- **Form State**: React Hook Form for performant form handling
-
-### Validation & Forms
-- **Zod**: TypeScript-first schema validation
-- **React Hook Form**: Form library with minimal re-renders
-- **@hookform/resolvers/zod**: Integration between RHF and Zod
-
-### HTTP & API
-- **Fetch API**: Native browser HTTP client
-- **TanStack Query**: Wraps fetch with advanced caching and synchronization
-- **Custom API Client**: Centralized request handling with auth token injection
-
-### Routing & Navigation
-- **React Router**: Client-side routing
-- **Protected Routes**: Role-based route protection
-
-### Notifications & UX
-- **React Hot Toast**: Lightweight toast notifications
-- **Loading States**: Built into TanStack Query
-- **Error Boundaries**: React error handling
-
-### Browser Testing & UI Feedback
-- **Playwright**: Mandatory E2E/browser automation for smoke tests, responsive checks, screenshots, and UI experimentation feedback
-- **Visual workflow**: UI changes should be inspected in the running app at mobile and desktop widths before claiming visual validation
-
-### Internationalization (i18n)
-- **react-i18next**: React integration for internationalization
-- **i18next**: Core internationalization framework
-- **i18next-browser-languagedetector**: Automatic language detection
-- **Languages**: Italian (default) and English
-- **Preference Source**: `user.language` from backend user profile (persisted per account)
-- **Features**: Language switching, persisted account preference, validation message localization
-
-## Project Structure
-
-```
+```text
 src/
-├── api/                 # API client and hooks
+├── api/                 # Typed API clients
 ├── components/
-│   ├── ui/              # shadcn/ui components (Button, Dialog, Card, etc.)
+│   ├── ui/              # Shared UI primitives/components
 │   ├── features/        # Feature-specific components
-│   └── layout/          # Header, Sidebar, AppShell
-├── hooks/               # Custom React hooks
-├── lib/
-│   └── utils.ts         # General utilities (cn, formatters)
+│   └── layout/          # App shell/navigation/layout
+├── constants/           # Routes and shared constants
+├── hooks/               # TanStack Query hooks and custom hooks
+├── lib/                 # Utilities, auth/token helpers, notify, formatting
 ├── pages/               # Route components
 ├── stores/              # Zustand stores
-├── validation/          # Zod schemas for forms and data
-└── types/               # TypeScript type definitions
+└── types/               # API schemas/types and form schemas
 ```
 
-## Key Architectural Patterns
+## UI and styling
 
-### Data Flow Architecture
-1. **Server Data**: Components → TanStack Query hooks → API client → Backend
-2. **Client Data**: Components → Zustand stores → Other components
-3. **Forms**: React Hook Form → Zod validation → TanStack Query mutations
+- Use existing UI/layout components before creating custom markup.
+- Use semantic CSS-variable color classes (`bg-background`, `text-foreground`,
+  `border-border`, etc.).
+- Do not use `dark:` variants for theme colors.
+- Keep mobile-first responsive behavior.
+- See `design-system.md` and `ux.md` for detailed UI rules.
 
-### Component Architecture Patterns
-- **Compound Components**: For complex UI (Dialog, DropdownMenu)
-- **Custom Hooks**: For business logic reuse and API operations
-- **Render Props**: For flexible component composition
-- **Error Boundaries**: For graceful error handling
+## Validation
 
-## shadcn Implementation Strategy
-
-### Installation and Setup
-shadcn components are copied directly into the codebase rather than installed as npm dependencies. This provides full customization control.
-
-**Key Commands:**
 ```bash
-npx shadcn@latest init
-npx shadcn@latest add button dialog card data-table form input select
+npm run lint
+npm run test
+npm run test:e2e
+npm run build
+npm run screenshots
 ```
 
-### Usage Philosophy
-Components are copied to `src/components/ui/` and become part of your codebase. They're styled with Tailwind CSS and fully customizable since they're not external dependencies.
+## Related docs
 
-## Implementation Guidelines
-
-### Component Development
-1. **Start with shadcn components** when possible for consistency
-2. **Create feature-specific components** in appropriate feature folders
-3. **Use TypeScript interfaces** for all props and data structures
-4. **Implement error boundaries** for robust error handling
-5. **Add loading states** for all async operations
-
-### API Integration Strategy
-1. **Use TanStack Query** for all server state management
-2. **Implement optimistic updates** for better user experience
-3. **Handle loading and error states** consistently across the app
-4. **Use proper cache invalidation** after mutations
-
-### Styling Approach
-1. **Use Tailwind utility classes** as the primary styling method
-2. **Leverage shadcn/ui components** for consistent design system
-3. **Create custom variants** by modifying shadcn/ui components
-4. **Use CSS custom properties** for theming and dynamic styles
-
-## Deployment & Infrastructure
-
-This section defines the MVP deployment approach for the Barback frontend and its supporting infrastructure.
-
-### Hosting Strategy (Single EC2)
-- **Single EC2 instance** runs:
-  - **Nginx** (TLS termination + reverse proxy)
-  - **Backend** (Docker container)
-  - **Frontend** (static build served by Nginx)
-- **Backend URL**: https://[domain]/api
-- **Frontend URL**: https://[domain]
-
-### Assets (Images)
-- **Storage**: AWS S3
-- **CDN**: AWS CloudFront (single distribution for images)
-- **Access**: Public read via CloudFront distribution (S3 bucket private with Origin Access Control)
-
-### DNS (Route 53)
-Create or update the following records:
-- **A/AAAA Alias** for apex domain → EC2 Elastic IP
-- **CNAME** for www → apex domain (optional)
-- **A/AAAA Alias** for assets subdomain → CloudFront distribution (images)
-
-### SSL Certificates
-- **Nginx on EC2** should terminate TLS for https://[domain]
-- Recommended: **Let’s Encrypt (certbot)** for free certificates and automated renewal
-- **CloudFront** (assets) requires ACM certificates in **us-east-1**
-
-### CI/CD (Dev Environment)
-- **Runner**: local development/AI-agent machine (no GitHub Actions)
-- **Container registry**: Docker Hub
-- **Deployment target**: single EC2 host (Nginx + frontend + backend)
-- **Deploy flow**: run local shell-script validation → build/push Docker images with plain `docker build` → trigger EC2 deploy script over SSH or run it manually on EC2
-
-For full implementation details, see:
-- [./CICD.md](./CICD.md)
-- [./CodingGuidelines.md](./CodingGuidelines.md)
-
-### Secrets Management
-- **Never** store secrets in the frontend build output
-- Backend secrets (JWT, OAuth, SMTP, etc.) should be stored in **EC2 environment variables** (via docker-compose)
-
-### Free Tier Guidance (MVP)
-- **EC2**: Use a free-tier eligible instance (t3.micro or t2.micro)
-- **MongoDB Atlas**: Free tier cluster
-- **S3 + CloudFront**: Minimal costs for low traffic
-- **Let’s Encrypt**: Free certificates
-
-## Environment-specific Setup
-
-### Local
-- **Frontend**: Vite dev server (https://barback.it:5173)
-- **Backend**: Local NestJS dev server (http://localhost:3000)
-- **DB**: MongoDB Atlas (free tier)
-- **TLS**: Local certificates
-- **Networking**: /etc/hosts entry for barback.it → 127.0.0.1
-
-### Dev (Single EC2)
-- **Nginx**: EC2 (reverse proxy + static hosting)
-- **Frontend**: Static build files copied from a frontend Docker image and served by Nginx
-- **Backend**: Docker image on the same EC2 instance
-- **DB**: MongoDB Atlas (same as local)
-- **TLS termination**: Nginx
-- **Certificates**: Let’s Encrypt + certbot in Docker (automatic renewal via a `certbot` service)
-- **Initial issuance**: Run a one-off `certbot-init` service to create the first certificates
-
-### Prod (TBD)
-- Skip for now. Define when scaling or compliance requirements change.
+- Monorepo architecture: `../../docs/architecture.md`
+- Local development: `../../docs/local-development.md`
+- Testing strategy: `../../docs/testing.md`
+- CI/CD: `../../docs/cicd.md`
+- Frontend coding guidelines: `CodingGuidelines.md`
+- Frontend testing guide: `TestingGuide.md`
+- UI experimentation: `UIExperimentationGuide.md`

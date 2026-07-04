@@ -67,6 +67,7 @@ explicitly with the reason instead of implying validation was completed.
 
 Reference docs:
 
+- `docs/features/`
 - `frontend/docs/design-system.md`
 - `frontend/docs/ux.md`
 - `frontend/docs/UIExperimentationGuide.md`

@@ -190,7 +190,7 @@ GOOGLE_REDIRECT_URI=http://localhost:5173/oauth/google/callback
 # Frontend URL
 FRONTEND_URL=http://localhost:5173
 
-# Email Settings (see EmailServiceDocumentation.md for full email configuration)
+# Email Settings (see `backend/docs/email-implementation.md` and `docs/operations/aws-ses.md` for full email configuration)
 EMAIL_VERIFICATION_EXPIRY=24h
 PASSWORD_RESET_EXPIRY=1h
 ```

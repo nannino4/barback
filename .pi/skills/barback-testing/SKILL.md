@@ -76,6 +76,7 @@ npm run screenshots
 
 Reference docs:
 
+- `docs/testing.md`
 - `backend/docs/TestingGuidelines.md`
 - `frontend/docs/TestingGuide.md`
 - `frontend/docs/UIExperimentationGuide.md`

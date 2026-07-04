@@ -67,7 +67,10 @@ bash scripts/ci-local.sh
 
 Reference docs:
 
+- `docs/product.md`
+- `docs/features/auth.md`
+- `docs/features/email-notifications.md`
 - `backend/docs/CodingGuidelines.md`
 - `backend/docs/TestingGuidelines.md`
-- `backend/src/auth/AuthDocumentation.md`
-- `backend/src/email/EmailServiceDocumentation.md`
+- `backend/docs/auth-implementation.md`
+- `backend/docs/email-implementation.md`

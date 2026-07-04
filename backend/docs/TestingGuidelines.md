@@ -1,4 +1,7 @@
-## Testing Guidelines
+## Backend Testing Guidelines
+
+This is the backend-specific testing reference. Monorepo-level testing strategy
+lives in `docs/testing.md`.
 
 **Core Testing Principle**:
 - **Tests Must Reflect Reality**: Tests should represent real-world scenarios and validate actual expected behavior. If a test fails, examine whether the underlying code or architecture needs fixing rather than modifying the test to pass artificially.

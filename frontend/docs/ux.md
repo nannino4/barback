@@ -1,5 +1,8 @@
 # User Experience Reference - MVP
 
+This is the frontend/UI UX reference. Canonical product feature behavior lives in
+root-level `docs/features/`.
+
 ## Overview
 
 Essential UX flows and patterns for Barback inventory management MVP. Mobile-first design for bar environments with role-based access (Owner, Manager, Staff). Inventory is the primary workspace; minimize navigation and keep high-frequency actions within 1–2 taps.

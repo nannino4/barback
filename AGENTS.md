@@ -11,6 +11,7 @@ Barback is an inventory-management product for cocktail bars.
 - `backend/` — NestJS + MongoDB API. All routes are prefixed `/api`.
 - `frontend/` — React 19 + Vite + TypeScript SPA.
 - `deploy/` — Docker Compose stack for the shared `dev` EC2 host.
+- `docs/` — monorepo-level product, feature, CI/CD, architecture, and operations docs.
 
 This is one real git monorepo. Changes spanning backend, frontend, and deploy
 should be considered together.
@@ -81,10 +82,13 @@ setting up.
 
 ## Reference docs
 
-- Product/domain: `backend/docs/ProductDefinition.md`
+- Product/domain: `docs/product.md`, `docs/features/`
+- Roadmap/architecture/setup: `docs/roadmap.md`, `docs/architecture.md`,
+  `docs/local-development.md`
+- Testing/CI/CD: `docs/testing.md`, `docs/cicd.md`
 - Backend code/testing: `backend/docs/CodingGuidelines.md`,
   `backend/docs/TestingGuidelines.md`
 - Frontend code/testing/UI: `frontend/docs/CodingGuidelines.md`,
   `frontend/docs/TestingGuide.md`, `frontend/docs/design-system.md`,
   `frontend/docs/UIExperimentationGuide.md`, `frontend/docs/ux.md`
-- Local CI/CD: `backend/docs/CICD.md`, `frontend/docs/CICD.md`, `deploy/README.md`
+- Operations/deploy: `docs/operations/`, `deploy/README.md`

@@ -1,5 +1,8 @@
 # Barback Frontend - Testing Guide
 
+This is the frontend-specific testing reference. Monorepo-level testing strategy
+lives in `../../docs/testing.md`.
+
 This document outlines the testing strategy and implementation patterns for the Barback frontend application, focusing on input/output behavior rather than implementation details.
 
 ## Testing Philosophy

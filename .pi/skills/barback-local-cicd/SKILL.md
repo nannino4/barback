@@ -75,7 +75,7 @@ cd deploy
 bash deploy-dev.sh
 ```
 
-Agent-triggered remote deploy helper:
+Preferred monorepo sync/deploy helper:
 
 ```bash
 cd deploy
@@ -83,7 +83,7 @@ BARBACK_EC2_HOST=<host> \
 BARBACK_EC2_USER=ec2-user \
 BARBACK_EC2_KEY=/path/to/key.pem \
 BARBACK_REMOTE_DEPLOY_DIR=/home/ec2-user/barback-deploy \
-bash scripts/deploy-dev-remote.sh
+bash scripts/sync-runtime-and-deploy-dev.sh
 ```
 
 Do not print secrets. Do not commit `.env*`, Terraform state, SSH keys, or files
@@ -92,7 +92,8 @@ under `deploy/secrets/*.env*`.
 Reference docs:
 
 - `README.md`
-- `backend/docs/CICD.md`
-- `frontend/docs/CICD.md`
+- `docs/cicd.md`
+- `docs/operations/deploy-dev.md`
+- `docs/operations/secrets.md`
+- `docs/operations/terraform.md`
 - `deploy/README.md`
-- `deploy/secrets/README.md`

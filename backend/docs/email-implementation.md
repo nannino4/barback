@@ -52,7 +52,7 @@ FRONTEND_URL=http://localhost:3001
 
 Runtime AWS email credentials are managed by Terraform in `deploy/terraform` and
 written to gitignored files under `deploy/secrets/`. See
-`deploy/secrets/README.md` for the full secret workflow and EC2 copy steps.
+`docs/operations/secrets.md` for the full secret workflow and EC2 copy steps.
 
 Sensitive files that must not be committed include:
 

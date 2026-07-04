@@ -1,11 +1,6 @@
 import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuthStore } from '@/stores/authStore';
 
-interface VerifiedRouteProps
-{
-  children?: React.ReactNode;
-}
-
 /**
  * VerifiedRoute - Protects routes that require both authentication AND email verification
  * 
@@ -16,21 +11,17 @@ interface VerifiedRouteProps
  * Redirect behavior:
  * - Not authenticated -> /auth/login with redirect parameter
  * - Authenticated but not verified -> /auth/send-verification-email
- * - Authenticated and verified -> Render children (legacy) or Outlet (nested routes)
+ * - Authenticated and verified -> Render nested routes through Outlet
  * 
  * Usage:
  * ```tsx
- * // Legacy pattern (with children)
- * <Route path="/users/me" element={<VerifiedRoute><UserProfilePage /></VerifiedRoute>} />
- * 
- * // New pattern (with nested routes)
  * <Route element={<VerifiedRoute />}>
  *   <Route path="/organizations" element={<OrganizationsPage />} />
  *   <Route path="/invitations" element={<MyInvitationsPage />} />
  * </Route>
  * ```
  */
-export const VerifiedRoute: React.FC<VerifiedRouteProps> = ({ children }) =>
+export const VerifiedRoute = () =>
 {
   const { isAuthenticated, user } = useAuthStore();
   const location = useLocation();
@@ -61,6 +52,5 @@ export const VerifiedRoute: React.FC<VerifiedRouteProps> = ({ children }) =>
   }
 
   // User is authenticated and verified
-  // Support both legacy pattern (children) and new pattern (Outlet)
-  return children ? <>{children}</> : <Outlet />;
+  return <Outlet />;
 };

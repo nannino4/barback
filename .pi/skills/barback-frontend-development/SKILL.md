@@ -72,6 +72,8 @@ bash scripts/ci-local.sh
 
 Reference docs:
 
+- `docs/product.md`
+- `docs/features/`
 - `frontend/docs/CodingGuidelines.md`
 - `frontend/docs/TechStackGuide.md`
 - `frontend/docs/TestingGuide.md`

@@ -128,7 +128,18 @@ The Playwright config starts the Vite dev server unless
 http://localhost:5173
 ```
 
-Set `PLAYWRIGHT_BASE_URL` when checking a different running environment.
+Set `PLAYWRIGHT_BASE_URL` when checking a different running environment. During
+agent-assisted UI/UX work, assume the user already has the dev server running and
+connect to it instead of starting another server; set
+`PLAYWRIGHT_SKIP_WEB_SERVER=true` when you explicitly want to prevent Playwright
+from launching one.
+
+For protected routes and authenticated visual checks, log in through
+`/auth/login` with local-only credentials provided via `BARBACK_DEV_EMAIL` and
+`BARBACK_DEV_PASSWORD`, then verify that `/inventory` loads. Do not commit or
+print these credentials. Use the same account's organization memberships to
+inspect role-specific owner/manager/staff UI by switching organizations in the
+app.
 
 Use Playwright for:
 

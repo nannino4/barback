@@ -21,20 +21,22 @@ with Playwright/browser feedback before porting the winner into production code.
    component or under a clearly named temporary/lab folder.
 3. Keep shared setup/data in one partial/helper so variants differ only where
    intended.
-4. Run the app locally:
-
-   ```bash
-   VITE_DEV_SERVER_HOST=localhost VITE_DEV_SERVER_HTTPS=false VITE_DEV_SERVER_STRICT_PORT=true npm run dev
-   ```
-
-5. Inspect variants with Playwright/browser tooling at minimum mobile and desktop
-   widths; include tablet when layout columns are involved.
-6. Check loading, empty, error, success, responsive, light theme, dark theme, and
+4. Connect Playwright/browser tooling to the user's already-running dev server.
+   Use `PLAYWRIGHT_BASE_URL` when set; otherwise try `http://localhost:5173` or
+   the HTTPS local app URL `https://barback.it:5173`.
+5. For protected surfaces, authenticate through `/auth/login` with local-only
+   credentials from `BARBACK_DEV_EMAIL` and `BARBACK_DEV_PASSWORD`, then verify
+   access to `/inventory`. Never commit or print credentials.
+6. Inspect variants with Playwright/browser tooling at minimum mobile and desktop
+   widths; include tablet when layout columns are involved. If role-specific UI
+   matters, use the organization switcher with the same account to inspect the
+   relevant owner/manager/staff organization context.
+7. Check loading, empty, error, success, responsive, light theme, dark theme, and
    localization states when relevant.
-7. Present screenshots or live routes plus your recommendation.
-8. After a decision, port only the winning direction into real production
+8. Present screenshots or live routes plus your recommendation.
+9. After a decision, port only the winning direction into real production
    components and remove temporary experiment code.
-9. Validate with:
+10. Validate with:
 
    ```bash
    npm run lint
@@ -48,12 +50,12 @@ with Playwright/browser feedback before porting the winner into production code.
 Generated screenshots are working artifacts for the agent, not deliverables.
 They are gitignored under `frontend/docs/screenshots/`.
 
-Run the canonical screenshot set from `frontend/` while the dev server is running
-or allow Playwright tests to start it:
+Run the canonical screenshot set from `frontend/` while the user's dev server is
+running. Agents should connect to that server by setting `PLAYWRIGHT_BASE_URL`
+when it is not the default `http://localhost:5173`:
 
 ```bash
-VITE_DEV_SERVER_HOST=localhost VITE_DEV_SERVER_HTTPS=false VITE_DEV_SERVER_STRICT_PORT=true npm run dev
-npm run screenshots
+PLAYWRIGHT_BASE_URL=http://localhost:5173 npm run screenshots
 ```
 
 The script writes mobile, tablet, and desktop screenshots for the public app

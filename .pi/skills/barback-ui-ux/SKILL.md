@@ -42,11 +42,28 @@ When a design choice is subjective:
 
 1. Define the single variable under test.
 2. Build 2-4 comparable variants using real components/tokens/data.
-3. Inspect mobile and desktop in Playwright/browser tooling.
-4. Check light and dark themes when colors are involved.
-5. Present screenshots/live routes plus a short, opinionated recommendation.
-6. Port only the selected variant into production code.
-7. Remove temporary experiment code.
+3. Connect Playwright/browser tooling to the user's already-running dev server.
+4. Authenticate with the local dev account before inspecting protected routes.
+5. Inspect mobile and desktop in Playwright/browser tooling.
+6. Check light and dark themes when colors are involved.
+7. Present screenshots/live routes plus a short, opinionated recommendation.
+8. Port only the selected variant into production code.
+9. Remove temporary experiment code.
+
+## Dev server and authenticated inspection
+
+For UI/UX work, assume the user has the frontend and backend dev servers running.
+Do not start a separate dev server unless the user asks. Prefer
+`PLAYWRIGHT_BASE_URL` when set; otherwise connect to the local frontend URL
+(`http://localhost:5173` for Playwright's default dev server, or
+`https://barback.it:5173` when the user's HTTPS local setup is active).
+
+Protected app surfaces must be inspected while authenticated. Use local-only
+credentials from `BARBACK_DEV_EMAIL` and `BARBACK_DEV_PASSWORD`, sign in through
+`/auth/login`, and verify access to `/inventory` before checking the changed
+route. A single dev account may belong to multiple organizations with different
+roles; switch organization in the UI to inspect owner/manager/staff-specific
+states when relevant. Never commit or print credentials.
 
 ## Mandatory visual validation
 

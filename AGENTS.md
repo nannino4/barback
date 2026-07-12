@@ -76,9 +76,15 @@ setting up.
 - Frontend internal imports use the `@/` alias.
 - Frontend UI uses CSS-variable theme colors; do not use `dark:` color variants.
 - Use `notify` from `src/lib/notify.ts`, never `react-hot-toast` directly.
+- For UI/UX work, assume the user has a dev server running. Connect to it with
+  Playwright/browser tooling instead of starting your own unless asked. Use
+  `PLAYWRIGHT_BASE_URL` when set, otherwise try the local frontend URL. For
+  protected UI, authenticate with local dev credentials from `BARBACK_DEV_EMAIL`
+  and `BARBACK_DEV_PASSWORD`; never commit credentials.
 - For any UI change, always perform visual validation with Playwright/browser
-  tooling before final response. Report what was inspected (route/viewport/theme)
-  or explicitly state if tooling blocked validation and why.
+  tooling before final response. Report what was inspected (base URL, route,
+  viewport, theme, and authenticated role/org when relevant) or explicitly state
+  if tooling/auth/server access blocked validation and why.
 
 ## Reference docs
 
